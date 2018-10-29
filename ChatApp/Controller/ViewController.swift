@@ -23,6 +23,9 @@ class ViewController: UITableViewController {
 
 	
 	@objc private func onLogout(){
+		let loginController = LoginController()
+		present(loginController, animated: true, completion: nil)
+		
 		
 	}
 
