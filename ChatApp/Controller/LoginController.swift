@@ -24,6 +24,9 @@ class LoginController: UIViewController {
 		// убираем дефолтные констрейнзы
 		view_i.translatesAutoresizingMaskIntoConstraints = false
 		view_i.layer.cornerRadius = 8
+		view_i.layer.shadowOffset = CGSize(width: 0, height: 3)
+		view_i.layer.shadowRadius = 3
+		view_i.layer.shadowOpacity = 0.3
 		return view_i
 	}()
 	
@@ -35,6 +38,9 @@ class LoginController: UIViewController {
 		button.setTitleColor(.white, for: .normal)
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		button.translatesAutoresizingMaskIntoConstraints = false
+		button.layer.shadowOffset = CGSize(width: 0, height: 3)
+		button.layer.shadowRadius = 3
+		button.layer.shadowOpacity = 0.3
 		return button
 	}()
 	
@@ -107,10 +113,14 @@ class LoginController: UIViewController {
 
 	
 	private func setupProfileImageView(){
+		var size = CGSize(width: 150, height: 130)
+		if UIDevice.current.orientation.isLandscape {
+			size = CGSize(width: 75, height: 65)
+		}
 		profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 						= true
 		profileImageView.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -20).isActive = true
-		profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive 									= true
-		profileImageView.heightAnchor.constraint(equalToConstant: 130).isActive 								= true
+		profileImageView.widthAnchor.constraint(equalToConstant: size.width).isActive 									= true
+		profileImageView.heightAnchor.constraint(equalToConstant: size.height).isActive 								= true
 	}
 	
 	
