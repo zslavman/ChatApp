@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// не будем использовать сторибоард
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
-		window?.rootViewController = UINavigationController(rootViewController: ViewController())
+		window?.rootViewController = UINavigationController(rootViewController: MessagesController())
 		
 		
 		return true

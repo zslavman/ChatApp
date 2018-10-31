@@ -43,7 +43,7 @@ class LoginController: UIViewController {
 		button.layer.shadowRadius = 3
 		button.layer.shadowOpacity = 0.3
 		
-		button.addTarget(self, action: #selector(onLoginRegisterClick), for: UIControlEvents.touchUpInside)
+		button.addTarget(self, action: #selector(onGoClick), for: UIControlEvents.touchUpInside)
 		
 		return button
 	}()
@@ -95,6 +95,16 @@ class LoginController: UIViewController {
 	//*********************
 	
 	
+	let loginSegmentedControl:UISegmentedControl = {
+		let sc = UISegmentedControl(items: ["Login", "Register"])
+		sc.translatesAutoresizingMaskIntoConstraints = false
+		sc.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+		sc.selectedSegmentIndex = 1
+		sc.addTarget(self, action: #selector(onSegmentedClick), for: UIControlEvents.valueChanged)
+		return sc
+	}()
+	
+	
 	
 	
 	//*************************
@@ -108,13 +118,25 @@ class LoginController: UIViewController {
 		view.addSubview(inputsContainerView)
 		view.addSubview(loginRegisterBttn)
 		view.addSubview(profileImageView)
+		view.addSubview(loginSegmentedControl)
 		
 		setupInputsContainerView()
 		setupLoginRegisterButton()
 		setupProfileImageView()
+		setupSegmentedControl()
 	}
 
 
+	
+	
+	private func setupSegmentedControl(){
+		loginSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 						= true
+		loginSegmentedControl.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -15).isActive = true
+		loginSegmentedControl.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor, multiplier: 1/2).isActive = true
+		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 50)
+	}
+	
+	
 	
 	private func setupProfileImageView(){
 		var size = CGSize(width: 150, height: 130)
@@ -122,22 +144,27 @@ class LoginController: UIViewController {
 			size = CGSize(width: 75, height: 65)
 		}
 		profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 						= true
-		profileImageView.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -20).isActive = true
-		profileImageView.widthAnchor.constraint(equalToConstant: size.width).isActive 									= true
-		profileImageView.heightAnchor.constraint(equalToConstant: size.height).isActive 								= true
+		profileImageView.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -10).isActive = true
+		profileImageView.widthAnchor.constraint(equalToConstant: size.width).isActive 							= true
+		profileImageView.heightAnchor.constraint(equalToConstant: size.height).isActive 						= true
 	}
 	
 	
 	
 	
+	private var inputsContainerViewHeightAnchor:NSLayoutConstraint?
+	private var nameTFHeightAnchor:NSLayoutConstraint?
+	private var emailTFHeightAnchor:NSLayoutConstraint?
+	private var passTFHeightAnchor:NSLayoutConstraint?
+	
 	private func setupInputsContainerView(){
 		// добавим констрейнзы x, y, width, height
-		[inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-		 inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-		 inputsContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24),
-		 inputsContainerView.heightAnchor.constraint(equalToConstant: 150)].forEach { (constrain) in
-			constrain.isActive = true
-		}
+		inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 					= true
+		inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 40).isActive 	= true
+		inputsContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive 		= true
+		
+		inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
+		inputsContainerViewHeightAnchor?.isActive = true
 		
 		inputsContainerView.addSubview(nameTF)
 		inputsContainerView.addSubview(nameSeparator)
@@ -150,7 +177,9 @@ class LoginController: UIViewController {
 		nameTF.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive 		= true
 		nameTF.topAnchor.constraint(equalTo: inputsContainerView.topAnchor).isActive 						= true
 		nameTF.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 					= true
-		nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3).isActive = true
+		nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+		nameTFHeightAnchor?.isActive = true
+		
 		// линия-разделитель
 		nameSeparator.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive 				= true
 		nameSeparator.topAnchor.constraint(equalTo: nameTF.bottomAnchor).isActive 							= true
@@ -160,7 +189,9 @@ class LoginController: UIViewController {
 		emailTF.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive 		= true
 		emailTF.topAnchor.constraint(equalTo: nameSeparator.bottomAnchor).isActive 							= true
 		emailTF.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 					= true
-		emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3).isActive = true
+		emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+		emailTFHeightAnchor?.isActive = true
+		
 		// линия-разделитель
 		emailSeparator.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive 				= true
 		emailSeparator.topAnchor.constraint(equalTo: emailTF.bottomAnchor).isActive 						= true
@@ -170,7 +201,8 @@ class LoginController: UIViewController {
 		passTF.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive 		= true
 		passTF.topAnchor.constraint(equalTo: emailSeparator.bottomAnchor).isActive 							= true
 		passTF.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 					= true
-		passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3).isActive = true
+		passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+		passTFHeightAnchor?.isActive = true
 	}
 	
 	
@@ -187,8 +219,45 @@ class LoginController: UIViewController {
 	}
 	
 	
-	@objc private func onLoginRegisterClick(){
+	
+	
+	
+	
+	@objc private func onGoClick(){
 		
+		if loginSegmentedControl.selectedSegmentIndex == 0 {
+			onLogin()
+		}
+		else if loginSegmentedControl.selectedSegmentIndex == 1 {
+			onRegister()
+		}
+	}
+	
+	
+	
+	private func onLogin(){
+		
+		guard let email = emailTF.text, let pass = passTF.text else {
+			print("Form is not valid")
+			return
+		}
+		
+		Auth.auth().signIn(withEmail: email, password: pass) {
+			(authResult, error) in
+			guard let _ = authResult?.user, error == nil else {
+				let strErr = error!.localizedDescription
+				print(strErr)
+				return
+			}
+			
+			// если всё ок - заходим в учётку
+			self.dismiss(animated: true, completion: nil)
+		}
+	}
+	
+	
+	
+	private func onRegister(){
 		
 		guard let email = emailTF.text, let pass = passTF.text, let name = nameTF.text else {
 			print("Form is not valid")
@@ -216,11 +285,47 @@ class LoginController: UIViewController {
 					print(err?.localizedDescription as Any)
 					return
 				}
+				
+				self.dismiss(animated: true, completion: nil)
 				print("Удачно сохранили юзера")
 				
 			})
 		}
 	}
+	
+	
+	
+	@objc private func onSegmentedClick(){
+		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
+		loginRegisterBttn.setTitle(str, for: .normal)
+		
+		// изменение высоты inputsContainerView, кол-ва строк
+		nameTFHeightAnchor?.isActive = false
+		emailTFHeightAnchor?.isActive = false
+		passTFHeightAnchor?.isActive = false
+		
+		if loginSegmentedControl.selectedSegmentIndex == 0 {
+			inputsContainerViewHeightAnchor?.constant = 100
+			
+			// т.к. nameTFHeightAnchor.multiplier - это геттер, то меняем его так(предварительно отключив):
+			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
+			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
+			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
+			nameSeparator.isHidden = true
+		}
+		else if loginSegmentedControl.selectedSegmentIndex == 1{
+			inputsContainerViewHeightAnchor?.constant = 150
+			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+			nameSeparator.isHidden = false
+		}
+		nameTFHeightAnchor?.isActive = true
+		emailTFHeightAnchor?.isActive = true
+		passTFHeightAnchor?.isActive = true
+	}
+	
+	
 	
 	
 	

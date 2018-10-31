@@ -9,22 +9,41 @@
 import UIKit
 import Firebase
 
-class ViewController: UITableViewController {
+class MessagesController: UITableViewController {
 
 	
-	
-	
-	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(onLogout))
 		
+		chekIfUserLoggedIn()
 	}
+	
 
 
 	
+	private func chekIfUserLoggedIn(){
+		// автологинка
+		if Auth.auth().currentUser?.uid == nil{
+			perform(#selector(onLogout), with: nil, afterDelay: 0) // для устранения Unbalanced calls to begin/end appearance transitions for <UINavigationController: 0x7f...
+		}
+	}
+	
+	
+	
+	
+	
 	@objc private func onLogout(){
+		do {
+			try Auth.auth().signOut()
+		}
+		catch let logoutError{
+			print(logoutError)
+			return
+		}
+		
 		let loginController = LoginController()
 		present(loginController, animated: true, completion: nil)
 		
@@ -33,4 +52,24 @@ class ViewController: UITableViewController {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

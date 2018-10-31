@@ -10,7 +10,7 @@
 		46EDE0D18A6394E86D550EB2 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
 		56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56536F8B2189113F0087064D /* GoogleService-Info.plist */; };
 		566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDA82186F8D50053F4A0 /* AppDelegate.swift */; };
-		566BEDAB2186F8D50053F4A0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDAA2186F8D50053F4A0 /* ViewController.swift */; };
+		566BEDAB2186F8D50053F4A0 /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDAA2186F8D50053F4A0 /* MessagesController.swift */; };
 		566BEDAE2186F8D50053F4A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDAC2186F8D50053F4A0 /* Main.storyboard */; };
 		566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDAF2186F8D70053F4A0 /* Assets.xcassets */; };
 		566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */; };
@@ -22,7 +22,7 @@
 		56536F8B2189113F0087064D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		566BEDA52186F8D50053F4A0 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		566BEDA82186F8D50053F4A0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		566BEDAA2186F8D50053F4A0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		566BEDAA2186F8D50053F4A0 /* MessagesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
 		566BEDAD2186F8D50053F4A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		566BEDAF2186F8D70053F4A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		566BEDB22186F8D70053F4A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 		566BEDBA2186FF940053F4A0 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				566BEDAA2186F8D50053F4A0 /* ViewController.swift */,
+				566BEDAA2186F8D50053F4A0 /* MessagesController.swift */,
 				566BEDBB2186FFF00053F4A0 /* LoginController.swift */,
 			);
 			path = Controller;
@@ -177,8 +177,6 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
@@ -187,8 +185,6 @@
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
@@ -205,15 +201,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-ChatApp-checkManifestLockResult.txt",
 			);
@@ -229,7 +221,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				566BEDAB2186F8D50053F4A0 /* ViewController.swift in Sources */,
+				566BEDAB2186F8D50053F4A0 /* MessagesController.swift in Sources */,
 				566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
 			);
