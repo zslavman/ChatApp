@@ -18,16 +18,31 @@ class MessagesController: UITableViewController {
 
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(onLogout))
 		
+		let bttnImage = UIImage(named: "new_message_icon")
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage, style: .plain, target: self, action: #selector(onNewMessageClick))
+		
 		chekIfUserLoggedIn()
+		print("viewDidLoad === viewDidLoad")
 	}
 	
 
 
 	
 	private func chekIfUserLoggedIn(){
-		// автологинка
+		// выходим, если не залогинены
 		if Auth.auth().currentUser?.uid == nil{
 			perform(#selector(onLogout), with: nil, afterDelay: 0) // для устранения Unbalanced calls to begin/end appearance transitions for <UINavigationController: 0x7f...
+		}
+		// автологинка
+		else {
+			let uid = Auth.auth().currentUser?.uid
+			Database.database().reference().child("users").child(uid!).observeSingleEvent(of: .value) {
+				(snapshot) in
+				
+				if let dictionary = snapshot.value as? [String:AnyObject] {
+					self.navigationItem.title = dictionary["name"] as? String
+				}
+			}
 		}
 	}
 	
@@ -46,9 +61,20 @@ class MessagesController: UITableViewController {
 		
 		let loginController = LoginController()
 		present(loginController, animated: true, completion: nil)
+	}
+	
+	
+	
+	
+	@objc private func onNewMessageClick(){
+		let newMessContr = NewMessageController()
+		let navContr = UINavigationController(rootViewController: newMessContr)
+		present(navContr, animated: true, completion: nil)
 		
 		
 	}
+	
+	
 
 
 }

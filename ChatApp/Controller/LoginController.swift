@@ -244,9 +244,8 @@ class LoginController: UIViewController {
 		
 		Auth.auth().signIn(withEmail: email, password: pass) {
 			(authResult, error) in
-			guard let _ = authResult?.user, error == nil else {
-				let strErr = error!.localizedDescription
-				print(strErr)
+			if error != nil {
+				print(error!.localizedDescription)
 				return
 			}
 			
