@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginController: UIViewController {
 
@@ -41,6 +42,9 @@ class LoginController: UIViewController {
 		button.layer.shadowOffset = CGSize(width: 0, height: 3)
 		button.layer.shadowRadius = 3
 		button.layer.shadowOpacity = 0.3
+		
+		button.addTarget(self, action: #selector(onLoginRegisterClick), for: UIControlEvents.touchUpInside)
+		
 		return button
 	}()
 	
@@ -182,6 +186,41 @@ class LoginController: UIViewController {
 		}
 	}
 	
+	
+	@objc private func onLoginRegisterClick(){
+		
+		
+		guard let email = emailTF.text, let pass = passTF.text, let name = nameTF.text else {
+			print("Form is not valid")
+			return
+		}
+		Auth.auth().createUser(withEmail: email, password: pass) {
+			(authResult, error) in
+			
+			guard let user = authResult?.user, error == nil else {
+				let strErr = error!.localizedDescription
+				print(strErr)
+				return
+			}
+			
+			// successfully auth
+			let ref = Database.database().reference(fromURL: "https://chatapp-2222e.firebaseio.com/")
+			let usersRef = ref.child("users").child(user.uid)
+			let values = [
+				"name": name,
+				"email": email
+			]
+			usersRef.updateChildValues(values, withCompletionBlock: {
+				(err, ref) in
+				if err != nil {
+					print(err?.localizedDescription as Any)
+					return
+				}
+				print("Удачно сохранили юзера")
+				
+			})
+		}
+	}
 	
 	
 	
