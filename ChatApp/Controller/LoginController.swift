@@ -11,11 +11,13 @@ import Firebase
 
 class LoginController: UIViewController {
 
-	private let profileImageView: UIImageView = {
+	public lazy var profileImageView: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "chatApp_logo")
 		imageView.contentMode = .scaleAspectFit
 		imageView.translatesAutoresizingMaskIntoConstraints = false
+		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
+		imageView.isUserInteractionEnabled = true
 		return imageView
 	}()
 	
@@ -49,7 +51,7 @@ class LoginController: UIViewController {
 	}()
 	
 	
-	private let nameTF:UITextField = {
+	internal let nameTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Name"
 		tf.translatesAutoresizingMaskIntoConstraints = false
@@ -63,7 +65,7 @@ class LoginController: UIViewController {
 	}()
 	//*********************
 	
-	private let emailTF:UITextField = {
+	internal let emailTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Email"
 		tf.translatesAutoresizingMaskIntoConstraints = false
@@ -78,7 +80,7 @@ class LoginController: UIViewController {
 	}()
 	//*********************
 	
-	private let passTF:UITextField = {
+	internal let passTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Password"
 		tf.translatesAutoresizingMaskIntoConstraints = false
@@ -254,44 +256,7 @@ class LoginController: UIViewController {
 		}
 	}
 	
-	
-	
-	private func onRegister(){
-		
-		guard let email = emailTF.text, let pass = passTF.text, let name = nameTF.text else {
-			print("Form is not valid")
-			return
-		}
-		Auth.auth().createUser(withEmail: email, password: pass) {
-			(authResult, error) in
-			
-			guard let user = authResult?.user, error == nil else {
-				let strErr = error!.localizedDescription
-				print(strErr)
-				return
-			}
-			
-			// successfully auth
-			let ref = Database.database().reference(fromURL: "https://chatapp-2222e.firebaseio.com/")
-			let usersRef = ref.child("users").child(user.uid)
-			let values = [
-				"name": name,
-				"email": email
-			]
-			usersRef.updateChildValues(values, withCompletionBlock: {
-				(err, ref) in
-				if err != nil {
-					print(err?.localizedDescription as Any)
-					return
-				}
-				
-				self.dismiss(animated: true, completion: nil)
-				print("Удачно сохранили юзера")
-				
-			})
-		}
-	}
-	
+
 	
 	
 	@objc private func onSegmentedClick(){
@@ -323,6 +288,8 @@ class LoginController: UIViewController {
 		emailTFHeightAnchor?.isActive = true
 		passTFHeightAnchor?.isActive = true
 	}
+	
+	
 	
 	
 	

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		46EDE0D18A6394E86D550EB2 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
+		563BE43C218A3DD300A3BF29 /* LoginController + hendlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563BE43B218A3DD300A3BF29 /* LoginController + hendlers.swift */; };
 		563D17882189E351000DFAD2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D17872189E351000DFAD2 /* User.swift */; };
 		563EFAE02189D04900F16BF8 /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* NewMessageController.swift */; };
 		56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56536F8B2189113F0087064D /* GoogleService-Info.plist */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
+		563BE43B218A3DD300A3BF29 /* LoginController + hendlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController + hendlers.swift"; sourceTree = "<group>"; };
 		563D17872189E351000DFAD2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		563EFADF2189D04900F16BF8 /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		56536F8B2189113F0087064D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 			children = (
 				566BEDAA2186F8D50053F4A0 /* MessagesController.swift */,
 				566BEDBB2186FFF00053F4A0 /* LoginController.swift */,
+				563BE43B218A3DD300A3BF29 /* LoginController + hendlers.swift */,
 				563EFADF2189D04900F16BF8 /* NewMessageController.swift */,
 			);
 			path = Controller;
@@ -239,6 +242,7 @@
 				566BEDAB2186F8D50053F4A0 /* MessagesController.swift in Sources */,
 				566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */,
 				563D17882189E351000DFAD2 /* User.swift in Sources */,
+				563BE43C218A3DD300A3BF29 /* LoginController + hendlers.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
