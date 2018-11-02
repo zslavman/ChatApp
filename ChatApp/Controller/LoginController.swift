@@ -9,11 +9,18 @@
 import UIKit
 import Firebase
 
+
+let default_profile_image:String = "default_profile_image"
+
+
 class LoginController: UIViewController {
+	
+	internal var messagesController:MessagesController?
 
 	public lazy var profileImageView: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
 		let imageView = UIImageView()
-		imageView.image = UIImage(named: "chatApp_logo")
+//		imageView.image = UIImage(named: "chatApp_logo")
+		imageView.image = UIImage(named: default_profile_image)
 		imageView.contentMode = .scaleAspectFit
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
@@ -126,6 +133,8 @@ class LoginController: UIViewController {
 		setupLoginRegisterButton()
 		setupProfileImageView()
 		setupSegmentedControl()
+		
+		switch_AvaLogo()
 	}
 
 
@@ -141,14 +150,10 @@ class LoginController: UIViewController {
 	
 	
 	private func setupProfileImageView(){
-		var size = CGSize(width: 150, height: 130)
-		if UIDevice.current.orientation.isLandscape {
-			size = CGSize(width: 75, height: 65)
-		}
-		profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 						= true
+		profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 				= true
 		profileImageView.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -10).isActive = true
-		profileImageView.widthAnchor.constraint(equalToConstant: size.width).isActive 							= true
-		profileImageView.heightAnchor.constraint(equalToConstant: size.height).isActive 						= true
+		profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive 							= true
+		profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive 						= true
 	}
 	
 	
@@ -224,7 +229,7 @@ class LoginController: UIViewController {
 	
 	
 	
-	
+	/// нажали на Register/Login
 	@objc private func onGoClick(){
 		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
@@ -252,6 +257,7 @@ class LoginController: UIViewController {
 			}
 			
 			// если всё ок - заходим в учётку
+			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
 			self.dismiss(animated: true, completion: nil)
 		}
 	}
@@ -268,6 +274,10 @@ class LoginController: UIViewController {
 		emailTFHeightAnchor?.isActive = false
 		passTFHeightAnchor?.isActive = false
 		
+		// меняем иконку аватарки/приложения
+		switch_AvaLogo()
+		
+		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			inputsContainerViewHeightAnchor?.constant = 100
 			
@@ -276,13 +286,16 @@ class LoginController: UIViewController {
 			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
 			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
 			nameSeparator.isHidden = true
+			nameTF.isHidden = true // т.к. в iOS 10 это поле не пропадает а скукоживается
 		}
+		// регистрация
 		else if loginSegmentedControl.selectedSegmentIndex == 1{
 			inputsContainerViewHeightAnchor?.constant = 150
 			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
 			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
 			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
 			nameSeparator.isHidden = false
+			nameTF.isHidden = false
 		}
 		nameTFHeightAnchor?.isActive = true
 		emailTFHeightAnchor?.isActive = true
@@ -293,12 +306,52 @@ class LoginController: UIViewController {
 	
 	
 	
+	private func switch_AvaLogo(){
+		// логин
+		if loginSegmentedControl.selectedSegmentIndex == 0 {
+			profileImageView.image = UIImage(named: "chatApp_logo")
+			profileImageView.layer.cornerRadius = 0
+			profileImageView.layer.masksToBounds = false
+		}
+		else{
+			profileImageView.image = UIImage(named: default_profile_image)
+			profileImageView.layer.cornerRadius = 75
+			profileImageView.layer.masksToBounds = true
+		}
+	}
+	
+	
 	
 	
 	/// меняем цвет статусбара на светлый
 	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
+	
+	
+	
+	
+	
+	private var point = CGPoint.zero
+	
+	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		if let touch = touches.first {
+			let position = touch.location(in: self.view)
+			point = position
+			print(position)
+		}
+	}
+	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		if let touch = touches.first {
+			let position = touch.location(in: self.view)
+			if position == point {
+				view.endEditing(true)
+				point = .zero
+			}
+		}
+	}
+	
+	
 
 }
 

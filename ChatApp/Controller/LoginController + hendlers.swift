@@ -15,6 +15,11 @@ extension LoginController:UIImagePickerControllerDelegate, UINavigationControlle
 	
 	
 	@objc public func onProfileClick(){
+		
+		if loginSegmentedControl.selectedSegmentIndex == 0 {
+			return
+		}
+		
 		let picker = UIImagePickerController()
 		
 		picker.delegate = self
@@ -66,11 +71,27 @@ extension LoginController:UIImagePickerControllerDelegate, UINavigationControlle
 			// Successfully auth *
 			//********************
 			
+			// дефолтный словарь для сохранения в БД
+			var values = [
+				"name"			: name,
+				"email"			: email,
+				"profileImageUrl": "none"
+			]
+			// safety unwrapping image
+			guard let profileImage = self.profileImageView.image else { return }
+			
+			// проверяем, если картинка профиля стоит дефолтная (не менялась)
+			let isThatDefaultImage:Bool = profileImage.isEqual(UIImage(named: default_profile_image))
+			if isThatDefaultImage {
+				self.registerUserIntoDB(uid: user.uid, values: values as [String : AnyObject])
+				return
+			}
+			
 			// сохраняем картинку в хранилище
 			let uniqueImageName = UUID().uuidString // создает уникальное имя картинке
-			let storageRef = Storage.storage().reference().child("profile_images").child("\(uniqueImageName).png")
+			let storageRef = Storage.storage().reference().child("profile_images").child("\(uniqueImageName).jpg")
 			
-			if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!){
+			if let uploadData = UIImageJPEGRepresentation(profileImage, 0.5){
 				storageRef.putData(uploadData, metadata: nil, completion: {
 					(metadata, error) in
 					if let error = error {
@@ -85,11 +106,7 @@ extension LoginController:UIImagePickerControllerDelegate, UINavigationControlle
 							print(errorFromGettinfPicLink.localizedDescription)
 							return
 						}
-						let values = [
-							"name"			: name,
-							"email"			: email,
-							"profileImageUrl": url!.absoluteString
-						]
+						values["profileImageUrl"] = url!.absoluteString
 						self.registerUserIntoDB(uid: user.uid, values: values as [String : AnyObject])
 					})
 					print("удачно сохранили картинку")
@@ -112,6 +129,11 @@ extension LoginController:UIImagePickerControllerDelegate, UINavigationControlle
 				print(err?.localizedDescription as Any)
 				return
 			}
+			
+			let user = User()
+			user.setValuesForKeys(values)
+			self.messagesController?.setupNavbarWithUser(user: user)
+			
 			self.dismiss(animated: true, completion: nil)
 			print("Удачно сохранили юзера")
 		})

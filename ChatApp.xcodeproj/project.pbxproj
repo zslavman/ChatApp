@@ -18,6 +18,7 @@
 		566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDAF2186F8D70053F4A0 /* Assets.xcassets */; };
 		566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */; };
 		566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDBB2186FFF00053F4A0 /* LoginController.swift */; };
+		5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5680E759218B52D500B9CC3B /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		566BEDB22186F8D70053F4A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		566BEDB42186F8D70053F4A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		566BEDBB2186FFF00053F4A0 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
+		5680E759218B52D500B9CC3B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		A2E4397522028D0D9A51C49E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
 		E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -88,6 +90,7 @@
 		566BEDA72186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				5680E758218B52B500B9CC3B /* Helpers */,
 				563D17862189E320000DFAD2 /* Model */,
 				566BEDBA2186FF940053F4A0 /* Controller */,
 				566BEDA82186F8D50053F4A0 /* AppDelegate.swift */,
@@ -109,6 +112,14 @@
 				563EFADF2189D04900F16BF8 /* NewMessageController.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		5680E758218B52B500B9CC3B /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				5680E759218B52D500B9CC3B /* Extensions.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		70DFE94CC7D7CBF2A1E2709F /* Frameworks */ = {
@@ -244,6 +255,7 @@
 				563D17882189E351000DFAD2 /* User.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + hendlers.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
+				5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,6 +403,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = ChatApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -410,6 +423,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = ChatApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
