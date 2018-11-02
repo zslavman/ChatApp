@@ -71,19 +71,25 @@ class MessagesController: UITableViewController {
 		
 		// контейнер
 		let titleView = UIView()
-		titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
+		titleView.frame = CGRect(x: 0, y: 0, width: 160, height: 40)
 //		titleView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1).withAlphaComponent(0.5)
 		
 		// еще один контейнер (чтоб всё что внутри растягивалось на всё свободное место навбара)
 		let containerView = UIView()
 		containerView.translatesAutoresizingMaskIntoConstraints = false
+		self.navigationItem.titleView = titleView
 		titleView.addSubview(containerView)
+		
+		containerView.topAnchor.constraint(equalTo: titleView.topAnchor).isActive = true
+		containerView.bottomAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
+		containerView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
+		containerView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
 		
 		// фотка
 		profileImageView = UIImageView()
 		profileImageView.translatesAutoresizingMaskIntoConstraints = false
 		profileImageView.contentMode = .scaleAspectFill
-		profileImageView.layer.cornerRadius = 20
+		profileImageView.layer.cornerRadius = 18
 		profileImageView.clipsToBounds = true
 		
 		if let profileImageUrl = user.profileImageUrl {
@@ -93,8 +99,8 @@ class MessagesController: UITableViewController {
 		// добавим констраинты для фотки в контейнере
 		profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
 		profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-		profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
-		profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		profileImageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
+		profileImageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
 		
 		// лейбла с именем
 		let nameLabel = UILabel()
@@ -105,17 +111,15 @@ class MessagesController: UITableViewController {
 		nameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8).isActive = true
 		nameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
 		nameLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-		nameLabel.heightAnchor.constraint(equalTo: profileImageView.heightAnchor).isActive = true
+		nameLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
-		// центруем containerView
-		containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
-		containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
+		
+		self.navigationItem.titleView = titleView
 		
 		// добавим клик к фотке для изменения ее
 		titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPhotoClick(sender:))))
 		titleView.isUserInteractionEnabled = true
 		
-		self.navigationItem.titleView = titleView
 	}
 
 
