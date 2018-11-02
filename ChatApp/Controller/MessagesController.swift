@@ -12,6 +12,10 @@ import Firebase
 class MessagesController: UITableViewController {
 
 	
+	internal var owner:User!
+	internal var uid:String!
+	
+	internal var profileImageView:UIImageView!
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -45,7 +49,7 @@ class MessagesController: UITableViewController {
 	public func fetchUserAndSetupNavbarTitle(){
 		
 		guard let uid = Auth.auth().currentUser?.uid else {	return } // проверка если user = nil
-		
+		self.uid = uid
 		Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value) {
 			(snapshot) in
 			
@@ -55,6 +59,7 @@ class MessagesController: UITableViewController {
 				let user = User()
 				user.setValuesForKeys(dictionary)
 				self.setupNavbarWithUser(user: user)
+				self.owner = user
 			}
 		}
 	}
@@ -63,7 +68,6 @@ class MessagesController: UITableViewController {
 	
 	/// Отрисовка навбара с картинкой
 	internal func setupNavbarWithUser(user: User){
-//		self.navigationItem.title = user.name
 		
 		// контейнер
 		let titleView = UIView()
@@ -76,14 +80,14 @@ class MessagesController: UITableViewController {
 		titleView.addSubview(containerView)
 		
 		// фотка
-		let profileImageView = UIImageView()
+		profileImageView = UIImageView()
 		profileImageView.translatesAutoresizingMaskIntoConstraints = false
 		profileImageView.contentMode = .scaleAspectFill
 		profileImageView.layer.cornerRadius = 20
 		profileImageView.clipsToBounds = true
-
+		
 		if let profileImageUrl = user.profileImageUrl {
-			profileImageView.loadImageUsingCache(urlString: profileImageUrl)
+			profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
 		}
 		containerView.addSubview(profileImageView)
 		// добавим констраинты для фотки в контейнере
@@ -107,12 +111,18 @@ class MessagesController: UITableViewController {
 		containerView.centerXAnchor.constraint(equalTo: titleView.centerXAnchor).isActive = true
 		containerView.centerYAnchor.constraint(equalTo: titleView.centerYAnchor).isActive = true
 		
+		// добавим клик к фотке для изменения ее
+		titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPhotoClick(sender:))))
+		titleView.isUserInteractionEnabled = true
 		
 		self.navigationItem.titleView = titleView
-		
 	}
-	
-	
+
+
+//	override var intrinsicContentSize: CGSize {
+//		return CGSize(width: 150, height: 36)
+//	}
+
 	
 	@objc private func onLogout(){
 		do {
@@ -151,6 +161,90 @@ class MessagesController: UITableViewController {
 
 
 
+
+
+/// в 11 иос не проходит тап по тайтлвью!!!!
+extension MessagesController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+	
+	
+	@objc internal func onPhotoClick(sender: UITapGestureRecognizer){
+		
+		let picker = UIImagePickerController()
+		
+		picker.delegate = self
+		picker.allowsEditing = true
+		
+		present(picker, animated: true, completion: nil)
+	}
+	
+	
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		var selectedImage:UIImage?
+		
+		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
+			selectedImage = editedImage
+		}
+		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
+			selectedImage = originalImage
+		}
+		
+		if let selectedImage = selectedImage {
+			profileImageView.image = selectedImage
+			saveProfileImage(imag: selectedImage)
+		}
+		dismiss(animated: true, completion: nil)
+	}
+	
+	
+	
+	
+	
+	/// сохраняем новую картику в БД, обновляем ссылку на нее в БД и здесь
+	internal func saveProfileImage(imag:UIImage){
+		
+		let oldLink = owner.profileImageUrl
+		
+		let uniqueImageName = UUID().uuidString // создает уникальное имя картинке
+		let storageRef = Storage.storage().reference().child("profile_images").child("\(uniqueImageName).jpg")
+		
+		// сохраняем картинку в хранилище
+		if let uploadData = UIImageJPEGRepresentation(imag, 0.5){
+			storageRef.putData(uploadData, metadata: nil, completion: {
+				(metadata, error) in
+				if let error = error {
+					print(error.localizedDescription)
+					return
+				}
+				// когда получаем метадату, даем запрос на получение ссылки на эту картинку (разработчкики Firebase 5 - дауны)
+				storageRef.downloadURL(completion: {
+					(url, errorFromGettinfPicLink) in
+					
+					if let errorFromGettinfPicLink = errorFromGettinfPicLink {
+						print(errorFromGettinfPicLink.localizedDescription)
+						return
+					}
+					// обновляем ссылку на скачивание здесь и в БД
+					self.owner.profileImageUrl = url!.absoluteString
+					
+					let ref = Database.database().reference(withPath: "users").child(self.uid).child("profileImageUrl")
+					ref.setValue(url!.absoluteString)
+					
+					// удаляем старую картинку
+					if oldLink != "none" {
+						let storageRef = Storage.storage().reference(forURL: oldLink!)
+						storageRef.delete(completion: nil)
+					}
+				})
+				print("удачно сохранили картинку")
+			})
+		}
+		
+		
+	}
+	
+	
+}
 
 
 

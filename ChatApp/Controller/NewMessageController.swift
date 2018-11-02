@@ -70,19 +70,32 @@ class NewMessageController: UITableViewController {
 		let user = users[indexPath.row]
 		cell.textLabel?.text = user.name
 		cell.detailTextLabel?.text = user.email
-		
-		// качаем картинку
-		if let profileImageUrl = user.profileImageUrl {
-			cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl)
+		cell.tag = indexPath.row // для идентификации ячейки в кложере
+
+		if let profileImageUrl = user.profileImageUrl{
+			// качаем картинку
+			cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
+				(image) in
+				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
+				// и обновить ее в главном потоке
+				DispatchQueue.main.async {
+					if cell.tag == indexPath.row{
+						cell.profileImageView.image = image
+					}
+				}
+			}
 		}
 		
 		return cell
 	}
 	
 	
+	
+	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 72.0
 	}
+	
 	
 	
 	
@@ -94,7 +107,6 @@ class NewMessageController: UITableViewController {
 
 // кастомизация стандартной ячейки таблицы (для того, чтоб иметь доступ к текстовому полю detailTextLabel)
 class UserCell: UITableViewCell {
-	
 	
 	// фотка по дефолту
 	public let profileImageView:UIImageView = {
@@ -129,6 +141,13 @@ class UserCell: UITableViewCell {
 		detailTextLabel?.frame = CGRect(x: 72, y: detailTextLabel!.frame.origin.y, width: detailTextLabel!.frame.width, height: detailTextLabel!.frame.height)
 	}
 	
+	
+	
+	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		profileImageView.image = nil
+	}
 	
 	
 	required init?(coder aDecoder: NSCoder) {
