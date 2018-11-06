@@ -15,6 +15,8 @@ class MessagesController: UITableViewController {
 	internal var owner:User!
 	internal var uid:String!
 	private var messages:[Message] = []
+	private let cell_id = "cell_id"
+	
 	
 	internal var profileImageView:UIImageView!
 
@@ -30,6 +32,8 @@ class MessagesController: UITableViewController {
 		
 		chekIfUserLoggedIn()
 		
+		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
+		
 		observeMessages()
 	}
 	
@@ -44,17 +48,48 @@ class MessagesController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell_id")
-		
+		let cell = tableView.dequeueReusableCell(withIdentifier: cell_id, for: indexPath) as! UserCell
 		let msg = messages[indexPath.row]
-		cell.textLabel?.text = msg.toID
+		
+		if let toID = msg.toID {
+			let ref = Database.database().reference().child("users").child(toID)
+			
+			ref.observeSingleEvent(of: .value, with: {
+				(snapshot:DataSnapshot) in
+				
+				if let dictionary = snapshot.value as? [String:AnyObject]{
+					// преобразовываем toID в реальное имя
+					cell.textLabel?.text = dictionary["name"] as? String
+					
+					// получаем картинку
+					cell.tag = indexPath.row // для идентификации ячейки в кложере
+					
+					if let profileImageUrl = dictionary["profileImageUrl"] as? String{
+						// качаем картинку
+						cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
+							(image) in
+							// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
+							// и обновить ее в главном потоке
+							DispatchQueue.main.async {
+								if cell.tag == indexPath.row{
+									cell.profileImageView.image = image
+								}
+							}
+						}
+					}
+				}
+			}, withCancel: nil)
+		}
 		cell.detailTextLabel?.text = msg.text
 		
+
 		return cell
 	}
 	
 	
-	
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return 72.0
+	}
 	
 	
 	
@@ -69,7 +104,6 @@ class MessagesController: UITableViewController {
 				// для отрисовки навбара нужны данные по юзеру
 				let message = Message()
 				message.setValuesForKeys(dictionary)
-				print(message.text!)
 				self.messages.append(message)
 			}
 			DispatchQueue.main.async {
