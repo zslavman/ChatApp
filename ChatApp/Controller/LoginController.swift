@@ -13,13 +13,12 @@ import Firebase
 let default_profile_image:String = "default_profile_image"
 
 
-class LoginController: UIViewController {
+class LoginController: UIViewController, UITextFieldDelegate {
 	
 	internal var messagesController:MessagesController?
 
 	public lazy var profileImageView: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
 		let imageView = UIImageView()
-//		imageView.image = UIImage(named: "chatApp_logo")
 		imageView.image = UIImage(named: default_profile_image)
 		imageView.contentMode = .scaleAspectFit
 		imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -76,6 +75,8 @@ class LoginController: UIViewController {
 		let tf = UITextField()
 		tf.placeholder = "Email"
 		tf.translatesAutoresizingMaskIntoConstraints = false
+		tf.keyboardType = .emailAddress
+		tf.text = "A24@gmail.com" // потом убрать!
 		return tf
 	}()
 	
@@ -92,6 +93,7 @@ class LoginController: UIViewController {
 		tf.placeholder = "Password"
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.isSecureTextEntry = true
+		tf.text = "111111" // потом убрать!
 		return tf
 	}()
 	
@@ -134,7 +136,13 @@ class LoginController: UIViewController {
 		setupProfileImageView()
 		setupSegmentedControl()
 		
-		switch_AvaLogo()
+		// изначально нужно загружать экран Логина а не Регистрации
+		loginSegmentedControl.selectedSegmentIndex = 0
+		onSegmentedClick()
+		
+		nameTF.delegate = self
+		emailTF.delegate = self
+		passTF.delegate = self
 	}
 
 
@@ -332,6 +340,10 @@ class LoginController: UIViewController {
 	
 	
 	
+	
+	
+	
+	
 	private var point = CGPoint.zero
 	
 	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -349,6 +361,11 @@ class LoginController: UIViewController {
 				point = .zero
 			}
 		}
+	}
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		view.endEditing(true)
+		return true
 	}
 	
 	

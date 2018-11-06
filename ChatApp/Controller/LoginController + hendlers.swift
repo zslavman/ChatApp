@@ -120,7 +120,7 @@ extension LoginController:UIImagePickerControllerDelegate, UINavigationControlle
 	
 	// сохраняем пользователя в базу данных (строковые данные)
 	private func registerUserIntoDB(uid:String, values:[String:AnyObject]){
-		let ref = Database.database().reference(fromURL: "https://chatapp-2222e.firebaseio.com/")
+		let ref = Database.database().reference()
 		let usersRef = ref.child("users").child(uid)
 		
 		usersRef.updateChildValues(values, withCompletionBlock: {

@@ -13,7 +13,7 @@ class NewMessageController: UITableViewController {
 
 	private var cellID = "cellID"
 	private var users = [User]()
-	
+	public var messagesController:MessagesController?
 	
 	
     override func viewDidLoad() {
@@ -35,6 +35,7 @@ class NewMessageController: UITableViewController {
 			
 			if let dict = snapshot.value as? [String:AnyObject]{
 				let user = User()
+				user.id = snapshot.key // это и есть юзерID
 				// крашанет если в классе не найдется переменных с именами ключей словаря
 				user.setValuesForKeys(dict)
 				self.users.append(user)
@@ -99,6 +100,15 @@ class NewMessageController: UITableViewController {
 	
 	
 	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		dismiss(animated: true) {
+			// дожидаемся окончания убивания этого контроллера и в контроллере-родителе запускаем ф-цию goToChat()
+			let user = self.users[indexPath.row]
+			self.messagesController?.goToChatWith(user: user)
+		}
+	}
+	
+	
 	
 }
 
@@ -131,7 +141,7 @@ class UserCell: UITableViewCell {
 	}
 	
 	
-	// фикс зазжания текста под картинку
+	// фикс заeзжания текста под картинку
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		

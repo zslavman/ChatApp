@@ -14,9 +14,12 @@ class MessagesController: UITableViewController {
 	
 	internal var owner:User!
 	internal var uid:String!
+	private var messages:[Message] = []
 	
 	internal var profileImageView:UIImageView!
 
+	
+	// при переходе на другие экраны и возврате сюда - этот метод не дергается!
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
@@ -26,11 +29,57 @@ class MessagesController: UITableViewController {
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage, style: .plain, target: self, action: #selector(onNewMessageClick))
 		
 		chekIfUserLoggedIn()
-		print("viewDidLoad === viewDidLoad")
+		
+		observeMessages()
 	}
 	
 
+	
+	
+	
+	
 
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return messages.count
+	}
+	
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell_id")
+		
+		let msg = messages[indexPath.row]
+		cell.textLabel?.text = msg.toID
+		cell.detailTextLabel?.text = msg.text
+		
+		return cell
+	}
+	
+	
+	
+	
+	
+	
+	
+	private func observeMessages(){
+		let ref = Database.database().reference().child("messages")
+		ref.observe(.childAdded, with: {
+			(snapshot:DataSnapshot) in
+
+			if let dictionary = snapshot.value as? [String:AnyObject] {
+				
+				// для отрисовки навбара нужны данные по юзеру
+				let message = Message()
+				message.setValuesForKeys(dictionary)
+				print(message.text!)
+				self.messages.append(message)
+			}
+			DispatchQueue.main.async {
+				self.tableView.reloadData()
+			}
+		}, withCancel: nil)
+	}
+	
+	
+	
 	
 	private func chekIfUserLoggedIn(){
 		// выходим, если не залогинены
@@ -97,7 +146,7 @@ class MessagesController: UITableViewController {
 		}
 		containerView.addSubview(profileImageView)
 		// добавим констраинты для фотки в контейнере
-		profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
+		profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
 		profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
 		profileImageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
 		profileImageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
@@ -150,15 +199,20 @@ class MessagesController: UITableViewController {
 	
 	@objc private func onNewMessageClick(){
 		let newMessContr = NewMessageController()
+		newMessContr.messagesController = self
 		let navContr = UINavigationController(rootViewController: newMessContr)
 		present(navContr, animated: true, completion: nil)
-		
-		
+//		navigationController?.pushViewController(newMessContr, animated: true)
 	}
 	
 	
-
-
+	@objc public func goToChatWith(user: User){
+		let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+		chatLogController.user = user
+		navigationController?.pushViewController(chatLogController, animated: true)
+	}
+	
+	
 }
 
 
@@ -167,7 +221,9 @@ class MessagesController: UITableViewController {
 
 
 
-/// в 11 иос не проходит тап по тайтлвью!!!!
+
+
+/// в 11 иос не проходит тап по тайтлвью потому что нужно правильно размещать слои !!!!
 extension MessagesController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	
