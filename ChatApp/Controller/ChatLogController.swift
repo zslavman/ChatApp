@@ -57,7 +57,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
 		
 		// линия-сепаратор
 		let sepLine = UIView()
-		sepLine.backgroundColor = #colorLiteral(red: 0.9117823243, green: 0.9118037224, blue: 0.9117922187, alpha: 1)
+		sepLine.backgroundColor = UIColor.lightGray
 		sepLine.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 1)
 		sepLine.translatesAutoresizingMaskIntoConstraints = false
 		containerView.addSubview(sepLine)
@@ -100,19 +100,36 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
 		// генерация псевдо-рандомных ключей сообщения
 		let childRef = ref.childByAutoId()
 		// https://chatapp-2222e.firebaseio.com/messages/-LQe7kjoAJkrVNzOjERM
-		print(childRef)
 		
 		let toID = user!.id!
-		let fromID = Auth.auth().currentUser?.uid
+		let fromID = Auth.auth().currentUser!.uid
 		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
 		
 		let values:[String:Any] = [
 			"text"		:inputTextField.text!,
 			"toID"		:toID,
-			"fromID"	:fromID!,
+			"fromID"	:fromID,
 			"timestamp"	:timestamp
 			]
-		childRef.updateChildValues(values)
+		
+		childRef.updateChildValues(values) {
+			(error:Error?, ref:DatabaseReference) in
+			if error != nil {
+				print(error?.localizedDescription ?? "*")
+				return
+			}
+			
+			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
+			let userMessagesRef = Database.database().reference().child("user-messages").child(fromID)
+			let messageID = childRef.key!
+			userMessagesRef.updateChildValues([messageID: 1])
+			
+			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
+			let recipientRef = Database.database().reference().child("user-messages").child(toID)
+			recipientRef.updateChildValues([messageID: 1])
+			
+		}
+		
 		
 		inputTextField.text = nil
 	}

@@ -65,7 +65,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
 	}()
 	private let nameSeparator:UIView = {
 		let separator = UIView()
-		separator.backgroundColor = #colorLiteral(red: 0.8738058928, green: 0.8818185396, blue: 0.8798114271, alpha: 1)
+		separator.backgroundColor = UIColor.lightGray
 		separator.translatesAutoresizingMaskIntoConstraints = false
 		return separator
 	}()
@@ -99,7 +99,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
 	
 	private let passSeparator:UIView = {
 		let separator = UIView()
-		separator.backgroundColor = #colorLiteral(red: 0.8738058928, green: 0.8818185396, blue: 0.8798114271, alpha: 1)
+		separator.backgroundColor = UIColor.lightGray
 		separator.translatesAutoresizingMaskIntoConstraints = false
 		return separator
 	}()

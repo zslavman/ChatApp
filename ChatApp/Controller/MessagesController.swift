@@ -14,7 +14,8 @@ class MessagesController: UITableViewController {
 	
 	internal var owner:User!
 	internal var uid:String!
-	private var messages:[Message] = []
+	private var messages:[Message] = [] 				// общий массив сообщений
+	private var messagesDict:[String: Message] = [:] 	// словарь сгруппированных сообщений
 	private let cell_id = "cell_id"
 	
 	
@@ -34,7 +35,6 @@ class MessagesController: UITableViewController {
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
 		
-		observeMessages()
 	}
 	
 
@@ -51,38 +51,9 @@ class MessagesController: UITableViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cell_id, for: indexPath) as! UserCell
 		let msg = messages[indexPath.row]
 		
-		if let toID = msg.toID {
-			let ref = Database.database().reference().child("users").child(toID)
-			
-			ref.observeSingleEvent(of: .value, with: {
-				(snapshot:DataSnapshot) in
-				
-				if let dictionary = snapshot.value as? [String:AnyObject]{
-					// преобразовываем toID в реальное имя
-					cell.textLabel?.text = dictionary["name"] as? String
-					
-					// получаем картинку
-					cell.tag = indexPath.row // для идентификации ячейки в кложере
-					
-					if let profileImageUrl = dictionary["profileImageUrl"] as? String{
-						// качаем картинку
-						cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
-							(image) in
-							// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
-							// и обновить ее в главном потоке
-							DispatchQueue.main.async {
-								if cell.tag == indexPath.row{
-									cell.profileImageView.image = image
-								}
-							}
-						}
-					}
-				}
-			}, withCancel: nil)
+		if msg.toID != nil {
+			cell.setupCell(msg: msg, indexPath: indexPath)
 		}
-		cell.detailTextLabel?.text = msg.text
-		
-
 		return cell
 	}
 	
@@ -90,6 +61,58 @@ class MessagesController: UITableViewController {
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 72.0
 	}
+	
+	
+	
+	
+	
+	
+	/// получаем сообщения с сервера, добавляя слушатель на новые
+	private func observeUserMessages(){
+		
+		guard let uid = Auth.auth().currentUser?.uid else { return }
+		
+		let ref = Database.database().reference().child("user-messages").child(uid)
+		ref.observe(.childAdded, with: {
+			(snapshot) in
+			
+			let messageID = snapshot.key
+			let messageRef = Database.database().reference().child("messages").child(messageID)
+			
+			messageRef.observeSingleEvent(of: .value, with: {
+				(snapshot) in
+				
+				if let dictionary = snapshot.value as? [String:AnyObject] {
+					
+					// для отрисовки навбара нужны данные по юзеру
+					let message = Message()
+					message.setValuesForKeys(dictionary)
+					self.messages.append(message)
+					
+					// заполняем словарь и меняем массив
+					if let toID = message.toID {
+						self.messagesDict[toID] = message
+						
+						self.messages = Array(self.messagesDict.values)
+						self.messages.sort(by: {
+							(message1, message2) -> Bool in
+							return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+						})
+					}
+					DispatchQueue.main.async {
+						self.tableView.reloadData()
+					}
+				}
+				
+				
+			}, withCancel: nil)
+			
+		}, withCancel: nil)
+	}
+	
+	
+	
+	
 	
 	
 	
@@ -105,10 +128,23 @@ class MessagesController: UITableViewController {
 				let message = Message()
 				message.setValuesForKeys(dictionary)
 				self.messages.append(message)
+				
+				// заполняем словарь и меняем массив
+				if let toID = message.toID {
+					self.messagesDict[toID] = message
+					
+					self.messages = Array(self.messagesDict.values)
+					self.messages.sort(by: {
+						(message1, message2) -> Bool in
+						return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+					})
+				}
+				DispatchQueue.main.async {
+					self.tableView.reloadData()
+				}
 			}
-			DispatchQueue.main.async {
-				self.tableView.reloadData()
-			}
+			
+
 		}, withCancel: nil)
 	}
 	
@@ -151,6 +187,13 @@ class MessagesController: UITableViewController {
 	
 	/// Отрисовка навбара с картинкой
 	internal func setupNavbarWithUser(user: User){
+		
+		// чистим данные, т.к. если перелогинится под другим юзером они остаются
+		messages.removeAll()
+		messagesDict.removeAll()
+		tableView.reloadData()
+		
+		observeUserMessages()
 		
 		// контейнер
 		let titleView = UIView()
