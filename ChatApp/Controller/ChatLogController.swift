@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 
 
+
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
 	
 	public var user:User? {
@@ -36,6 +37,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
+		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
+		
+		collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 58, right: 0) // вставляем поля чтоб чат не соприкосался сверху и снизу
+//		collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0) // и без этого скролится отлично!
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.backgroundColor = .white
 		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cell_ID)
@@ -43,6 +49,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		setupInputComponents()
 	}
 	
+	
+	/// переопеределяем констрайнты при каждом повороте экрана (на некоторых моделях телефонов если не сделать - будет залазить/вылазить справа весь контент скролвьюшки)
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		collectionView?.collectionViewLayout.invalidateLayout()
+		collectionView?.reloadData()
+	}
 	
 	
 	
@@ -54,11 +66,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
 		
-		cell.textView.text = messages[indexPath.row].text
+		let message = messages[indexPath.row]
+		cell.textView.text = message.text
 		
 		// изменим ширину фона сообщения
-		cell.bubbleWidthAnchor?.constant = 50
-		
+		let estWidth = estimatedFrameForText(text: message.text!).width + 32
+		cell.bubbleWidthAnchor?.constant = estWidth
+		print("estWidth = \(estWidth)")
 		
 		return cell
 	}
@@ -66,20 +80,19 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		var hei:CGFloat = 80
 		
-		// получаем ожидаемоую высоту
+		// получаем ожидаемую высоту
 		if let text = messages[indexPath.item].text {
 			hei = estimatedFrameForText(text: text).height + 20
 		}
-		
 		return CGSize(width: view.frame.width, height: hei)
 	}
 	
 	
 	
 	
-	
+	/// подсчет ожидаемых размеров текстового поля
 	private func estimatedFrameForText(text: String) -> CGRect{
-		let siz = CGSize(width: 200, height: 1000)
+		let siz = CGSize(width: UIScreen.main.bounds.width * 3/4, height: 1000)
 		let opt = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
 		
 		return NSString(string: text).boundingRect(with: siz, options: opt, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 16)], context: nil)
@@ -107,7 +120,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 				message.setValuesForKeys(dictionary)
 				
 				// т.к. мы получили все сообщения кому юзер отправлял, и кто ему отпралял, то фильтруем
-				if message.checkPartnerID() == self.user?.id{
+				if message.chatPartnerID() == self.user?.id{
 					self.messages.append(message)
 					
 					self.messages.sort(by: {
@@ -119,20 +132,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 						self.collectionView?.reloadData()
 					}
 				}
-				
-				// заполняем словарь и меняем массив
-//				if let toID = message.toID {
-//					self.messagesDict[toID] = message
-//
-//					self.messages = Array(self.messagesDict.values)
-//					self.messages.sort(by: {
-//						(message1, message2) -> Bool in
-//						return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
-//					})
-//				}
-				
-				
-				
+				// прокручиваем скролл вниз
+				self.collectionView?.scrollToLast()
 				
 			}, withCancel: nil)
 			
@@ -226,10 +227,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
 			let recipientRef = Database.database().reference().child("user-messages").child(toID)
 			recipientRef.updateChildValues([messageID: 1])
-			
 		}
-		
-		
 		inputTextField.text = nil
 	}
 	
@@ -246,7 +244,20 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 
 
 
-
+extension UICollectionView {
+	
+	func scrollToLast() {
+		guard numberOfSections > 0 else { return }
+		
+		let lastSection = numberOfSections - 1
+		
+		guard numberOfItems(inSection: lastSection) > 0 else { return }
+		
+		let lastItemIndexPath = IndexPath(item: numberOfItems(inSection: lastSection) - 1, section: lastSection)
+		
+		scrollToItem(at: lastItemIndexPath, at: .bottom, animated: false)
+	}
+}
 
 
 

@@ -108,8 +108,8 @@
 		566BEDA72186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
-				5639652B21924D1F00691334 /* View */,
 				5680E758218B52B500B9CC3B /* Helpers */,
+				5639652B21924D1F00691334 /* View */,
 				563D17862189E320000DFAD2 /* Model */,
 				566BEDBA2186FF940053F4A0 /* Controller */,
 				566BEDA82186F8D50053F4A0 /* AppDelegate.swift */,

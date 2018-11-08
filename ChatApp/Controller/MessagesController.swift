@@ -69,7 +69,7 @@ class MessagesController: UITableViewController {
 		
 		let messag = messages[indexPath.row]
 		
-		guard let chatPartnerID = messag.checkPartnerID() else { return } 				// достаем ID юзера (кому собираемсч писать)
+		guard let chatPartnerID = messag.chatPartnerID() else { return } 				// достаем ID юзера (кому собираемся писать)
 		let ref = Database.database().reference().child("users").child(chatPartnerID) 	// достаем ссылку на юзера
 		ref.observeSingleEvent(of: .value, with: { 										// получаем юзера из БД
 			(snapshot) in
@@ -109,8 +109,8 @@ class MessagesController: UITableViewController {
 					self.messages.append(message)
 					
 					// заполняем словарь и меняем массив
-					if let toID = message.toID {
-						self.messagesDict[toID] = message
+					if let chatPartner = message.chatPartnerID() {
+						self.messagesDict[chatPartner] = message
 						
 						self.messages = Array(self.messagesDict.values)
 						self.messages.sort(by: {

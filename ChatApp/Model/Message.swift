@@ -19,11 +19,10 @@ class Message: NSObject {
 	
 	
 	
-	public func checkPartnerID() -> String? {
-		
+	public func chatPartnerID() -> String? {
 		return fromID == Auth.auth().currentUser?.uid ? toID : fromID
-
 	}
+
 	
 	
 	

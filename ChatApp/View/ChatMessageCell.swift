@@ -24,6 +24,7 @@ class ChatMessageCell: UICollectionViewCell {
 		let bubble = UIView()
 		bubble.backgroundColor = UIColor(r: 0, g: 140, b: 250)
 		bubble.translatesAutoresizingMaskIntoConstraints = false
+		bubble.layer.cornerRadius = 12
 		return bubble
 	}()
 	
@@ -34,17 +35,21 @@ class ChatMessageCell: UICollectionViewCell {
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
+		
 		addSubview(bubbleView)
 		addSubview(textView)
 		
-		// констрейнты для фона сообщения
-		bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive 	= true
-		bubbleView.topAnchor.constraint(equalTo: self.topAnchor).isActive 		= true
 		
-		bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: 200)
+		
+		// констрейнты для фона сообщения
+		bubbleView.topAnchor.constraint(equalTo: self.topAnchor).isActive 						= true
+		bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive 	= true
+		bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive 				= true
+//		bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 3/4)
+		bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: 200) // тут не важно сколько, т.к. оно будет переопределяться
 		bubbleWidthAnchor?.isActive = true
 		
-		bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+//		print("widthAnchor = \(UIScreen.main.bounds.width * 3/4)")
 		
 		
 		// констрейнты для текста сообщения
@@ -52,9 +57,9 @@ class ChatMessageCell: UICollectionViewCell {
 		textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor).isActive 				= true
 		textView.topAnchor.constraint(equalTo: self.topAnchor).isActive 						= true
 		textView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive 					= true
-		
-		
 	}
+	
+	
 	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
