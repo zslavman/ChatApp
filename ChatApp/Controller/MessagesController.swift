@@ -64,6 +64,26 @@ class MessagesController: UITableViewController {
 	
 	
 	
+	/// при клике на диалог (юзера)
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		
+		let messag = messages[indexPath.row]
+		
+		guard let chatPartnerID = messag.checkPartnerID() else { return } 				// достаем ID юзера (кому собираемсч писать)
+		let ref = Database.database().reference().child("users").child(chatPartnerID) 	// достаем ссылку на юзера
+		ref.observeSingleEvent(of: .value, with: { 										// получаем юзера из БД
+			(snapshot) in
+			
+			guard let dict = snapshot.value as? [String: AnyObject] else { return }
+			
+			let user = User()
+			user.setValuesForKeys(dict)
+			user.id = chatPartnerID
+			self.goToChatWith(user: user)
+			
+		}, withCancel: nil)
+	}
+	
 	
 	
 	
@@ -76,8 +96,7 @@ class MessagesController: UITableViewController {
 		ref.observe(.childAdded, with: {
 			(snapshot) in
 			
-			let messageID = snapshot.key
-			let messageRef = Database.database().reference().child("messages").child(messageID)
+			let messageRef = Database.database().reference().child("messages").child(snapshot.key)
 			
 			messageRef.observeSingleEvent(of: .value, with: {
 				(snapshot) in

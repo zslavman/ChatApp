@@ -72,14 +72,7 @@ class UserCell: UITableViewCell {
 	/// настройка ячейки для MessagesController
 	public func setupCell(msg:Message, indexPath:IndexPath){
 		
-		var chatPartnerID:String = msg.fromID!
-		
-		// для отрисовки правильной картинки отправителя
-		if msg.fromID == Auth.auth().currentUser?.uid {
-			chatPartnerID = msg.toID!
-		}
-
-		let ref = Database.database().reference().child("users").child(chatPartnerID)
+		let ref = Database.database().reference().child("users").child(msg.checkPartnerID()!)
 		
 		ref.observeSingleEvent(of: .value, with: {
 			(snapshot:DataSnapshot) in

@@ -10,11 +10,12 @@ import UIKit
 import Firebase
 
 
-class ChatLogController: UICollectionViewController, UITextFieldDelegate {
+class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
 	
 	public var user:User? {
 		didSet{
 			navigationItem.title = user?.name
+			observeMessages()
 		}
 	}
 	
@@ -26,19 +27,117 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
 		return tf
 	}()
 	
+	private let cell_ID:String = "cell_ID"
+	private var messages:[Message] = []
+	
 	
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		collectionView?.alwaysBounceVertical = true
 		collectionView?.backgroundColor = .white
+		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cell_ID)
 		
 		setupInputComponents()
-		
 	}
 	
 	
+	
+	
+	
+	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		return messages.count
+	}
+	
+	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
+		
+		cell.textView.text = messages[indexPath.row].text
+		
+		// изменим ширину фона сообщения
+		cell.bubbleWidthAnchor?.constant = 50
+		
+		
+		return cell
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+		var hei:CGFloat = 80
+		
+		// получаем ожидаемоую высоту
+		if let text = messages[indexPath.item].text {
+			hei = estimatedFrameForText(text: text).height + 20
+		}
+		
+		return CGSize(width: view.frame.width, height: hei)
+	}
+	
+	
+	
+	
+	
+	private func estimatedFrameForText(text: String) -> CGRect{
+		let siz = CGSize(width: 200, height: 1000)
+		let opt = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+		
+		return NSString(string: text).boundingRect(with: siz, options: opt, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 16)], context: nil)
+	}
+	
+	
+	
+	
+	
+	private func observeMessages(){
+		
+		guard let uid = Auth.auth().currentUser?.uid else { return }
+		let userMessagesRef = Database.database().reference().child("user-messages").child(uid) // ссылка на список сообщений
+		userMessagesRef.observe(.childAdded, with: {
+			(snapshot) in
+			
+			let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
+			
+			messagesRef.observeSingleEvent(of: .value, with: {
+				(snapshot) in
+				
+				guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+					
+				let message = Message()
+				message.setValuesForKeys(dictionary)
+				
+				// т.к. мы получили все сообщения кому юзер отправлял, и кто ему отпралял, то фильтруем
+				if message.checkPartnerID() == self.user?.id{
+					self.messages.append(message)
+					
+					self.messages.sort(by: {
+						(message1, message2) -> Bool in
+						return (message1.timestamp?.intValue)! < (message2.timestamp?.intValue)!
+					})
+					
+					DispatchQueue.main.async {
+						self.collectionView?.reloadData()
+					}
+				}
+				
+				// заполняем словарь и меняем массив
+//				if let toID = message.toID {
+//					self.messagesDict[toID] = message
+//
+//					self.messages = Array(self.messagesDict.values)
+//					self.messages.sort(by: {
+//						(message1, message2) -> Bool in
+//						return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+//					})
+//				}
+				
+				
+				
+				
+			}, withCancel: nil)
+			
+		}, withCancel: nil)
+	}
 	
 	
 	
@@ -47,7 +146,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate {
 		
 		// контейнер + фон
 		let containerView = UIView()
-//		containerView.backgroundColor = .red
+		containerView.backgroundColor = .white
 		containerView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(containerView)
 		containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
