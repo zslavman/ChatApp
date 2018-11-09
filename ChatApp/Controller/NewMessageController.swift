@@ -18,12 +18,14 @@ class NewMessageController: UITableViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		navigationItem.title = "Все юзеры"
 
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(onCancelClick))
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
 		fetchUsers()
-		
-    }
+	}
+	
 
 	
 

@@ -19,6 +19,14 @@ class MessagesController: UITableViewController {
 	private let cell_id = "cell_id"
 	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
 	
+	private var refUsers 		= Database.database().reference().child("users")
+	private var refMessages 	= Database.database().reference().child("messages")
+	private var refUserMessages:DatabaseReference! // ссылка, у которой вконце будет приписан изменяющийся uid
+	
+	
+	private let refUserMessages_original = Database.database().reference().child("user-messages")// начало ссылки для refUserMessages
+	
+	
 	
 	
 	internal var profileImageView:UIImageView!
@@ -39,7 +47,16 @@ class MessagesController: UITableViewController {
 		
 	}
 	
+	
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		// чтоб до viewDidLoad не отображалась дефолтная таблица
+		tableView.tableFooterView = UIView(frame: CGRect.zero)
+		tableView.backgroundColor = UIColor.white
+	}
+		
 	
 	
 	
@@ -71,9 +88,10 @@ class MessagesController: UITableViewController {
 		
 		let messag = messages[indexPath.row]
 		
-		guard let chatPartnerID = messag.chatPartnerID() else { return } 				// достаем ID юзера (кому собираемся писать)
-		let ref = Database.database().reference().child("users").child(chatPartnerID) 	// достаем ссылку на юзера
-		ref.observeSingleEvent(of: .value, with: { 										// получаем юзера из БД
+		guard let chatPartnerID = messag.chatPartnerID() else { return } 		// достаем ID юзера (кому собираемся писать)
+		
+		// достаем ссылку на юзера
+		refUsers.child(chatPartnerID).observeSingleEvent(of: .value, with: {	// получаем юзера из БД
 			(snapshot) in
 			
 			guard let dict = snapshot.value as? [String: AnyObject] else { return }
@@ -81,6 +99,7 @@ class MessagesController: UITableViewController {
 			let user = User()
 			user.setValuesForKeys(dict)
 			user.id = chatPartnerID
+			
 			self.goToChatWith(user: user)
 			
 		}, withCancel: nil)
@@ -92,15 +111,14 @@ class MessagesController: UITableViewController {
 	/// получаем сообщения с сервера, добавляя слушатель на новые
 	private func observeUserMessages(){
 		
-		guard let uid = Auth.auth().currentUser?.uid else { return }
+		if uid == nil { return }
 		
-		let ref = Database.database().reference().child("user-messages").child(uid)
-		ref.observe(.childAdded, with: {
+		refUserMessages = refUserMessages_original.child(uid)
+		
+		refUserMessages.observe(.childAdded, with: {
 			(snapshot) in
-			
-			let messageRef = Database.database().reference().child("messages").child(snapshot.key)
-			
-			messageRef.observeSingleEvent(of: .value, with: {
+
+			self.refMessages.child(snapshot.key).observeSingleEvent(of: .value, with: {
 				(snapshot) in
 				
 				if let dictionary = snapshot.value as? [String:AnyObject] {
@@ -161,7 +179,7 @@ class MessagesController: UITableViewController {
 		
 		guard let uid = Auth.auth().currentUser?.uid else {	return } // проверка если user = nil
 		self.uid = uid
-		Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value) {
+		refUsers.child(uid).observeSingleEvent(of: .value) {
 			(snapshot) in
 			
 			if let dictionary = snapshot.value as? [String:AnyObject] {
@@ -247,6 +265,11 @@ class MessagesController: UITableViewController {
 
 	
 	@objc private func onLogout(){
+		
+		refUsers.removeAllObservers()
+		refUserMessages.removeAllObservers()
+		refMessages.removeAllObservers()
+		
 		do {
 			try Auth.auth().signOut()
 		}

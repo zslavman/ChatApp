@@ -21,6 +21,7 @@ class ChatMessageCell: UICollectionViewCell {
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.backgroundColor = .clear
 		label.textColor = .white
+		label.isEditable = false // после установки canBecomeFirstResponder в ChatLogController это поле стает редактируемым
 		return label
 	}()
 	
