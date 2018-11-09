@@ -38,8 +38,6 @@ extension UIImageView {
 			return
 		}
 		
-//		self.image = nil // для удаления предыдущей картинки в ячейке
-		
 		// проверяем нет ли запрашиваемой картинки в кэше
 		if let cachedImage = imageCache.object(forKey: urlString as NSString) {
 			setImageForUIView(cachedImage)

@@ -10,6 +10,10 @@ import UIKit
 
 class ChatMessageCell: UICollectionViewCell {
 	
+	
+	public static let blueColor = UIColor(r: 0, g: 140, b: 250)
+	public static let grayColor = UIColor(r: 220, g: 220, b: 220)
+	
 	public let textView: UITextView = {
 		let label = UITextView()
 		label.text = "Опять три рубляя!!"
@@ -20,36 +24,53 @@ class ChatMessageCell: UICollectionViewCell {
 		return label
 	}()
 	
-	private let bubbleView: UIView = {
+	public let bubbleView: UIView = {
 		let bubble = UIView()
-		bubble.backgroundColor = UIColor(r: 0, g: 140, b: 250)
+		bubble.backgroundColor = blueColor
 		bubble.translatesAutoresizingMaskIntoConstraints = false
 		bubble.layer.cornerRadius = 12
 		return bubble
 	}()
 	
 	public var bubbleWidthAnchor: NSLayoutConstraint?
+	public var bubbleRightAnchor: NSLayoutConstraint?
+	public var bubbleLeftAnchor: NSLayoutConstraint?
+	
+	public let profileImageView: UIImageView = {
+		let iView = UIImageView()
+		iView.image = UIImage(named: "default_profile_image")
+		iView.translatesAutoresizingMaskIntoConstraints = false
+		iView.contentMode = .scaleAspectFill
+		iView.layer.cornerRadius = 16
+		iView.clipsToBounds = true
+		return iView
+	}()
+	
+	
 	
 	
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
-		
 		addSubview(bubbleView)
 		addSubview(textView)
+		addSubview(profileImageView)
 		
-		
+		profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive 	= true
+		profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10).isActive = true
+		profileImageView.widthAnchor.constraint(equalToConstant: 32).isActive 					= true
+		profileImageView.heightAnchor.constraint(equalToConstant: 32).isActive 					= true
 		
 		// констрейнты для фона сообщения
 		bubbleView.topAnchor.constraint(equalTo: self.topAnchor).isActive 						= true
-		bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive 	= true
 		bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive 				= true
-//		bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.height * 3/4)
-		bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: 200) // тут не важно сколько, т.к. оно будет переопределяться
+		bubbleLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8)
+		bubbleRightAnchor = bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10)
+		bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: 200) // тут не важно, т.к. будет переопределяться
+		bubbleLeftAnchor?.isActive = false // отключена по дефолту
+		bubbleRightAnchor?.isActive = true
 		bubbleWidthAnchor?.isActive = true
-		
-//		print("widthAnchor = \(UIScreen.main.bounds.width * 3/4)")
 		
 		
 		// констрейнты для текста сообщения

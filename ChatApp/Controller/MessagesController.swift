@@ -17,6 +17,8 @@ class MessagesController: UITableViewController {
 	private var messages:[Message] = [] 				// общий массив сообщений
 	private var messagesDict:[String: Message] = [:] 	// словарь сгруппированных сообщений
 	private let cell_id = "cell_id"
+	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
+	
 	
 	
 	internal var profileImageView:UIImageView!
@@ -118,54 +120,25 @@ class MessagesController: UITableViewController {
 							return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 						})
 					}
-					DispatchQueue.main.async {
-						self.tableView.reloadData()
-					}
+					self.timer?.invalidate()
+					self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
 				}
-				
-				
 			}, withCancel: nil)
-			
 		}, withCancel: nil)
 	}
 	
 	
 	
 	
-	
-	
-	
-	
-	private func observeMessages(){
-		let ref = Database.database().reference().child("messages")
-		ref.observe(.childAdded, with: {
-			(snapshot:DataSnapshot) in
-
-			if let dictionary = snapshot.value as? [String:AnyObject] {
-				
-				// для отрисовки навбара нужны данные по юзеру
-				let message = Message()
-				message.setValuesForKeys(dictionary)
-				self.messages.append(message)
-				
-				// заполняем словарь и меняем массив
-				if let toID = message.toID {
-					self.messagesDict[toID] = message
-					
-					self.messages = Array(self.messagesDict.values)
-					self.messages.sort(by: {
-						(message1, message2) -> Bool in
-						return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
-					})
-				}
-				DispatchQueue.main.async {
-					self.tableView.reloadData()
-				}
-			}
-			
-
-		}, withCancel: nil)
+	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
+	/// (без этого таблица перезагружается десятки раз)
+	@objc private func delayedRelodTable(){
+		DispatchQueue.main.async {
+			self.tableView.reloadData()
+		}
 	}
+	
+	
 	
 	
 	

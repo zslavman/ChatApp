@@ -14,7 +14,7 @@ import Firebase
 class UserCell: UITableViewCell {
 	
 
-	// фотка по дефолту
+	// дефолтная фотка
 	public let profileImageView:UIImageView = {
 		let imageView = UIImageView()
 		imageView.contentMode = .scaleAspectFit
@@ -27,7 +27,6 @@ class UserCell: UITableViewCell {
 	// тайм-лейбл
 	private let timeLabel:UILabel = {
 		let label = UILabel()
-//		label.text = "HH:MM:SS"
 		label.font = UIFont.systemFont(ofSize: 12)
 		label.textColor = UIColor.lightGray
 		label.textAlignment = .right
@@ -39,6 +38,8 @@ class UserCell: UITableViewCell {
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+		
+		detailTextLabel?.textColor = .gray
 		
 		addSubview(profileImageView)
 		addSubview(timeLabel)
@@ -52,12 +53,11 @@ class UserCell: UITableViewCell {
 		timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive 	= true
 		timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 22).isActive 			= true
 		timeLabel.widthAnchor.constraint(equalToConstant: 70).isActive 							= true
-//		timeLabel.heightAnchor.constraint(equalTo: (textLabel?.heightAnchor)!).isActive 		= true
 	}
 	
 	
 	
-	// фикс заeзжания текста под картинку
+	// фикс заeзжания текста под фотку профиля
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		

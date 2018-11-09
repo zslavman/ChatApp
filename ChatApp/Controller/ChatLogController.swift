@@ -69,10 +69,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		let message = messages[indexPath.row]
 		cell.textView.text = message.text
 		
-		// изменим ширину фона сообщения
-		let estWidth = estimatedFrameForText(text: message.text!).width + 32
-		cell.bubbleWidthAnchor?.constant = estWidth
-		print("estWidth = \(estWidth)")
+		setupCell(cell: cell, message: message)
 		
 		return cell
 	}
@@ -85,6 +82,38 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			hei = estimatedFrameForText(text: text).height + 20
 		}
 		return CGSize(width: view.frame.width, height: hei)
+		
+	}
+	
+	
+	
+	
+	private func setupCell(cell: ChatMessageCell, message: Message){
+		// определяем какием цветом будет фон сообщения
+		// голубым (свои)
+		if message.fromID == Auth.auth().currentUser?.uid {
+			cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
+			cell.textView.textColor = .white
+			cell.profileImageView.isHidden = true
+			cell.bubbleLeftAnchor?.isActive = false
+			cell.bubbleRightAnchor?.isActive = true
+		}
+		// серым (собеседника)
+		else {
+			cell.bubbleView.backgroundColor = ChatMessageCell.grayColor
+			cell.textView.textColor = .black
+			cell.profileImageView.isHidden = false
+			
+			if let profileImageUrl = user?.profileImageUrl {
+				cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
+			}
+			cell.bubbleLeftAnchor?.isActive = true
+			cell.bubbleRightAnchor?.isActive = false
+		}
+		
+		// изменим ширину фона сообщения
+		let estWidth = estimatedFrameForText(text: message.text!).width + 32
+		cell.bubbleWidthAnchor?.constant = estWidth
 	}
 	
 	
@@ -92,7 +121,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	/// подсчет ожидаемых размеров текстового поля
 	private func estimatedFrameForText(text: String) -> CGRect{
-		let siz = CGSize(width: UIScreen.main.bounds.width * 3/4, height: 1000)
+		let siz = CGSize(width: UIScreen.main.bounds.width * 2/3, height: .infinity)
 		let opt = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
 		
 		return NSString(string: text).boundingRect(with: siz, options: opt, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 16)], context: nil)
@@ -130,10 +159,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 					
 					DispatchQueue.main.async {
 						self.collectionView?.reloadData()
+						// прокручиваем скролл вниз
+						self.collectionView?.scrollToLast()
 					}
 				}
-				// прокручиваем скролл вниз
-				self.collectionView?.scrollToLast()
 				
 			}, withCancel: nil)
 			
@@ -255,7 +284,7 @@ extension UICollectionView {
 		
 		let lastItemIndexPath = IndexPath(item: numberOfItems(inSection: lastSection) - 1, section: lastSection)
 		
-		scrollToItem(at: lastItemIndexPath, at: .bottom, animated: false)
+		scrollToItem(at: lastItemIndexPath, at: .bottom, animated: true)
 	}
 }
 
