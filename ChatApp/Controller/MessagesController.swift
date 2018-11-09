@@ -117,33 +117,39 @@ class MessagesController: UITableViewController {
 		
 		refUserMessages.observe(.childAdded, with: {
 			(snapshot) in
-
-			self.refMessages.child(snapshot.key).observeSingleEvent(of: .value, with: {
+			
+			let userID = snapshot.key
+			self.refUserMessages = self.refUserMessages_original.child(self.uid).child(userID)
+			self.refUserMessages.observe(.childAdded, with: {
 				(snapshot) in
 				
-				if let dictionary = snapshot.value as? [String:AnyObject] {
+				let messageID = snapshot.key
+				
+				self.refMessages.child(messageID).observeSingleEvent(of: .value, with: {
+					(snapshot) in
 					
-					// для отрисовки навбара нужны данные по юзеру
-					let message = Message()
-					message.setValuesForKeys(dictionary)
-					self.messages.append(message)
-					
-					// заполняем словарь и меняем массив
-					if let chatPartner = message.chatPartnerID() {
-						self.messagesDict[chatPartner] = message
+					if let dictionary = snapshot.value as? [String:AnyObject] {
 						
-						self.messages = Array(self.messagesDict.values)
-						self.messages.sort(by: {
-							(message1, message2) -> Bool in
-							return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
-						})
+						// для отрисовки навбара нужны данные по юзеру
+						let message = Message()
+						message.setValuesForKeys(dictionary)
+						self.messages.append(message)
+						
+						// заполняем словарь и меняем массив
+						if let chatPartner = message.chatPartnerID() {
+							self.messagesDict[chatPartner] = message
+						}
+						self.attemptReloadofTable()
 					}
-					self.timer?.invalidate()
-					self.timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
-				}
+				}, withCancel: nil)
+				
 			}, withCancel: nil)
+			
 		}, withCancel: nil)
 	}
+	
+	
+	
 	
 	
 	
@@ -151,11 +157,20 @@ class MessagesController: UITableViewController {
 	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
 	/// (без этого таблица перезагружается десятки раз)
 	@objc private func delayedRelodTable(){
+		messages = Array(self.messagesDict.values)
+		messages.sort(by: {
+			(message1, message2) -> Bool in
+			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+		})
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
 		}
 	}
-	
+	/// попытка перегрузить таблицу
+	private func attemptReloadofTable(){
+		timer?.invalidate()
+		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
+	}
 	
 	
 	

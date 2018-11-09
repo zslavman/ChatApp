@@ -212,8 +212,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	private func observeMessages(){
 		
-		guard let uid = Auth.auth().currentUser?.uid else { return }
-		let userMessagesRef = Database.database().reference().child("user-messages").child(uid) // ссылка на список сообщений
+		guard let uid = Auth.auth().currentUser?.uid, let toID = user?.id else { return }
+		
+		let userMessagesRef = Database.database().reference().child("user-messages").child(uid).child(toID) // ссылка на список сообщений
 		userMessagesRef.observe(.childAdded, with: {
 			(snapshot) in
 			
@@ -227,20 +228,18 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 				let message = Message()
 				message.setValuesForKeys(dictionary)
 				
-				// т.к. мы получили все сообщения кому юзер отправлял, и кто ему отпралял, то фильтруем
-				if message.chatPartnerID() == self.user?.id{
-					self.messages.append(message)
-					
-					self.messages.sort(by: {
-						(message1, message2) -> Bool in
-						return (message1.timestamp?.intValue)! < (message2.timestamp?.intValue)!
-					})
-					
-					DispatchQueue.main.async {
-						self.collectionView?.reloadData()
-						// прокручиваем скролл вниз
-						self.collectionView?.scrollToLast()
-					}
+				self.messages.append(message)
+				
+				// нужна ли сортировка????
+				self.messages.sort(by: {
+					(message1, message2) -> Bool in
+					return (message1.timestamp?.intValue)! < (message2.timestamp?.intValue)!
+				})
+				
+				DispatchQueue.main.async {
+					self.collectionView?.reloadData()
+					// прокручиваем скролл вниз
+					self.collectionView?.scrollToLast()
 				}
 				
 			}, withCancel: nil)
@@ -281,13 +280,15 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 				return
 			}
 			
+			let messRef = Database.database().reference().child("user-messages")
+			
 			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
-			let userMessagesRef = Database.database().reference().child("user-messages").child(fromID)
+			let senderRef = messRef.child(fromID).child(toID)
 			let messageID = childRef.key!
-			userMessagesRef.updateChildValues([messageID: 1])
+			senderRef.updateChildValues([messageID: 1])
 			
 			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
-			let recipientRef = Database.database().reference().child("user-messages").child(toID)
+			let recipientRef = messRef.child(toID).child(fromID)
 			recipientRef.updateChildValues([messageID: 1])
 		}
 		inputTextField.text = nil
