@@ -22,7 +22,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	private lazy var inputTextField: UITextField = {
 		let tf = UITextField()
-		tf.placeholder = "Enter message..."
+		tf.placeholder = "Введите текст..."
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.delegate = self
 		return tf
@@ -56,7 +56,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		
 		// кнопка
 		let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
-		sendButton.setTitle("Send", for: UIControlState.normal)
+		sendButton.setTitle("Отправ.", for: UIControlState.normal)
 		sendButton.translatesAutoresizingMaskIntoConstraints = false
 		sendButton.addTarget(self, action: #selector(onSendClick), for: UIControlEvents.touchUpInside)
 		containerView.addSubview(sendButton)
@@ -157,7 +157,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		
 		// получаем ожидаемую высоту
 		if let text = messages[indexPath.item].text {
-			hei = estimatedFrameForText(text: text).height + 20
+			hei = estimatedFrameForText(text: text).height + 20 + 10
 		}
 		return CGSize(width: UIScreen.main.bounds.width, height: hei)
 		

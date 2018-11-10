@@ -55,7 +55,8 @@ class ChatMessageCell: UICollectionViewCell {
 		label.textAlignment = .right
 		label.font = UIFont.systemFont(ofSize: 10)
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.backgroundColor = .red
+//		label.backgroundColor = UIColor.red.withAlphaComponent(0.5)
+		label.backgroundColor = UIColor.clear
 		label.textColor = grayTextColor
 		label.isEditable = false
 		return label
@@ -69,7 +70,7 @@ class ChatMessageCell: UICollectionViewCell {
 		
 		addSubview(bubbleView)
 		addSubview(textView)
-//		addSubview(sendTime_TF)
+		addSubview(sendTime_TF)
 		addSubview(profileImageView)
 		
 		// для фото собеседника
@@ -89,14 +90,14 @@ class ChatMessageCell: UICollectionViewCell {
 		bubbleWidthAnchor?.isActive = true
 		
 		// для времени отправки
-//		sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -1).isActive 	= true
-//		sendTime_TF.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -1).isActive = true
-//		sendTime_TF.widthAnchor.constraint(equalToConstant: 40).isActive 						= true
-//		sendTime_TF.heightAnchor.constraint(equalToConstant: 20).isActive 						= true
+		sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -8).isActive = true
+		sendTime_TF.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -15).isActive = true
+		sendTime_TF.widthAnchor.constraint(equalToConstant: 80).isActive 						= true
+		sendTime_TF.heightAnchor.constraint(equalToConstant: 20).isActive 						= true
 		
 		// констрейнты для текста сообщения
 		textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8).isActive 	= true
-		textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -20).isActive = true
+		textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor).isActive 				= true
 		textView.topAnchor.constraint(equalTo: self.topAnchor).isActive 						= true
 		textView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive 					= true
 	}
@@ -112,10 +113,7 @@ class ChatMessageCell: UICollectionViewCell {
 	public func setupCell(linkToParent:ChatLogController, message:Message){
 		
 		textView.text = message.text
-//		sendTime_TF.text = convertTimeStamp(seconds: message.timestamp as! TimeInterval)
-		// изменим ширину фона сообщения
-		let estWidth = linkToParent.estimatedFrameForText(text: message.text!).width + 32
-		bubbleWidthAnchor?.constant = estWidth
+		sendTime_TF.text = UserCell.convertTimeStamp(seconds: message.timestamp as! TimeInterval, shouldReturn: false)
 		
 		// определяем какием цветом будет фон сообщения
 		// голубым (свои)
@@ -136,17 +134,14 @@ class ChatMessageCell: UICollectionViewCell {
 			bubbleLeftAnchor?.isActive = true
 			bubbleRightAnchor?.isActive = false
 		}
-	}
-	
-	
-	
-	private func convertTimeStamp(seconds: TimeInterval) -> String{
-		let convertedDate = Date(timeIntervalSince1970: seconds)
-		let dateFormater = DateFormatter()
-		dateFormater.dateFormat = "HH:mm"
 		
-		return dateFormater.string(from: convertedDate)
+		// изменим ширину фона сообщения
+		let estWidth = linkToParent.estimatedFrameForText(text: message.text!).width + 30
+		bubbleWidthAnchor?.constant = estWidth
 	}
+	
+	
+	
 	
 	
 	

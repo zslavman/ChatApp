@@ -103,7 +103,7 @@ class UserCell: UITableViewCell {
 		detailTextLabel?.text = msg.text
 		
 		if let seconds = msg.timestamp?.doubleValue{
-			timeLabel.text = UserCell.timesAgo(seconds: seconds)
+			timeLabel.text = UserCell.convertTimeStamp(seconds: seconds, shouldReturn: true)
 		}
 		
 	}
@@ -119,34 +119,37 @@ class UserCell: UITableViewCell {
 	
 	
 	/// Возвращает время или кол-во прошедшено времени (в разных форматах) относительно текущего времени
-	/// - Parameter seconds: кол-во секунд прошедшее с 1970г
-	public static func timesAgo(seconds:TimeInterval) -> String{
+	/// - Parameters:
+	///   - seconds: кол-во секунд прошедшее с 1970г
+	///   - shouldReturn: нужно ли делать перенос на след. строку
+	public static func convertTimeStamp(seconds:TimeInterval, shouldReturn:Bool) -> String{
 		
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
-		var returned:String = ""
+		let caretSymbol:String = shouldReturn ? "\n" : " "
 		
-		// сегодня
+		dateFormater.dateFormat = "HH:mm"
+		let HH_mm = dateFormater.string(from: convertedDate)
+		
+		// сегодня (12:54)
 		if Calendar.current.isDateInToday(convertedDate){
-			dateFormater.dateFormat = "HH:mm:ss"
-			returned = dateFormater.string(from: convertedDate)
+			return HH_mm
 		}
-		// вчера
+		// вчера (вчера 18:36)
 		else if Calendar.current.isDateInYesterday(convertedDate){
-			dateFormater.dateFormat = "HH:mm"
-			returned = "вчера \n" + dateFormater.string(from: convertedDate)
+			return "вчера" + caretSymbol + HH_mm
 		}
-		// на этой неделе
-		else if seconds + Double(604800) <= NSDate().timeIntervalSince1970 {
-			returned = dateFormater.weekdaySymbols[Calendar.current.component(.weekday, from: convertedDate)]
+		// на этой неделе (Fri, 20:54)
+		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
+			let weekDay = dateFormater.shortWeekdaySymbols[Calendar.current.component(.weekday, from: convertedDate)]
+			return weekDay + caretSymbol + HH_mm
 		}
-		// более недели назад
+		// более недели назад (03 Oct, 12:47)
 		else {
-			dateFormater.dateFormat = "dd:MM:yy"
-			returned = dateFormater.string(from: convertedDate)
+			dateFormater.dateFormat = "dd MMM"
+			let part1 = dateFormater.string(from: convertedDate)
+			return part1 + caretSymbol + HH_mm
 		}
-		
-		return returned
 	}
 	
 	

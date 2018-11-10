@@ -21,7 +21,7 @@ class NewMessageController: UITableViewController {
 		
 		navigationItem.title = "Все юзеры"
 
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(onCancelClick))
+		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
 		fetchUsers()
 	}
