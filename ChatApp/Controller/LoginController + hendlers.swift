@@ -73,8 +73,9 @@ extension LoginController:UIImagePickerControllerDelegate, UINavigationControlle
 			
 			// дефолтный словарь для сохранения в БД
 			var values = [
-				"name"			: name,
-				"email"			: email,
+				"name"			 : name,
+				"email"			 : email,
+				"id"			 : user.uid,
 				"profileImageUrl": "none"
 			]
 			// safety unwrapping image

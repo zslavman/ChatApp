@@ -37,7 +37,7 @@ class NewMessageController: UITableViewController {
 			
 			if let dict = snapshot.value as? [String:AnyObject]{
 				let user = User()
-				user.id = snapshot.key // это и есть юзерID
+//				user.id = snapshot.key // это и есть юзерID
 				// крашанет если в классе не найдется переменных с именами ключей словаря
 				user.setValuesForKeys(dict)
 				self.users.append(user)

@@ -145,9 +145,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
 		
-		let message = messages[indexPath.row]
-		cell.textView.text = message.text
-		setupCell(cell: cell, message: message)
+		let message = messages[indexPath.item]
+		cell.setupCell(linkToParent: self, message: message)
 		
 		return cell
 	}
@@ -167,39 +166,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
-	private func setupCell(cell: ChatMessageCell, message: Message){
-		// определяем какием цветом будет фон сообщения
-		// голубым (свои)
-		if message.fromID == Auth.auth().currentUser?.uid {
-			cell.bubbleView.backgroundColor = ChatMessageCell.blueColor
-			cell.textView.textColor = .white
-			cell.profileImageView.isHidden = true
-			cell.bubbleLeftAnchor?.isActive = false
-			cell.bubbleRightAnchor?.isActive = true
-		}
-		// серым (собеседника)
-		else {
-			cell.bubbleView.backgroundColor = ChatMessageCell.grayColor
-			cell.textView.textColor = .black
-			cell.profileImageView.isHidden = false
-			
-			if let profileImageUrl = user?.profileImageUrl {
-				cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
-			}
-			cell.bubbleLeftAnchor?.isActive = true
-			cell.bubbleRightAnchor?.isActive = false
-		}
-		
-		// изменим ширину фона сообщения
-		let estWidth = estimatedFrameForText(text: message.text!).width + 32
-		cell.bubbleWidthAnchor?.constant = estWidth
-	}
-	
 	
 	
 	
 	/// подсчет ожидаемых размеров текстового поля
-	private func estimatedFrameForText(text: String) -> CGRect{
+	public func estimatedFrameForText(text: String) -> CGRect{
 		let siz = CGSize(width: UIScreen.main.bounds.width * 2/3, height: .infinity)
 		let opt = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
 		
@@ -304,6 +275,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
+
 	
 	//	@objc private func keyboardWillShow(notif: Notification){
 	//		if let keyboardFrame = (notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{

@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import Firebase
 
 class ChatMessageCell: UICollectionViewCell {
 	
 	
-	public static let blueColor = UIColor(r: 0, g: 140, b: 250)
-	public static let grayColor = UIColor(r: 220, g: 220, b: 220)
+	public static let blueColor = UIColor(r: 215, g: 235, b: 255)
+	public static let grayColor = UIColor(r: 239, g: 239, b: 238)
+	public static let grayTextColor = UIColor(r: 127, g: 138, b: 150)
 	
 	public let textView: UITextView = {
 		let label = UITextView()
@@ -20,7 +22,7 @@ class ChatMessageCell: UICollectionViewCell {
 		label.font = UIFont.systemFont(ofSize: 16)
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.backgroundColor = .clear
-		label.textColor = .white
+//		label.textColor = .white
 		label.isEditable = false // после установки canBecomeFirstResponder в ChatLogController это поле стает редактируемым
 		return label
 	}()
@@ -47,6 +49,17 @@ class ChatMessageCell: UICollectionViewCell {
 		return iView
 	}()
 	
+	public let sendTime_TF:UITextView = {
+		let label = UITextView()
+		label.text = "18:59"
+		label.textAlignment = .right
+		label.font = UIFont.systemFont(ofSize: 10)
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.backgroundColor = .red
+		label.textColor = grayTextColor
+		label.isEditable = false
+		return label
+	}()
 	
 	
 	
@@ -56,8 +69,10 @@ class ChatMessageCell: UICollectionViewCell {
 		
 		addSubview(bubbleView)
 		addSubview(textView)
+//		addSubview(sendTime_TF)
 		addSubview(profileImageView)
 		
+		// для фото собеседника
 		profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive 	= true
 		profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10).isActive = true
 		profileImageView.widthAnchor.constraint(equalToConstant: 32).isActive 					= true
@@ -73,10 +88,15 @@ class ChatMessageCell: UICollectionViewCell {
 		bubbleRightAnchor?.isActive = true
 		bubbleWidthAnchor?.isActive = true
 		
+		// для времени отправки
+//		sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -1).isActive 	= true
+//		sendTime_TF.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -1).isActive = true
+//		sendTime_TF.widthAnchor.constraint(equalToConstant: 40).isActive 						= true
+//		sendTime_TF.heightAnchor.constraint(equalToConstant: 20).isActive 						= true
 		
 		// констрейнты для текста сообщения
 		textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8).isActive 	= true
-		textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor).isActive 				= true
+		textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -20).isActive = true
 		textView.topAnchor.constraint(equalTo: self.topAnchor).isActive 						= true
 		textView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive 					= true
 	}
@@ -86,6 +106,48 @@ class ChatMessageCell: UICollectionViewCell {
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
+	
+	
+	
+	public func setupCell(linkToParent:ChatLogController, message:Message){
+		
+		textView.text = message.text
+//		sendTime_TF.text = convertTimeStamp(seconds: message.timestamp as! TimeInterval)
+		// изменим ширину фона сообщения
+		let estWidth = linkToParent.estimatedFrameForText(text: message.text!).width + 32
+		bubbleWidthAnchor?.constant = estWidth
+		
+		// определяем какием цветом будет фон сообщения
+		// голубым (свои)
+		if message.fromID == Auth.auth().currentUser?.uid {
+			bubbleView.backgroundColor = ChatMessageCell.blueColor
+			profileImageView.isHidden = true
+			bubbleLeftAnchor?.isActive = false
+			bubbleRightAnchor?.isActive = true
+		}
+		// серым (собеседника)
+		else {
+			bubbleView.backgroundColor = ChatMessageCell.grayColor
+			profileImageView.isHidden = false
+			
+			if let profileImageUrl = linkToParent.user?.profileImageUrl {
+				profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
+			}
+			bubbleLeftAnchor?.isActive = true
+			bubbleRightAnchor?.isActive = false
+		}
+	}
+	
+	
+	
+	private func convertTimeStamp(seconds: TimeInterval) -> String{
+		let convertedDate = Date(timeIntervalSince1970: seconds)
+		let dateFormater = DateFormatter()
+		dateFormater.dateFormat = "HH:mm"
+		
+		return dateFormater.string(from: convertedDate)
+	}
+	
 	
 	
 }

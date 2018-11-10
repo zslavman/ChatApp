@@ -93,15 +93,14 @@ class MessagesController: UITableViewController {
 		// достаем ссылку на юзера
 		refUsers.child(chatPartnerID).observeSingleEvent(of: .value, with: {	// получаем юзера из БД
 			(snapshot) in
-			
+
 			guard let dict = snapshot.value as? [String: AnyObject] else { return }
-			
+
 			let user = User()
 			user.setValuesForKeys(dict)
-			user.id = chatPartnerID
-			
+
 			self.goToChatWith(user: user)
-			
+
 		}, withCancel: nil)
 	}
 	
@@ -189,7 +188,7 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
+	/// Проверка аутентиф. юзера и первое заполнение данных юзера
 	public func fetchUserAndSetupNavbarTitle(){
 		
 		guard let uid = Auth.auth().currentUser?.uid else {	return } // проверка если user = nil
@@ -202,17 +201,21 @@ class MessagesController: UITableViewController {
 				// для отрисовки навбара нужны данные по юзеру
 				let user = User()
 				user.setValuesForKeys(dictionary)
-				self.setupNavbarWithUser(user: user)
 				self.owner = user
+				self.setupNavbarWithUser(user: user)
 			}
 		}
 	}
 	
 	
 	
-	/// Отрисовка навбара с картинкой
-	internal func setupNavbarWithUser(user: User){
+	/// Отрисовка навбара с картинкой (этот метод может дергаться при регистрации из LoginController)
+	public func setupNavbarWithUser(user: User){
 		
+		if owner == nil {
+			owner = user
+		}
+
 		// чистим данные, т.к. если перелогинится под другим юзером они остаются
 		messages.removeAll()
 		messagesDict.removeAll()
@@ -282,8 +285,17 @@ class MessagesController: UITableViewController {
 	@objc private func onLogout(){
 		
 		refUsers.removeAllObservers()
-		refUserMessages.removeAllObservers()
+		if refUserMessages != nil {
+			refUserMessages.removeAllObservers()
+		}
 		refMessages.removeAllObservers()
+		
+		refUserMessages = nil
+		uid = nil
+		
+		messages.removeAll()
+		messagesDict.removeAll()
+		owner = nil
 		
 		do {
 			try Auth.auth().signOut()
