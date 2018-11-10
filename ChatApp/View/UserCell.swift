@@ -146,9 +146,13 @@ class UserCell: UITableViewCell {
 		}
 		// более недели назад (03 Oct, 12:47)
 		else {
-			dateFormater.dateFormat = "dd MMM"
-			let part1 = dateFormater.string(from: convertedDate)
-			return part1 + caretSymbol + HH_mm
+			dateFormater.dateFormat = "dd"
+			let numDay = dateFormater.string(from: convertedDate)
+			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate)]
+			if month.last == "."{
+				month = String(month.dropLast())
+			}
+			return numDay + " " + month + caretSymbol + HH_mm
 		}
 	}
 	

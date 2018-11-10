@@ -11,7 +11,7 @@ import Firebase
 
 
 
-class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	public var user:User? {
 		didSet{
@@ -42,6 +42,19 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 //		containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
 //		containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
 		
+		
+		// картинка слева (отправить фото)
+		let uploadImageView = UIImageView()
+		uploadImageView.image = UIImage(named: "upload_image_icon")
+		containerView.addSubview(uploadImageView)
+		uploadImageView.translatesAutoresizingMaskIntoConstraints = false
+		uploadImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 5).isActive = true
+		uploadImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 2).isActive = true
+		uploadImageView.widthAnchor.constraint(equalToConstant: 44).isActive = true // эпл рекомендует размер 44
+		uploadImageView.heightAnchor.constraint(equalToConstant: 44).isActive = true
+		uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
+		uploadImageView.isUserInteractionEnabled = true
+		
 		// линия-сепаратор
 		let sepLine = UIView()
 		sepLine.backgroundColor = UIColor.lightGray
@@ -68,7 +81,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		
 		// текстовое поле
 		containerView.addSubview(self.inputTextField)
-		self.inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
+		self.inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 10).isActive = true
 		self.inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
 		self.inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
 		self.inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
@@ -101,6 +114,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		
 		// поведение клавиатуры при скроллинге
 		collectionView?.keyboardDismissMode = .interactive
+		
+		// слушатель на тап по фону сообщений
+		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
 		
 //		setupInputComponents()
 //
@@ -273,9 +289,57 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	}
 	
 	
+	@objc private func onChatBackingClick(){
+		inputTextField.resignFirstResponder()
+	}
 	
 	
+	
+	
+	@objc private func onUploadClick(){
+		let imagePickerController = UIImagePickerController()
+		imagePickerController.allowsEditing = true
+		imagePickerController.delegate = self
+		present(imagePickerController, animated: true, completion: nil)
+	}
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		var selectedImage:UIImage?
+		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
+			selectedImage = editedImage
+		}
+		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
+			selectedImage = originalImage
+		}
+		
+		if let selectedImage = selectedImage {
+//			uploadingImageToStotage(image: selectedImage)
+		}
+		
+		dismiss(animated: true, completion: nil)
+	}
+	
+	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+		dismiss(animated: true, completion: nil)
+	}
+	
+	private func uploadingImageToStotage(image:UIImage){
+		let uniqueImageName = UUID().uuidString
+		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
+		
+		if let uploadData = UIImageJPEGRepresentation(image, 0.5){
+			ref.putData(uploadData, metadata: nil, completion: {
+				(metadata, error) in
+				
+				
+			})
+		}
 
+	}
+	
+	
+	
+	
 	
 	//	@objc private func keyboardWillShow(notif: Notification){
 	//		if let keyboardFrame = (notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{
