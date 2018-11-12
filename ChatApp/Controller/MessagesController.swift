@@ -130,8 +130,8 @@ class MessagesController: UITableViewController {
 					if let dictionary = snapshot.value as? [String:AnyObject] {
 						
 						// для отрисовки навбара нужны данные по юзеру
-						let message = Message()
-						message.setValuesForKeys(dictionary)
+						let message = Message(dictionary: dictionary)
+//						message.setValuesForKeys(dictionary)
 						self.messages.append(message)
 						
 						// заполняем словарь и меняем массив

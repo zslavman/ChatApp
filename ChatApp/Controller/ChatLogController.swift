@@ -171,10 +171,21 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		var hei:CGFloat = 80
 		
+		let message = messages[indexPath.item]
+		
 		// получаем ожидаемую высоту
-		if let text = messages[indexPath.item].text {
-			hei = estimatedFrameForText(text: text).height + 20 + 10
+		if let text = message.text {
+			hei = estimatedFrameForText(text: text).height + 20 + 10 //(10 - для времени)
 		}
+		else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
+			
+			// h1/w1 = h2/w2  ->  h1 = h2/w2 * w1
+			let w1:CGFloat = CGFloat(UIScreen.main.bounds.width * 2/3)
+			hei = (CGFloat(imageHeight) / CGFloat(imageWidth) * w1)
+			
+		}
+		
+		
 		return CGSize(width: UIScreen.main.bounds.width, height: hei)
 		
 	}
@@ -212,8 +223,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 				
 				guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
 					
-				let message = Message()
-				message.setValuesForKeys(dictionary)
+				let message = Message(dictionary: dictionary)
+//				message.setValuesForKeys(dictionary)
 				
 				self.messages.append(message)
 				
@@ -234,8 +245,117 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		}, withCancel: nil)
 	}
 
+
+
 	
 	
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		onSendClick()
+		return true
+	}
+	
+	
+	@objc private func onChatBackingClick(){
+		inputTextField.resignFirstResponder()
+	}
+	
+	
+	
+	/// клик на картинку (переслать фотку)
+	@objc private func onUploadClick(){
+		let imagePickerController = UIImagePickerController()
+		imagePickerController.allowsEditing = true
+		imagePickerController.delegate = self
+		present(imagePickerController, animated: true, completion: nil)
+	}
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		var selectedImage:UIImage?
+		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
+			selectedImage = editedImage
+		}
+		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
+			selectedImage = originalImage
+		}
+		
+		if let selectedImage = selectedImage {
+			uploadingImageToStotage(image: selectedImage)
+		}
+		
+		dismiss(animated: true, completion: nil)
+	}
+	
+	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+		dismiss(animated: true, completion: nil)
+	}
+	
+	/// загрузка картинки в хранилище
+	private func uploadingImageToStotage(image:UIImage){
+		let uniqueImageName = UUID().uuidString
+		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
+		
+		if let uploadData = UIImageJPEGRepresentation(image, 0.5){
+			ref.putData(uploadData, metadata: nil, completion: {
+				(metadata, error) in
+				if let error = error {
+					print(error.localizedDescription)
+					return
+				}
+				// когда получаем метадату, даем запрос на получение ссылки на эту картинку (разработчкики Firebase 5 - дауны)
+				ref.downloadURL(completion: {
+					(url, errorFromGettinfPicLink) in
+					
+					if let errorFromGettinfPicLink = errorFromGettinfPicLink {
+						print(errorFromGettinfPicLink.localizedDescription)
+						return
+					}
+					if let imageUrl = url{
+						self.sendMessageWithImage(imageUrl: imageUrl.absoluteString, image: image)
+					}
+				})
+				print("удачно сохранили картинку")
+			})
+		}
+	}
+	
+	/// сохранение сообщения с картинкой в БД
+	private func sendMessageWithImage(imageUrl: String, image: UIImage){
+		
+		let ref = Database.database().reference().child("messages")
+		let childRef = ref.childByAutoId()
+		let toID = user!.id!
+		let fromID = Auth.auth().currentUser!.uid
+		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
+		
+		let values:[String:Any] = [
+			"toID"		:toID,
+			"fromID"	:fromID,
+			"timestamp"	:timestamp,
+			"imageUrl"	:imageUrl,
+			"imageWidth":image.size.width,
+			"imageHight":image.size.height
+		]
+		
+		childRef.updateChildValues(values) {
+			(error:Error?, ref:DatabaseReference) in
+			if error != nil {
+				print(error?.localizedDescription ?? "*")
+				return
+			}
+			
+			let messRef = Database.database().reference().child("user-messages")
+			
+			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
+			let senderRef = messRef.child(fromID).child(toID)
+			let messageID = childRef.key!
+			senderRef.updateChildValues([messageID: 1])
+			
+			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
+			let recipientRef = messRef.child(toID).child(fromID)
+			recipientRef.updateChildValues([messageID: 1])
+		}
+	}
 	
 	
 	@objc private func onSendClick(){
@@ -258,7 +378,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			"toID"		:toID,
 			"fromID"	:fromID,
 			"timestamp"	:timestamp
-			]
+		]
 		
 		childRef.updateChildValues(values) {
 			(error:Error?, ref:DatabaseReference) in
@@ -283,61 +403,38 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		onSendClick()
-		return true
-	}
-	
-	
-	@objc private func onChatBackingClick(){
-		inputTextField.resignFirstResponder()
-	}
-	
-	
-	
-	
-	@objc private func onUploadClick(){
-		let imagePickerController = UIImagePickerController()
-		imagePickerController.allowsEditing = true
-		imagePickerController.delegate = self
-		present(imagePickerController, animated: true, completion: nil)
-	}
-	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-		var selectedImage:UIImage?
-		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
-			selectedImage = editedImage
-		}
-		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
-			selectedImage = originalImage
-		}
+	private func sendMessage_with_Properties(properties: [String:AnyObject]){
+		let ref = Database.database().reference().child("messages")
+		let childRef = ref.childByAutoId()
+		let toID = user!.id!
+		let fromID = Auth.auth().currentUser!.uid
+		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
 		
-		if let selectedImage = selectedImage {
-//			uploadingImageToStotage(image: selectedImage)
-		}
+		let values:[String:Any] = [
+			"toID"		:toID,
+			"fromID"	:fromID,
+			"timestamp"	:timestamp
+		]
 		
-		dismiss(animated: true, completion: nil)
-	}
-	
-	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		dismiss(animated: true, completion: nil)
-	}
-	
-	private func uploadingImageToStotage(image:UIImage){
-		let uniqueImageName = UUID().uuidString
-		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
-		
-		if let uploadData = UIImageJPEGRepresentation(image, 0.5){
-			ref.putData(uploadData, metadata: nil, completion: {
-				(metadata, error) in
-				
-				
-			})
+		childRef.updateChildValues(values) {
+			(error:Error?, ref:DatabaseReference) in
+			if error != nil {
+				print(error?.localizedDescription ?? "*")
+				return
+			}
+			
+			let messRef = Database.database().reference().child("user-messages")
+			
+			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
+			let senderRef = messRef.child(fromID).child(toID)
+			let messageID = childRef.key!
+			senderRef.updateChildValues([messageID: 1])
+			
+			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
+			let recipientRef = messRef.child(toID).child(fromID)
+			recipientRef.updateChildValues([messageID: 1])
 		}
-
 	}
-	
-	
 	
 	
 	

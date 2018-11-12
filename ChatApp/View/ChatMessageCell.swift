@@ -22,8 +22,8 @@ class ChatMessageCell: UICollectionViewCell {
 		label.font = UIFont.systemFont(ofSize: 16)
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.backgroundColor = .clear
-//		label.textColor = .white
 		label.isEditable = false // после установки canBecomeFirstResponder в ChatLogController это поле стает редактируемым
+		label.isScrollEnabled = false
 		return label
 	}()
 	
@@ -59,7 +59,18 @@ class ChatMessageCell: UICollectionViewCell {
 		label.backgroundColor = UIColor.clear
 		label.textColor = grayTextColor
 		label.isEditable = false
+		label.isScrollEnabled = false
 		return label
+	}()
+	
+	private let messageImageView:UIImageView = {
+		let messImag = UIImageView()
+		messImag.translatesAutoresizingMaskIntoConstraints = false
+		messImag.contentMode = .scaleAspectFill
+		messImag.layer.cornerRadius = 12
+		messImag.clipsToBounds = true
+//		messImag.backgroundColor = .red
+		return messImag
 	}()
 	
 	
@@ -72,6 +83,13 @@ class ChatMessageCell: UICollectionViewCell {
 		addSubview(textView)
 		addSubview(sendTime_TF)
 		addSubview(profileImageView)
+		bubbleView.addSubview(messageImageView)
+		
+		// для вложенного фото в сообщении (если такоевое будет)
+		messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive 			= true
+		messageImageView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor).isActive 		= true
+		messageImageView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor).isActive 		= true
+		messageImageView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor).isActive 	= true
 		
 		// для фото собеседника
 		profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive 	= true
@@ -135,9 +153,30 @@ class ChatMessageCell: UICollectionViewCell {
 			bubbleRightAnchor?.isActive = false
 		}
 		
+		
+		// загружаем картинку сообщения (если таковая имеется)
+		if let messageImageUrl = message.imageUrl {
+			messageImageView.loadImageUsingCache(urlString: messageImageUrl, completionHandler: nil)
+			messageImageView.isHidden = false
+			bubbleView.backgroundColor = .clear
+			textView.isHidden = true
+		}
+		else {
+			messageImageView.isHidden = true
+			textView.isHidden = false
+		}
+		
+		
 		// изменим ширину фона сообщения
-		let estWidth = linkToParent.estimatedFrameForText(text: message.text!).width + 30
-		bubbleWidthAnchor?.constant = estWidth
+		if let str = message.text{
+			let estWidth = linkToParent.estimatedFrameForText(text: str).width + 30
+			bubbleWidthAnchor?.constant = estWidth < 60 ? 60 : estWidth
+		}
+		else if message.imageUrl != nil{
+			bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 2/3
+		}
+		
+		
 	}
 	
 	
