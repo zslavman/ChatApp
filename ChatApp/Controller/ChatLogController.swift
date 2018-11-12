@@ -118,10 +118,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
 		
-//		setupInputComponents()
-//
-//		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-//		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+		// прослушиватели клавы
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+		
+		//		setupInputComponents()
+		//
+		//		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+		//		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
 	}
 	
 	
@@ -249,7 +252,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 
 	
 	
-	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		onSendClick()
 		return true
@@ -259,6 +261,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	@objc private func onChatBackingClick(){
 		inputTextField.resignFirstResponder()
 	}
+	
+	
+	
+	@objc private func keyboardDidShow(notif: Notification){
+		collectionView?.scrollToLast()
+	}
+	
+	
 	
 	
 	
@@ -290,6 +300,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		dismiss(animated: true, completion: nil)
 	}
 	
+	
 	/// загрузка картинки в хранилище
 	private func uploadingImageToStotage(image:UIImage){
 		let uniqueImageName = UUID().uuidString
@@ -319,102 +330,53 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		}
 	}
 	
-	/// сохранение сообщения с картинкой в БД
-	private func sendMessageWithImage(imageUrl: String, image: UIImage){
-		
-		let ref = Database.database().reference().child("messages")
-		let childRef = ref.childByAutoId()
-		let toID = user!.id!
-		let fromID = Auth.auth().currentUser!.uid
-		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
-		
-		let values:[String:Any] = [
-			"toID"		:toID,
-			"fromID"	:fromID,
-			"timestamp"	:timestamp,
-			"imageUrl"	:imageUrl,
-			"imageWidth":image.size.width,
-			"imageHight":image.size.height
-		]
-		
-		childRef.updateChildValues(values) {
-			(error:Error?, ref:DatabaseReference) in
-			if error != nil {
-				print(error?.localizedDescription ?? "*")
-				return
-			}
-			
-			let messRef = Database.database().reference().child("user-messages")
-			
-			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
-			let senderRef = messRef.child(fromID).child(toID)
-			let messageID = childRef.key!
-			senderRef.updateChildValues([messageID: 1])
-			
-			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
-			let recipientRef = messRef.child(toID).child(fromID)
-			recipientRef.updateChildValues([messageID: 1])
-		}
-	}
+	
 	
 	
 	@objc private func onSendClick(){
-		
-		inputTextField.resignFirstResponder()
-		
 		if inputTextField.text == "" || inputTextField.text == " " { return }
 		
-		let ref = Database.database().reference().child("messages")
-		// генерация псевдо-рандомных ключей сообщения
-		let childRef = ref.childByAutoId()
-		// https://chatapp-2222e.firebaseio.com/messages/-LQe7kjoAJkrVNzOjERM
-		
-		let toID = user!.id!
-		let fromID = Auth.auth().currentUser!.uid
-		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
-		
-		let values:[String:Any] = [
-			"text"		:inputTextField.text!,
-			"toID"		:toID,
-			"fromID"	:fromID,
-			"timestamp"	:timestamp
+		let properties:[String:Any] = [
+			"text" :inputTextField.text!
 		]
+		sendMessage_with_Properties(properties: properties)
 		
-		childRef.updateChildValues(values) {
-			(error:Error?, ref:DatabaseReference) in
-			if error != nil {
-				print(error?.localizedDescription ?? "*")
-				return
-			}
-			
-			let messRef = Database.database().reference().child("user-messages")
-			
-			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
-			let senderRef = messRef.child(fromID).child(toID)
-			let messageID = childRef.key!
-			senderRef.updateChildValues([messageID: 1])
-			
-			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
-			let recipientRef = messRef.child(toID).child(fromID)
-			recipientRef.updateChildValues([messageID: 1])
-		}
 		inputTextField.text = nil
+		inputTextField.resignFirstResponder()
+	}
+	
+	
+	/// сохранение сообщения с картинкой в БД
+	private func sendMessageWithImage(imageUrl: String, image: UIImage){
+		let properties:[String:Any] = [
+			"imageUrl"		:imageUrl,
+			"imageWidth"	:image.size.width,
+			"imageHeight"	:image.size.height
+		]
+		sendMessage_with_Properties(properties: properties)
 	}
 	
 	
 	
-	private func sendMessage_with_Properties(properties: [String:AnyObject]){
+	
+	
+	private func sendMessage_with_Properties(properties: [String:Any]){
 		let ref = Database.database().reference().child("messages")
+		// генерация псевдо-рандомных ключей сообщения https://chatapp-2222e.firebaseio.com/messages/-LQe7kjoAJkrVNzOjERM
 		let childRef = ref.childByAutoId()
+		
 		let toID = user!.id!
 		let fromID = Auth.auth().currentUser!.uid
 		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
 		
-		let values:[String:Any] = [
+		var values:[String:Any] = [
 			"toID"		:toID,
 			"fromID"	:fromID,
 			"timestamp"	:timestamp
 		]
+		
+		// добавляем к словарю values ключ + значения словаря properties (key = $0, value = $1)
+		properties.forEach({values[$0] = $1})
 		
 		childRef.updateChildValues(values) {
 			(error:Error?, ref:DatabaseReference) in
@@ -460,7 +422,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	//		}
 	//	}
 	
-	
+
 	
 	
 	//	private func setupInputComponents(){
@@ -528,7 +490,9 @@ extension UICollectionView {
 		
 		scrollToItem(at: lastItemIndexPath, at: .bottom, animated: true)
 	}
+	
 }
+
 
 
 

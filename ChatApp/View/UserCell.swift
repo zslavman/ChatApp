@@ -100,7 +100,7 @@ class UserCell: UITableViewCell {
 			}
 		}, withCancel: nil)
 		
-		detailTextLabel?.text = msg.text
+		detailTextLabel?.text = msg.text ?? "[картинка]..."
 		
 		if let seconds = msg.timestamp?.doubleValue{
 			timeLabel.text = UserCell.convertTimeStamp(seconds: seconds, shouldReturn: true)
