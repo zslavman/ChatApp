@@ -400,6 +400,87 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
+	private var startingFrame:CGRect?
+	private var blackBackgroundView:UIView?
+	private var originalImageView:UIView?
+	
+	
+	/// кастомный зум при клике на отосланную картинку в чате
+	public func performZoomForImageView(imageView: UIImageView){
+		
+		// прячем оригинальное изображение при клике на него
+		originalImageView = imageView
+		originalImageView?.isHidden = true
+		
+		// определяем фрейм картинки для рендера
+		startingFrame = imageView.superview?.convert(imageView.frame, to: nil)
+		
+		// создаем картинку которая будет зумится
+		let zoomingImageView = UIImageView(frame: startingFrame!)
+		zoomingImageView.image = imageView.image
+		zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onZoomedImageClick)))
+		zoomingImageView.isUserInteractionEnabled = true
+		
+		// находим в иерархии окон нужное окно (куда будем добавлять вьюшку)
+		if let keyWindow = UIApplication.shared.keyWindow {
+			
+			// добавляем чёрный фон
+			blackBackgroundView = UIView(frame: keyWindow.frame)
+			blackBackgroundView?.backgroundColor = .black
+			// начальный альфа для фона (чтоб плавно анимировалось)
+			blackBackgroundView?.alpha = 0
+			
+			keyWindow.addSubview(blackBackgroundView!)
+			keyWindow.addSubview(zoomingImageView)
+			
+			// *****************
+			// * Блок анимации *
+			// *****************
+			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+				
+				self.blackBackgroundView?.alpha = 1
+				self.inputContainerView.alpha = 0 // вьюшка ввода сообщения
+				
+				// по отношению сторон (умножаем коэфф. соотношения сторон на размер известной ширины)
+				let newHeight = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
+				zoomingImageView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: newHeight)
+				zoomingImageView.center = keyWindow.center
+				
+			}, completion: nil)
+		}
+	}
+	
+
+	
+
+	@objc private func onZoomedImageClick(tapGesture: UITapGestureRecognizer){
+		
+		if let tapedImageView = tapGesture.view{
+			
+			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+				
+				tapedImageView.frame = self.startingFrame!
+				self.blackBackgroundView?.alpha = 0
+				self.inputContainerView.alpha = 1
+				tapedImageView.layer.cornerRadius = 12
+				tapedImageView.clipsToBounds = true
+				
+			}, completion: {
+				(completed:Bool) in
+				tapedImageView.removeFromSuperview()
+				self.blackBackgroundView?.removeFromSuperview()
+				self.originalImageView?.isHidden = false
+			})
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	//	@objc private func keyboardWillShow(notif: Notification){
 	//		if let keyboardFrame = (notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{
 	//			self.containerViewBottomAnchor?.constant = -keyboardFrame.height
@@ -421,9 +502,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	//			self.view.layoutIfNeeded()
 	//		}
 	//	}
-	
-
-	
 	
 	//	private func setupInputComponents(){
 	//

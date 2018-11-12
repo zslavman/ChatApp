@@ -11,6 +11,7 @@ import Firebase
 
 class ChatMessageCell: UICollectionViewCell {
 	
+	public var chatlogController:ChatLogController?
 	
 	public static let blueColor = UIColor(r: 215, g: 235, b: 255)
 	public static let grayColor = UIColor(r: 239, g: 239, b: 238)
@@ -63,13 +64,15 @@ class ChatMessageCell: UICollectionViewCell {
 		return label
 	}()
 	
-	private let messageImageView:UIImageView = {
+	private lazy var messageImageView:UIImageView = {
 		let messImag = UIImageView()
 		messImag.translatesAutoresizingMaskIntoConstraints = false
 		messImag.contentMode = .scaleAspectFill
 		messImag.layer.cornerRadius = 12
 		messImag.clipsToBounds = true
-//		messImag.backgroundColor = .red
+		messImag.isUserInteractionEnabled = true
+		// если использовать в этом кложере target: self, то нужно чтоб переменная была lazy!!
+		messImag.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onImageClick)))
 		return messImag
 	}()
 	
@@ -130,6 +133,8 @@ class ChatMessageCell: UICollectionViewCell {
 	
 	public func setupCell(linkToParent:ChatLogController, message:Message){
 		
+		chatlogController = linkToParent
+		
 		textView.text = message.text
 		sendTime_TF.text = UserCell.convertTimeStamp(seconds: message.timestamp as! TimeInterval, shouldReturn: false)
 		
@@ -153,7 +158,6 @@ class ChatMessageCell: UICollectionViewCell {
 			bubbleRightAnchor?.isActive = false
 		}
 		
-		
 		// загружаем картинку сообщения (если таковая имеется)
 		if let messageImageUrl = message.imageUrl {
 			messageImageView.loadImageUsingCache(urlString: messageImageUrl, completionHandler: nil)
@@ -175,9 +179,20 @@ class ChatMessageCell: UICollectionViewCell {
 		else if message.imageUrl != nil{
 			bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 2/3
 		}
-		
-		
 	}
+	
+	
+	
+	/// клик на отправленной картинке в сообщении
+	@objc private func onImageClick(tapGesture: UITapGestureRecognizer){
+		if let imageView = tapGesture.view as? UIImageView{
+			// хорошая практика - не перегружать вьюшки кучей логики, потому
+			chatlogController?.performZoomForImageView(imageView: imageView)
+		}
+	}
+	
+	
+	
 	
 	
 	
