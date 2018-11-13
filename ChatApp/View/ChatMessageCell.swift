@@ -176,7 +176,7 @@ class ChatMessageCell: UICollectionViewCell {
 			let estWidth = linkToParent.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 60 ? 60 : estWidth
 		}
-		else if message.imageUrl != nil{
+		else if message.imageUrl != nil || message.videoUrl != nil {
 			bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 2/3
 		}
 	}

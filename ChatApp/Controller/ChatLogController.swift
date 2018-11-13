@@ -8,7 +8,8 @@
 
 import UIKit
 import Firebase
-
+import MobileCoreServices
+import AVFoundation
 
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -275,12 +276,31 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	/// клик на картинку (переслать фотку)
 	@objc private func onUploadClick(){
 		let imagePickerController = UIImagePickerController()
+		
 		imagePickerController.allowsEditing = true
 		imagePickerController.delegate = self
+		// разрешаем выбирать видеофайлы из библиотеки
+		imagePickerController.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
+		
 		present(imagePickerController, animated: true, completion: nil)
 	}
 	
+	
+	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		// если выбрали видеофайл
+		if let videoURL = info[UIImagePickerControllerMediaURL] as? URL{
+			videoSelectedForInfo(videoFilePath: videoURL)
+		}
+		else { // если выбрали фото
+			imageSelectedForInfo(info: info)
+		}
+		dismiss(animated: true, completion: nil)
+	}
+	
+	
+	
+	private func imageSelectedForInfo(info:[String: Any]){
 		var selectedImage:UIImage?
 		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
 			selectedImage = editedImage
@@ -290,19 +310,108 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		}
 		
 		if let selectedImage = selectedImage {
-			uploadingImageToStotage(image: selectedImage)
+			uploadingImageToStorage(image: selectedImage, completion: {
+				(imageUrl) in
+				self.sendMessageWithImage(imageUrl: imageUrl, image: selectedImage)
+			})
+		}
+	}
+	
+	
+	
+	
+	/// Когда выбрали видеофайл для выгрузки
+	///
+	/// - Parameter videoURL: внутренняя ссылка на видео (ссылка ведущя в альбом с видеофайлом)
+	private func videoSelectedForInfo(videoFilePath:URL){
+		
+		let uniqueImageName = UUID().uuidString
+		let ref = Storage.storage().reference().child("message_videos").child("\(uniqueImageName).mov")
+		
+		let uploadTask = ref.putFile(from: videoFilePath, metadata: nil) {
+			(metadata, error) in
+			if error != nil {
+				print(error!.localizedDescription)
+				return
+			}
+			
+			ref.downloadURL(completion: {
+				(url, errorFromGettinfPicLink) in
+				
+				if let errorFromGettinfPicLink = errorFromGettinfPicLink {
+					print(errorFromGettinfPicLink.localizedDescription)
+					return
+				}
+				if let videoUrl = url?.absoluteString{
+					// нам нужен первый кадр с видео для картинки
+					if let thumbnailImge = self.thumbnailImageForFileURL(fileUrl: videoFilePath){
+						self.uploadingImageToStorage(image: thumbnailImge, completion: {
+							(imageUrl) in
+							
+							let properties:[String:Any] = [
+								"imageWidth"	:thumbnailImge.size.width,
+								"imageHeight"	:thumbnailImge.size.height,
+								"videoUrl"		:videoUrl,
+								"imageUrl"		:imageUrl
+							]
+							self.sendMessage_with_Properties(properties: properties)
+						})
+					}
+				}
+			})
 		}
 		
-		dismiss(animated: true, completion: nil)
+		uploadTask.observe(.progress) {
+			(snapshot) in
+			if let currentCount = snapshot.progress?.completedUnitCount, let totalCount = snapshot.progress?.totalUnitCount{
+				let percentComplete = 100 * Double(currentCount) / Double(totalCount)
+				self.navigationItem.title = String(format: "%.0f", percentComplete) + " %"
+			}
+		}
+		uploadTask.observe(.success) {
+			(snapshot) in
+			self.navigationItem.title = self.user?.name
+		}
 	}
+	
+	
+	
+	///  Генерирует картинку первого кадра видеофайла
+	///
+	/// - Parameter fileUrl: путь к видеофайлу на телефоне
+	private func thumbnailImageForFileURL(fileUrl: URL) -> UIImage? {
+		
+		let avasset = AVAsset(url: fileUrl)
+		let imageGenerator = AVAssetImageGenerator(asset: avasset)
+		let cmtime = CMTime(value: 1, timescale: 60)
+		
+		do {
+			let thumbnail_CGImage = try imageGenerator.copyCGImage(at: cmtime, actualTime: nil)
+			return UIImage(cgImage: thumbnail_CGImage)
+		}
+		catch let err{
+			print(err.localizedDescription)
+		}
+		
+		return nil
+	}
+	
+	
+	
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
 		dismiss(animated: true, completion: nil)
 	}
 	
 	
-	/// загрузка картинки в хранилище
-	private func uploadingImageToStotage(image:UIImage){
+	
+	
+	/// Загрузка картинки в хранилище
+	///
+	/// - Parameters:
+	///   - image: сама картинка
+	///   - completion: фукнция которая дернется когда будет загружена картинка и получен на нее URL
+	private func uploadingImageToStorage(image:UIImage, completion: @escaping (_ imageUrl:String) -> Void){
 		let uniqueImageName = UUID().uuidString
 		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
 		
@@ -322,7 +431,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 						return
 					}
 					if let imageUrl = url{
-						self.sendMessageWithImage(imageUrl: imageUrl.absoluteString, image: image)
+						// запускаем ф-цию обратного вызова
+						completion(imageUrl.absoluteString)
 					}
 				})
 				print("удачно сохранили картинку")
