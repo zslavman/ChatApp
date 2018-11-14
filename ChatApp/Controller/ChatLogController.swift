@@ -153,7 +153,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			(cell) in
 			if cell.isPlaying{
 				print("Останавливаем воспроизведение!")
-				NotificationCenter.default.removeObserver(cell)
+				cell.removePlayObserver()
 				cell.player?.pause()
 				cell.playerLayer?.removeFromSuperlayer()
 			}
@@ -191,8 +191,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
 		
+		cell.tag = indexPath.item
 		let message = messages[indexPath.item]
-		cell.setupCell(linkToParent: self, message: message)
+		cell.setupCell(linkToParent: self, message: message, indexPath: indexPath)
 		
 		return cell
 	}

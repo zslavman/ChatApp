@@ -26,13 +26,15 @@ class ChatMessageCell: UICollectionViewCell {
 	
 	public var player: AVPlayer?
 	public var playerLayer: AVPlayerLayer?
-	
+	private var playTimer:Any? // слушатель прогирывания видео
+	private static let cornRadius:CGFloat = 12
 	
 	
 	private let activityIndicator:UIActivityIndicatorView = {
 		let ai = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
 		ai.translatesAutoresizingMaskIntoConstraints = false
 		ai.hidesWhenStopped = true
+		ai.isUserInteractionEnabled = false
 		return ai
 	}()
 	
@@ -51,7 +53,7 @@ class ChatMessageCell: UICollectionViewCell {
 		let bubble = UIView()
 		bubble.backgroundColor = blueColor
 		bubble.translatesAutoresizingMaskIntoConstraints = false
-		bubble.layer.cornerRadius = 12
+		bubble.layer.cornerRadius = cornRadius
 		bubble.clipsToBounds = true
 		return bubble
 	}()
@@ -84,7 +86,7 @@ class ChatMessageCell: UICollectionViewCell {
 		let messImag = UIImageView()
 		messImag.translatesAutoresizingMaskIntoConstraints = false
 		messImag.contentMode = .scaleAspectFill
-		messImag.layer.cornerRadius = 12
+		messImag.layer.cornerRadius = ChatMessageCell.cornRadius
 		messImag.clipsToBounds = true
 		messImag.isUserInteractionEnabled = true
 		// если использовать в этом кложере target: self, то нужно чтоб переменная была lazy!!
@@ -105,6 +107,14 @@ class ChatMessageCell: UICollectionViewCell {
 		button.layer.shadowOpacity = 0.8
 		
 		return button
+	}()
+	
+	private let progressBar:UIProgressView = {
+		let prog = UIProgressView(progressViewStyle: UIProgressViewStyle.bar)
+		prog.translatesAutoresizingMaskIntoConstraints = false
+		prog.setProgress(0, animated: false)
+		prog.tintColor = UIColor(r: 0, g: 255, b: 0)
+		return prog
 	}()
 	
 	
@@ -132,6 +142,13 @@ class ChatMessageCell: UICollectionViewCell {
 		bubbleView.addSubview(messageImageView)
 		addSubview(playButton)
 		bubbleView.addSubview(activityIndicator)
+		bubbleView.addSubview(progressBar)
+		
+		
+		// для прогрессбара
+		progressBar.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -1).isActive 	= true
+		progressBar.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 0).isActive = true
+		progressBar.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: 0).isActive = true
 		
 		// для вложенного фото в сообщении (если такоевое будет)
 		messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive 			= true
@@ -190,7 +207,7 @@ class ChatMessageCell: UICollectionViewCell {
 	
 	
 	
-	public func setupCell(linkToParent:ChatLogController, message:Message){
+	public func setupCell(linkToParent:ChatLogController, message:Message, indexPath:IndexPath){
 		
 		chatlogController = linkToParent
 		self.message = message
@@ -220,7 +237,17 @@ class ChatMessageCell: UICollectionViewCell {
 		
 		// загружаем картинку сообщения (если таковая имеется)
 		if let messageImageUrl = message.imageUrl {
-			messageImageView.loadImageUsingCache(urlString: messageImageUrl, completionHandler: nil)
+			messageImageView.loadImageUsingCache(urlString: messageImageUrl){
+				(image) in
+				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
+				// и обновить ее в главном потоке
+				DispatchQueue.main.async {
+					if self.tag == indexPath.item{
+						self.messageImageView.image = image
+					}
+				}
+			}
+			
 			messageImageView.isHidden = false
 			bubbleView.backgroundColor = .clear
 			textView.isHidden = true
@@ -258,13 +285,23 @@ class ChatMessageCell: UICollectionViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
-		NotificationCenter.default.removeObserver(self)
+		removePlayObserver()
 		player?.pause()
 		playerLayer?.removeFromSuperlayer()
+		player = nil
+		progressBar.setProgress(0, animated: false)
 		
 		activityIndicator.stopAnimating()
 	}
 	
+	
+	public func removePlayObserver(){
+		if let _playTimer = playTimer{
+			player?.removeTimeObserver(_playTimer)
+			playTimer = nil
+			//sendTime_TF.text = UserCell.convertTimeStamp(seconds: message?.timestamp as! TimeInterval, shouldReturn: false)
+		}
+	}
 	
 	
 	/// клик на отправленной картинке в сообщении
@@ -280,29 +317,72 @@ class ChatMessageCell: UICollectionViewCell {
 	}
 	
 	
+	
 	@objc private func onPlayClick(){
-		
 		if let videoUrlString = message?.videoUrl, let videoUrl = URL(string: videoUrlString){
-			
 			if (player == nil){
 				player = AVPlayer(url: videoUrl)
 				playerLayer = AVPlayerLayer(player: player)
 				playerLayer?.frame = bubbleView.bounds
+	
 				bubbleView.layer.addSublayer(playerLayer!)
 				activityIndicator.startAnimating() // когда загрузится видео, оно его перекроет
+				
+				// перемещаем прогрессбар на верхний слой (иначе playerLayer его закроет)
+				bubbleView.bringSubview(toFront:progressBar)
 			}
 			
-			// наблюдатель окончания проигрывания видео
-			NotificationCenter.default.addObserver(self, selector: #selector(didPlayToEnd), name:NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player!.currentItem)
+			removePlayObserver()
+			
 			player?.play()
 			playButton.isHidden = true
+			
+			if playTimer != nil { return }
+			
+			// запустим таймер с интервалом 1/6 с (value / timescale)
+			let interval = CMTime(value: 1, timescale: 20)
+			playTimer = player!.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: {
+				[weak self] (cmtime) in
+				self?.sendTime_TF.text = ChatMessageCell.convertTime(seconds: cmtime.seconds)
+				
+				let endTime = (self?.player?.currentItem?.duration.seconds)!
+				let percentComplete = cmtime.seconds / endTime
+				// print("percentComplete = \(String(format: "%.0f", percentComplete * 100))")
+				self?.progressBar.setProgress(Float(percentComplete), animated: true)
+				
+				// при окончании воспроизведения
+				if cmtime.seconds == endTime{
+					self?.didPlayToEnd()
+				}
+			})
+			
+			//	if let playTime = self.player?.currentItem?.currentTime().seconds{
+			//		let str = ChatMessageCell.convertTime(seconds: playTime)
+			//		self.sendTime_TF.text = str
+			//	}
+			
+			// наблюдатель окончания проигрывания видео
+			// NotificationCenter.default.addObserver(self, selector: #selector(didPlayToEnd), name:NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player!.currentItem)
 		}
 	}
 	
 	
+	/// преобразует секунды в формат ММ:СС
+	public static func convertTime(seconds:Double) -> String{
+		let intValue = Int(seconds)
+		// let hou = intValue / 3600
+		let min = intValue / 60
+		let sec = intValue % 60
+		let time = String(format: "%2i:%02i", min, sec)
+		
+		return time
+	}
+	
+	
+	
 	private func onStopPlay(){
 		if isPlaying {
-			NotificationCenter.default.removeObserver(self)
+			removePlayObserver()
 			playButton.isHidden = false
 			player?.pause()
 		}
@@ -310,10 +390,13 @@ class ChatMessageCell: UICollectionViewCell {
 	
 	
 	
+	
 	@objc private func didPlayToEnd(){
-		NotificationCenter.default.removeObserver(self)
 		playButton.isHidden = false
 		player!.seek(to: CMTime(seconds: 0.0, preferredTimescale: 1))
+		removePlayObserver()
+		progressBar.setProgress(0, animated: false)
+		sendTime_TF.text = ChatMessageCell.convertTime(seconds: 0)
 	}
 	
 	
