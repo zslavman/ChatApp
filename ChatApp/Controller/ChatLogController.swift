@@ -153,6 +153,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			(cell) in
 			if cell.isPlaying{
 				print("Останавливаем воспроизведение!")
+				NotificationCenter.default.removeObserver(cell)
 				cell.player?.pause()
 				cell.playerLayer?.removeFromSuperlayer()
 			}

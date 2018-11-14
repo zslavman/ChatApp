@@ -130,7 +130,7 @@ class ChatMessageCell: UICollectionViewCell {
 		addSubview(sendTime_TF)
 		addSubview(profileImageView)
 		bubbleView.addSubview(messageImageView)
-		bubbleView.addSubview(playButton)
+		addSubview(playButton)
 		bubbleView.addSubview(activityIndicator)
 		
 		// для вложенного фото в сообщении (если такоевое будет)
@@ -258,6 +258,7 @@ class ChatMessageCell: UICollectionViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+		NotificationCenter.default.removeObserver(self)
 		player?.pause()
 		playerLayer?.removeFromSuperlayer()
 		
@@ -269,11 +270,7 @@ class ChatMessageCell: UICollectionViewCell {
 	/// клик на отправленной картинке в сообщении
 	@objc private func onImageClick(tapGesture: UITapGestureRecognizer){
 		if message?.videoUrl != nil {
-			if isPlaying{
-				player?.pause()
-				playButton.isHidden = false
-//				playButton.inde
-			}
+			onStopPlay()
 			return
 		}
 		if let imageView = tapGesture.view as? UIImageView{
@@ -287,17 +284,36 @@ class ChatMessageCell: UICollectionViewCell {
 		
 		if let videoUrlString = message?.videoUrl, let videoUrl = URL(string: videoUrlString){
 			
-			player = AVPlayer(url: videoUrl)
-
-			playerLayer = AVPlayerLayer(player: player)
-			playerLayer?.frame = bubbleView.bounds
-			bubbleView.layer.addSublayer(playerLayer!)
+			if (player == nil){
+				player = AVPlayer(url: videoUrl)
+				playerLayer = AVPlayerLayer(player: player)
+				playerLayer?.frame = bubbleView.bounds
+				bubbleView.layer.addSublayer(playerLayer!)
+				activityIndicator.startAnimating() // когда загрузится видео, оно его перекроет
+			}
 			
+			// наблюдатель окончания проигрывания видео
+			NotificationCenter.default.addObserver(self, selector: #selector(didPlayToEnd), name:NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player!.currentItem)
 			player?.play()
-			
 			playButton.isHidden = true
-			activityIndicator.startAnimating()
 		}
+	}
+	
+	
+	private func onStopPlay(){
+		if isPlaying {
+			NotificationCenter.default.removeObserver(self)
+			playButton.isHidden = false
+			player?.pause()
+		}
+	}
+	
+	
+	
+	@objc private func didPlayToEnd(){
+		NotificationCenter.default.removeObserver(self)
+		playButton.isHidden = false
+		player!.seek(to: CMTime(seconds: 0.0, preferredTimescale: 1))
 	}
 	
 	
