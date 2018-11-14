@@ -8,14 +8,33 @@
 
 import UIKit
 import Firebase
+import AVFoundation
+
 
 class ChatMessageCell: UICollectionViewCell {
 	
 	public var chatlogController:ChatLogController?
+	private var message:Message?
 	
 	public static let blueColor = UIColor(r: 215, g: 235, b: 255)
 	public static let grayColor = UIColor(r: 239, g: 239, b: 238)
 	public static let grayTextColor = UIColor(r: 127, g: 138, b: 150)
+	
+	public var bubbleWidthAnchor: NSLayoutConstraint?
+	public var bubbleRightAnchor: NSLayoutConstraint?
+	public var bubbleLeftAnchor: NSLayoutConstraint?
+	
+	public var player: AVPlayer?
+	public var playerLayer: AVPlayerLayer?
+	
+	
+	
+	private let activityIndicator:UIActivityIndicatorView = {
+		let ai = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
+		ai.translatesAutoresizingMaskIntoConstraints = false
+		ai.hidesWhenStopped = true
+		return ai
+	}()
 	
 	public let textView: UITextView = {
 		let label = UITextView()
@@ -33,12 +52,10 @@ class ChatMessageCell: UICollectionViewCell {
 		bubble.backgroundColor = blueColor
 		bubble.translatesAutoresizingMaskIntoConstraints = false
 		bubble.layer.cornerRadius = 12
+		bubble.clipsToBounds = true
 		return bubble
 	}()
-	
-	public var bubbleWidthAnchor: NSLayoutConstraint?
-	public var bubbleRightAnchor: NSLayoutConstraint?
-	public var bubbleLeftAnchor: NSLayoutConstraint?
+
 	
 	public let profileImageView: UIImageView = {
 		let iView = UIImageView()
@@ -56,7 +73,6 @@ class ChatMessageCell: UICollectionViewCell {
 		label.textAlignment = .right
 		label.font = UIFont.systemFont(ofSize: 10)
 		label.translatesAutoresizingMaskIntoConstraints = false
-//		label.backgroundColor = UIColor.red.withAlphaComponent(0.5)
 		label.backgroundColor = UIColor.clear
 		label.textColor = grayTextColor
 		label.isEditable = false
@@ -76,6 +92,33 @@ class ChatMessageCell: UICollectionViewCell {
 		return messImag
 	}()
 	
+	private lazy var playButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.setImage(UIImage(named: "play"), for: .normal)
+		button.tintColor = .white
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.isUserInteractionEnabled = true
+		button.addTarget(self, action: #selector(onPlayClick), for: .touchUpInside)
+		
+		button.layer.shadowRadius = 5
+		button.layer.shadowOffset = CGSize(width: 1, height: 2)
+		button.layer.shadowOpacity = 0.8
+		
+		return button
+	}()
+	
+	
+	/// кастомная проверка играет ли плеер сейчас (дебилы эпл не создали вообще никакой проверки)
+	public var isPlaying: Bool {
+		if let player = player {
+			if player.rate != 0 && player.error == nil{
+				return true
+			}
+		}
+		return false
+	}
+	
+	
 	
 	
 	
@@ -87,12 +130,27 @@ class ChatMessageCell: UICollectionViewCell {
 		addSubview(sendTime_TF)
 		addSubview(profileImageView)
 		bubbleView.addSubview(messageImageView)
+		bubbleView.addSubview(playButton)
+		bubbleView.addSubview(activityIndicator)
 		
 		// для вложенного фото в сообщении (если такоевое будет)
 		messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive 			= true
 		messageImageView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor).isActive 		= true
 		messageImageView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor).isActive 		= true
 		messageImageView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor).isActive 	= true
+		
+		// для кнопки Плей
+		playButton.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor).isActive 		= true
+		playButton.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor).isActive 		= true
+		playButton.widthAnchor.constraint(equalToConstant: 40).isActive 						= true
+		playButton.heightAnchor.constraint(equalToConstant: 50).isActive 						= true
+
+		// активити-индикатор (при нажатии на плей)
+		activityIndicator.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor).isActive 		= true
+		activityIndicator.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor).isActive 		= true
+		activityIndicator.widthAnchor.constraint(equalToConstant: 50).isActive 						= true
+		activityIndicator.heightAnchor.constraint(equalToConstant: 50).isActive 						= true
+		
 		
 		// для фото собеседника
 		profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive 	= true
@@ -131,9 +189,11 @@ class ChatMessageCell: UICollectionViewCell {
 	
 	
 	
+	
 	public func setupCell(linkToParent:ChatLogController, message:Message){
 		
 		chatlogController = linkToParent
+		self.message = message
 		
 		textView.text = message.text
 		sendTime_TF.text = UserCell.convertTimeStamp(seconds: message.timestamp as! TimeInterval, shouldReturn: false)
@@ -164,10 +224,18 @@ class ChatMessageCell: UICollectionViewCell {
 			messageImageView.isHidden = false
 			bubbleView.backgroundColor = .clear
 			textView.isHidden = true
+			
+			sendTime_TF.layer.shadowRadius = 0.5
+			sendTime_TF.layer.shadowColor = UIColor.black.cgColor
+			sendTime_TF.layer.shadowOffset = CGSize(width: 0, height: 0.5)
+			sendTime_TF.layer.shadowOpacity = 1
+			sendTime_TF.textColor = .white
 		}
 		else {
 			messageImageView.isHidden = true
 			textView.isHidden = false
+			sendTime_TF.layer.shadowOpacity = 0
+			sendTime_TF.textColor = ChatMessageCell.grayTextColor
 		}
 		
 		
@@ -176,15 +244,38 @@ class ChatMessageCell: UICollectionViewCell {
 			let estWidth = linkToParent.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 60 ? 60 : estWidth
 		}
-		else if message.imageUrl != nil || message.videoUrl != nil {
+		else if message.imageUrl != nil ||  message.videoUrl != nil{
 			bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 2/3
 		}
+		
+		// прячем кнопку Плей на всех сообщениях которые не видео
+		playButton.isHidden = message.videoUrl == nil
+	}
+	
+	
+	
+	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		
+		player?.pause()
+		playerLayer?.removeFromSuperlayer()
+		
+		activityIndicator.stopAnimating()
 	}
 	
 	
 	
 	/// клик на отправленной картинке в сообщении
 	@objc private func onImageClick(tapGesture: UITapGestureRecognizer){
+		if message?.videoUrl != nil {
+			if isPlaying{
+				player?.pause()
+				playButton.isHidden = false
+//				playButton.inde
+			}
+			return
+		}
 		if let imageView = tapGesture.view as? UIImageView{
 			// хорошая практика - не перегружать вьюшки кучей логики, потому
 			chatlogController?.performZoomForImageView(imageView: imageView)
@@ -192,6 +283,22 @@ class ChatMessageCell: UICollectionViewCell {
 	}
 	
 	
+	@objc private func onPlayClick(){
+		
+		if let videoUrlString = message?.videoUrl, let videoUrl = URL(string: videoUrlString){
+			
+			player = AVPlayer(url: videoUrl)
+
+			playerLayer = AVPlayerLayer(player: player)
+			playerLayer?.frame = bubbleView.bounds
+			bubbleView.layer.addSublayer(playerLayer!)
+			
+			player?.play()
+			
+			playButton.isHidden = true
+			activityIndicator.startAnimating()
+		}
+	}
 	
 	
 	

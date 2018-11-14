@@ -146,6 +146,17 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		NotificationCenter.default.removeObserver(self) // слушатели всегда нужно убирать, иначе будет утечка памяти и многократное срабатывание
+		
+		// перебираем все видимые ячейки, на предмет проигрывания вних видео
+		guard let cells = collectionView?.visibleCells as? [ChatMessageCell] else { return }
+		cells.forEach {
+			(cell) in
+			if cell.isPlaying{
+				print("Останавливаем воспроизведение!")
+				cell.player?.pause()
+				cell.playerLayer?.removeFromSuperlayer()
+			}
+		}
 	}
 	
 	
@@ -153,8 +164,22 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	/// переопеределяем констрайнты при каждом повороте экрана (на некоторых моделях телефонов если не сделать - будет залазить/вылазить справа весь контент скролвьюшки)
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		collectionView?.collectionViewLayout.invalidateLayout()
-		collectionView?.reloadData()
+
+		if (startingFrame != nil){
+			// прячем, т.к. по непонятной причине при повороте появляется inputContainerView
+			inputContainerView.isHidden = true
+
+			// пересчитываем кадр куда возвращатся с просмотра картинки
+//			print("orig = \(orig?.frame)")
+//			startingFrame = orig?.convert((originalImageView?.frame)!, to: nil)
+		}
+		else{
+			collectionView?.reloadData()
+		}
 	}
+	
+
+
 	
 	
 	
@@ -266,7 +291,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	@objc private func keyboardDidShow(notif: Notification){
-		collectionView?.scrollToLast()
+		
+		if let keyboardFrame = (notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{
+			// при повороте экрана происходит ложное срабатывание - клава не выезжает (но высота ее = 50), потому проверяем ее размер
+			if keyboardFrame.height > 100 {
+				collectionView?.scrollToLast()
+			}
+		}
 	}
 	
 	
@@ -514,6 +545,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	private var blackBackgroundView:UIView?
 	private var originalImageView:UIView?
 	
+	private var orig:UIView?
 	
 	/// кастомный зум при клике на отосланную картинку в чате
 	public func performZoomForImageView(imageView: UIImageView){
@@ -521,6 +553,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		// прячем оригинальное изображение при клике на него
 		originalImageView = imageView
 		originalImageView?.isHidden = true
+		orig = imageView.superview
 		
 		// определяем фрейм картинки для рендера
 		startingFrame = imageView.superview?.convert(imageView.frame, to: nil)
@@ -530,6 +563,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		zoomingImageView.image = imageView.image
 		zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onZoomedImageClick)))
 		zoomingImageView.isUserInteractionEnabled = true
+		zoomingImageView.layer.cornerRadius = 12
+		zoomingImageView.clipsToBounds = true
+		
+		zoomingImageView.contentMode = .scaleAspectFit
+		zoomingImageView.translatesAutoresizingMaskIntoConstraints = false
 		
 		// находим в иерархии окон нужное окно (куда будем добавлять вьюшку)
 		if let keyWindow = UIApplication.shared.keyWindow {
@@ -543,6 +581,18 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			keyWindow.addSubview(blackBackgroundView!)
 			keyWindow.addSubview(zoomingImageView)
 			
+			blackBackgroundView?.translatesAutoresizingMaskIntoConstraints = false
+			blackBackgroundView?.topAnchor.constraint(equalTo: keyWindow.topAnchor).isActive 		= true
+			blackBackgroundView?.bottomAnchor.constraint(equalTo: keyWindow.bottomAnchor).isActive 	= true
+			blackBackgroundView?.leftAnchor.constraint(equalTo: keyWindow.leftAnchor).isActive 		= true
+			blackBackgroundView?.rightAnchor.constraint(equalTo: keyWindow.rightAnchor).isActive 	= true
+			
+			zoomingImageView.topAnchor.constraint(equalTo: keyWindow.topAnchor).isActive 		= true
+			zoomingImageView.bottomAnchor.constraint(equalTo: keyWindow.bottomAnchor).isActive 	= true
+			zoomingImageView.leftAnchor.constraint(equalTo: keyWindow.leftAnchor).isActive 		= true
+			zoomingImageView.rightAnchor.constraint(equalTo: keyWindow.rightAnchor).isActive 	= true
+			
+			
 			// *****************
 			// * Блок анимации *
 			// *****************
@@ -550,13 +600,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 				
 				self.blackBackgroundView?.alpha = 1
 				self.inputContainerView.alpha = 0 // вьюшка ввода сообщения
+				zoomingImageView.layer.cornerRadius = 0
 				
 				// по отношению сторон (умножаем коэфф. соотношения сторон на размер известной ширины)
 				let newHeight = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
 				zoomingImageView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: newHeight)
 				zoomingImageView.center = keyWindow.center
-				
-			}, completion: nil)
+			})
 		}
 	}
 	
@@ -570,16 +620,18 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 				
 				tapedImageView.frame = self.startingFrame!
+				self.startingFrame = nil
 				self.blackBackgroundView?.alpha = 0
 				self.inputContainerView.alpha = 1
 				tapedImageView.layer.cornerRadius = 12
 				tapedImageView.clipsToBounds = true
-				
 			}, completion: {
 				(completed:Bool) in
 				tapedImageView.removeFromSuperview()
+				self.blackBackgroundView = nil
 				self.blackBackgroundView?.removeFromSuperview()
 				self.originalImageView?.isHidden = false
+				self.inputContainerView.isHidden = false
 			})
 		}
 	}
