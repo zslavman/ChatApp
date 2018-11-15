@@ -109,6 +109,20 @@ class ChatMessageCell: UICollectionViewCell {
 		return button
 	}()
 	
+	private lazy var fullScreenBttn: UIButton = {
+		let button = UIButton(type: .system)
+		button.setImage(UIImage(named: "fullScreen"), for: .normal)
+		button.tintColor = .white
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.isUserInteractionEnabled = true
+		button.addTarget(self, action: #selector(onFullScreenClick), for: .touchUpInside)
+		button.alpha = 0.4
+		button.layer.shadowRadius = 2
+		button.layer.shadowOffset = CGSize(width: 1, height: 1)
+		button.layer.shadowOpacity = 0.5
+		return button
+	}()
+	
 	private let progressBar:UIProgressView = {
 		let prog = UIProgressView(progressViewStyle: UIProgressViewStyle.bar)
 		prog.translatesAutoresizingMaskIntoConstraints = false
@@ -143,12 +157,20 @@ class ChatMessageCell: UICollectionViewCell {
 		addSubview(playButton)
 		bubbleView.addSubview(activityIndicator)
 		bubbleView.addSubview(progressBar)
+		addSubview(fullScreenBttn)
 		
+		
+		// для кнопки "полный экран"
+		fullScreenBttn.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 5).isActive = true
+		fullScreenBttn.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -10).isActive = true
+		fullScreenBttn.widthAnchor.constraint(equalToConstant: 25).isActive = true
+		fullScreenBttn.heightAnchor.constraint(equalToConstant: 25).isActive = true
 		
 		// для прогрессбара
 		progressBar.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -1).isActive 	= true
 		progressBar.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 0).isActive = true
 		progressBar.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: 0).isActive = true
+		
 		
 		// для вложенного фото в сообщении (если такоевое будет)
 		messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive 			= true
@@ -247,7 +269,6 @@ class ChatMessageCell: UICollectionViewCell {
 					}
 				}
 			}
-			
 			messageImageView.isHidden = false
 			bubbleView.backgroundColor = .clear
 			textView.isHidden = true
@@ -265,7 +286,6 @@ class ChatMessageCell: UICollectionViewCell {
 			sendTime_TF.textColor = ChatMessageCell.grayTextColor
 		}
 		
-		
 		// изменим ширину фона сообщения
 		if let str = message.text{
 			let estWidth = linkToParent.estimatedFrameForText(text: str).width + 30
@@ -277,6 +297,7 @@ class ChatMessageCell: UICollectionViewCell {
 		
 		// прячем кнопку Плей на всех сообщениях которые не видео
 		playButton.isHidden = message.videoUrl == nil
+		fullScreenBttn.isHidden = message.videoUrl == nil
 	}
 	
 	
@@ -339,21 +360,25 @@ class ChatMessageCell: UICollectionViewCell {
 			
 			if playTimer != nil { return }
 			
-			// запустим таймер с интервалом 1/6 с (value / timescale)
+			// запустим таймер с интервалом 1/20 с (value / timescale)
 			let interval = CMTime(value: 1, timescale: 20)
 			playTimer = player!.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: {
 				[weak self] (cmtime) in
 				self?.sendTime_TF.text = ChatMessageCell.convertTime(seconds: cmtime.seconds)
 				
-				let endTime = (self?.player?.currentItem?.duration.seconds)!
-				let percentComplete = cmtime.seconds / endTime
-				// print("percentComplete = \(String(format: "%.0f", percentComplete * 100))")
-				self?.progressBar.setProgress(Float(percentComplete), animated: true)
 				
-				// при окончании воспроизведения
-				if cmtime.seconds == endTime{
-					self?.didPlayToEnd()
+				if let endTime = self?.player?.currentItem?.duration.seconds{
+					let percentComplete = cmtime.seconds / endTime
+					// print("percentComplete = \(String(format: "%.0f", percentComplete * 100))")
+					if !percentComplete.isNaN { // на реальных устройствах тут иногда выскакивает NaN
+						self?.progressBar.setProgress(Float(percentComplete), animated: true)
+					}
+					// при окончании воспроизведения
+					if cmtime.seconds == endTime{
+						self?.didPlayToEnd()
+					}
 				}
+				
 			})
 			
 			//	if let playTime = self.player?.currentItem?.currentTime().seconds{
@@ -365,6 +390,24 @@ class ChatMessageCell: UICollectionViewCell {
 			// NotificationCenter.default.addObserver(self, selector: #selector(didPlayToEnd), name:NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player!.currentItem)
 		}
 	}
+	
+	
+	
+	// переход на фулскрин просморт
+	@objc private func onFullScreenClick(){
+		if let videoUrlString = message?.videoUrl, let videoUrl = URL(string: videoUrlString){
+			var seek = CMTime(seconds: 0, preferredTimescale: 1)
+			if player != nil {
+				seek = player!.currentTime()
+				onStopPlay()
+			}
+			chatlogController?.runNativePlayer(videoUrl: videoUrl, currentSeek: seek)
+			return
+		}
+	}
+	
+	
+	
 	
 	
 	/// преобразует секунды в формат ММ:СС

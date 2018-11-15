@@ -11,6 +11,7 @@ import Firebase
 import MobileCoreServices
 import AVFoundation
 
+import AVKit
 
 class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
@@ -180,7 +181,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	}
 	
 
-
+	
 	
 	
 	
@@ -321,14 +322,38 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		
+		var permission:Bool = true
+		
 		// если выбрали видеофайл
 		if let videoURL = info[UIImagePickerControllerMediaURL] as? URL{
-			videoSelectedForInfo(videoFilePath: videoURL)
+			if let bytes = NSData(contentsOf: videoURL)?.length{ // в обычной Data нет свойства length
+				let MB = (bytes / 1024) / 1000
+				print("Размер файла = \(MB) МБ")
+				if MB > 10 {
+					permission = false
+				}
+			}
+			if permission {
+				videoSelectedForInfo(videoFilePath: videoURL)
+			}
 		}
 		else { // если выбрали фото
 			imageSelectedForInfo(info: info)
 		}
-		dismiss(animated: true, completion: nil)
+		
+		
+		dismiss(animated: true, completion: {
+			if !permission{
+				let message = "Выберите другое видео (не более 10 МБ), или сократите его длительность"
+				let alertController = UIAlertController(title: "Слишком большой файл", message: message, preferredStyle: .alert)
+				let ok = UIAlertAction(title: "Ок", style: .default, handler: nil)
+				alertController.addAction(ok)
+				
+				self.present(alertController, animated: true, completion: nil)
+				return
+			}
+		})
 	}
 	
 	
@@ -356,6 +381,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	/// Когда выбрали видеофайл для выгрузки
 	///
 	/// - Parameter videoURL: внутренняя ссылка на видео (ссылка ведущя в альбом с видеофайлом)
+	/// - 	restriction: разрешение загружать, если false - не загружаем
 	private func videoSelectedForInfo(videoFilePath:URL){
 		
 		let uniqueImageName = UUID().uuidString
@@ -640,6 +666,20 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
+	
+	
+	
+	/// воспроизведение видео на нативном плеере в фулскрине
+	public func runNativePlayer(videoUrl: URL, currentSeek:CMTime){
+		let player = AVPlayer(url: videoUrl)
+		player.currentItem?.seek(to: currentSeek) // устанавливаем время начала воспроизведения
+		let vc = AVPlayerViewController()
+		vc.player = player
+		
+		present(vc, animated: true) {
+			vc.player?.play()
+		}
+	}
 	
 	
 	
