@@ -16,56 +16,17 @@ class NewMessageController: UITableViewController {
 	public var messagesController:MessagesController?
 	private var timer:Timer? // таймер-задержка перезагрузки таблицы
 	
+	// образец 2-х мерного массива, используемого в этой таблице
 	let arr = [
-		"А":["Андрей", "Алексей", "Аня"],
-		"Б":["Боря", "Богдан"],
-		"В":["Витя", "Вова", "Владик"]
+		["Андрей", "Алексей", "Аня"],
+		["Боря", "Богдан"],
+		["Витя", "Вова", "Владик"]
 	]
-	private var twoD = [[String]]()
-	
-	private var temp = [String : [String]]()
-	private var letter = [String]()
+	private var twoD = [[User]]()
+	private var letter = [String]() // массив первых букв юзеров
 	
 	
-	
-	
-	
-	private func prepareData(){
-		// создаем массив букв (без повтора)
-		for value in users {
-			let char = value.name?.prefix(1).uppercased()
-			if !letter.contains(char!){
-				letter.append(char!)
-				twoD.append([])
-			}
-			letter.sort()
-		}
-		print("letter = \(letter)")
-		
-		// заполняем массив массивов юзеров, согласно алфавита
-		for value in users {
-			let char = value.name?.prefix(1).uppercased()
-			let index = letter.index(of: char!)
-			twoD[index!].append(value.name!)
-		}
-		print("twoD = \(twoD)")
-		
-		// сортируем элементы каждого внутреннего массива
-		for var value in twoD {
-			value.sort{$0.localizedCaseInsensitiveCompare($1) == .orderedAscending}
-		}
-		
-		print("twoD = \(twoD)")
-		
-		
-//		let temp2 = temp.sorted {
-//			// key1: (key: String, value: [String])
-//			(key1, key2) -> Bool in
-//			return key1.key.localizedCaseInsensitiveCompare(key2.key) == .orderedAscending
-//		}
 
-	}
-	
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,11 +60,45 @@ class NewMessageController: UITableViewController {
 	
 	
 	
+	
+	/// преобразовывает масив юзеров в 2-х мерного массив для секций таблицы
+	private func prepareData(){
+		// создаем массив букв (без повтора)
+		for value in users {
+			let char = value.name?.prefix(1).uppercased()
+			if !letter.contains(char!){
+				letter.append(char!)
+				twoD.append([])
+			}
+			letter.sort()
+		}
+		
+		// заполняем массив массивов юзеров, согласно алфавита
+		for value in users {
+			let char = value.name?.prefix(1).uppercased()
+			let index = letter.index(of: char!)
+			twoD[index!].append(value)
+		}
+		
+		// сортируем элементы каждого внутреннего массива
+		var newArr = [[User]]()
+		for var value in twoD {
+			// value.sort{$0.lowercased() < $1.lowercased()}
+			value.sort{($0.name)!.localizedCaseInsensitiveCompare($1.name!) == .orderedAscending}
+			newArr.append(value)
+		}
+		twoD = newArr
+	}
+	
+	
+	
+	
+	
+	
 	private func attemptReloadofTable(){
 		timer?.invalidate()
 		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
 	}
-	
 	/// (без этого таблица перезагружается десятки раз)
 	@objc private func delayedRelodTable(){
 		users.sort{$0.email!.localizedCaseInsensitiveCompare($1.email!) == .orderedAscending}
@@ -115,41 +110,38 @@ class NewMessageController: UITableViewController {
 	
 	
 	
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	@objc private func onCancelClick(){
 		dismiss(animated: true, completion: nil)
 	}
 	
 	
+
 	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return users.count
+	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let label = UILabel()
+		label.text = "       " + letter[section]
+		label.backgroundColor = ChatMessageCell.blueColor
+//		label.contentInset = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25)
+		label.font = UIFont.boldSystemFont(ofSize: 16)
+		return label
 	}
 	
+
 	
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return twoD[section].count
+	}
+	
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		return twoD.count
+	}
 	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! UserCell
 		
-		let user = users[indexPath.row]
+		let user = twoD[indexPath.section][indexPath.row]
 		cell.textLabel?.text = user.name
 		cell.detailTextLabel?.text = user.email
 		cell.tag = indexPath.row // для идентификации ячейки в кложере
@@ -168,6 +160,13 @@ class NewMessageController: UITableViewController {
 			}
 		}
 		
+		// цвет выделения при клике на ячейку
+		let selectionColor = UIView()
+//		selectionColor.layer.borderWidth = 1
+//		selectionColor.layer.borderColor = UIColor.white.cgColor
+		selectionColor.backgroundColor = ChatMessageCell.blueColor
+		cell.selectedBackgroundView = selectionColor
+
 		return cell
 	}
 	
