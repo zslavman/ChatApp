@@ -14,6 +14,57 @@ class NewMessageController: UITableViewController {
 	private var cellID = "cellID"
 	private var users = [User]()
 	public var messagesController:MessagesController?
+	private var timer:Timer? // таймер-задержка перезагрузки таблицы
+	
+	let arr = [
+		"А":["Андрей", "Алексей", "Аня"],
+		"Б":["Боря", "Богдан"],
+		"В":["Витя", "Вова", "Владик"]
+	]
+	private var twoD = [[String]]()
+	
+	private var temp = [String : [String]]()
+	private var letter = [String]()
+	
+	
+	
+	
+	
+	private func prepareData(){
+		// создаем массив букв (без повтора)
+		for value in users {
+			let char = value.name?.prefix(1).uppercased()
+			if !letter.contains(char!){
+				letter.append(char!)
+				twoD.append([])
+			}
+			letter.sort()
+		}
+		print("letter = \(letter)")
+		
+		// заполняем массив массивов юзеров, согласно алфавита
+		for value in users {
+			let char = value.name?.prefix(1).uppercased()
+			let index = letter.index(of: char!)
+			twoD[index!].append(value.name!)
+		}
+		print("twoD = \(twoD)")
+		
+		// сортируем элементы каждого внутреннего массива
+		for var value in twoD {
+			value.sort{$0.localizedCaseInsensitiveCompare($1) == .orderedAscending}
+		}
+		
+		print("twoD = \(twoD)")
+		
+		
+//		let temp2 = temp.sorted {
+//			// key1: (key: String, value: [String])
+//			(key1, key2) -> Bool in
+//			return key1.key.localizedCaseInsensitiveCompare(key2.key) == .orderedAscending
+//		}
+
+	}
 	
 	
     override func viewDidLoad() {
@@ -37,19 +88,47 @@ class NewMessageController: UITableViewController {
 			
 			if let dict = snapshot.value as? [String:AnyObject]{
 				let user = User()
-//				user.id = snapshot.key // это и есть юзерID
 				// крашанет если в классе не найдется переменных с именами ключей словаря
 				user.setValuesForKeys(dict)
 				self.users.append(user)
 			}
-			self.users.sort{$0.email!.localizedCaseInsensitiveCompare($1.email!) == .orderedAscending}
-			DispatchQueue.main.async {
-				self.tableView.reloadData()
-			}
-			
-			
+			self.attemptReloadofTable()
 		}, withCancel: nil)
 	}
+	
+	
+	
+	
+	private func attemptReloadofTable(){
+		timer?.invalidate()
+		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
+	}
+	
+	/// (без этого таблица перезагружается десятки раз)
+	@objc private func delayedRelodTable(){
+		users.sort{$0.email!.localizedCaseInsensitiveCompare($1.email!) == .orderedAscending}
+		DispatchQueue.main.async {
+			self.prepareData()
+			self.tableView.reloadData()
+		}
+	}
+	
+	
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 

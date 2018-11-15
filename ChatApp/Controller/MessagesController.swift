@@ -149,11 +149,13 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
-	
-	
-	
 	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
+	/// попытка перегрузить таблицу
+	private func attemptReloadofTable(){
+		timer?.invalidate()
+		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
+	}
+	
 	/// (без этого таблица перезагружается десятки раз)
 	@objc private func delayedRelodTable(){
 		messages = Array(self.messagesDict.values)
@@ -165,12 +167,6 @@ class MessagesController: UITableViewController {
 			self.tableView.reloadData()
 		}
 	}
-	/// попытка перегрузить таблицу
-	private func attemptReloadofTable(){
-		timer?.invalidate()
-		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
-	}
-	
 	
 	
 	
