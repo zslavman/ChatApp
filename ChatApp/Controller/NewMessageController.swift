@@ -164,7 +164,7 @@ class NewMessageController: UITableViewController {
 		let selectionColor = UIView()
 //		selectionColor.layer.borderWidth = 1
 //		selectionColor.layer.borderColor = UIColor.white.cgColor
-		selectionColor.backgroundColor = ChatMessageCell.blueColor
+		selectionColor.backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
 		cell.selectedBackgroundView = selectionColor
 
 		return cell
@@ -177,13 +177,17 @@ class NewMessageController: UITableViewController {
 		return 72.0
 	}
 	
+	// на iOS 10 не будет работать без этого, так как в 10-ке по умолчанию heightForHeaderInSection = 0 (независимо задан ли viewForHeaderInSection)
+	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 22
+	}
 	
 	
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		dismiss(animated: true) {
 			// дожидаемся окончания убивания этого контроллера и в контроллере-родителе запускаем ф-цию goToChat()
-			let user = self.users[indexPath.row]
+			let user = self.twoD[indexPath.section][indexPath.row]
 			self.messagesController?.goToChatWith(user: user)
 		}
 	}

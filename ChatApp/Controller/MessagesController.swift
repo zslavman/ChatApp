@@ -25,7 +25,7 @@ class MessagesController: UITableViewController {
 	
 	
 	private let refUserMessages_original = Database.database().reference().child("user-messages")// начало ссылки для refUserMessages
-	
+	private var labelNoMessages:UILabel?
 	
 	
 	
@@ -55,7 +55,11 @@ class MessagesController: UITableViewController {
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
+		
+		// когда будем заходить сюда уже после загрузки юзеров
+		drawNoMessages()
 	}
+	
 		
 	
 	
@@ -159,6 +163,11 @@ class MessagesController: UITableViewController {
 	/// (без этого таблица перезагружается десятки раз)
 	@objc private func delayedRelodTable(){
 		messages = Array(self.messagesDict.values)
+		if !messages.isEmpty && labelNoMessages != nil{
+			labelNoMessages?.removeFromSuperview()
+			labelNoMessages = nil
+		}
+		
 		messages.sort(by: {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
@@ -168,6 +177,34 @@ class MessagesController: UITableViewController {
 		}
 	}
 	
+	
+	
+	
+	
+	private func drawNoMessages(){
+		
+		if !messages.isEmpty {
+			return
+		}
+		labelNoMessages = {
+			let label = UILabel()
+			label.text = "Нет сообщений"
+			label.backgroundColor = .clear
+			label.textColor = .lightGray
+			label.font = UIFont.boldSystemFont(ofSize: 25)
+			label.textAlignment = .center
+			label.translatesAutoresizingMaskIntoConstraints = false
+			return label
+		}()
+		
+		guard let labelNoMessages = labelNoMessages else { return }
+		
+		view.addSubview(labelNoMessages)
+		
+		labelNoMessages.topAnchor.constraint(equalTo: tableView.topAnchor, constant: -64).isActive = true
+		labelNoMessages.widthAnchor.constraint(equalTo: tableView.widthAnchor).isActive = true
+		labelNoMessages.heightAnchor.constraint(equalTo: tableView.heightAnchor).isActive = true
+	}
 	
 	
 	
