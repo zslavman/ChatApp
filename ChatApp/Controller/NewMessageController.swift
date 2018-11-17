@@ -15,6 +15,7 @@ class NewMessageController: UITableViewController {
 	private var users = [User]()
 	public var messagesController:MessagesController?
 	private var timer:Timer? // таймер-задержка перезагрузки таблицы
+	public var owner:User?
 	
 	// образец 2-х мерного массива, используемого в этой таблице
 	let arr = [
@@ -63,6 +64,13 @@ class NewMessageController: UITableViewController {
 	
 	/// преобразовывает масив юзеров в 2-х мерного массив для секций таблицы
 	private func prepareData(){
+		
+		// убираем себя из массива
+		users = users.filter { // нужно возвратить то, что должно остатся
+			(user) -> Bool in
+			return user.name != owner?.name
+		}
+		
 		// создаем массив букв (без повтора)
 		for value in users {
 			let char = value.name?.prefix(1).uppercased()
@@ -144,7 +152,9 @@ class NewMessageController: UITableViewController {
 		let user = twoD[indexPath.section][indexPath.row]
 		cell.textLabel?.text = user.name
 		cell.detailTextLabel?.text = user.email
-		cell.tag = indexPath.row // для идентификации ячейки в кложере
+		
+		cell.iTag = ((indexPath.section).description + (indexPath.row).description) // для идентификации ячейки в кложере
+		let basePath = cell.iTag
 
 		if let profileImageUrl = user.profileImageUrl{
 			// качаем картинку
@@ -153,7 +163,8 @@ class NewMessageController: UITableViewController {
 				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
 				// и обновить ее в главном потоке
 				DispatchQueue.main.async {
-					if cell.tag == indexPath.row{
+//					print("cell.iTag == basePath = \(cell.iTag == basePath)")
+					if cell.iTag == basePath{
 						cell.profileImageView.image = image
 					}
 				}
@@ -191,6 +202,13 @@ class NewMessageController: UITableViewController {
 			self.messagesController?.goToChatWith(user: user)
 		}
 	}
+	
+	
+	/// алфавитный указатель секций справа
+	override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+		return letter
+	}
+	
 	
 	
 	

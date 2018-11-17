@@ -41,11 +41,13 @@ class MessagesController: UITableViewController {
 		let bttnImage = UIImage(named: "new_message_icon")
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage, style: .plain, target: self, action: #selector(onNewMessageClick))
 		
+		drawNoMessages()
+		
 		chekIfUserLoggedIn()
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
-		
 	}
+	
 	
 	
 
@@ -55,9 +57,6 @@ class MessagesController: UITableViewController {
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
-		
-		// когда будем заходить сюда уже после загрузки юзеров
-		drawNoMessages()
 	}
 	
 		
@@ -75,6 +74,7 @@ class MessagesController: UITableViewController {
 		let msg = messages[indexPath.row]
 		
 		if msg.toID != nil {
+//			cell.iTag = (indexPath.section).description + (indexPath.row).description
 			cell.setupCell(msg: msg, indexPath: indexPath)
 		}
 		return cell
@@ -117,6 +117,10 @@ class MessagesController: UITableViewController {
 		if uid == nil { return }
 		
 		refUserMessages = refUserMessages_original.child(uid)
+		
+		// если в БД не будет записей, то в колбэк refUserMessages.observe вообще не зайдет!!
+		// потому деграем для смены "Загрузка..."
+		attemptReloadofTable()
 		
 		refUserMessages.observe(.childAdded, with: {
 			(snapshot) in
@@ -163,9 +167,13 @@ class MessagesController: UITableViewController {
 	/// (без этого таблица перезагружается десятки раз)
 	@objc private func delayedRelodTable(){
 		messages = Array(self.messagesDict.values)
-		if !messages.isEmpty && labelNoMessages != nil{
+		
+		if !messages.isEmpty{
 			labelNoMessages?.removeFromSuperview()
 			labelNoMessages = nil
+		}
+		else {
+			labelNoMessages?.text = "Нет сообщений"
 		}
 		
 		messages.sort(by: {
@@ -188,7 +196,7 @@ class MessagesController: UITableViewController {
 		}
 		labelNoMessages = {
 			let label = UILabel()
-			label.text = "Нет сообщений"
+			label.text = "Загрузка..."
 			label.backgroundColor = .clear
 			label.textColor = .lightGray
 			label.font = UIFont.boldSystemFont(ofSize: 25)
@@ -329,6 +337,8 @@ class MessagesController: UITableViewController {
 		messages.removeAll()
 		messagesDict.removeAll()
 		owner = nil
+		labelNoMessages?.removeFromSuperview()
+		labelNoMessages = nil
 		
 		do {
 			try Auth.auth().signOut()
@@ -352,6 +362,7 @@ class MessagesController: UITableViewController {
 	@objc private func onNewMessageClick(){
 		let newMessContr = NewMessageController()
 		newMessContr.messagesController = self
+		newMessContr.owner = owner
 		let navContr = UINavigationController(rootViewController: newMessContr)
 		present(navContr, animated: true, completion: nil)
 //		navigationController?.pushViewController(newMessContr, animated: true)

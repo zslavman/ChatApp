@@ -34,6 +34,8 @@ class UserCell: UITableViewCell {
 		label.numberOfLines = 0
 		return label
 	}()
+	public var iTag:String!
+	
 	
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -72,18 +74,24 @@ class UserCell: UITableViewCell {
 	/// настройка ячейки для MessagesController
 	public func setupCell(msg:Message, indexPath:IndexPath){
 		
+		// от этой штуки надо избавиться, при прокурутке, юзеры каждый раз загружаются по-новому т.к. они нигде не сохраняются
+		// Только после того как зайти в NewMessageController (где они сохраняются в [Users]) MessagesController работает без тормозов
+		// TODO: загрузить изначально данные всех юзеров (с которыми диалоги), а сюда подавать готового юзера
+		
+		///******************************************
 		let ref = Database.database().reference().child("users").child(msg.chatPartnerID()!)
 		
 		ref.observeSingleEvent(of: .value, with: {
 			(snapshot:DataSnapshot) in
-			
+
 			if let dictionary = snapshot.value as? [String:AnyObject]{
 				// преобразовываем toID в реальное имя
 				self.textLabel?.text = dictionary["name"] as? String
-				
+
 				// получаем картинку
-				self.tag = indexPath.row // для идентификации ячейки в кложере
-				
+				self.iTag = (indexPath.section).description + (indexPath.row).description // для идентификации ячейки в кложере
+				let basePath = self.iTag
+
 				if let profileImageUrl = dictionary["profileImageUrl"] as? String{
 					// качаем картинку
 					self.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
@@ -91,7 +99,8 @@ class UserCell: UITableViewCell {
 						// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
 						// и обновить ее в главном потоке
 						DispatchQueue.main.async {
-							if self.tag == indexPath.row{
+//							print("self.iTag == basePath = \(self.iTag == basePath)")
+							if self.iTag == basePath {
 								self.profileImageView.image = image
 							}
 						}
@@ -99,6 +108,8 @@ class UserCell: UITableViewCell {
 				}
 			}
 		}, withCancel: nil)
+		///******************************************
+		
 		
 		let str:String?
 		if msg.text != nil {
@@ -126,7 +137,10 @@ class UserCell: UITableViewCell {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	
+	override func prepareForReuse() {
+		iTag = ""
+		profileImageView.image = nil
+	}
 	
 	
 	/// Возвращает время или кол-во прошедшено времени (в разных форматах) относительно текущего времени
