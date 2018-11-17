@@ -95,8 +95,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	private let cell_ID:String = "cell_ID"
 	private var messages:[Message] = []
 	private var containerViewBottomAnchor:NSLayoutConstraint?
-	
-	
+	private var disposeVar:(DatabaseReference, UInt)!
+	private var flag:Bool = false // флаг, что открыто окно выбора картинки (false - слушатель удаляется)
 	
 	
 	
@@ -146,7 +146,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-		NotificationCenter.default.removeObserver(self) // слушатели всегда нужно убирать, иначе будет утечка памяти и многократное срабатывание
+		
+		// убиваем слушателя базы
+		if !flag{
+			NotificationCenter.default.removeObserver(self) // убираем слушатели, иначе будет утечка памяти и многократное срабатывание
+			disposeVar.0.removeObserver(withHandle: disposeVar.1)
+			disposeVar = nil
+		}
 		
 		// перебираем все видимые ячейки, на предмет проигрывания вних видео
 		guard let cells = collectionView?.visibleCells as? [ChatMessageCell] else { return }
@@ -245,7 +251,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		guard let uid = Auth.auth().currentUser?.uid, let toID = user?.id else { return }
 		
 		let userMessagesRef = Database.database().reference().child("user-messages").child(uid).child(toID) // ссылка на список сообщений
-		userMessagesRef.observe(.childAdded, with: {
+		let handler = userMessagesRef.observe(.childAdded, with: {
 			(snapshot) in
 			
 			let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
@@ -275,6 +281,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			}, withCancel: nil)
 			
 		}, withCancel: nil)
+		
+		disposeVar = (userMessagesRef, handler)
 	}
 
 
@@ -316,6 +324,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		// разрешаем выбирать видеофайлы из библиотеки
 		imagePickerController.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
 		
+		flag = true
 		present(imagePickerController, animated: true, completion: nil)
 	}
 	
@@ -324,6 +333,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 		
 		var permission:Bool = true
+		flag = false
 		
 		// если выбрали видеофайл
 		if let videoURL = info[UIImagePickerControllerMediaURL] as? URL{
@@ -341,6 +351,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		else { // если выбрали фото
 			imageSelectedForInfo(info: info)
 		}
+		
 		
 		
 		dismiss(animated: true, completion: {
@@ -459,6 +470,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+		flag = true
 		dismiss(animated: true, completion: nil)
 	}
 	

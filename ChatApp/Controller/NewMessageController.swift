@@ -25,7 +25,7 @@ class NewMessageController: UITableViewController {
 	]
 	private var twoD = [[User]]()
 	private var letter = [String]() // массив первых букв юзеров
-	
+	private var disposeVar:(DatabaseReference, UInt)!
 	
 
 	
@@ -45,7 +45,7 @@ class NewMessageController: UITableViewController {
 	private func fetchUsers(){
 		
 		let ref = Database.database().reference(withPath: "users")
-		ref.observe(.childAdded, with: { // по сути - это цикл
+		let handler = ref.observe(.childAdded, with: { // по сути - это цикл
 			(snapshot) in
 			
 			if let dict = snapshot.value as? [String:AnyObject]{
@@ -56,6 +56,8 @@ class NewMessageController: UITableViewController {
 			}
 			self.attemptReloadofTable()
 		}, withCancel: nil)
+		
+		disposeVar = (ref, handler)
 	}
 	
 	
@@ -119,6 +121,8 @@ class NewMessageController: UITableViewController {
 	
 	
 	@objc private func onCancelClick(){
+		disposeVar.0.removeObserver(withHandle: disposeVar.1)
+		disposeVar = nil
 		dismiss(animated: true, completion: nil)
 	}
 	
@@ -196,6 +200,10 @@ class NewMessageController: UITableViewController {
 	
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		
+		// убиваем слушателя базы
+		disposeVar.0.removeObserver(withHandle: disposeVar.1)
+		
 		dismiss(animated: true) {
 			// дожидаемся окончания убивания этого контроллера и в контроллере-родителе запускаем ф-цию goToChat()
 			let user = self.twoD[indexPath.section][indexPath.row]

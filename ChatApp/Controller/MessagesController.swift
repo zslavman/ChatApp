@@ -27,9 +27,10 @@ class MessagesController: UITableViewController {
 	private let refUserMessages_original = Database.database().reference().child("user-messages")// начало ссылки для refUserMessages
 	private var labelNoMessages:UILabel?
 	
-	
-	
+	private var hendlers = [UInt:DatabaseReference]() // для правильного диспоза слушателей базы
 	internal var profileImageView:UIImageView!
+	
+	
 
 	
 	// при переходе на другие экраны и возврате сюда - этот метод не дергается!
@@ -40,8 +41,6 @@ class MessagesController: UITableViewController {
 		
 		let bttnImage = UIImage(named: "new_message_icon")
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage, style: .plain, target: self, action: #selector(onNewMessageClick))
-		
-		drawNoMessages()
 		
 		chekIfUserLoggedIn()
 		
@@ -57,11 +56,12 @@ class MessagesController: UITableViewController {
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
+		
 	}
 	
 		
 	
-	
+	private var senders = [User]()
 	
 	
 
@@ -74,7 +74,7 @@ class MessagesController: UITableViewController {
 		let msg = messages[indexPath.row]
 		
 		if msg.toID != nil {
-//			cell.iTag = (indexPath.section).description + (indexPath.row).description
+
 			cell.setupCell(msg: msg, indexPath: indexPath)
 		}
 		return cell
@@ -120,14 +120,16 @@ class MessagesController: UITableViewController {
 		
 		// если в БД не будет записей, то в колбэк refUserMessages.observe вообще не зайдет!!
 		// потому деграем для смены "Загрузка..."
-		attemptReloadofTable()
-		
+		drawNoMessages()
+
 		refUserMessages.observe(.childAdded, with: {
 			(snapshot) in
 			
 			let userID = snapshot.key
-			self.refUserMessages = self.refUserMessages_original.child(self.uid).child(userID)
-			self.refUserMessages.observe(.childAdded, with: {
+			let ref_1 = self.refUserMessages_original.child(self.uid).child(userID)
+			
+			
+			let listener = ref_1.observe(.childAdded, with: {
 				(snapshot) in
 				
 				let messageID = snapshot.key
@@ -152,6 +154,8 @@ class MessagesController: UITableViewController {
 				
 			}, withCancel: nil)
 			
+			self.hendlers[listener] = ref_1
+			
 		}, withCancel: nil)
 	}
 	
@@ -161,6 +165,7 @@ class MessagesController: UITableViewController {
 	/// попытка перегрузить таблицу
 	private func attemptReloadofTable(){
 		timer?.invalidate()
+		labelNoMessages?.text = "Загрузка..."
 		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
 	}
 	
@@ -168,12 +173,12 @@ class MessagesController: UITableViewController {
 	@objc private func delayedRelodTable(){
 		messages = Array(self.messagesDict.values)
 		
-		if !messages.isEmpty{
-			labelNoMessages?.removeFromSuperview()
-			labelNoMessages = nil
+		if messages.isEmpty{
+			labelNoMessages?.text = "Нет сообщений"
 		}
 		else {
-			labelNoMessages?.text = "Нет сообщений"
+			labelNoMessages?.removeFromSuperview()
+			labelNoMessages = nil
 		}
 		
 		messages.sort(by: {
@@ -194,6 +199,10 @@ class MessagesController: UITableViewController {
 		if !messages.isEmpty {
 			return
 		}
+		
+		labelNoMessages?.removeFromSuperview()
+		labelNoMessages = nil
+		
 		labelNoMessages = {
 			let label = UILabel()
 			label.text = "Загрузка..."
@@ -204,6 +213,7 @@ class MessagesController: UITableViewController {
 			label.translatesAutoresizingMaskIntoConstraints = false
 			return label
 		}()
+		attemptReloadofTable()
 		
 		guard let labelNoMessages = labelNoMessages else { return }
 		
@@ -262,6 +272,7 @@ class MessagesController: UITableViewController {
 		messagesDict.removeAll()
 		tableView.reloadData()
 		
+		drawNoMessages()
 		observeUserMessages()
 		
 		// контейнер
@@ -325,17 +336,21 @@ class MessagesController: UITableViewController {
 	
 	@objc private func onLogout(){
 		
-		refUsers.removeAllObservers()
-		if refUserMessages != nil {
-			refUserMessages.removeAllObservers()
-		}
-		refMessages.removeAllObservers()
+		// удаляем слушателя собственных сообщений
+		refUserMessages?.removeAllObservers()
 		
-		refUserMessages = nil
+		// удаляем слушателей сообщений каждого фигуранта диалога
+		for (key, value) in hendlers {
+			value.removeObserver(withHandle: key)
+		}
+
 		uid = nil
 		
 		messages.removeAll()
 		messagesDict.removeAll()
+		hendlers.removeAll()
+
+		
 		owner = nil
 		labelNoMessages?.removeFromSuperview()
 		labelNoMessages = nil

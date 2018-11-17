@@ -35,7 +35,7 @@ class UserCell: UITableViewCell {
 		return label
 	}()
 	public var iTag:String!
-	
+	public static var allUsersWhoWrote = [User]()
 	
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -85,21 +85,28 @@ class UserCell: UITableViewCell {
 			(snapshot:DataSnapshot) in
 
 			if let dictionary = snapshot.value as? [String:AnyObject]{
+				
+				let user = User()
+				user.setValuesForKeys(dictionary)
+				if !UserCell.allUsersWhoWrote.contains{$0.id == user.id} {
+					UserCell.allUsersWhoWrote.append(user)
+				}
+				print("allUsersWhoWrote.count = \(UserCell.allUsersWhoWrote.count)")
+				
 				// преобразовываем toID в реальное имя
-				self.textLabel?.text = dictionary["name"] as? String
+				self.textLabel?.text = user.name
 
 				// получаем картинку
 				self.iTag = (indexPath.section).description + (indexPath.row).description // для идентификации ячейки в кложере
 				let basePath = self.iTag
 
-				if let profileImageUrl = dictionary["profileImageUrl"] as? String{
+				if let profileImageUrl = user.profileImageUrl{
 					// качаем картинку
 					self.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
 						(image) in
 						// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
 						// и обновить ее в главном потоке
 						DispatchQueue.main.async {
-//							print("self.iTag == basePath = \(self.iTag == basePath)")
 							if self.iTag == basePath {
 								self.profileImageView.image = image
 							}
