@@ -45,6 +45,7 @@ class MessagesController: UITableViewController {
 		chekIfUserLoggedIn()
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
+//		tableView.allowsMultipleSelection = true
 	}
 	
 	
@@ -64,6 +65,38 @@ class MessagesController: UITableViewController {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return messages.count
 	}
+	
+	
+	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return true
+	}
+	
+	/// то, что будет выполнено при нажатии на "удалить"
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+		
+		let message = messages[indexPath.row]
+
+		if let partnerID = message.chatPartnerID(){
+			refUserMessages_original.child(uid).child(partnerID).removeValue {
+				(error, ref) in
+				if error != nil {
+					print(error!.localizedDescription)
+					return
+				}
+				self.messagesDict.removeValue(forKey: partnerID)
+				
+				// один из методов обновления таблицы, но он не безопасный
+				 self.messages.remove(at: indexPath.row)
+				 self.tableView.deleteRows(at: [indexPath], with: .automatic)
+				
+			}
+		}
+		
+		
+		
+		
+	}
+	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cell_id, for: indexPath) as! UserCell
@@ -182,7 +215,19 @@ class MessagesController: UITableViewController {
 				
 			}, withCancel: nil)
 			
+			
+			// слушатель на удаление сообщений
+			let listener2 = ref_1.observe(.childRemoved, with: {
+				(snapshot) in
+				
+				self.messagesDict.removeValue(forKey: snapshot.key)
+				self.attemptReloadofTable()
+				
+			}, withCancel: nil)
+			
+			// записываем слушателя и ссылку в словарь (для диспоза)
 			self.hendlers[listener] = ref_1
+			self.hendlers[listener2] = ref_1
 			
 		}, withCancel: nil)
 	}
@@ -377,6 +422,7 @@ class MessagesController: UITableViewController {
 		messages.removeAll()
 		messagesDict.removeAll()
 		hendlers.removeAll()
+		tableView.reloadData()
 		
 		senders.removeAll()
 		

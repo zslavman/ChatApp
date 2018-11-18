@@ -44,7 +44,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 //		containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
 //		containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
 		
-		
+
 		// картинка слева (отправить фото)
 		let uploadImageView = UIImageView()
 		uploadImageView.image = UIImage(named: "upload_image_icon")
@@ -203,9 +203,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		return dataArray[section].count
 	}
 	
-	override func numberOfSections(in collectionView: UICollectionView) -> Int {
-		return dataArray.count
-	}
+	
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
@@ -239,28 +237,35 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
+	//**********************
+	//  Настраиваем секции *
+	//**********************
+	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
 		return CGSize(width: 150, height: 45)
 	}
 	
-	
-	
 	/// вьюшка для хэдера в колекшнвью (сюда не будет заходить если не установить значение  для layout?.headerReferenceSize)
 	/// или определить верхнюю ф-цию
 	override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
+		
 		if kind == UICollectionElementKindSectionHeader {
 			let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReusableView, for: indexPath) as! SectionHeaderView
 			
-			// headerView.backgroundColor = UIColor.lightGray
 			headerView.title.text = stringedTimes[indexPath.section]
-			
 			return headerView
 		}
 		// else if kind == UICollectionElementKindSectionFooter { }
 		
 		fatalError()
 	}
+	
+	override func numberOfSections(in collectionView: UICollectionView) -> Int {
+		return dataArray.count
+	}
+	
+	//********************
+	
 	
 	
 	
@@ -414,9 +419,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	/// клик на картинку (переслать фотку)
 	@objc private func onUploadClick(){
-		
-//		smartSort()
-//		return
 
 		let imagePickerController = UIImagePickerController()
 		
