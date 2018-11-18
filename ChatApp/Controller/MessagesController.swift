@@ -21,15 +21,15 @@ class MessagesController: UITableViewController {
 	
 	private var refUsers 		= Database.database().reference().child("users")
 	private var refMessages 	= Database.database().reference().child("messages")
-	private var refUserMessages:DatabaseReference! // ссылка, у которой вконце будет приписан изменяющийся uid
+	private var refUserMessages:DatabaseReference! 		// ссылка, у которой вконце будет приписан изменяющийся uid
 	
 	
 	private let refUserMessages_original = Database.database().reference().child("user-messages")// начало ссылки для refUserMessages
 	private var labelNoMessages:UILabel?
 	
-	private var hendlers = [UInt:DatabaseReference]() // для правильного диспоза слушателей базы
+	private var hendlers = [UInt:DatabaseReference]() 	// для правильного диспоза слушателей базы
 	internal var profileImageView:UIImageView!
-	
+	private var senders = [User]() 						// данные юзеров с которым есть чаты
 	
 
 	
@@ -60,10 +60,6 @@ class MessagesController: UITableViewController {
 	}
 	
 		
-	
-	private var senders = [User]()
-	
-	
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return messages.count
@@ -74,8 +70,40 @@ class MessagesController: UITableViewController {
 		let msg = messages[indexPath.row]
 		
 		if msg.toID != nil {
+			cell.iTag = (indexPath.section).description + (indexPath.row).description
+			let basePath = cell.iTag
+			let _id = msg.chatPartnerID()!
+			var _user:User?
+			
+			// если юзер с _id есть в массиве senders, передаем его в setupCell
+			for value in senders {
+				if value.id == _id {
+					_user = value
+					break
+				}
+			}
+			if let _user = _user {
+				cell.setupCell(msg: msg, indexPath: indexPath, user: _user)
+			}
+			// если нет - загружаем его (данные)
+			else {
+				let ref = Database.database().reference().child("users").child(_id)
+				
+				ref.observeSingleEvent(of: .value, with: {
+					(snapshot:DataSnapshot) in
+					
+					if let dictionary = snapshot.value as? [String:AnyObject]{
+						
+						let user = User()
+						user.setValuesForKeys(dictionary)
+						self.senders.append(user)
 
-			cell.setupCell(msg: msg, indexPath: indexPath)
+						if cell.iTag == basePath {
+							cell.setupCell(msg: msg, indexPath: indexPath, user: user)
+						}
+					}
+				})
+			}
 		}
 		return cell
 	}
@@ -349,7 +377,8 @@ class MessagesController: UITableViewController {
 		messages.removeAll()
 		messagesDict.removeAll()
 		hendlers.removeAll()
-
+		
+		senders.removeAll()
 		
 		owner = nil
 		labelNoMessages?.removeFromSuperview()

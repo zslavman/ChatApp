@@ -35,7 +35,6 @@ class UserCell: UITableViewCell {
 		return label
 	}()
 	public var iTag:String!
-	public static var allUsersWhoWrote = [User]()
 	
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -59,6 +58,8 @@ class UserCell: UITableViewCell {
 	
 	
 	
+	
+	
 	// фикс заeзжания текста под фотку профиля
 	override func layoutSubviews() {
 		super.layoutSubviews()
@@ -71,52 +72,28 @@ class UserCell: UITableViewCell {
 	
 	
 	
+	
+	
 	/// настройка ячейки для MessagesController
-	public func setupCell(msg:Message, indexPath:IndexPath){
+	public func setupCell(msg:Message, indexPath:IndexPath, user:User){
 		
-		// от этой штуки надо избавиться, при прокурутке, юзеры каждый раз загружаются по-новому т.к. они нигде не сохраняются
-		// Только после того как зайти в NewMessageController (где они сохраняются в [Users]) MessagesController работает без тормозов
-		// TODO: загрузить изначально данные всех юзеров (с которыми диалоги), а сюда подавать готового юзера
+		self.textLabel?.text = user.name
 		
-		///******************************************
-		let ref = Database.database().reference().child("users").child(msg.chatPartnerID()!)
+		let basePath = (indexPath.section).description + (indexPath.row).description // для идентификации ячейки в кложере
 		
-		ref.observeSingleEvent(of: .value, with: {
-			(snapshot:DataSnapshot) in
-
-			if let dictionary = snapshot.value as? [String:AnyObject]{
-				
-				let user = User()
-				user.setValuesForKeys(dictionary)
-				if !UserCell.allUsersWhoWrote.contains{$0.id == user.id} {
-					UserCell.allUsersWhoWrote.append(user)
-				}
-				print("allUsersWhoWrote.count = \(UserCell.allUsersWhoWrote.count)")
-				
-				// преобразовываем toID в реальное имя
-				self.textLabel?.text = user.name
-
-				// получаем картинку
-				self.iTag = (indexPath.section).description + (indexPath.row).description // для идентификации ячейки в кложере
-				let basePath = self.iTag
-
-				if let profileImageUrl = user.profileImageUrl{
-					// качаем картинку
-					self.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
-						(image) in
-						// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
-						// и обновить ее в главном потоке
-						DispatchQueue.main.async {
-							if self.iTag == basePath {
-								self.profileImageView.image = image
-							}
-						}
+		if let profileImageUrl = user.profileImageUrl{
+			// качаем картинку
+			self.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
+				(image) in
+				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
+				// и обновить ее в главном потоке
+				DispatchQueue.main.async {
+					if self.iTag == basePath {
+						self.profileImageView.image = image
 					}
 				}
 			}
-		}, withCancel: nil)
-		///******************************************
-		
+		}
 		
 		let str:String?
 		if msg.text != nil {
@@ -158,10 +135,13 @@ class UserCell: UITableViewCell {
 		
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
-		let caretSymbol:String = shouldReturn ? "\n" : " "
+		let caretSymbol:String = "\n"
 		
 		dateFormater.dateFormat = "HH:mm"
 		let HH_mm = dateFormater.string(from: convertedDate)
+		if !shouldReturn{
+			return HH_mm
+		}
 		
 		// сегодня (12:54)
 		if Calendar.current.isDateInToday(convertedDate){

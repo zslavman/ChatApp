@@ -96,7 +96,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	private var messages:[Message] = []
 	private var containerViewBottomAnchor:NSLayoutConstraint?
 	private var disposeVar:(DatabaseReference, UInt)!
-	private var flag:Bool = false // флаг, что открыто окно выбора картинки (false - слушатель удаляется)
+	private var flag:Bool = false 			// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
+	private var dataArray = [[Message]]() 	// двумерный массив сообщений в секциях
+	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
+	private let headerReusableView:String = "sectionHeader"
+	
+	
 	
 	
 	
@@ -108,11 +113,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		
 		let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
 		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
+		// layout?.headerReferenceSize = CGSize(width: 150, height: 25)
+		
 		
 		collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) // вставляем поля чтоб чат не соприкосался сверху и снизу
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.backgroundColor = .white
 		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cell_ID)
+		collectionView?.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerReusableView)
 		
 		// поведение клавиатуры при скроллинге
 		collectionView?.keyboardDismissMode = .interactive
@@ -192,14 +200,18 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return messages.count
+		return dataArray[section].count
+	}
+	
+	override func numberOfSections(in collectionView: UICollectionView) -> Int {
+		return dataArray.count
 	}
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
 		
 		cell.tag = indexPath.item
-		let message = messages[indexPath.item]
+		let message = dataArray[indexPath.section][indexPath.item]
 		cell.setupCell(linkToParent: self, message: message, indexPath: indexPath)
 		
 		return cell
@@ -209,7 +221,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		var hei:CGFloat = 80
 		
-		let message = messages[indexPath.item]
+		let message = dataArray[indexPath.section][indexPath.item]
 		
 		// получаем ожидаемую высоту
 		if let text = message.text {
@@ -222,13 +234,33 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 			hei = (CGFloat(imageHeight) / CGFloat(imageWidth) * w1)
 			
 		}
-		
-		
 		return CGSize(width: UIScreen.main.bounds.width, height: hei)
-		
 	}
 	
 	
+	
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+		return CGSize(width: 150, height: 45)
+	}
+	
+	
+	
+	/// вьюшка для хэдера в колекшнвью (сюда не будет заходить если не установить значение  для layout?.headerReferenceSize)
+	/// или определить верхнюю ф-цию
+	override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+
+		if kind == UICollectionElementKindSectionHeader {
+			let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReusableView, for: indexPath) as! SectionHeaderView
+			
+			// headerView.backgroundColor = UIColor.lightGray
+			headerView.title.text = stringedTimes[indexPath.section]
+			
+			return headerView
+		}
+		// else if kind == UICollectionElementKindSectionFooter { }
+		
+		fatalError()
+	}
 	
 	
 	
@@ -273,6 +305,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 				})
 				
 				DispatchQueue.main.async {
+					self.smartSort()
 					self.collectionView?.reloadData()
 					// прокручиваем скролл вниз
 					self.collectionView?.scrollToLast()
@@ -287,6 +320,70 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 
 
 
+	/// создание 2-х мерного массива для сообщений и их секций
+	private func smartSort(){
+		
+		dataArray.removeAll()
+		stringedTimes.removeAll()
+		
+		// собираем все даты в массив
+		let dataList = messages.map{$0.timestamp!} 	// массив timeStamp'ов 16655454
+		
+		// создаем массив конвертированных дат (без повтора)
+		for value in dataList {
+			let dateString = gatheringData(seconds: TimeInterval(truncating: value))
+			if !stringedTimes.contains(dateString){
+				stringedTimes.append(dateString)
+				dataArray.append([])
+			}
+		}
+		
+		// заполняем массив массивов юзеров, согласно алфавита
+		for element in messages {
+			let temp = gatheringData(seconds: TimeInterval(truncating: element.timestamp!))
+			let index = stringedTimes.index(of: temp)
+			dataArray[index!].append(element)
+		}
+//		print("dataArray = \(dataArray.map{"\($0.count) сообщений"}))")
+	}
+	
+	
+	
+	
+	/// преобразования даты для секций колекшнвью
+	private func gatheringData(seconds:TimeInterval) -> String{
+		
+		let convertedDate = Date(timeIntervalSince1970: seconds)
+		let dateFormater = DateFormatter()
+		// let caretSymbol:String = " "
+		
+		// сегодня
+		if Calendar.current.isDateInToday(convertedDate){
+			return "сегодня"
+		}
+		// вчера
+		else if Calendar.current.isDateInYesterday(convertedDate){
+			return "вчера"
+		}
+		// на этой неделе (пятница)
+		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
+			let weekDay = dateFormater.weekdaySymbols[Calendar.current.component(.weekday, from: convertedDate)]
+			return weekDay
+		}
+		// более недели назад (03 Окт)
+		else {
+			dateFormater.dateFormat = "dd"
+			let numDay = dateFormater.string(from: convertedDate)
+			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate)]
+			if month.last == "."{
+				month = String(month.dropLast())
+			}
+			return numDay + " " + month
+		}
+	}
+	
+	
+	
 	
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -317,6 +414,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	/// клик на картинку (переслать фотку)
 	@objc private func onUploadClick(){
+		
+//		smartSort()
+//		return
+
 		let imagePickerController = UIImagePickerController()
 		
 		imagePickerController.allowsEditing = true

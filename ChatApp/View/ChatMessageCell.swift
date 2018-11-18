@@ -311,6 +311,7 @@ class ChatMessageCell: UICollectionViewCell {
 		playerLayer?.removeFromSuperlayer()
 		player = nil
 		progressBar.setProgress(0, animated: false)
+		messageImageView.image = nil
 		
 		activityIndicator.stopAnimating()
 	}
