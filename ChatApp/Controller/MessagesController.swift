@@ -31,6 +31,10 @@ class MessagesController: UITableViewController {
 	internal var profileImageView:UIImageView!
 	private var senders = [User]() 						// данные юзеров с которым есть чаты
 	
+	enum status:String {
+		case loading 	= "Загрузка..."
+		case nomessages = "Нет сообщений"
+	}
 
 	
 	// при переходе на другие экраны и возврате сюда - этот метод не дергается!
@@ -95,7 +99,7 @@ class MessagesController: UITableViewController {
 	private func removeDialog(collocutorID: String, indexPath:IndexPath){
 		// удаляем сообщение с общего словаря
 		messagesDict.removeValue(forKey: collocutorID)
-		
+
 		// находим собеседника в массиве senders и убираем из массива
 		senders = senders.filter({$0.id == collocutorID})
 		
@@ -113,8 +117,14 @@ class MessagesController: UITableViewController {
 		// удаляем из источника таблицы и самой таблицы
 		// один из методов обновления таблицы, но он не безопасный
 		messages.remove(at: indexPath.row)
+		
+		if messages.isEmpty {
+			drawLoading(text: status.nomessages.rawValue)
+		}
+		
 		tableView.deleteRows(at: [indexPath], with: .automatic)
 	}
+		
 	
 	
 	
@@ -209,9 +219,8 @@ class MessagesController: UITableViewController {
 		
 		refUserMessages = refUserMessages_original.child(uid)
 		
-		// если в БД не будет записей, то в колбэк refUserMessages.observe вообще не зайдет!!
+		// если в БД не будет записей, то в колбэк refUserMessages.observe вообще не зайдет, потому ниже еще слушатель
 		// потому деграем для смены "Загрузка..."
-		drawNoMessages()
 
 		refUserMessages.observe(.childAdded, with: {
 			(snapshot) in
@@ -230,7 +239,7 @@ class MessagesController: UITableViewController {
 						
 						// для отрисовки навбара нужны данные по юзеру
 						let message = Message(dictionary: dictionary)
-//						message.setValuesForKeys(dictionary)
+						// message.setValuesForKeys(dictionary)
 						self.messages.append(message)
 						
 						// заполняем словарь и меняем массив
@@ -273,7 +282,7 @@ class MessagesController: UITableViewController {
 		refUserMessages.observeSingleEvent(of: .value, with: {
 			(snapshot) in
 			if !snapshot.hasChildren() {
-				
+				self.labelNoMessages?.text = status.nomessages.rawValue
 			}
 		})
 		
@@ -294,7 +303,6 @@ class MessagesController: UITableViewController {
 	/// попытка перегрузить таблицу
 	private func attemptReloadofTable(){
 		timer?.invalidate()
-		labelNoMessages?.text = "Загрузка..."
 		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
 	}
 	
@@ -303,7 +311,7 @@ class MessagesController: UITableViewController {
 		messages = Array(self.messagesDict.values)
 		
 		if messages.isEmpty{
-			labelNoMessages?.text = "Нет сообщений"
+			labelNoMessages?.text = status.nomessages.rawValue
 		}
 		else {
 			labelNoMessages?.removeFromSuperview()
@@ -322,8 +330,8 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
-	private func drawNoMessages(){
+	/// рисует лейблу с надписью Загрузка/Нет сообщений
+	private func drawLoading(text:String = status.loading.rawValue){
 		
 		if !messages.isEmpty {
 			return
@@ -334,7 +342,7 @@ class MessagesController: UITableViewController {
 		
 		labelNoMessages = {
 			let label = UILabel()
-			label.text = "Загрузка..."
+			label.text = text
 			label.backgroundColor = .clear
 			label.textColor = .lightGray
 			label.font = UIFont.boldSystemFont(ofSize: 25)
@@ -342,7 +350,6 @@ class MessagesController: UITableViewController {
 			label.translatesAutoresizingMaskIntoConstraints = false
 			return label
 		}()
-		attemptReloadofTable()
 		
 		guard let labelNoMessages = labelNoMessages else { return }
 		
@@ -398,17 +405,14 @@ class MessagesController: UITableViewController {
 		}
 		
 		// устанавливаем индикацию онлайн
-		OnlineOfflineService.online(for: uid, status: true){
-			(success:Bool) in
-			print("установили в БД 'online' (для себя) = ", success)
-		}
+		OnlineService.setUserStatus(status: true)
 
 		// чистим данные, т.к. если перелогинится под другим юзером они остаются
 //		messages.removeAll()
 //		messagesDict.removeAll()
 //		tableView.reloadData()
 		
-		drawNoMessages()
+		drawLoading()
 		observeUserMessages()
 		
 		// контейнер
@@ -473,12 +477,9 @@ class MessagesController: UITableViewController {
 		
 		// записуем на сервер состояние "offline"
 		if (uid != nil){
-			OnlineOfflineService.online(for: uid, status: false){
-				(success) in
-				print("User ==>", success)
-			}
+			OnlineService.setUserStatus(status: false)
 		}
-
+		
 		// удаляем слушателя собственных сообщений
 		refUserMessages?.removeAllObservers()
 		

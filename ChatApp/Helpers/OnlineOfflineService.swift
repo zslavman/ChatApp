@@ -10,26 +10,29 @@ import UIKit
 import Firebase
 
 
-struct OnlineOfflineService {
+struct OnlineService {
 	
-	/// Установка в БД online/offline для конкретного юзера
+	/// Установка в БД online/offline для owner
 	///
 	/// - Parameters:
-	///   - uid: id юзера
 	///   - status: true(online)/false(offline)
-	///   - success: метод, который запишет состояние флага в БД
-	static func online(for uid: String, status: Bool, success: @escaping (Bool) -> Void) {
+	static func setUserStatus(status: Bool) {
 		
-		let onlinesRef = Database.database().reference().child("users").child(uid).child("isOnline")
-
-		onlinesRef.setValue(status) {
-			(error:Error?, ref:DatabaseReference) in
-			
-			if let error = error {
-				assertionFailure(error.localizedDescription)
-				success(false)
+		if let uid = Auth.auth().currentUser?.uid {
+			let onlinesRef = Database.database().reference().child("users").child(uid).child("isOnline")
+			onlinesRef.setValue(status) {
+				(error:Error?, ref:DatabaseReference) in
+				
+				if let error = error {
+					assertionFailure(error.localizedDescription)
+				}
+				else {
+					let str = status ? "online" : "offline"
+					print("Юзер: \(str)")
+				}
 			}
-			success(true)
 		}
 	}
+	
+	
 }
