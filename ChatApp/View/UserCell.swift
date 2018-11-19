@@ -27,13 +27,13 @@ class UserCell: UITableViewCell {
 		return imageView
 	}()
 	
-	public let onlinePoint:UIView = {
-		let point = UIView()
+	public let onlinePoint:NeverClearView = {
+		let point = NeverClearView()
 		point.backgroundColor = offLineColor
 		point.layer.cornerRadius = 6
-		point.layer.masksToBounds = true
 		point.layer.borderWidth = 2
 		point.layer.borderColor = UIColor.white.cgColor
+		point.layer.masksToBounds = true
 		point.translatesAutoresizingMaskIntoConstraints = false
 		return point
 	}()
@@ -80,10 +80,12 @@ class UserCell: UITableViewCell {
 	
 	
 	
+	
+	
 	// фикс заeзжания текста под фотку профиля
 	override func layoutSubviews() {
 		super.layoutSubviews()
-		
+
 		// подвигаем тайтл
 		textLabel?.frame = CGRect(x: 72, y: textLabel!.frame.origin.y + 2, width: self.frame.width - 150, height: textLabel!.frame.height)
 		// подвигаем емайл
@@ -200,13 +202,13 @@ class UserCell: UITableViewCell {
 		}
 	}
 	
-	
-	
-
-	
-	
-	
 }
+
+
+
+
+
+
 
 
 

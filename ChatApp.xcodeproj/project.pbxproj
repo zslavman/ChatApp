@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		46EDE0D18A6394E86D550EB2 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
+		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
 		5639652A21924CA000691334 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639652921924CA000691334 /* UserCell.swift */; };
 		563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */; };
@@ -25,11 +26,12 @@
 		5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5680E759218B52D500B9CC3B /* Extensions.swift */; };
 		56BEAB132191BD960008AF6B /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatLogController.swift */; };
 		56FEF3C921A1FD1E00717A48 /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3C821A1FD1E00717A48 /* ChatInputView.swift */; };
-		56FEF3CB21A231C500717A48 /* OnlineOfflineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3CA21A231C500717A48 /* OnlineOfflineService.swift */; };
+		56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3CA21A231C500717A48 /* OnlineService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
+		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5639652921924CA000691334 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
@@ -49,7 +51,7 @@
 		5680E759218B52D500B9CC3B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		56BEAB122191BD960008AF6B /* ChatLogController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
 		56FEF3C821A1FD1E00717A48 /* ChatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputView.swift; sourceTree = "<group>"; };
-		56FEF3CA21A231C500717A48 /* OnlineOfflineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineOfflineService.swift; sourceTree = "<group>"; };
+		56FEF3CA21A231C500717A48 /* OnlineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineService.swift; sourceTree = "<group>"; };
 		A2E4397522028D0D9A51C49E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
 		E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -73,6 +75,14 @@
 				11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		5637D90A21A3606500BA9717 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				5680E759218B52D500B9CC3B /* Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		5639652B21924D1F00691334 /* View */ = {
@@ -116,6 +126,7 @@
 		566BEDA72186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				5637D90A21A3606500BA9717 /* Extensions */,
 				5680E758218B52B500B9CC3B /* Helpers */,
 				5639652B21924D1F00691334 /* View */,
 				563D17862189E320000DFAD2 /* Model */,
@@ -124,6 +135,7 @@
 				566BEDAC2186F8D50053F4A0 /* Main.storyboard */,
 				566BEDAF2186F8D70053F4A0 /* Assets.xcassets */,
 				566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */,
+				5637D90D21A36C9D00BA9717 /* pipk.mp3 */,
 				566BEDB42186F8D70053F4A0 /* Info.plist */,
 				56536F8B2189113F0087064D /* GoogleService-Info.plist */,
 			);
@@ -145,8 +157,7 @@
 		5680E758218B52B500B9CC3B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				5680E759218B52D500B9CC3B /* Extensions.swift */,
-				56FEF3CA21A231C500717A48 /* OnlineOfflineService.swift */,
+				56FEF3CA21A231C500717A48 /* OnlineService.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -225,6 +236,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */,
+				5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */,
 				56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */,
 				566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */,
 				566BEDAE2186F8D50053F4A0 /* Main.storyboard in Resources */,
@@ -292,7 +304,7 @@
 				5639652A21924CA000691334 /* UserCell.swift in Sources */,
 				563D17882189E351000DFAD2 /* User.swift in Sources */,
 				563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */,
-				56FEF3CB21A231C500717A48 /* OnlineOfflineService.swift in Sources */,
+				56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */,
 				563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + hendlers.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,

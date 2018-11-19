@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import AVFoundation
 
 class MessagesController: UITableViewController {
 
@@ -36,6 +37,11 @@ class MessagesController: UITableViewController {
 		case nomessages = "Нет сообщений"
 	}
 
+	private var audioPlayer = AVAudioPlayer()
+	
+	
+	
+	
 	
 	// при переходе на другие экраны и возврате сюда - этот метод не дергается!
 	override func viewDidLoad() {
@@ -49,7 +55,12 @@ class MessagesController: UITableViewController {
 		chekIfUserLoggedIn()
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
-//		tableView.allowsMultipleSelection = true
+		
+		
+		let url = Bundle.main.url(forResource: "pipk", withExtension: "mp3")!
+		do { audioPlayer = try AVAudioPlayer(contentsOf: url) }
+		catch { print("error loading file") }
+		
 	}
 	
 	
@@ -178,6 +189,8 @@ class MessagesController: UITableViewController {
 		selectionColor.backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
 		cell.selectedBackgroundView = selectionColor
 		
+		
+		
 		return cell
 	}
 	
@@ -247,6 +260,9 @@ class MessagesController: UITableViewController {
 							self.messagesDict[chatPartner] = message
 						}
 						self.attemptReloadofTable()
+						
+						// TODO: при получении данных, звук не проигрываем
+						self.playSoundFile("pipk")
 					}
 				}, withCancel: nil)
 				
@@ -623,9 +639,29 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 				print("удачно сохранили картинку")
 			})
 		}
-		
-		
 	}
+	
+	
+	
+	
+	private func playSoundFile(_ soundName:String) {
+		
+		audioPlayer.play()
+		
+//		let url = Bundle.main.url(forResource: soundName, withExtension: "mp3")!
+//
+//		do {
+//			let sound = try AVAudioPlayer(contentsOf: url)
+//			audioPlayer = sound
+//			sound.numberOfLoops = 0
+//			sound.prepareToPlay()
+//			sound.play()
+//		}
+//		catch {
+//			print("error loading file")
+//		}
+	}
+	
 	
 	
 }

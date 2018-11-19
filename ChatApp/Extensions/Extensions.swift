@@ -8,8 +8,10 @@
 
 import UIKit
 
-//var imageCache = NSCache<AnyObject, AnyObject>()
 var imageCache = NSCache<NSString, UIImage>()
+
+
+
 
 extension UIImageView {
 	
@@ -28,9 +30,7 @@ extension UIImageView {
 			}
 		}
 		//*******************************
-		
-		
-		
+
 		if urlString == "none"{ // если юзер не ставил фото на профиль, грузим дефолтную пикчу
 			let img = UIImage(named: default_profile_image)!
 			setImageForUIView(img)
@@ -42,7 +42,6 @@ extension UIImageView {
 			setImageForUIView(cachedImage)
 			return
 		}
-		
 		let downloadTask = URLSession.shared.dataTask(with: URL(string: urlString)!) {
 			(data, response, error) in
 			if error != nil {
@@ -60,13 +59,42 @@ extension UIImageView {
 		downloadTask.resume()
 	}
 	
-
-	
-	
 }
 
 
 
+// устранение проблемы потери фоновой заливки во всех UIView ячейки таблицы при didSelectRow
+class NeverClearView:UIView {
+	
+	override var backgroundColor: UIColor? {
+		didSet {
+			if backgroundColor != nil && backgroundColor!.cgColor.alpha == 0 {
+				backgroundColor = oldValue
+			}
+		}
+	}
+}
+
+
+
+// кастомная лейба, в которой можно установить паддинги
+class UILabelWithEdges: UILabel {
+	
+	var textInsets = UIEdgeInsets.zero {
+		didSet { invalidateIntrinsicContentSize() }
+	}
+	
+	override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
+		let insetRect = UIEdgeInsetsInsetRect(bounds, textInsets)
+		let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
+		let invertedInsets = UIEdgeInsets(top: -textInsets.top, left: -textInsets.left, bottom: -textInsets.bottom, right: -textInsets.right)
+		return UIEdgeInsetsInsetRect(textRect, invertedInsets)
+	}
+	
+	override func drawText(in rect: CGRect) {
+		super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))
+	}
+}
 
 
 
