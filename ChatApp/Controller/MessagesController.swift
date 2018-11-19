@@ -83,15 +83,39 @@ class MessagesController: UITableViewController {
 					print(error!.localizedDescription)
 					return
 				}
-				self.messagesDict.removeValue(forKey: partnerID)
 				
-				// один из методов обновления таблицы, но он не безопасный
-				 self.messages.remove(at: indexPath.row)
-				 self.tableView.deleteRows(at: [indexPath], with: .automatic)
-				
+				self.removeDialog(collocutorID: partnerID, indexPath: indexPath)
 			}
 		}
 	}
+	
+	
+	
+	/// убираем собеседника и само сообщение отовсюду
+	private func removeDialog(collocutorID: String, indexPath:IndexPath){
+		// удаляем сообщение с общего словаря
+		messagesDict.removeValue(forKey: collocutorID)
+		
+		// находим собеседника в массиве senders и убираем из массива
+		senders = senders.filter({$0.id == collocutorID})
+		
+		// нужно убрать слушатель онлайна для этого собеседника
+		let onlineListener = refUsers.child(collocutorID)
+		let removeMessListener = refUserMessages_original.child(uid).child(collocutorID)
+		
+		for (element) in hendlers{
+			if element.value.description() == onlineListener.description() || element.value.description() == removeMessListener.description(){
+				element.value.removeObserver(withHandle: element.key)
+				hendlers.removeValue(forKey: element.key)
+			}
+		}
+		
+		// удаляем из источника таблицы и самой таблицы
+		// один из методов обновления таблицы, но он не безопасный
+		messages.remove(at: indexPath.row)
+		tableView.deleteRows(at: [indexPath], with: .automatic)
+	}
+	
 	
 	
 	
@@ -195,12 +219,10 @@ class MessagesController: UITableViewController {
 			let userID = snapshot.key
 			let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
 			
-			
 			let listener1 = ref_DialogforEachOtherUser.observe(.childAdded, with: {
 				(snapshot) in
 				
 				let messageID = snapshot.key
-				
 				self.refMessages.child(messageID).observeSingleEvent(of: .value, with: {
 					(snapshot) in
 					
@@ -223,9 +245,9 @@ class MessagesController: UITableViewController {
 			
 			// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
 			let ref_forEachOtherUser = Database.database().reference().child("users").child(userID)
+			
 			let listener2 = ref_forEachOtherUser.observe(.value, with: {
 				(snapshot) in
-
 				// в массиве senderищем юзера который пришел в snapshot'e
 				if let dict = snapshot.value as? [String:AnyObject] {
 					
@@ -240,13 +262,21 @@ class MessagesController: UITableViewController {
 					}
 					self.attemptReloadofTable()
 				}
-				
 			})
 			
 			// записываем слушателей и ссылки в словарь (для дальнейшего диспоза)
-			self.hendlers[listener1] = ref_DialogforEachOtherUser
-			self.hendlers[listener2] = ref_forEachOtherUser
+			self.hendlers[listener1] = ref_DialogforEachOtherUser 	// для прослушки изменения диалога
+			self.hendlers[listener2] = ref_forEachOtherUser 		// для прослушки онлайн ли юзер
 		})
+		
+		// слушатель на приход ответа если сообщений у юзера еще нет
+		refUserMessages.observeSingleEvent(of: .value, with: {
+			(snapshot) in
+			if !snapshot.hasChildren() {
+				
+			}
+		})
+		
 		
 		// слушатель на удаление сообщений
 		let listener3 = refUserMessages.observe(.childRemoved, with: {
@@ -254,7 +284,7 @@ class MessagesController: UITableViewController {
 			self.messagesDict.removeValue(forKey: snapshot.key)
 			self.attemptReloadofTable()
 		})
-	
+		
 		self.hendlers[listener3] = refUserMessages
 	}
 	
@@ -453,8 +483,8 @@ class MessagesController: UITableViewController {
 		refUserMessages?.removeAllObservers()
 		
 		// удаляем слушателей сообщений каждого фигуранта диалога
-		for (key, value) in hendlers {
-			value.removeObserver(withHandle: key)
+		for (key, ref) in hendlers {
+			ref.removeObserver(withHandle: key)
 		}
 
 		uid = nil

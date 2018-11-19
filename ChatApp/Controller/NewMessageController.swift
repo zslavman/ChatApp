@@ -184,6 +184,14 @@ class NewMessageController: UITableViewController {
 		cell.textLabel?.text = user.name
 		cell.detailTextLabel?.text = user.email
 		
+		if user.isOnline {
+			cell.onlinePoint.backgroundColor = UserCell.onLineColor
+		}
+		else {
+			cell.onlinePoint.backgroundColor = UserCell.offLineColor
+		}
+		
+		
 		cell.iTag = ((indexPath.section).description + (indexPath.row).description) // для идентификации ячейки в кложере
 		let basePath = cell.iTag
 
