@@ -14,14 +14,28 @@ import Firebase
 class UserCell: UITableViewCell {
 	
 
+	public static let onLineColor = UIColor(r: 0, g: 255, b: 0)
+	public static let offLineColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+	
 	// дефолтная фотка
 	public let profileImageView:UIImageView = {
 		let imageView = UIImageView()
 		imageView.contentMode = .scaleAspectFit
 		imageView.translatesAutoresizingMaskIntoConstraints = false
-		imageView.layer.cornerRadius = 26 // 20*2 - половина величины констрейнта
+		imageView.layer.cornerRadius = 26 // половина величины констрейнта ширины
 		imageView.layer.masksToBounds = true
 		return imageView
+	}()
+	
+	public let onlinePoint:UIView = {
+		let point = UIView()
+		point.backgroundColor = offLineColor
+		point.layer.cornerRadius = 6
+		point.layer.masksToBounds = true
+		point.layer.borderWidth = 2
+		point.layer.borderColor = UIColor.white.cgColor
+		point.translatesAutoresizingMaskIntoConstraints = false
+		return point
 	}()
 	
 	// тайм-лейбл
@@ -44,6 +58,7 @@ class UserCell: UITableViewCell {
 		
 		addSubview(profileImageView)
 		addSubview(timeLabel)
+		addSubview(onlinePoint)
 		
 		// constraints: x, y, width, height
 		profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive 	= true
@@ -54,6 +69,11 @@ class UserCell: UITableViewCell {
 		timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive 	= true
 		timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 22).isActive 			= true
 		timeLabel.widthAnchor.constraint(equalToConstant: 70).isActive 							= true
+		
+		onlinePoint.centerXAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: -2).isActive = true
+		onlinePoint.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: -8).isActive = true
+		onlinePoint.widthAnchor.constraint(equalToConstant: 12).isActive = true
+		onlinePoint.heightAnchor.constraint(equalToConstant: 12).isActive = true
 	}
 	
 	
@@ -75,9 +95,17 @@ class UserCell: UITableViewCell {
 	
 	
 	/// настройка ячейки для MessagesController
-	public func setupCell(msg:Message, indexPath:IndexPath, user:User){
+	public func setupCell(msg:Message, indexPath:IndexPath, user:User){ // user - не владелец
 		
-		self.textLabel?.text = user.name
+		textLabel?.text = user.name
+		
+		if user.isOnline {
+			onlinePoint.backgroundColor = UserCell.onLineColor
+		}
+		else {
+			onlinePoint.backgroundColor = UserCell.offLineColor
+		}
+		
 		
 		let basePath = (indexPath.section).description + (indexPath.row).description // для идентификации ячейки в кложере
 		
@@ -123,7 +151,7 @@ class UserCell: UITableViewCell {
 	
 	override func prepareForReuse() {
 		iTag = ""
-		profileImageView.image = nil
+//		profileImageView.image = nil
 	}
 	
 	
@@ -153,14 +181,18 @@ class UserCell: UITableViewCell {
 		}
 		// на этой неделе (Fri, 20:54)
 		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
-			let weekDay = dateFormater.shortWeekdaySymbols[Calendar.current.component(.weekday, from: convertedDate)]
+			var weekDayNum = Calendar.current.component(.weekday, from: convertedDate) - 1 // возвращает дни, начиная с 1
+			if weekDayNum == 7 {
+				weekDayNum = 0 // т.к. Вс - это 0-вой элемент массива
+			}
+			let weekDay = dateFormater.shortWeekdaySymbols[weekDayNum]
 			return weekDay + caretSymbol + HH_mm
 		}
 		// более недели назад (03 Oct, 12:47)
 		else {
 			dateFormater.dateFormat = "dd"
 			let numDay = dateFormater.string(from: convertedDate)
-			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate)]
+			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate) - 1]
 			if month.last == "."{
 				month = String(month.dropLast())
 			}

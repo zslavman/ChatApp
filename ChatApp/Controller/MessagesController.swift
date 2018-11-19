@@ -91,11 +91,11 @@ class MessagesController: UITableViewController {
 				
 			}
 		}
-		
-		
-		
-		
 	}
+	
+	
+	
+	
 	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -138,6 +138,12 @@ class MessagesController: UITableViewController {
 				})
 			}
 		}
+		
+		// цвет выделения при клике на ячейку
+		let selectionColor = UIView()
+		selectionColor.backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
+		cell.selectedBackgroundView = selectionColor
+		
 		return cell
 	}
 	
@@ -187,10 +193,10 @@ class MessagesController: UITableViewController {
 			(snapshot) in
 			
 			let userID = snapshot.key
-			let ref_1 = self.refUserMessages_original.child(self.uid).child(userID)
+			let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
 			
 			
-			let listener = ref_1.observe(.childAdded, with: {
+			let listener1 = ref_DialogforEachOtherUser.observe(.childAdded, with: {
 				(snapshot) in
 				
 				let messageID = snapshot.key
@@ -215,21 +221,41 @@ class MessagesController: UITableViewController {
 				
 			}, withCancel: nil)
 			
-			
-			// слушатель на удаление сообщений
-			let listener2 = ref_1.observe(.childRemoved, with: {
+			// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
+			let ref_forEachOtherUser = Database.database().reference().child("users").child(userID)
+			let listener2 = ref_forEachOtherUser.observe(.value, with: {
 				(snapshot) in
+
+				// в массиве senderищем юзера который пришел в snapshot'e
+				if let dict = snapshot.value as? [String:AnyObject] {
+					
+					let id_WhoChangedStatus = dict["id"] as! String
+					let newStatus 			= dict["isOnline"] as! Bool
+					
+					for value in self.senders {
+						if id_WhoChangedStatus == value.id{
+							value.isOnline = newStatus
+							break
+						}
+					}
+					self.attemptReloadofTable()
+				}
 				
-				self.messagesDict.removeValue(forKey: snapshot.key)
-				self.attemptReloadofTable()
-				
-			}, withCancel: nil)
+			})
 			
-			// записываем слушателя и ссылку в словарь (для диспоза)
-			self.hendlers[listener] = ref_1
-			self.hendlers[listener2] = ref_1
-			
-		}, withCancel: nil)
+			// записываем слушателей и ссылки в словарь (для дальнейшего диспоза)
+			self.hendlers[listener1] = ref_DialogforEachOtherUser
+			self.hendlers[listener2] = ref_forEachOtherUser
+		})
+		
+		// слушатель на удаление сообщений
+		let listener3 = refUserMessages.observe(.childRemoved, with: {
+			(snapshot) in
+			self.messagesDict.removeValue(forKey: snapshot.key)
+			self.attemptReloadofTable()
+		})
+	
+		self.hendlers[listener3] = refUserMessages
 	}
 	
 	
@@ -317,6 +343,7 @@ class MessagesController: UITableViewController {
 		
 		guard let uid = Auth.auth().currentUser?.uid else {	return } // проверка если user = nil
 		self.uid = uid
+		
 		refUsers.child(uid).observeSingleEvent(of: .value) {
 			(snapshot) in
 			
@@ -339,11 +366,17 @@ class MessagesController: UITableViewController {
 		if owner == nil {
 			owner = user
 		}
+		
+		// устанавливаем индикацию онлайн
+		OnlineOfflineService.online(for: uid, status: true){
+			(success:Bool) in
+			print("установили в БД 'online' (для себя) = ", success)
+		}
 
 		// чистим данные, т.к. если перелогинится под другим юзером они остаются
-		messages.removeAll()
-		messagesDict.removeAll()
-		tableView.reloadData()
+//		messages.removeAll()
+//		messagesDict.removeAll()
+//		tableView.reloadData()
 		
 		drawNoMessages()
 		observeUserMessages()
@@ -351,7 +384,6 @@ class MessagesController: UITableViewController {
 		// контейнер
 		let titleView = UIView()
 		titleView.frame = CGRect(x: 0, y: 0, width: 160, height: 40)
-//		titleView.backgroundColor = #colorLiteral(red: 0.4745098054, green: 0.8392156959, blue: 0.9764705896, alpha: 1).withAlphaComponent(0.5)
 		
 		// еще один контейнер (чтоб всё что внутри растягивалось на всё свободное место навбара)
 		let containerView = UIView()
@@ -409,6 +441,14 @@ class MessagesController: UITableViewController {
 	
 	@objc private func onLogout(){
 		
+		// записуем на сервер состояние "offline"
+		if (uid != nil){
+			OnlineOfflineService.online(for: uid, status: false){
+				(success) in
+				print("User ==>", success)
+			}
+		}
+
 		// удаляем слушателя собственных сообщений
 		refUserMessages?.removeAllObservers()
 		

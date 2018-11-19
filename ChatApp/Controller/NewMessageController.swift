@@ -27,10 +27,19 @@ class NewMessageController: UITableViewController {
 	private var letter = [String]() // массив первых букв юзеров
 	private var disposeVar:(DatabaseReference, UInt)!
 	
+	private var searchBar:UISearchBar = {
+		let sb = UISearchBar()
+		sb.translatesAutoresizingMaskIntoConstraints = false
+		return sb
+	}()
+	
+	
 
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		// drawSearchBar()
 		
 		navigationItem.title = "Все юзеры"
 
@@ -40,6 +49,24 @@ class NewMessageController: UITableViewController {
 	}
 	
 
+	
+	
+	
+	private func drawSearchBar(){
+		
+		tableView.addSubview(searchBar)
+		
+		searchBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+		searchBar.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+		searchBar.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 
 	private func fetchUsers(){

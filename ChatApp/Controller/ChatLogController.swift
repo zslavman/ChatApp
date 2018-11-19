@@ -13,7 +13,7 @@ import AVFoundation
 
 import AVKit
 
-class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	public var user:User? {
 		didSet{
@@ -22,73 +22,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		}
 	}
 	
-	private lazy var inputTextField: UITextField = {
-		let tf = UITextField()
-		tf.placeholder = "Введите текст..."
-		tf.translatesAutoresizingMaskIntoConstraints = false
-		tf.delegate = self
-		return tf
-	}()
-	
-	
-	private lazy var inputContainerView: UIView = {
-		// контейнер + фон
-		let containerView = UIView()
-		containerView.backgroundColor = .white
-		containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
-		containerView.translatesAutoresizingMaskIntoConstraints = false
-//		view.addSubview(containerView)
-//		containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-//		containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
-//		containerViewBottomAnchor?.isActive = true
-//		containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-//		containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-		
 
-		// картинка слева (отправить фото)
-		let uploadImageView = UIImageView()
-		uploadImageView.image = UIImage(named: "upload_image_icon")
-		containerView.addSubview(uploadImageView)
-		uploadImageView.translatesAutoresizingMaskIntoConstraints = false
-		uploadImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 5).isActive = true
-		uploadImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 2).isActive = true
-		uploadImageView.widthAnchor.constraint(equalToConstant: 44).isActive = true // эпл рекомендует размер 44
-		uploadImageView.heightAnchor.constraint(equalToConstant: 44).isActive = true
-		uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
-		uploadImageView.isUserInteractionEnabled = true
-		
-		// линия-сепаратор
-		let sepLine = UIView()
-		sepLine.backgroundColor = UIColor.lightGray
-		sepLine.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 1)
-		sepLine.translatesAutoresizingMaskIntoConstraints = false
-		containerView.addSubview(sepLine)
-		sepLine.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-		sepLine.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-		sepLine.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-		sepLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-		
-		
-		// кнопка
-		let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
-		sendButton.setTitle("Отправ.", for: UIControlState.normal)
-		sendButton.translatesAutoresizingMaskIntoConstraints = false
-		sendButton.addTarget(self, action: #selector(onSendClick), for: UIControlEvents.touchUpInside)
-		containerView.addSubview(sendButton)
-		sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-		sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-		sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-		sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-		sendButton.layer.cornerRadius = 10
-		
-		// текстовое поле
-		containerView.addSubview(self.inputTextField)
-		self.inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 10).isActive = true
-		self.inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-		self.inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-		self.inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-		
-		return containerView
+	private lazy var inputContainerView: ChatInputView = {
+		let inputView = ChatInputView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+		inputView.chatLogController = self
+		return inputView
 	}()
 	
 	
@@ -372,14 +310,18 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 		}
 		// на этой неделе (пятница)
 		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
-			let weekDay = dateFormater.weekdaySymbols[Calendar.current.component(.weekday, from: convertedDate)]
+			var weekDayNum = Calendar.current.component(.weekday, from: convertedDate) - 1 // возвращает дни, начиная с 1
+			if weekDayNum == 7 {
+				weekDayNum = 0 // т.к. Вс - это 0-вой элемент массива
+			}
+			let weekDay = dateFormater.weekdaySymbols[weekDayNum]
 			return weekDay
 		}
 		// более недели назад (03 Окт)
 		else {
 			dateFormater.dateFormat = "dd"
 			let numDay = dateFormater.string(from: convertedDate)
-			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate)]
+			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate) - 1]
 			if month.last == "."{
 				month = String(month.dropLast())
 			}
@@ -389,16 +331,11 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
-	
-	
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		onSendClick()
-		return true
-	}
+
 	
 	
 	@objc private func onChatBackingClick(){
-		inputTextField.resignFirstResponder()
+		inputContainerView.inputTextField.resignFirstResponder()
 	}
 	
 	
@@ -418,7 +355,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	/// клик на картинку (переслать фотку)
-	@objc private func onUploadClick(){
+	@objc public func onUploadClick(){
 
 		let imagePickerController = UIImagePickerController()
 		
@@ -617,16 +554,16 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 	
 	
 	
-	@objc private func onSendClick(){
-		if inputTextField.text == "" || inputTextField.text == " " { return }
+	@objc public func onSendClick(){
+		if inputContainerView.inputTextField.text == "" || inputContainerView.inputTextField.text == " " { return }
 		
 		let properties:[String:Any] = [
-			"text" :inputTextField.text!
+			"text" :inputContainerView.inputTextField.text!
 		]
 		sendMessage_with_Properties(properties: properties)
 		
-		inputTextField.text = nil
-		inputTextField.resignFirstResponder()
+//		inputContainerView.inputTextField.resignFirstResponder() // убираем клаву после отправки сообщения
+		inputContainerView.inputTextField.text = nil
 	}
 	
 	

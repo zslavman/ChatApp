@@ -13,7 +13,6 @@ var imageCache = NSCache<NSString, UIImage>()
 
 extension UIImageView {
 	
-	
 	/// загрузчик картинок с внешних адресов (использует кэш)
 	public func loadImageUsingCache(urlString: String, completionHandler: ((UIImage) -> ())? ){
 		

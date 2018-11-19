@@ -253,8 +253,8 @@ class ChatMessageCell: UICollectionViewCell {
 			if let profileImageUrl = linkToParent.user?.profileImageUrl {
 				profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
 			}
-			bubbleLeftAnchor?.isActive = true
 			bubbleRightAnchor?.isActive = false
+			bubbleLeftAnchor?.isActive = true
 		}
 		
 		// загружаем картинку сообщения (если таковая имеется)

@@ -15,6 +15,7 @@ class User: NSObject {
 	@objc public var email:String?
 	@objc public var profileImageUrl:String?
 	@objc public var id:String? // устанавливается вручную
+	@objc public var isOnline:Bool = false
 	
 	
 	

@@ -72,12 +72,13 @@ extension LoginController:UIImagePickerControllerDelegate, UINavigationControlle
 			//********************
 			
 			// дефолтный словарь для сохранения в БД
-			var values = [
+			var values:[String : Any] = [
 				"name"			 : name,
 				"email"			 : email,
 				"id"			 : user.uid,
+				"isOnline"		 : true,
 				"profileImageUrl": "none"
-			]
+				]
 			// safety unwrapping image
 			guard let profileImage = self.profileImageView.image else { return }
 			
