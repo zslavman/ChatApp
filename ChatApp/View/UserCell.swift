@@ -153,7 +153,7 @@ class UserCell: UITableViewCell {
 	
 	override func prepareForReuse() {
 		iTag = ""
-//		profileImageView.image = nil
+		profileImageView.image = nil
 	}
 	
 	

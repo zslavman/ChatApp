@@ -38,9 +38,10 @@ class MessagesController: UITableViewController {
 	}
 
 	private var audioPlayer = AVAudioPlayer()
-	
-	
-	
+	private var allowIncomingSound:Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
+	private var dialogsStartCount:UInt = 0		// кол-во диалогеров, после загрузки которых разрешается проигрывать звук прихода сообщ.
+	private var dialogsLoadedCount:UInt = 0
+	private var collocutorID:String = ""		// ID собеседника, с которым перешли в чат
 	
 	
 	// при переходе на другие экраны и возврате сюда - этот метод не дергается!
@@ -69,6 +70,7 @@ class MessagesController: UITableViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
+		collocutorID = ""
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
@@ -232,77 +234,101 @@ class MessagesController: UITableViewController {
 		
 		refUserMessages = refUserMessages_original.child(uid)
 		
-		// если в БД не будет записей, то в колбэк refUserMessages.observe вообще не зайдет, потому ниже еще слушатель
-		// потому деграем для смены "Загрузка..."
-
-		refUserMessages.observe(.childAdded, with: {
-			(snapshot) in
-			
-			let userID = snapshot.key
-			let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
-			
-			let listener1 = ref_DialogforEachOtherUser.observe(.childAdded, with: {
-				(snapshot) in
-				
-				let messageID = snapshot.key
-				self.refMessages.child(messageID).observeSingleEvent(of: .value, with: {
-					(snapshot) in
-					
-					if let dictionary = snapshot.value as? [String:AnyObject] {
-						
-						// для отрисовки навбара нужны данные по юзеру
-						let message = Message(dictionary: dictionary)
-						// message.setValuesForKeys(dictionary)
-						self.messages.append(message)
-						
-						// заполняем словарь и меняем массив
-						if let chatPartner = message.chatPartnerID() {
-							self.messagesDict[chatPartner] = message
-						}
-						self.attemptReloadofTable()
-						
-						// TODO: при получении данных, звук не проигрываем
-						self.playSoundFile("pipk")
-					}
-				}, withCancel: nil)
-				
-			}, withCancel: nil)
-			
-			// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
-			let ref_forEachOtherUser = Database.database().reference().child("users").child(userID)
-			
-			let listener2 = ref_forEachOtherUser.observe(.value, with: {
-				(snapshot) in
-				// в массиве senderищем юзера который пришел в snapshot'e
-				if let dict = snapshot.value as? [String:AnyObject] {
-					
-					let id_WhoChangedStatus = dict["id"] as! String
-					let newStatus 			= dict["isOnline"] as! Bool
-					
-					for value in self.senders {
-						if id_WhoChangedStatus == value.id{
-							value.isOnline = newStatus
-							break
-						}
-					}
-					self.attemptReloadofTable()
-				}
-			})
-			
-			// записываем слушателей и ссылки в словарь (для дальнейшего диспоза)
-			self.hendlers[listener1] = ref_DialogforEachOtherUser 	// для прослушки изменения диалога
-			self.hendlers[listener2] = ref_forEachOtherUser 		// для прослушки онлайн ли юзер
-		})
-		
-		// слушатель на приход ответа если сообщений у юзера еще нет
+		// проверяем сколько (диалогов) имеет owner
 		refUserMessages.observeSingleEvent(of: .value, with: {
 			(snapshot) in
+			// если вообще нет сообщений
 			if !snapshot.hasChildren() {
 				self.labelNoMessages?.text = status.nomessages.rawValue
+				self.allowIncomingSound = true
 			}
+			self.dialogsStartCount = snapshot.childrenCount
+			
+			
+			// получаем ID юзеров, которые писали owner'у (цикл из диалогов)
+			self.refUserMessages.observe(.childAdded, with: {
+				(snapshot) in
+				self.dialogsLoadedCount += 1
+				let userID = snapshot.key
+				let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
+				
+				//***********
+				// если это последний скачиваемый диалогер, смотрим сколько в диалоге сообщений
+				// и только после послднего полученного включаем звук на приход сообщ.
+				var maxCount:UInt = 0
+				var currentCount:UInt = 0
+				if self.dialogsLoadedCount == self.dialogsStartCount {
+					maxCount = snapshot.childrenCount
+				}
+				//***********
+
+
+				// получаем ID сообщения внутри диалога (цикл из сообщений)
+				let listener1 = ref_DialogforEachOtherUser.observe(.childAdded, with: {
+					(snapshot) in
+					let messageID = snapshot.key
+					
+					
+					// получаем каждое сообщение
+					self.refMessages.child(messageID).observeSingleEvent(of: .value, with: {
+						(snapshot) in
+						
+						currentCount += 1
+						
+						if let dictionary = snapshot.value as? [String:AnyObject] {
+							let message = Message(dictionary: dictionary) // message.setValuesForKeys(dictionary)
+							self.messages.append(message)
+							
+							// заполняем словарь и меняем массив
+							if let chatPartner = message.chatPartnerID() {
+								self.messagesDict[chatPartner] = message
+							}
+							self.attemptReloadofTable()
+							
+							// если это сообщение отправил owner или собеседник с которым сейчас чат, звук не проигрываем
+							let fromWho = dictionary["fromID"] as? String
+							if fromWho != self.uid && fromWho != self.collocutorID{
+								self.playSoundFile("pipk")
+							}
+							
+							if (self.dialogsLoadedCount == self.dialogsStartCount && currentCount == maxCount){
+								self.allowIncomingSound = true
+							}
+							
+						}
+						
+					}, withCancel: nil)
+					
+				}, withCancel: nil)
+				
+				
+				// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
+				let ref_forEachOtherUser = Database.database().reference().child("users").child(userID)
+				
+				let listener2 = ref_forEachOtherUser.observe(.value, with: {
+					(snapshot) in
+					// в массиве sender ищем юзера который пришел в snapshot'e
+					if let dict = snapshot.value as? [String:AnyObject] {
+						
+						let id_WhoChangedStatus = dict["id"] as! String
+						let newStatus 			= dict["isOnline"] as! Bool
+						
+						for value in self.senders {
+							if id_WhoChangedStatus == value.id{
+								value.isOnline = newStatus
+								break
+							}
+						}
+						self.attemptReloadofTable()
+					}
+				})
+				
+				// записываем слушателей и ссылки в словарь (для дальнейшего диспоза)
+				self.hendlers[listener1] = ref_DialogforEachOtherUser 	// для прослушки изменения диалога
+				self.hendlers[listener2] = ref_forEachOtherUser 		// для прослушки онлайн ли юзер
+			})
 		})
-		
-		
+
 		// слушатель на удаление сообщений
 		let listener3 = refUserMessages.observe(.childRemoved, with: {
 			(snapshot) in
@@ -312,6 +338,10 @@ class MessagesController: UITableViewController {
 		
 		self.hendlers[listener3] = refUserMessages
 	}
+	
+	
+	
+	
 	
 	
 	
@@ -510,6 +540,9 @@ class MessagesController: UITableViewController {
 		messagesDict.removeAll()
 		hendlers.removeAll()
 		tableView.reloadData()
+		dialogsLoadedCount = 0
+		dialogsStartCount = 0
+		allowIncomingSound = false
 		
 		senders.removeAll()
 		
@@ -547,6 +580,10 @@ class MessagesController: UITableViewController {
 	
 	
 	@objc public func goToChatWith(user: User){
+		
+		// запоминаем юзера, с которым перешли в чат (для блокировки проигрыв звуков при сообщениях от него)
+		collocutorID = user.id!
+		
 		let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
 		chatLogController.user = user
 		navigationController?.pushViewController(chatLogController, animated: true)
@@ -646,6 +683,7 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 	
 	private func playSoundFile(_ soundName:String) {
 		
+		if !allowIncomingSound { return }
 		audioPlayer.play()
 		
 //		let url = Bundle.main.url(forResource: soundName, withExtension: "mp3")!
