@@ -17,9 +17,10 @@ class UserCell: UITableViewCell {
 	public static let onLineColor = UIColor(r: 0, g: 255, b: 0)
 	public static let offLineColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 	
-	// дефолтная фотка
+	// фотка
 	public let profileImageView:UIImageView = {
 		let imageView = UIImageView()
+		imageView.image = UIImage(named: "default_profile_image") // дефолтная фотка
 		imageView.contentMode = .scaleAspectFit
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.layer.cornerRadius = 26 // половина величины констрейнта ширины
@@ -153,7 +154,7 @@ class UserCell: UITableViewCell {
 	
 	override func prepareForReuse() {
 		iTag = ""
-		profileImageView.image = nil
+		profileImageView.image = UIImage(named: "default_profile_image")
 	}
 	
 	

@@ -39,13 +39,15 @@ class NewMessageController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		// drawSearchBar()
+		// section headers не будут прилипать сверху таблицы
+		// self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
 		
 		navigationItem.title = "Все юзеры"
 
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
 		fetchUsers()
+		
 	}
 	
 
@@ -90,9 +92,12 @@ class NewMessageController: UITableViewController {
 	
 	
 	
-	
 	/// преобразовывает масив юзеров в 2-х мерного массив для секций таблицы
 	private func prepareData(){
+		
+		// иногда сюда может зайти несколько раз, потому нужно чистить
+		letter.removeAll()
+		twoD.removeAll()
 		
 		// убираем себя из массива
 		users = users.filter { // нужно возвратить то, что должно остатся
@@ -122,6 +127,14 @@ class NewMessageController: UITableViewController {
 		for var value in twoD {
 			// value.sort{$0.lowercased() < $1.lowercased()}
 			value.sort{($0.name)!.localizedCaseInsensitiveCompare($1.name!) == .orderedAscending}
+			
+//			for val in value {
+//				if val.email == "A50@gmail.com"{
+//					print("Херня!")
+//				}
+//			}
+			
+			
 			newArr.append(value)
 		}
 		twoD = newArr
@@ -192,8 +205,8 @@ class NewMessageController: UITableViewController {
 		}
 		
 		
-		cell.iTag = ((indexPath.section).description + (indexPath.row).description) // для идентификации ячейки в кложере
-		let basePath = cell.iTag
+//		cell.iTag = ((indexPath.section).description + (indexPath.row).description) // для идентификации ячейки в кложере
+//		let basePath = cell.iTag
 
 		if let profileImageUrl = user.profileImageUrl{
 			// качаем картинку
@@ -202,10 +215,9 @@ class NewMessageController: UITableViewController {
 				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
 				// и обновить ее в главном потоке
 				DispatchQueue.main.async {
-//					print("cell.iTag == basePath = \(cell.iTag == basePath)")
-					if cell.iTag == basePath{
+//					if cell.iTag == basePath{
 						cell.profileImageView.image = image
-					}
+//					}
 				}
 			}
 		}
@@ -251,6 +263,13 @@ class NewMessageController: UITableViewController {
 	override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
 		return letter
 	}
+	
+	
+	
+	
+	
+
+	
 	
 	
 	
