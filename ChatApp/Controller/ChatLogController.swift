@@ -23,7 +23,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}
 	
 
-	private lazy var inputContainerView: ChatInputView = {
+	private lazy var growingInputView: ChatInputView = {
 		let inputView = ChatInputView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
 		inputView.chatLogController = self
 		return inputView
@@ -79,7 +79,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	/// прицепляем "аксессуар" в виде вьюшки на клавиатуру
 	override var inputAccessoryView: UIView? {
 		get {
-			return inputContainerView
+			return growingInputView
 		}
 	}
 	override var canBecomeFirstResponder: Bool {
@@ -117,10 +117,10 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	/// переопеределяем констрайнты при каждом повороте экрана (на некоторых моделях телефонов если не сделать - будет залазить/вылазить справа весь контент скролвьюшки)
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		collectionView?.collectionViewLayout.invalidateLayout()
-
+		
 		if (startingFrame != nil){
 			// прячем, т.к. по непонятной причине при повороте появляется inputContainerView
-			inputContainerView.isHidden = true
+			growingInputView.isHidden = true
 
 			// пересчитываем кадр куда возвращатся с просмотра картинки
 //			print("orig = \(orig?.frame)")
@@ -366,7 +366,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	@objc private func onChatBackingClick(){
-		inputContainerView.inputTextField.resignFirstResponder()
+		growingInputView.inputTextField.resignFirstResponder()
 	}
 	
 	
@@ -586,15 +586,15 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	@objc public func onSendClick(){
-		if inputContainerView.inputTextField.text == "" || inputContainerView.inputTextField.text == " " { return }
+		if growingInputView.inputTextField.text == "" || growingInputView.inputTextField.text == " " { return }
 		
 		let properties:[String:Any] = [
-			"text" :inputContainerView.inputTextField.text!
+			"text" :growingInputView.inputTextField.text!
 		]
 		sendMessage_with_Properties(properties: properties)
 		
 //		inputContainerView.inputTextField.resignFirstResponder() // убираем клаву после отправки сообщения
-		inputContainerView.inputTextField.text = nil
+		growingInputView.inputTextField.text = nil
 	}
 	
 	
@@ -710,7 +710,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 				
 				self.blackBackgroundView?.alpha = 1
-				self.inputContainerView.alpha = 0 // вьюшка ввода сообщения
+				self.growingInputView.alpha = 0 // вьюшка ввода сообщения
 				zoomingImageView.layer.cornerRadius = 0
 				
 				// по отношению сторон (умножаем коэфф. соотношения сторон на размер известной ширины)
@@ -733,7 +733,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				tapedImageView.frame = self.startingFrame!
 				self.startingFrame = nil
 				self.blackBackgroundView?.alpha = 0
-				self.inputContainerView.alpha = 1
+				self.growingInputView.alpha = 1
 				tapedImageView.layer.cornerRadius = 12
 				tapedImageView.clipsToBounds = true
 			}, completion: {
@@ -742,7 +742,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				self.blackBackgroundView = nil
 				self.blackBackgroundView?.removeFromSuperview()
 				self.originalImageView?.isHidden = false
-				self.inputContainerView.isHidden = false
+				self.growingInputView.isHidden = false
 			})
 		}
 	}

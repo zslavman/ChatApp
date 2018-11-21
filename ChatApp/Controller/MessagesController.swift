@@ -48,16 +48,19 @@ class MessagesController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Выйти", style: .plain, target: self, action: #selector(onLogout))
+		let bttnImage1 = UIImage(named: "bttn_logout")
+		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
+		navigationItem.leftBarButtonItem?.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
 		
-		let bttnImage = UIImage(named: "new_message_icon")
-		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage, style: .plain, target: self, action: #selector(onNewMessageClick))
+		let bttnImage2 = UIImage(named: "bttn_find_user")
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage2, style: .plain, target: self, action: #selector(onNewMessageClick))
+		navigationItem.rightBarButtonItem?.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
 		
 		chekIfUserLoggedIn()
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
 		
-		
+
 		let url = Bundle.main.url(forResource: "pipk", withExtension: "mp3")!
 		do { audioPlayer = try AVAudioPlayer(contentsOf: url) }
 		catch { print("error loading file") }
@@ -250,6 +253,7 @@ class MessagesController: UITableViewController {
 			// получаем ID юзеров, которые писали owner'у (цикл из диалогов)
 			self.refUserMessages.observe(.childAdded, with: {
 				(snapshot) in
+//				print("snapshot = \(snapshot)")
 				dialogsLoadedCount += 1
 				let userID = snapshot.key
 				let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
