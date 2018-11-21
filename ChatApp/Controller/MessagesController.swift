@@ -39,7 +39,9 @@ class MessagesController: UITableViewController {
 
 	private var audioPlayer = AVAudioPlayer()
 	private var allowIncomingSound:Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
-	private var collocutorID:String = ""		// ID собеседника, с которым перешли в чат
+	private var goToChatWithID:String?			// ID собеседника, с которым перешли в чат
+	
+	
 	
 	
 	// при переходе на другие экраны и возврате сюда - этот метод не дергается!
@@ -68,7 +70,7 @@ class MessagesController: UITableViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		collocutorID = ""
+		goToChatWithID = nil
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
@@ -287,8 +289,13 @@ class MessagesController: UITableViewController {
 							
 							// если это сообщение отправил owner или собеседник с которым сейчас чат, звук не проигрываем
 							let fromWho = dictionary["fromID"] as? String
-							if fromWho != self.uid && fromWho != self.collocutorID{
-								self.playSoundFile("pipk")
+							if fromWho != self.uid {
+								if fromWho != self.goToChatWithID && fromWho != self.goToChatWithID{
+									self.playSoundFile("pipk")
+								}
+								if self.goToChatWithID == nil {
+									// TODO: выделять ячейку серым (аля непрочитанные сообщ.)
+								}
 							}
 							
 							if (dialogsLoadedCount == dialogsStartCount && currentCount == maxCount){
@@ -312,13 +319,21 @@ class MessagesController: UITableViewController {
 						let id_WhoChangedStatus = dict["id"] as! String
 						let newStatus 			= dict["isOnline"] as! Bool
 						
-						for value in self.senders {
+						for (_, value) in self.senders.enumerated() {
 							if id_WhoChangedStatus == value.id{
 								value.isOnline = newStatus
+								
+								// чтоб не перегружать всю таблицу (иначе фотки блымают)
+								let visible = self.tableView.visibleCells as! [UserCell]
+								visible.forEach({
+									(cell) in
+									if cell.userID == id_WhoChangedStatus{
+										cell.onlinePoint.backgroundColor = newStatus ? UserCell.onLineColor : UserCell.offLineColor
+									}
+								})
 								break
 							}
 						}
-						self.attemptReloadofTable()
 					}
 				})
 				
@@ -579,7 +594,7 @@ class MessagesController: UITableViewController {
 	@objc public func goToChatWith(user: User){
 		
 		// запоминаем юзера, с которым перешли в чат (для блокировки проигрыв звуков при сообщениях от него)
-		collocutorID = user.id!
+		goToChatWithID = user.id!
 		
 		let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
 		chatLogController.user = user

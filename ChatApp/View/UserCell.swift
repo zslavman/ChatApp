@@ -50,6 +50,9 @@ class UserCell: UITableViewCell {
 		return label
 	}()
 	public var iTag:String!
+	public var userID:String? // для идентификации, кто сейчас в ячейке
+	
+	
 	
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -100,6 +103,7 @@ class UserCell: UITableViewCell {
 	/// настройка ячейки для MessagesController
 	public func setupCell(msg:Message, indexPath:IndexPath, user:User){ // user - не владелец
 		
+		userID = user.id
 		textLabel?.text = user.name
 		
 		if user.isOnline {
@@ -154,6 +158,7 @@ class UserCell: UITableViewCell {
 	
 	override func prepareForReuse() {
 		iTag = ""
+		// если оставить так, то после каждого обновлении таблицы фотки блымнут
 		profileImageView.image = UIImage(named: "default_profile_image")
 	}
 	
