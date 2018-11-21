@@ -61,8 +61,8 @@ class NewMessageController: UITableViewController {
 		searchBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
 		searchBar.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
 		searchBar.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		
 	}
+	
 	
 	
 	
@@ -127,13 +127,6 @@ class NewMessageController: UITableViewController {
 		for var value in twoD {
 			// value.sort{$0.lowercased() < $1.lowercased()}
 			value.sort{($0.name)!.localizedCaseInsensitiveCompare($1.name!) == .orderedAscending}
-			
-//			for val in value {
-//				if val.email == "A50@gmail.com"{
-//					print("Херня!")
-//				}
-//			}
-			
 			
 			newArr.append(value)
 		}

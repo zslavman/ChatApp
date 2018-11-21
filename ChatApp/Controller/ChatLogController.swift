@@ -53,7 +53,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
 		// layout?.headerReferenceSize = CGSize(width: 150, height: 25)
 		
-		
 		collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) // вставляем поля чтоб чат не соприкосался сверху и снизу
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.backgroundColor = .white
@@ -221,46 +220,78 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
+	
+	
+	/// получаем сообщения с БД + добавляем слушатель на новые
 	private func observeMessages(){
-		
+
 		guard let uid = Auth.auth().currentUser?.uid, let toID = user?.id else { return }
 		
 		let userMessagesRef = Database.database().reference().child("user-messages").child(uid).child(toID) // ссылка на список сообщений
-		let handler = userMessagesRef.observe(.childAdded, with: {
+		var allCount:UInt = 0
+		var curCount:UInt = 0
+		
+		
+		userMessagesRef.observeSingleEvent(of: .value) {
 			(snapshot) in
+			allCount = snapshot.childrenCount
+
 			
-			let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
-			
-			messagesRef.observeSingleEvent(of: .value, with: {
+			let handler = userMessagesRef.observe(.childAdded, with: {
 				(snapshot) in
+				let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
 				
-				guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+				
+				messagesRef.observeSingleEvent(of: .value, with: {
+					(snapshot) in
+					curCount += 1
 					
-				let message = Message(dictionary: dictionary)
-//				message.setValuesForKeys(dictionary)
-				
-				self.messages.append(message)
-				
-				// нужна ли сортировка????
-				self.messages.sort(by: {
-					(message1, message2) -> Bool in
-					return (message1.timestamp?.intValue)! < (message2.timestamp?.intValue)!
-				})
-				
-				DispatchQueue.main.async {
-					self.smartSort()
-					self.collectionView?.reloadData()
-					// прокручиваем скролл вниз
-					self.collectionView?.scrollToLast()
-				}
+					guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+					
+					let message = Message(dictionary: dictionary)
+					// message.setValuesForKeys(dictionary)
+					
+					self.messages.append(message)
+					
+					// нужна ли сортировка????
+					self.messages.sort(by: {
+						(message1, message2) -> Bool in
+						return (message1.timestamp?.intValue)! < (message2.timestamp?.intValue)!
+					})
+					
+					//  обновляем таблицу только после получения всех сообщений и последюущих (если будут)
+					if curCount == allCount {
+						self.updateCollectionView(animated: false)
+					}
+					else if curCount > allCount{
+						self.updateCollectionView(animated: true)
+					}
+					
+				}, withCancel: nil)
 				
 			}, withCancel: nil)
 			
-		}, withCancel: nil)
-		
-		disposeVar = (userMessagesRef, handler)
+			self.disposeVar = (userMessagesRef, handler)
+		}
 	}
 
+	
+	
+	
+	/// обновлялка таблицы и ее источника
+	private func updateCollectionView(animated:Bool){
+		smartSort()
+		DispatchQueue.main.async {
+			self.collectionView?.reloadData()
+			self.collectionView?.scrollToLast(animated: animated)
+			print("Обновили чат")
+		}
+	}
+	
+	
+	
+	
+	
 
 
 	/// создание 2-х мерного массива для сообщений и их секций
@@ -345,7 +376,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		if let keyboardFrame = (notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{
 			// при повороте экрана происходит ложное срабатывание - клава не выезжает (но высота ее = 50), потому проверяем ее размер
 			if keyboardFrame.height > 100 {
-				collectionView?.scrollToLast()
+				collectionView?.scrollToLast(animated: true)
 			}
 		}
 	}
@@ -813,7 +844,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 
 extension UICollectionView {
 	
-	func scrollToLast() {
+	func scrollToLast(animated:Bool) {
 		guard numberOfSections > 0 else { return }
 		
 		let lastSection = numberOfSections - 1
@@ -821,8 +852,7 @@ extension UICollectionView {
 		guard numberOfItems(inSection: lastSection) > 0 else { return }
 		
 		let lastItemIndexPath = IndexPath(item: numberOfItems(inSection: lastSection) - 1, section: lastSection)
-		
-		scrollToItem(at: lastItemIndexPath, at: .bottom, animated: true)
+		scrollToItem(at: lastItemIndexPath, at: .bottom, animated: animated)
 	}
 	
 }

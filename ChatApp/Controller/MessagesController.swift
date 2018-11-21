@@ -39,8 +39,6 @@ class MessagesController: UITableViewController {
 
 	private var audioPlayer = AVAudioPlayer()
 	private var allowIncomingSound:Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
-	private var dialogsStartCount:UInt = 0		// кол-во диалогеров, после загрузки которых разрешается проигрывать звук прихода сообщ.
-	private var dialogsLoadedCount:UInt = 0
 	private var collocutorID:String = ""		// ID собеседника, с которым перешли в чат
 	
 	
@@ -61,8 +59,8 @@ class MessagesController: UITableViewController {
 		let url = Bundle.main.url(forResource: "pipk", withExtension: "mp3")!
 		do { audioPlayer = try AVAudioPlayer(contentsOf: url) }
 		catch { print("error loading file") }
-		
 	}
+	
 	
 	
 	
@@ -74,8 +72,8 @@ class MessagesController: UITableViewController {
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
-		
 	}
+	
 	
 		
 
@@ -232,6 +230,8 @@ class MessagesController: UITableViewController {
 		
 		if uid == nil { return }
 		
+		var dialogsStartCount:UInt = 0
+		var dialogsLoadedCount:UInt = 0
 		refUserMessages = refUserMessages_original.child(uid)
 		
 		// проверяем сколько (диалогов) имеет owner
@@ -242,13 +242,13 @@ class MessagesController: UITableViewController {
 				self.labelNoMessages?.text = status.nomessages.rawValue
 				self.allowIncomingSound = true
 			}
-			self.dialogsStartCount = snapshot.childrenCount
+			dialogsStartCount = snapshot.childrenCount
 			
 			
 			// получаем ID юзеров, которые писали owner'у (цикл из диалогов)
 			self.refUserMessages.observe(.childAdded, with: {
 				(snapshot) in
-				self.dialogsLoadedCount += 1
+				dialogsLoadedCount += 1
 				let userID = snapshot.key
 				let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
 				
@@ -257,7 +257,7 @@ class MessagesController: UITableViewController {
 				// и только после послднего полученного включаем звук на приход сообщ.
 				var maxCount:UInt = 0
 				var currentCount:UInt = 0
-				if self.dialogsLoadedCount == self.dialogsStartCount {
+				if dialogsLoadedCount == dialogsStartCount {
 					maxCount = snapshot.childrenCount
 				}
 				//***********
@@ -291,10 +291,9 @@ class MessagesController: UITableViewController {
 								self.playSoundFile("pipk")
 							}
 							
-							if (self.dialogsLoadedCount == self.dialogsStartCount && currentCount == maxCount){
+							if (dialogsLoadedCount == dialogsStartCount && currentCount == maxCount){
 								self.allowIncomingSound = true
 							}
-							
 						}
 						
 					}, withCancel: nil)
@@ -540,8 +539,6 @@ class MessagesController: UITableViewController {
 		messagesDict.removeAll()
 		hendlers.removeAll()
 		tableView.reloadData()
-		dialogsLoadedCount = 0
-		dialogsStartCount = 0
 		allowIncomingSound = false
 		
 		senders.removeAll()
