@@ -39,7 +39,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
 	private let headerReusableView:String = "sectionHeader"
 	
-	
+	private var primaryDataloaded:Bool = false // первичная загрузка данных таблицы
 	
 	
 	
@@ -64,14 +64,13 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
-		
 		// прослушиватели клавы
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
 		
-		//		setupInputComponents()
-		//
-		//		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-		//		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+		// setupInputComponents()
+		
+		// NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+		// NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
 	}
 	
 	
@@ -118,8 +117,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		collectionView?.collectionViewLayout.invalidateLayout()
 		
+		// врежиме просмотра картинки прячем growingInputView, т.к. по непонятной причине оно появляется
 		if (startingFrame != nil){
-			// прячем, т.к. по непонятной причине при повороте появляется inputContainerView
 			growingInputView.isHidden = true
 
 			// пересчитываем кадр куда возвращатся с просмотра картинки
@@ -132,8 +131,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}
 	
 
-	
-	
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -260,13 +257,10 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 					})
 					
 					//  обновляем таблицу только после получения всех сообщений и последюущих (если будут)
-					if curCount == allCount {
-						self.updateCollectionView(animated: false)
+					if curCount >= allCount {
+						self.updateCollectionView()
 					}
-					else if curCount > allCount{
-						self.updateCollectionView(animated: true)
-					}
-					
+			
 				}, withCancel: nil)
 				
 			}, withCancel: nil)
@@ -278,15 +272,46 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	/// обновлялка таблицы и ее источника
-	private func updateCollectionView(animated:Bool){
-		smartSort()
-		DispatchQueue.main.async {
-			self.collectionView?.reloadData()
-			self.collectionView?.scrollToLast(animated: animated)
-			print("Обновили чат")
+	/// умная обновлялка collectionView и его источника
+	private func updateCollectionView(){
+		// если это загрузка всего диалога
+		if !primaryDataloaded {
+			smartSort()
+			self.primaryDataloaded = true
+			DispatchQueue.main.async {
+				self.collectionView?.reloadData()
+				self.collectionView?.scrollToLast(animated: false)
+			}
 		}
+		// если это обновление путем добавления сообщений
+		else {
+			// обновляем источник таблицы
+			guard !messages.isEmpty else { return }
+			dataArray[dataArray.count - 1].append(messages.last!)
+			
+			// обновляем саму таблицу
+			collectionView?.performBatchUpdates({
+				let indexPath = IndexPath(item: dataArray[dataArray.count - 1].count - 1, section: dataArray.count - 1)
+				collectionView?.insertItems(at: [indexPath])
+			}, completion: {
+				(bool) in
+				self.collectionView?.scrollToLast(animated: true)
+			})
+		}
+		print("Обновили чат")
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

@@ -43,8 +43,8 @@ class ChatInputView: UIView, UITextViewDelegate {
 		return uv
 	}()
 	
-	private var placeholderStr:String = "Введите текст..."
-
+	private var placeholderStr:String = "Введите сообщение..."
+	
 	
 	
 	
@@ -61,7 +61,7 @@ class ChatInputView: UIView, UITextViewDelegate {
 		
 		self.autoresizingMask = [.flexibleHeight, .flexibleWidth]
 		backgroundColor = .white
-		
+
 		// картинка слева (отправить фото)
 		addSubview(uploadImageView)
 		uploadImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4).isActive 	= true
@@ -94,8 +94,10 @@ class ChatInputView: UIView, UITextViewDelegate {
 		addSubview(inputTextField)
 		inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 10).isActive = true
 		inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive		= true
-		inputTextField.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive 	= true
+		inputTextField.topAnchor.constraint(equalTo: self.topAnchor, constant: 7).isActive 	= true
 		inputTextField.heightAnchor.constraint(equalTo: heightAnchor).isActive 				= true
+		
+		inputTextField.contentInset.bottom = 20 // чтоб при скролле введенного текста его не закрывала клава снизу
 	}
 	
 	
@@ -108,13 +110,18 @@ class ChatInputView: UIView, UITextViewDelegate {
 	}
 	func textViewDidEndEditing(_ textView: UITextView) {
 		if textView.text.isEmpty {
+			textView.isScrollEnabled = false
 			textView.text = placeholderStr
 			textView.textColor = UIColor.lightGray
 		}
-		sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		else {
+			textView.setContentOffset(.zero, animated: true)
+			checkOnEmpty()
+		}
 	}
 	
 
+	
 	
 	
 	public func textViewDidChange(_ textView: UITextView) {
@@ -128,18 +135,22 @@ class ChatInputView: UIView, UITextViewDelegate {
 		// textView самостоятельно увеличивает свой размер
 		// по мере ввода текста
 		
-		// пересчитываем высоту self под новыую высоту textView
-		self.invalidateIntrinsicContentSize()
-		
-		if textView.text.isEmpty {
-			sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		if textView.frame.height >= 90 { // 90 - это 3 строки текста
+			textView.isScrollEnabled = true
 		}
-		else {
-			sendButton.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
+		else{
+			textView.isScrollEnabled = false
+			// пересчитываем высоту self под новую высоту textView
+			self.invalidateIntrinsicContentSize()
 		}
+		checkOnEmpty()
 	}
+	
 
-
+	override func layoutSubviews() {
+		self.reloadInputViews()
+	}
+	
 	
 	
 	/// пересчитываем собственный размер (высоту)
@@ -149,8 +160,6 @@ class ChatInputView: UIView, UITextViewDelegate {
 		let newSize = CGSize(width: inputTextField.bounds.width, height: .infinity)
 		var estimatedSize = inputTextField.sizeThatFits(newSize)
 		estimatedSize.height += 14
-		print("intrinsicContentSize = \(estimatedSize.height)")
-		print("inputTextField.frame.size = \(inputTextField.frame.size)")
 
 		return estimatedSize
 	}
@@ -161,12 +170,38 @@ class ChatInputView: UIView, UITextViewDelegate {
 		if inputTextField.textColor == UIColor.lightGray{
 			return
 		}
+		
+		if !inputTextField.isFocused {
+			inputTextField.setContentOffset(.zero, animated: false)// нужно чтоб потом плейсхолдер не сполз вниз
+		}
+		
+		chatLogController?.onSendClick() // сдесь очищается текст
 		self.invalidateIntrinsicContentSize()
-		chatLogController?.onSendClick()
+		
+		if !inputTextField.isFocused { // если поле заполнено текстом но клава уже заехала
+			inputTextField.isScrollEnabled = false
+			inputTextField.text = placeholderStr
+			inputTextField.textColor = UIColor.lightGray
+		}
+		else {
+			checkOnEmpty()
+		}
 	}
 	
-	
-	
+
+	private func checkOnEmpty(){
+		if inputTextField.text.isEmpty {
+			sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		}
+		else {
+			if inputTextField.textColor == UIColor.lightGray{
+				sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+			}
+			else {
+				sendButton.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
+			}
+		}
+	}
 	
 	
 	 

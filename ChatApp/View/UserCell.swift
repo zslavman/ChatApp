@@ -157,6 +157,7 @@ class UserCell: UITableViewCell {
 	}
 	
 	override func prepareForReuse() {
+		super.prepareForReuse()
 		iTag = ""
 		// если оставить так, то после каждого обновлении таблицы фотки блымнут
 		profileImageView.image = UIImage(named: "default_profile_image")
