@@ -59,7 +59,9 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	internal let nameTF:UITextField = {
 		let tf = UITextField()
-		tf.placeholder = "Name"
+		tf.placeholder = "Имя"
+		tf.autocorrectionType = UITextAutocorrectionType.no
+//		tf.
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		return tf
 	}()
@@ -90,7 +92,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	internal let passTF:UITextField = {
 		let tf = UITextField()
-		tf.placeholder = "Password"
+		tf.placeholder = "Пароль"
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.isSecureTextEntry = true
 		tf.text = "111111" // потом убрать!
@@ -115,6 +117,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return sc
 	}()
 	
+	private var keyboardHeight:CGFloat = 0
+	private let defaultConstHeight:CGFloat = 40
 	
 	
 	
@@ -127,8 +131,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
-		collectionView?.keyboardDismissMode = .onDrag
-//		collectionView?.adjustedContentInset
+		collectionView?.keyboardDismissMode = .interactive
 		
 		collectionView?.backgroundColor = UIColor(r: 45, g: 127, b: 193)
 		collectionView?.addSubview(inputsContainerView)
@@ -185,12 +188,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	private var nameTFHeightAnchor:NSLayoutConstraint?
 	private var emailTFHeightAnchor:NSLayoutConstraint?
 	private var passTFHeightAnchor:NSLayoutConstraint?
+	private var baseHeightAnchor:NSLayoutConstraint?
 	
 	private func setupInputsContainerView(){
 		// добавим констрейнзы x, y, width, height
-		inputsContainerView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 					= true
-		inputsContainerView.centerYAnchor.constraint(equalTo: (collectionView?.centerYAnchor)!, constant: 40).isActive 	= true
-		inputsContainerView.widthAnchor.constraint(equalTo: (collectionView?.widthAnchor)!, constant: -24).isActive 		= true
+		baseHeightAnchor = inputsContainerView.centerYAnchor.constraint(equalTo: (collectionView?.centerYAnchor)!, constant: defaultConstHeight)
+		baseHeightAnchor?.isActive = true
+		inputsContainerView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
+		inputsContainerView.widthAnchor.constraint(equalTo: (collectionView?.widthAnchor)!, multiplier: 0.5, constant: 120).isActive = true
 		
 		inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
 		inputsContainerViewHeightAnchor?.isActive = true
@@ -241,8 +246,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		// добавим констрейнзы x, y, width, height
 		[loginRegisterBttn.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!),
 		 loginRegisterBttn.topAnchor.constraint(equalTo: inputsContainerView.bottomAnchor, constant: 12),
-		 loginRegisterBttn.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor),
-		 loginRegisterBttn.heightAnchor.constraint(equalToConstant: 50)].forEach { (constrain) in
+		 loginRegisterBttn.widthAnchor.constraint(equalToConstant: 180),
+		 loginRegisterBttn.heightAnchor.constraint(equalToConstant: 40)].forEach { (constrain) in
 			constrain.isActive = true
 		}
 	}
@@ -355,25 +360,32 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	
-	
+	/// клава выезжает
 	@objc private func keyboardWillShow(notif: Notification){
+		
+		if keyboardHeight > 0 {
+			return
+		}
 		if let keyboardSize = ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
 			let offset = keyboardSize.height - (UIScreen.main.bounds.height - loginRegisterBttn.center.y - 30)
 			print("offset = \(offset)")
 			
-			collectionView?.contentInset.bottom = offset
-			collectionView?.scrollIndicatorInsets.bottom = offset
+			keyboardHeight = keyboardSize.height
+			// находим значение длительности анимации выезжания клавиатуры
+			let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
+			baseHeightAnchor?.constant = -offset
 			
-			collectionView?.setContentOffset(<#T##contentOffset: CGPoint##CGPoint#>, animated: <#T##Bool#>)
-			
+			UIView.animate(withDuration: keyboardDuration) {
+				self.view.layoutIfNeeded()
+			}
 		}
-		
 	}
 	
+	/// клава заезжает
 	@objc private func keyboardWillHide(notif: Notification){
 		if ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
-			collectionView?.contentInset.bottom = 0
-			collectionView?.scrollIndicatorInsets.bottom = 0
+			baseHeightAnchor?.constant = defaultConstHeight
+			keyboardHeight = 0
 		}
 	}
 	
@@ -433,12 +445,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 
 
 
-extension UIColor {
-	
-	convenience init(r:CGFloat, g:CGFloat, b:CGFloat){
-		self.init(red: r/255, green: g/255, blue: b/255, alpha: 1)
-	}
-}
 
 
 
