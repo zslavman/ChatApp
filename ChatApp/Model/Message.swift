@@ -26,7 +26,11 @@ class Message: NSObject {
 	
 	
 	public func chatPartnerID() -> String? {
-		return fromID == Auth.auth().currentUser?.uid ? toID : fromID
+		if fromID == Auth.auth().currentUser?.uid {
+			// print("Авторизационный ID совпал с ОТ КОГО")
+			return toID
+		}
+		return fromID
 	}
 
 	

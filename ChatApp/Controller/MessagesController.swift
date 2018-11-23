@@ -15,7 +15,7 @@ class MessagesController: UITableViewController {
 	
 	internal var owner:User!
 	internal var uid:String!
-	private var messages:[Message] = [] 				// общий массив сообщений
+	private var messages:[Message] = [] 				// массив диалогов
 	private var messagesDict:[String: Message] = [:] 	// словарь сгруппированных сообщений
 	private let cell_id = "cell_id"
 	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
@@ -233,7 +233,7 @@ class MessagesController: UITableViewController {
 	/// получаем сообщения с сервера, добавляя слушатель на новые
 	private func observeUserMessages(){
 		
-		if uid == nil { return }
+		guard let uid = Auth.auth().currentUser?.uid else { return } // если взять uid из self то при регистрации тут выйдет
 		
 		var dialogsStartCount:UInt = 0
 		var dialogsLoadedCount:UInt = 0
@@ -265,6 +265,7 @@ class MessagesController: UITableViewController {
 				var currentCount:UInt = 0
 				if dialogsLoadedCount == dialogsStartCount {
 					maxCount = snapshot.childrenCount
+					print("maxCount = \(maxCount)")
 				}
 				//***********
 
@@ -289,7 +290,7 @@ class MessagesController: UITableViewController {
 							if let chatPartner = message.chatPartnerID() {
 								self.messagesDict[chatPartner] = message
 							}
-							self.attemptReloadofTable()
+							// self.attemptReloadofTable()
 							
 							// если это сообщение отправил owner или собеседник с которым сейчас чат, звук не проигрываем
 							let fromWho = dictionary["fromID"] as? String
@@ -301,9 +302,14 @@ class MessagesController: UITableViewController {
 									// TODO: выделять ячейку серым (аля непрочитанные сообщ.)
 								}
 							}
-							
+							// запуск обновления таблицы первый раз
 							if (dialogsLoadedCount == dialogsStartCount && currentCount == maxCount){
+								self.semiSmartReloadData(firstTime: true)
 								self.allowIncomingSound = true
+							}
+							// последюущие разы
+							else if (self.allowIncomingSound && currentCount > maxCount) {
+								self.semiSmartReloadData(firstTime: false)
 							}
 						}
 						
@@ -351,7 +357,7 @@ class MessagesController: UITableViewController {
 		let listener3 = refUserMessages.observe(.childRemoved, with: {
 			(snapshot) in
 			self.messagesDict.removeValue(forKey: snapshot.key)
-			self.attemptReloadofTable()
+			self.semiSmartReloadData(firstTime: false)
 		})
 		
 		self.hendlers[listener3] = refUserMessages
@@ -365,14 +371,37 @@ class MessagesController: UITableViewController {
 	
 	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
 	/// попытка перегрузить таблицу
+	/// [НЕ ИСПОЛЬЗУЕТСЯ, т.к. нашел более рациональное решение]
 	private func attemptReloadofTable(){
 		timer?.invalidate()
-		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
+		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.semiSmartReloadData), userInfo: nil, repeats: false)
 	}
 	
-	/// (без этого таблица перезагружается десятки раз)
-	@objc private func delayedRelodTable(){
-		messages = Array(self.messagesDict.values)
+	
+	
+	
+	
+	/// отложенная перезагрузка таблицы и данных
+	@objc private func semiSmartReloadData(firstTime:Bool){
+		
+		var partnerBeforeUpdate:String?
+		func reloadTable(){
+			DispatchQueue.main.async {
+				self.tableView.reloadData()
+				print("Обновили таблицу!")
+			}
+		}
+		//****************************
+		
+		if firstTime {
+			messages = Array(self.messagesDict.values)
+		}
+		else {
+			// small optimization (save some array props)
+			partnerBeforeUpdate = messages.first!.chatPartnerID()! // предпоследний
+			messages = Array(self.messagesDict.values)
+		}
+
 		
 		if messages.isEmpty{
 			labelNoMessages?.text = status.nomessages.rawValue
@@ -386,9 +415,28 @@ class MessagesController: UITableViewController {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
-		DispatchQueue.main.async {
-			self.tableView.reloadData()
+		
+		// if you got new message from saved partnerBeforeUpdate
+		if let partnerBeforeUpdate = partnerBeforeUpdate{
+			let newPartner = messages.first!.chatPartnerID()!
+			if newPartner == partnerBeforeUpdate{
+				let indexPath = IndexPath(row: 0, section: 0)
+				DispatchQueue.main.async {
+					self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
+					print("Правильно обновили таблицу!")
+				}
+			}
+			else {
+				reloadTable()
+			}
 		}
+		else {
+			reloadTable()
+		}
+		
+		
+		
+		
 	}
 	
 	

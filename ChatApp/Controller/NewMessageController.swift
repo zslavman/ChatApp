@@ -81,7 +81,11 @@ class NewMessageController: UITableViewController {
 				let user = User()
 				// крашанет если в классе не найдется переменных с именами ключей словаря
 				user.setValuesForKeys(dict)
-				self.users.append(user)
+				
+				// ГЛЮК БАЗЫ - юзер у которого всё = nil!!!!! (c браузера его не видно!)
+				if user.email != nil{
+					self.users.append(user)
+				}
 			}
 			self.attemptReloadofTable()
 		}, withCancel: nil)

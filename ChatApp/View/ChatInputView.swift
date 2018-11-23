@@ -178,15 +178,14 @@ class ChatInputView: UIView, UITextViewDelegate {
 		chatLogController?.onSendClick() // сдесь очищается текст
 		self.invalidateIntrinsicContentSize()
 		
-		if !inputTextField.isFocused { // если поле заполнено текстом но клава уже заехала
+		if !inputTextField.isFirstResponder { // если поле заполнено текстом но клава уже заехала
 			inputTextField.isScrollEnabled = false
 			inputTextField.text = placeholderStr
 			inputTextField.textColor = UIColor.lightGray
 		}
-		else {
-			checkOnEmpty()
-		}
+		checkOnEmpty()
 	}
+		
 	
 
 	private func checkOnEmpty(){
