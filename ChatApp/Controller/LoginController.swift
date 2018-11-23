@@ -13,7 +13,7 @@ import Firebase
 let default_profile_image:String = "default_profile_image"
 
 
-class LoginController: UIViewController, UITextFieldDelegate {
+class LoginController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextFieldDelegate {
 	
 	internal var messagesController:MessagesController?
 
@@ -125,11 +125,16 @@ class LoginController: UIViewController, UITextFieldDelegate {
 	override func viewDidLoad() {
         super.viewDidLoad()
 		
-		view.backgroundColor = UIColor(r: 45, g: 127, b: 193)
-		view.addSubview(inputsContainerView)
-		view.addSubview(loginRegisterBttn)
-		view.addSubview(profileImageView)
-		view.addSubview(loginSegmentedControl)
+		collectionView?.alwaysBounceVertical = true
+		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
+		collectionView?.keyboardDismissMode = .onDrag
+//		collectionView?.adjustedContentInset
+		
+		collectionView?.backgroundColor = UIColor(r: 45, g: 127, b: 193)
+		collectionView?.addSubview(inputsContainerView)
+		collectionView?.addSubview(loginRegisterBttn)
+		collectionView?.addSubview(profileImageView)
+		collectionView?.addSubview(loginSegmentedControl)
 		
 		setupInputsContainerView()
 		setupLoginRegisterButton()
@@ -143,13 +148,22 @@ class LoginController: UIViewController, UITextFieldDelegate {
 		nameTF.delegate = self
 		emailTF.delegate = self
 		passTF.delegate = self
+		
+		// слушатель на тап по фону сообщений
+		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
+		// прослушиватели клавы
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+		
 	}
 
 
 	
 	
+	
+	
 	private func setupSegmentedControl(){
-		loginSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 						= true
+		loginSegmentedControl.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
 		loginSegmentedControl.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -15).isActive = true
 		loginSegmentedControl.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor, multiplier: 1/2).isActive = true
 		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 50)
@@ -158,7 +172,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
 	
 	
 	private func setupProfileImageView(){
-		profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 				= true
+		profileImageView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
 		profileImageView.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -10).isActive = true
 		profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive 							= true
 		profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive 						= true
@@ -174,9 +188,9 @@ class LoginController: UIViewController, UITextFieldDelegate {
 	
 	private func setupInputsContainerView(){
 		// добавим констрейнзы x, y, width, height
-		inputsContainerView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive 					= true
-		inputsContainerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 40).isActive 	= true
-		inputsContainerView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -24).isActive 		= true
+		inputsContainerView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 					= true
+		inputsContainerView.centerYAnchor.constraint(equalTo: (collectionView?.centerYAnchor)!, constant: 40).isActive 	= true
+		inputsContainerView.widthAnchor.constraint(equalTo: (collectionView?.widthAnchor)!, constant: -24).isActive 		= true
 		
 		inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
 		inputsContainerViewHeightAnchor?.isActive = true
@@ -225,7 +239,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
 
 	private func setupLoginRegisterButton(){
 		// добавим констрейнзы x, y, width, height
-		[loginRegisterBttn.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+		[loginRegisterBttn.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!),
 		 loginRegisterBttn.topAnchor.constraint(equalTo: inputsContainerView.bottomAnchor, constant: 12),
 		 loginRegisterBttn.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor),
 		 loginRegisterBttn.heightAnchor.constraint(equalToConstant: 50)].forEach { (constrain) in
@@ -342,31 +356,75 @@ class LoginController: UIViewController, UITextFieldDelegate {
 	
 	
 	
+	@objc private func keyboardWillShow(notif: Notification){
+		if let keyboardSize = ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
+			let offset = keyboardSize.height - (UIScreen.main.bounds.height - loginRegisterBttn.center.y - 30)
+			print("offset = \(offset)")
+			
+			collectionView?.contentInset.bottom = offset
+			collectionView?.scrollIndicatorInsets.bottom = offset
+			
+			collectionView?.setContentOffset(<#T##contentOffset: CGPoint##CGPoint#>, animated: <#T##Bool#>)
+			
+		}
+		
+	}
 	
-	
-	private var point = CGPoint.zero
-	
-	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		if let touch = touches.first {
-			let position = touch.location(in: self.view)
-			point = position
-			print(position)
+	@objc private func keyboardWillHide(notif: Notification){
+		if ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+			collectionView?.contentInset.bottom = 0
+			collectionView?.scrollIndicatorInsets.bottom = 0
 		}
 	}
-	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-		if let touch = touches.first {
-			let position = touch.location(in: self.view)
-			if position == point {
-				view.endEditing(true)
-				point = .zero
-			}
-		}
+	
+	
+	
+	@objc private func onChatBackingClick(){
+		collectionView?.endEditing(true)
 	}
 	
-	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-		view.endEditing(true)
-		return true
+	
+	
+	override func numberOfSections(in collectionView: UICollectionView) -> Int {
+		// #warning Incomplete implementation, return the number of sections
+		return 0
 	}
+	
+	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		// #warning Incomplete implementation, return the number of items
+		return 0
+	}
+	
+	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "reuseIdentifier", for: indexPath)
+		
+		return cell
+	}
+	
+	
+//	private var point = CGPoint.zero
+//
+//	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+//		if let touch = touches.first {
+//			let position = touch.location(in: self.view)
+//			point = position
+//			print(position)
+//		}
+//	}
+//	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//		if let touch = touches.first {
+//			let position = touch.location(in: self.view)
+//			if position == point {
+//				view.endEditing(true)
+//				point = .zero
+//			}
+//		}
+//	}
+//
+//	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+//		view.endEditing(true)
+//		return true
+//	}
 	
 	
 

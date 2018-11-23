@@ -622,8 +622,9 @@ class MessagesController: UITableViewController {
 			return
 		}
 		
-		let loginController = LoginController()
-		
+
+		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
+
 		// фикс бага когда выходишь и регишся а тайтл не меняется
 		loginController.messagesController = self
 		

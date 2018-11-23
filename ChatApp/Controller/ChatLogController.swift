@@ -201,7 +201,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	//********************
 	
 	
-	
+
 	
 	
 	
@@ -815,75 +815,11 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	//		}
 	//	}
 	
-	//	private func setupInputComponents(){
-	//
-	//		// контейнер + фон
-	//		let containerView = UIView()
-	//		containerView.backgroundColor = .white
-	//		containerView.translatesAutoresizingMaskIntoConstraints = false
-	//		view.addSubview(containerView)
-	//		containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-	//
-	//		containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
-	//		containerViewBottomAnchor?.isActive = true
-	//
-	//		containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-	//		containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-	//
-	//		// линия-сепаратор
-	//		let sepLine = UIView()
-	//		sepLine.backgroundColor = UIColor.lightGray
-	//		sepLine.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 1)
-	//		sepLine.translatesAutoresizingMaskIntoConstraints = false
-	//		containerView.addSubview(sepLine)
-	//		sepLine.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-	//		sepLine.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-	//		sepLine.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-	//		sepLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-	//
-	//		// кнопка
-	//		let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
-	//		sendButton.setTitle("Send", for: UIControlState.normal)
-	//		sendButton.translatesAutoresizingMaskIntoConstraints = false
-	//		sendButton.addTarget(self, action: #selector(onSendClick), for: UIControlEvents.touchUpInside)
-	//		containerView.addSubview(sendButton)
-	//		sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-	//		sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-	//		sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-	//		sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-	//		sendButton.layer.cornerRadius = 10
-	//
-	//		// текстовое поле
-	//		containerView.addSubview(inputTextField)
-	//		inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
-	//		inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-	//		inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-	//		inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-	//	}
+
 	
 	
 	
 }
-
-
-
-extension UICollectionView {
-	
-	func scrollToLast(animated:Bool) {
-		guard numberOfSections > 0 else { return }
-		
-		let lastSection = numberOfSections - 1
-		
-		guard numberOfItems(inSection: lastSection) > 0 else { return }
-		
-		let lastItemIndexPath = IndexPath(item: numberOfItems(inSection: lastSection) - 1, section: lastSection)
-		scrollToItem(at: lastItemIndexPath, at: .bottom, animated: animated)
-	}
-	
-}
-
-
-
 
 
 

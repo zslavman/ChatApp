@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 
-extension LoginController:UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension LoginController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	
 	
