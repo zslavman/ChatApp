@@ -24,6 +24,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
 		imageView.isUserInteractionEnabled = true
+		imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		return imageView
 	}()
 	
@@ -60,8 +61,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	internal let nameTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Имя"
+		tf.autocapitalizationType = .words
 		tf.autocorrectionType = UITextAutocorrectionType.no
-//		tf.
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		return tf
 	}()
@@ -78,6 +79,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.placeholder = "Email"
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.keyboardType = .emailAddress
+		tf.autocorrectionType = .no
+		tf.autocapitalizationType = .none
 		tf.text = "A24@gmail.com" // потом убрать!
 		return tf
 	}()
@@ -177,8 +180,10 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	private func setupProfileImageView(){
 		profileImageView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
 		profileImageView.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -10).isActive = true
-		profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive 							= true
-		profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive 						= true
+//		profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive 							= true
+//		profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive 						= true
+		profileImageView.widthAnchor.constraint(equalTo: (collectionView?.heightAnchor)!, multiplier: 0.25).isActive = true
+		profileImageView.heightAnchor.constraint(equalTo: (collectionView?.heightAnchor)!, multiplier: 0.25).isActive = true
 	}
 	
 	
@@ -342,7 +347,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		}
 		else{
 			profileImageView.image = UIImage(named: default_profile_image)
-			profileImageView.layer.cornerRadius = 75
+			profileImageView.layer.cornerRadius = profileImageView.frame.size.height / 2
 			profileImageView.layer.masksToBounds = true
 		}
 	}
@@ -354,6 +359,28 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
+	
+	
+	// сделать геттер для высоты 3-х полей ввода
+	
+	
+	/// при повороте экрана
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		if UIDevice.current.orientation.isLandscape {
+			print("Landscape")
+		}
+		else {
+			print("Portrait")
+//			inputsContainerViewHeightAnchor?.constant = 150
+		}
+//		if loginSegmentedControl.selectedSegmentIndex == 1{
+//			profileImageView.layer.cornerRadius = (UIScreen.main.bounds.height * 0.25) / 2
+//			profileImageView.layer.masksToBounds = true
+//			profileImageView.layoutIfNeeded()
+//			profileImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//		}
+	}
+	
 	
 	
 	
@@ -368,7 +395,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		}
 		if let keyboardSize = ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
 			let offset = keyboardSize.height - (UIScreen.main.bounds.height - loginRegisterBttn.center.y - 30)
+			print("keyboardSize.height = \(keyboardSize.height)")
+			print("screenHeight = \(UIScreen.main.bounds.height)")
+			print("loginRegisterBttn.y = \(loginRegisterBttn.center.y)")
 			print("offset = \(offset)")
+			print("------------------------")
 			
 			keyboardHeight = keyboardSize.height
 			// находим значение длительности анимации выезжания клавиатуры
