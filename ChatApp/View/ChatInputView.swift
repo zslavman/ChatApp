@@ -149,6 +149,7 @@ class ChatInputView: UIView, UITextViewDelegate {
 
 	override func layoutSubviews() {
 		self.reloadInputViews()
+		setNeedsUpdateConstraints() // проверить!
 	}
 	
 	

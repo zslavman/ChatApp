@@ -61,9 +61,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	internal let nameTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Имя"
+		tf.backgroundColor = .white
+		tf.layer.cornerRadius = 7
+		tf.layer.masksToBounds = true
 		tf.autocapitalizationType = .words
 		tf.autocorrectionType = UITextAutocorrectionType.no
 		tf.translatesAutoresizingMaskIntoConstraints = false
+		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
+		tf.leftViewMode = .always
 		return tf
 	}()
 	private let nameSeparator:UIView = {
@@ -77,10 +82,15 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	internal let emailTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Email"
+		tf.backgroundColor = .white
+		tf.layer.cornerRadius = 7
+		tf.layer.masksToBounds = true
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.keyboardType = .emailAddress
 		tf.autocorrectionType = .no
 		tf.autocapitalizationType = .none
+		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
+		tf.leftViewMode = .always
 		tf.text = "A24@gmail.com" // потом убрать!
 		return tf
 	}()
@@ -96,8 +106,13 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	internal let passTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Пароль"
+		tf.backgroundColor = .white
+		tf.layer.cornerRadius = 7
+		tf.layer.masksToBounds = true
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.isSecureTextEntry = true
+		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
+		tf.leftViewMode = .always
 		tf.text = "111111" // потом убрать!
 		return tf
 	}()
@@ -111,7 +126,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	//*********************
 	
 	
-	let loginSegmentedControl:UISegmentedControl = {
+	internal let loginSegmentedControl:UISegmentedControl = {
 		let sc = UISegmentedControl(items: ["Login", "Register"])
 		sc.translatesAutoresizingMaskIntoConstraints = false
 		sc.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
@@ -119,6 +134,16 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		sc.addTarget(self, action: #selector(onSegmentedClick), for: UIControlEvents.valueChanged)
 		return sc
 	}()
+	
+	private let helperElement: UIView = {
+		let helper = UIView()
+		helper.backgroundColor = UIColor.red.withAlphaComponent(0.3)
+		helper.translatesAutoresizingMaskIntoConstraints = false
+		return helper
+	}()
+	
+	
+	
 	
 	private var keyboardHeight:CGFloat = 0
 	private let defaultConstHeight:CGFloat = 40
@@ -137,19 +162,13 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		collectionView?.keyboardDismissMode = .interactive
 		
 		collectionView?.backgroundColor = UIColor(r: 45, g: 127, b: 193)
-		collectionView?.addSubview(inputsContainerView)
-		collectionView?.addSubview(loginRegisterBttn)
-		collectionView?.addSubview(profileImageView)
-		collectionView?.addSubview(loginSegmentedControl)
 		
-		setupInputsContainerView()
-		setupLoginRegisterButton()
-		setupProfileImageView()
-		setupSegmentedControl()
+		setup_UI()
+		
 		
 		// изначально нужно загружать экран Логина а не Регистрации
-		loginSegmentedControl.selectedSegmentIndex = 0
-		onSegmentedClick()
+//		loginSegmentedControl.selectedSegmentIndex = 0
+//		onSegmentedClick()
 		
 		nameTF.delegate = self
 		emailTF.delegate = self
@@ -168,6 +187,83 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	
+	private func setup_UI(){
+		
+		let inputsStackView = UIStackView(arrangedSubviews: [nameTF, emailTF, passTF])
+		inputsStackView.axis 		 = .vertical
+		inputsStackView.alignment 	 = .center
+		inputsStackView.distribution = .fill
+		inputsStackView.spacing 	 = 5
+		inputsStackView.translatesAutoresizingMaskIntoConstraints = false
+		
+		let mainStackView = UIStackView(arrangedSubviews: [profileImageView, loginSegmentedControl, inputsStackView, loginRegisterBttn])
+		mainStackView.axis 		 	= .vertical
+		mainStackView.alignment 	= .center
+		mainStackView.distribution 	= .fill
+		mainStackView.spacing 	 	= 20
+		mainStackView.translatesAutoresizingMaskIntoConstraints = false
+		
+		mainStackView.addSubview(inputsStackView)
+		collectionView?.addSubview(mainStackView)
+		
+		nameTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive 	= true
+		nameTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
+		nameTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		emailTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive = true
+		emailTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
+		emailTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		passTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive = true
+		passTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
+		passTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		
+//		profileImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+//		profileImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+//		profileImageView.layer.cornerRadius = 50
+//		profileImageView.layer.masksToBounds = true
+		
+		loginSegmentedControl.widthAnchor.constraint(equalToConstant: 150).isActive = true
+		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
+		
+		collectionView?.addSubview(helperElement)
+		helperElement.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
+		helperElement.topAnchor.constraint(equalTo: (collectionView?.topAnchor)!, constant: 10).isActive = true
+		helperElement.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -20).isActive = true
+		helperElement.widthAnchor.constraint(equalToConstant: 200).isActive = true
+		// перемещаем хелпер подниз
+		collectionView?.sendSubview(toBack: helperElement)
+		
+		loginRegisterBttn.widthAnchor.constraint(equalToConstant: 150).isActive = true
+		loginRegisterBttn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		
+		inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor).isActive 	= true
+		inputsStackView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor).isActive = true
+		
+		mainStackView.centerYAnchor.constraint(equalTo: (collectionView?.centerYAnchor)!).isActive 			= true
+		mainStackView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 			= true
+		mainStackView.widthAnchor.constraint(equalTo: (collectionView?.widthAnchor)!, multiplier: 0.5, constant: 120).isActive = true
+		
+//		profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor, multiplier: 1).isActive = true
+		
+//		let widthCont = profileImageView.widthAnchor.constraint(equalTo: helperElement.heightAnchor)
+//		widthCont.priority = UILayoutPriority(rawValue: 750)
+//		widthCont.isActive = true
+		let top = helperElement.heightAnchor.constraint(equalTo: helperElement.heightAnchor)
+		
+		profileImageView.heightAnchor.constraint(lessThanOrEqualTo: helperElement.heightAnchor).isActive = true
+		
+//		profileImageView.heightAnchor.constraint(equalTo: helperElement.heightAnchor, constant: 0).isActive = true
+//		profileImageView.layer.cornerRadius = 50
+//		profileImageView.layer.masksToBounds = true
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
 	private func setupSegmentedControl(){
 		loginSegmentedControl.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
 		loginSegmentedControl.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -15).isActive = true
@@ -180,8 +276,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	private func setupProfileImageView(){
 		profileImageView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
 		profileImageView.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -10).isActive = true
-//		profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive 							= true
-//		profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive 						= true
 		profileImageView.widthAnchor.constraint(equalTo: (collectionView?.heightAnchor)!, multiplier: 0.25).isActive = true
 		profileImageView.heightAnchor.constraint(equalTo: (collectionView?.heightAnchor)!, multiplier: 0.25).isActive = true
 	}
