@@ -24,14 +24,15 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
 		imageView.isUserInteractionEnabled = true
-		imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//		imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		imageView.layer.cornerRadius = 50
+		imageView.layer.masksToBounds = true
 		return imageView
 	}()
 	
 	private let inputsContainerView: UIView = {
 		let view_i = UIView()
 		view_i.backgroundColor = .white
-		// убираем дефолтные констрейнзы
 		view_i.translatesAutoresizingMaskIntoConstraints = false
 		view_i.layer.cornerRadius = 8
 		view_i.layer.shadowOffset = CGSize(width: 0, height: 3)
@@ -51,9 +52,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		button.layer.shadowOffset = CGSize(width: 0, height: 3)
 		button.layer.shadowRadius = 3
 		button.layer.shadowOpacity = 0.3
-		
+		button.layer.shouldRasterize = true
 		button.addTarget(self, action: #selector(onGoClick), for: UIControlEvents.touchUpInside)
-		
 		return button
 	}()
 	
@@ -62,13 +62,16 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		let tf = UITextField()
 		tf.placeholder = "Имя"
 		tf.backgroundColor = .white
-		tf.layer.cornerRadius = 7
-		tf.layer.masksToBounds = true
 		tf.autocapitalizationType = .words
 		tf.autocorrectionType = UITextAutocorrectionType.no
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
+		tf.layer.shadowOffset = CGSize(width: 0, height: 3)
+		tf.layer.shadowRadius = 3
+		tf.layer.shadowOpacity = 0.3
+		tf.layer.cornerRadius = 7
+		tf.layer.masksToBounds = true
 		return tf
 	}()
 	private let nameSeparator:UIView = {
@@ -83,8 +86,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		let tf = UITextField()
 		tf.placeholder = "Email"
 		tf.backgroundColor = .white
-		tf.layer.cornerRadius = 7
-		tf.layer.masksToBounds = true
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.keyboardType = .emailAddress
 		tf.autocorrectionType = .no
@@ -92,38 +93,32 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
 		tf.text = "A24@gmail.com" // потом убрать!
+		tf.layer.shadowOffset = CGSize(width: 0, height: 3)
+		tf.layer.shadowRadius = 3
+		tf.layer.shadowOpacity = 0.3
+		tf.layer.cornerRadius = 7
+		tf.layer.masksToBounds = true
 		return tf
 	}()
 	
-	private let emailSeparator:UIView = {
-		let separator = UIView()
-		separator.backgroundColor = #colorLiteral(red: 0.8738058928, green: 0.8818185396, blue: 0.8798114271, alpha: 1)
-		separator.translatesAutoresizingMaskIntoConstraints = false
-		return separator
-	}()
-	//*********************
 	
 	internal let passTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Пароль"
 		tf.backgroundColor = .white
-		tf.layer.cornerRadius = 7
-		tf.layer.masksToBounds = true
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.isSecureTextEntry = true
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
 		tf.text = "111111" // потом убрать!
+		tf.layer.shadowOffset = CGSize(width: 0, height: 3)
+		tf.layer.shadowRadius = 3
+		tf.layer.shadowOpacity = 0.3
+		tf.layer.cornerRadius = 7
+		tf.layer.masksToBounds = true
 		return tf
 	}()
-	
-	private let passSeparator:UIView = {
-		let separator = UIView()
-		separator.backgroundColor = UIColor.lightGray
-		separator.translatesAutoresizingMaskIntoConstraints = false
-		return separator
-	}()
-	//*********************
+
 	
 	
 	internal let loginSegmentedControl:UISegmentedControl = {
@@ -135,18 +130,32 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return sc
 	}()
 	
-	private let helperElement: UIView = {
+	private let helperElement_top: UIView = {
 		let helper = UIView()
 		helper.backgroundColor = UIColor.red.withAlphaComponent(0.3)
 		helper.translatesAutoresizingMaskIntoConstraints = false
 		return helper
 	}()
 	
+	private let helperElement_bottom: UIView = {
+		let helper = UIView()
+		helper.backgroundColor = UIColor.yellow.withAlphaComponent(0.3)
+		helper.translatesAutoresizingMaskIntoConstraints = false
+		return helper
+	}()
 	
 	
+	private var mainStackView:UIStackView!
+	private var nameTFHeightAnchor:NSLayoutConstraint?
 	
 	private var keyboardHeight:CGFloat = 0
-	private let defaultConstHeight:CGFloat = 40
+	private let defaultConstHeight:CGFloat = -35
+	private var baseHeightAnchor:NSLayoutConstraint?
+	
+	
+	
+	
+	
 	
 	
 	
@@ -179,8 +188,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		// прослушиватели клавы
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-		
 	}
+	
 
 
 	
@@ -189,6 +198,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	private func setup_UI(){
 		
+		// стейвью для полей ввода
 		let inputsStackView = UIStackView(arrangedSubviews: [nameTF, emailTF, passTF])
 		inputsStackView.axis 		 = .vertical
 		inputsStackView.alignment 	 = .center
@@ -196,10 +206,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		inputsStackView.spacing 	 = 5
 		inputsStackView.translatesAutoresizingMaskIntoConstraints = false
 		
-		let mainStackView = UIStackView(arrangedSubviews: [profileImageView, loginSegmentedControl, inputsStackView, loginRegisterBttn])
+		// главный стеквью
+		mainStackView = UIStackView(arrangedSubviews: [profileImageView, loginSegmentedControl, inputsStackView, loginRegisterBttn])
 		mainStackView.axis 		 	= .vertical
 		mainStackView.alignment 	= .center
-		mainStackView.distribution 	= .fill
+		mainStackView.distribution 	= .fillProportionally
 		mainStackView.spacing 	 	= 20
 		mainStackView.translatesAutoresizingMaskIntoConstraints = false
 		
@@ -208,7 +219,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		nameTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive 	= true
 		nameTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
-		nameTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalToConstant: 40)
+		nameTFHeightAnchor?.isActive = true
 		emailTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive = true
 		emailTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
 		emailTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
@@ -216,21 +228,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		passTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
 		passTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
-//		profileImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-//		profileImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-//		profileImageView.layer.cornerRadius = 50
-//		profileImageView.layer.masksToBounds = true
-		
 		loginSegmentedControl.widthAnchor.constraint(equalToConstant: 150).isActive = true
 		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
-		
-		collectionView?.addSubview(helperElement)
-		helperElement.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
-		helperElement.topAnchor.constraint(equalTo: (collectionView?.topAnchor)!, constant: 10).isActive = true
-		helperElement.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -20).isActive = true
-		helperElement.widthAnchor.constraint(equalToConstant: 200).isActive = true
-		// перемещаем хелпер подниз
-		collectionView?.sendSubview(toBack: helperElement)
 		
 		loginRegisterBttn.widthAnchor.constraint(equalToConstant: 150).isActive = true
 		loginRegisterBttn.heightAnchor.constraint(equalToConstant: 40).isActive = true
@@ -238,24 +237,34 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor).isActive 	= true
 		inputsStackView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor).isActive = true
 		
-		mainStackView.centerYAnchor.constraint(equalTo: (collectionView?.centerYAnchor)!).isActive 			= true
-		mainStackView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 			= true
+		baseHeightAnchor = mainStackView.centerYAnchor.constraint(equalTo: (collectionView?.centerYAnchor)!, constant: defaultConstHeight)
+		baseHeightAnchor!.isActive = true
+		mainStackView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
 		mainStackView.widthAnchor.constraint(equalTo: (collectionView?.widthAnchor)!, multiplier: 0.5, constant: 120).isActive = true
 		
-//		profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor, multiplier: 1).isActive = true
+		// верхний вспомогательный элемент
+		collectionView?.addSubview(helperElement_top)
+		helperElement_top.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
+		helperElement_top.topAnchor.constraint(equalTo: (collectionView?.topAnchor)!, constant: 10).isActive = true
+		helperElement_top.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -20).isActive = true
+		helperElement_top.widthAnchor.constraint(equalToConstant: 50).isActive = true
+		// перемещаем хелпер подниз
+		collectionView?.sendSubview(toBack: helperElement_top)
+		helperElement_top.isHidden = true
 		
-//		let widthCont = profileImageView.widthAnchor.constraint(equalTo: helperElement.heightAnchor)
-//		widthCont.priority = UILayoutPriority(rawValue: 750)
-//		widthCont.isActive = true
-		let top = helperElement.heightAnchor.constraint(equalTo: helperElement.heightAnchor)
+		// нижний вспомогательный элемент
+		collectionView?.addSubview(helperElement_bottom)
+		helperElement_bottom.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
+		helperElement_bottom.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor).isActive = true
+//		helperElement_bottom.bottomAnchor.constraint(equalTo: (collectionView?.bottomAnchor)!, constant: -10).isActive = true
+		helperElement_bottom.bottomAnchor.constraint(equalTo: collectionView!.bottomAnchor, constant: -10).isActive = true
+		helperElement_bottom.widthAnchor.constraint(equalToConstant: 80).isActive = true
+//		helperElement_bottom.heightAnchor.constraint(equalToConstant: 100).isActive = true
+//		collectionView?.sendSubview(toBack: helperElement_bottom)
+//		helperElement_top.isHidden = true
 		
-		profileImageView.heightAnchor.constraint(lessThanOrEqualTo: helperElement.heightAnchor).isActive = true
-		
-//		profileImageView.heightAnchor.constraint(equalTo: helperElement.heightAnchor, constant: 0).isActive = true
-//		profileImageView.layer.cornerRadius = 50
-//		profileImageView.layer.masksToBounds = true
-		
-		
+
+		profileImageView.heightAnchor.constraint(equalTo: helperElement_top.heightAnchor, multiplier: 0.55, constant: 25).isActive = true
 	}
 	
 	
@@ -264,97 +273,25 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	
-	private func setupSegmentedControl(){
-		loginSegmentedControl.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
-		loginSegmentedControl.bottomAnchor.constraint(equalTo: inputsContainerView.topAnchor, constant: -15).isActive = true
-		loginSegmentedControl.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor, multiplier: 1/2).isActive = true
-		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 50)
+	
+	/// при повороте экрана
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		if UIDevice.current.orientation.isLandscape {
+			print("Landscape")
+			baseHeightAnchor?.constant = 0
+			mainStackView.spacing = 10
+		}
+		else {
+			print("Portrait")
+			baseHeightAnchor?.constant = -35
+			mainStackView.spacing = 20
+		}
+		
 	}
-	
-	
-	
-	private func setupProfileImageView(){
-		profileImageView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
-		profileImageView.bottomAnchor.constraint(equalTo: loginSegmentedControl.topAnchor, constant: -10).isActive = true
-		profileImageView.widthAnchor.constraint(equalTo: (collectionView?.heightAnchor)!, multiplier: 0.25).isActive = true
-		profileImageView.heightAnchor.constraint(equalTo: (collectionView?.heightAnchor)!, multiplier: 0.25).isActive = true
-	}
-	
-	
-	
-	
-	private var inputsContainerViewHeightAnchor:NSLayoutConstraint?
-	private var nameTFHeightAnchor:NSLayoutConstraint?
-	private var emailTFHeightAnchor:NSLayoutConstraint?
-	private var passTFHeightAnchor:NSLayoutConstraint?
-	private var baseHeightAnchor:NSLayoutConstraint?
-	
-	private func setupInputsContainerView(){
-		// добавим констрейнзы x, y, width, height
-		baseHeightAnchor = inputsContainerView.centerYAnchor.constraint(equalTo: (collectionView?.centerYAnchor)!, constant: defaultConstHeight)
-		baseHeightAnchor?.isActive = true
-		inputsContainerView.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive 				= true
-		inputsContainerView.widthAnchor.constraint(equalTo: (collectionView?.widthAnchor)!, multiplier: 0.5, constant: 120).isActive = true
-		
-		inputsContainerViewHeightAnchor = inputsContainerView.heightAnchor.constraint(equalToConstant: 150)
-		inputsContainerViewHeightAnchor?.isActive = true
-		
-		inputsContainerView.addSubview(nameTF)
-		inputsContainerView.addSubview(nameSeparator)
-		inputsContainerView.addSubview(emailTF)
-		inputsContainerView.addSubview(emailSeparator)
-		inputsContainerView.addSubview(passTF)
-		inputsContainerView.addSubview(passSeparator)
-		
-		// текстовое поле "Имя"
-		nameTF.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive 		= true
-		nameTF.topAnchor.constraint(equalTo: inputsContainerView.topAnchor).isActive 						= true
-		nameTF.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 					= true
-		nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-		nameTFHeightAnchor?.isActive = true
-		
-		// линия-разделитель
-		nameSeparator.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive 				= true
-		nameSeparator.topAnchor.constraint(equalTo: nameTF.bottomAnchor).isActive 							= true
-		nameSeparator.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 			= true
-		nameSeparator.heightAnchor.constraint(equalToConstant: 1).isActive 									= true
-		// текстовое поле "Email"
-		emailTF.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive 		= true
-		emailTF.topAnchor.constraint(equalTo: nameSeparator.bottomAnchor).isActive 							= true
-		emailTF.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 					= true
-		emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-		emailTFHeightAnchor?.isActive = true
-		
-		// линия-разделитель
-		emailSeparator.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive 				= true
-		emailSeparator.topAnchor.constraint(equalTo: emailTF.bottomAnchor).isActive 						= true
-		emailSeparator.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 			= true
-		emailSeparator.heightAnchor.constraint(equalToConstant: 1).isActive 								= true
-		// текстовое поле "Pass"
-		passTF.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive 		= true
-		passTF.topAnchor.constraint(equalTo: emailSeparator.bottomAnchor).isActive 							= true
-		passTF.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive 					= true
-		passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-		passTFHeightAnchor?.isActive = true
-	}
-	
-	
 	
 
-	private func setupLoginRegisterButton(){
-		// добавим констрейнзы x, y, width, height
-		[loginRegisterBttn.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!),
-		 loginRegisterBttn.topAnchor.constraint(equalTo: inputsContainerView.bottomAnchor, constant: 12),
-		 loginRegisterBttn.widthAnchor.constraint(equalToConstant: 180),
-		 loginRegisterBttn.heightAnchor.constraint(equalToConstant: 40)].forEach { (constrain) in
-			constrain.isActive = true
-		}
-	}
 	
-	
-	
-	
-	
+
 	/// нажали на Register/Login
 	@objc private func onGoClick(){
 		
@@ -390,45 +327,28 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 
 	
-	
 	@objc private func onSegmentedClick(){
+		
 		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
 		loginRegisterBttn.setTitle(str, for: .normal)
-		
-		// изменение высоты inputsContainerView, кол-ва строк
-		nameTFHeightAnchor?.isActive = false
-		emailTFHeightAnchor?.isActive = false
-		passTFHeightAnchor?.isActive = false
 		
 		// меняем иконку аватарки/приложения
 		switch_AvaLogo()
 		
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
-			inputsContainerViewHeightAnchor?.constant = 100
-			
-			// т.к. nameTFHeightAnchor.multiplier - это геттер, то меняем его так(предварительно отключив):
-			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
-			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
-			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
-			nameSeparator.isHidden = true
-			nameTF.isHidden = true // т.к. в iOS 10 это поле не пропадает а скукоживается
+			nameTFHeightAnchor?.isActive = false
 		}
 		// регистрация
 		else if loginSegmentedControl.selectedSegmentIndex == 1{
-			inputsContainerViewHeightAnchor?.constant = 150
-			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-			nameSeparator.isHidden = false
-			nameTF.isHidden = false
+			nameTFHeightAnchor?.isActive = true
 		}
-		nameTFHeightAnchor?.isActive = true
-		emailTFHeightAnchor?.isActive = true
-		passTFHeightAnchor?.isActive = true
 	}
 	
 	
+	
+	
+
 	
 	
 	
@@ -455,29 +375,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
-	// сделать геттер для высоты 3-х полей ввода
-	
-	
-	/// при повороте экрана
-	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-		if UIDevice.current.orientation.isLandscape {
-			print("Landscape")
-		}
-		else {
-			print("Portrait")
-//			inputsContainerViewHeightAnchor?.constant = 150
-		}
-//		if loginSegmentedControl.selectedSegmentIndex == 1{
-//			profileImageView.layer.cornerRadius = (UIScreen.main.bounds.height * 0.25) / 2
-//			profileImageView.layer.masksToBounds = true
-//			profileImageView.layoutIfNeeded()
-//			profileImageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//		}
-	}
-	
-	
-	
-	
 	
 	
 	
@@ -489,16 +386,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		}
 		if let keyboardSize = ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
 			let offset = keyboardSize.height - (UIScreen.main.bounds.height - loginRegisterBttn.center.y - 30)
-			print("keyboardSize.height = \(keyboardSize.height)")
-			print("screenHeight = \(UIScreen.main.bounds.height)")
-			print("loginRegisterBttn.y = \(loginRegisterBttn.center.y)")
-			print("offset = \(offset)")
-			print("------------------------")
 			
 			keyboardHeight = keyboardSize.height
 			// находим значение длительности анимации выезжания клавиатуры
 			let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
-			baseHeightAnchor?.constant = -offset
+			baseHeightAnchor?.constant -= offset
 			
 			UIView.animate(withDuration: keyboardDuration) {
 				self.view.layoutIfNeeded()
@@ -511,6 +403,10 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		if ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
 			baseHeightAnchor?.constant = defaultConstHeight
 			keyboardHeight = 0
+			
+			UIView.animate(withDuration: 0.3) {
+				self.view.layoutIfNeeded()
+			}
 		}
 	}
 	
@@ -522,21 +418,61 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	
-	override func numberOfSections(in collectionView: UICollectionView) -> Int {
-		// #warning Incomplete implementation, return the number of sections
-		return 0
-	}
+//	override func numberOfSections(in collectionView: UICollectionView) -> Int {
+//		// #warning Incomplete implementation, return the number of sections
+//		return 0
+//	}
+//
+//	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//		// #warning Incomplete implementation, return the number of items
+//		return 0
+//	}
+//
+//	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "reuseIdentifier", for: indexPath)
+//
+//		return cell
+//	}
 	
-	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		// #warning Incomplete implementation, return the number of items
-		return 0
-	}
 	
-	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "reuseIdentifier", for: indexPath)
-		
-		return cell
-	}
+	
+//	@objc private func onSegmentedClick2(){
+//		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
+//		loginRegisterBttn.setTitle(str, for: .normal)
+//
+//		// изменение высоты inputsContainerView, кол-ва строк
+//		nameTFHeightAnchor?.isActive = false
+//		emailTFHeightAnchor?.isActive = false
+//		passTFHeightAnchor?.isActive = false
+//
+//		// меняем иконку аватарки/приложения
+//		switch_AvaLogo()
+//
+//		// логин
+//		if loginSegmentedControl.selectedSegmentIndex == 0 {
+//			inputsContainerViewHeightAnchor?.constant = 100
+//
+//			// т.к. nameTFHeightAnchor.multiplier - это геттер, то меняем его так(предварительно отключив):
+//			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
+//			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
+//			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
+//			nameSeparator.isHidden = true
+//			nameTF.isHidden = true // т.к. в iOS 10 это поле не пропадает а скукоживается
+//		}
+//			// регистрация
+//		else if loginSegmentedControl.selectedSegmentIndex == 1{
+//			inputsContainerViewHeightAnchor?.constant = 150
+//			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+//			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+//			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+//			nameSeparator.isHidden = false
+//			nameTF.isHidden = false
+//		}
+//		nameTFHeightAnchor?.isActive = true
+//		emailTFHeightAnchor?.isActive = true
+//		passTFHeightAnchor?.isActive = true
+//	}
+	
 	
 	
 //	private var point = CGPoint.zero
