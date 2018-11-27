@@ -25,7 +25,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
 		imageView.isUserInteractionEnabled = true
 //		imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		imageView.layer.cornerRadius = 50
 		imageView.layer.masksToBounds = true
 		return imageView
 	}()
@@ -150,10 +149,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	private var keyboardHeight:CGFloat = 0
 	private let defaultConstHeight:CGFloat = -35
-	private var baseHeightAnchor:NSLayoutConstraint?
+	private var baseHeightAnchor:NSLayoutConstraint? // смещение центра основного контейнера по Y
+	private var pHeightAnchor:NSLayoutConstraint? // высота фотки
+	private var pWidthAnchor:NSLayoutConstraint? // ширина фотки
 	
-	
-	
+	private var screenSize = CGSize.zero
 	
 	
 	
@@ -172,8 +172,12 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		collectionView?.backgroundColor = UIColor(r: 45, g: 127, b: 193)
 		
+		screenSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+		
 		setup_UI()
 		
+		profileImageView.layer.cornerRadius = pHeightAnchor!.constant / 2
+
 		
 		// изначально нужно загружать экран Логина а не Регистрации
 //		loginSegmentedControl.selectedSegmentIndex = 0
@@ -251,23 +255,31 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		// перемещаем хелпер подниз
 		collectionView?.sendSubview(toBack: helperElement_top)
 		helperElement_top.isHidden = true
-		
+
 		// нижний вспомогательный элемент
 		collectionView?.addSubview(helperElement_bottom)
 		helperElement_bottom.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
 		helperElement_bottom.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor).isActive = true
-//		helperElement_bottom.bottomAnchor.constraint(equalTo: (collectionView?.bottomAnchor)!, constant: -10).isActive = true
-		helperElement_bottom.bottomAnchor.constraint(equalTo: collectionView!.bottomAnchor, constant: -10).isActive = true
+		helperElement_bottom.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor, constant: -5).isActive = true
 		helperElement_bottom.widthAnchor.constraint(equalToConstant: 80).isActive = true
-//		helperElement_bottom.heightAnchor.constraint(equalToConstant: 100).isActive = true
-//		collectionView?.sendSubview(toBack: helperElement_bottom)
-//		helperElement_top.isHidden = true
-		
+		collectionView?.sendSubview(toBack: helperElement_bottom)
+		helperElement_bottom.isHidden = true
 
-		profileImageView.heightAnchor.constraint(equalTo: helperElement_top.heightAnchor, multiplier: 0.55, constant: 25).isActive = true
+//		profileImageView.heightAnchor.constraint(equalTo: helperElement_top.heightAnchor, multiplier: 0.55, constant: 25).isActive = true
+//		profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor, multiplier: 1).isActive = true
+		
+		var hei:CGFloat = 0
+		if UIDevice.current.orientation.isPortrait {
+			hei = screenSize.width / 2
+		}
+
+		pHeightAnchor = profileImageView.heightAnchor.constraint(equalToConstant: hei)
+		pHeightAnchor?.isActive = true
+		pWidthAnchor = profileImageView.widthAnchor.constraint(equalToConstant: hei)
+		pWidthAnchor?.isActive = true
 	}
 	
-	
+
 	
 	
 	
@@ -276,18 +288,26 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	/// при повороте экрана
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		
+		if keyboardHeight != 0 {
+			onChatBackingClick()
+			return
+		}
+		
 		if UIDevice.current.orientation.isLandscape {
 			print("Landscape")
 			baseHeightAnchor?.constant = 0
-			mainStackView.spacing = 10
+			pHeightAnchor?.constant = 0
+			pWidthAnchor?.constant = 0
 		}
 		else {
 			print("Portrait")
-			baseHeightAnchor?.constant = -35
-			mainStackView.spacing = 20
+			baseHeightAnchor?.constant = defaultConstHeight
+			pHeightAnchor?.constant = screenSize.width / 2 // UIScreen.main.bounds.width / 2 - иногда крашит
+			pWidthAnchor?.constant = screenSize.width / 2
 		}
-		
 	}
+	
 	
 
 	
@@ -350,19 +370,29 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 
 	
-	
+	internal var selectedImage:UIImage?
 	
 	private func switch_AvaLogo(){
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			profileImageView.image = UIImage(named: "chatApp_logo")
-			profileImageView.layer.cornerRadius = 0
-			profileImageView.layer.masksToBounds = false
+			if UIDevice.current.orientation.isPortrait {
+				profileImageView.layer.cornerRadius = 0
+				profileImageView.layer.masksToBounds = false
+			}
 		}
 		else{
-			profileImageView.image = UIImage(named: default_profile_image)
-			profileImageView.layer.cornerRadius = profileImageView.frame.size.height / 2
-			profileImageView.layer.masksToBounds = true
+			if let selectedImage = selectedImage {
+				profileImageView.image = selectedImage
+			}
+			else {
+				profileImageView.image = UIImage(named: default_profile_image)
+			}
+			
+			if UIDevice.current.orientation.isPortrait {
+				profileImageView.layer.cornerRadius = pHeightAnchor!.constant / 2
+				profileImageView.layer.masksToBounds = true
+			}
 		}
 	}
 	
@@ -385,14 +415,16 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			return
 		}
 		if let keyboardSize = ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
-			let offset = keyboardSize.height - (UIScreen.main.bounds.height - loginRegisterBttn.center.y - 30)
-			
+			let offset = keyboardSize.height - helperElement_bottom.bounds.height
+
 			keyboardHeight = keyboardSize.height
 			// находим значение длительности анимации выезжания клавиатуры
 			let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
 			baseHeightAnchor?.constant -= offset
-			
-			UIView.animate(withDuration: keyboardDuration) {
+//			collectionView?.contentInset.bottom = offset
+			print("offset = \(offset)")
+			print("baseHeightAnchor?.constant = \(baseHeightAnchor?.constant)")
+			UIView.animate(withDuration: 0.1) {
 				self.view.layoutIfNeeded()
 			}
 		}
@@ -402,6 +434,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	@objc private func keyboardWillHide(notif: Notification){
 		if ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
 			baseHeightAnchor?.constant = defaultConstHeight
+//			collectionView?.contentInset.bottom = 0
 			keyboardHeight = 0
 			
 			UIView.animate(withDuration: 0.3) {

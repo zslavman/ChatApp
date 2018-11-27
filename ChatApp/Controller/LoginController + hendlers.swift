@@ -43,6 +43,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 		
 		if selectedImage != nil {
 			profileImageView.image = selectedImage
+			self.selectedImage = selectedImage
 		}
 		
 		dismiss(animated: true, completion: nil)
