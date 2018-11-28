@@ -25,7 +25,12 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 		picker.delegate = self
 		picker.allowsEditing = true
 		
-		present(picker, animated: true, completion: nil)
+		waitResponse()
+		
+		present(picker, animated: true, completion: {
+			// при первом клике долго подгружает библиотеку фоток, показываем отклик, что юзер тапнул по иконке
+			self.waitScreen!.removeFromSuperview()
+		})
 	}
 	
 	

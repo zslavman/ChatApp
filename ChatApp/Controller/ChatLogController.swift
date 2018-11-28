@@ -66,11 +66,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
 		// прослушиватели клавы
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-		
-		// setupInputComponents()
-		
-		// NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-		// NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
 	}
 	
 	
@@ -82,7 +77,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		}
 	}
 	override var canBecomeFirstResponder: Bool {
-		return true // без этого не отображается inputContainerView
+		return true // без этого не отображается growingInputView
 	}
 	
 	
@@ -305,20 +300,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
 	/// создание 2-х мерного массива для сообщений и их секций
 	private func smartSort(){
 		
@@ -343,7 +324,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			let index = stringedTimes.index(of: temp)
 			dataArray[index!].append(element)
 		}
-//		print("dataArray = \(dataArray.map{"\($0.count) сообщений"}))")
 	}
 	
 	
@@ -410,8 +390,23 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
+	private func sendGeo(){
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
 	/// клик на картинку (переслать фотку)
 	@objc public func onUploadClick(){
+		
+		sendGeo()
+		
+		return
 
 		let imagePickerController = UIImagePickerController()
 		
@@ -447,8 +442,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		else { // если выбрали фото
 			imageSelectedForInfo(info: info)
 		}
-		
-		
 		
 		dismiss(animated: true, completion: {
 			if !permission{
@@ -774,8 +767,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	
-	
+
 	
 	/// воспроизведение видео на нативном плеере в фулскрине
 	public func runNativePlayer(videoUrl: URL, currentSeek:CMTime){
@@ -789,31 +781,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		}
 	}
 	
-	
-	
-	
-	
-	//	@objc private func keyboardWillShow(notif: Notification){
-	//		if let keyboardFrame = (notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{
-	//			self.containerViewBottomAnchor?.constant = -keyboardFrame.height
-	//		}
-	//		// находим значение длительности анимации выезжания клавиатуры
-	//		let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
-	//
-	//		// добавляем анимацию передвигания inputTextField (синхронно с выезжанием клавиатуры)
-	//		UIView.animate(withDuration: keyboardDuration) {
-	//			self.view.layoutIfNeeded()
-	//		}
-	//	}
-	
-	
-	//	@objc private func keyboardWillHide(notif: Notification){
-	//		containerViewBottomAnchor?.constant = 0
-	//		let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
-	//		UIView.animate(withDuration: keyboardDuration) {
-	//			self.view.layoutIfNeeded()
-	//		}
-	//	}
 	
 
 	
