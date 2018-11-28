@@ -82,8 +82,8 @@ class WaitScreen: UIView {
 		NSLayoutConstraint.activate([
 			textBacking.centerXAnchor.constraint(equalTo: blackView.centerXAnchor),
 			textBacking.centerYAnchor.constraint(equalTo: blackView.centerYAnchor, constant: -30),
-			textBacking.widthAnchor.constraint(equalTo: blackView.widthAnchor, multiplier: 0.8),
-			textBacking.heightAnchor.constraint(equalTo: blackView.heightAnchor, multiplier: 0.25)
+			textBacking.widthAnchor.constraint(equalToConstant: 300),
+			textBacking.heightAnchor.constraint(equalToConstant: 160)
 		])
 		
 		//******************************
@@ -95,6 +95,7 @@ class WaitScreen: UIView {
 		textView.font = UIFont.systemFont(ofSize: 18)
 		textView.isScrollEnabled = false
 		textView.isEditable = false
+		textView.isSelectable = false
 		textView.textAlignment = .center
 		textView.backgroundColor = UIColor.clear
 		textBacking.addSubview(textView)
@@ -118,10 +119,11 @@ class WaitScreen: UIView {
 		textBacking.isHidden = false
 		textView.text = str
 		
-		DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2 to desired number of seconds
+		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
 			
 			UIView.animate(withDuration: 1, animations: {
 				self.alpha = 0
+				self.transform = CGAffineTransform(scaleX: 2, y: 2)
 			}, completion: {
 				(bool) in
 				self.removeFromSuperview()

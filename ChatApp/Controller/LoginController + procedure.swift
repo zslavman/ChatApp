@@ -1,5 +1,5 @@
 //
-//  LoginController + hendlers.swift
+//  LoginController + procedure.swift
 //  ChatApp
 //
 //  Created by Zinko Vyacheslav on 31.10.2018.
@@ -52,13 +52,35 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	
 	
+	internal func onLogin(){
+		guard let email = emailTF.text, let pass = passTF.text else { // чисто анбиндинг
+			return
+		}
+		
+		Auth.auth().signIn(withEmail: email, password: pass) {
+			(authResult, error) in
+			if error != nil {
+				print(error!.localizedDescription)
+				self.waitScreen?.setInfo(str: error!.localizedDescription)
+				return
+			}
+			
+			// если всё ок - заходим в учётку
+			self.waitScreen?.removeFromSuperview()
+			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
+			self.dismiss(animated: true, completion: nil)
+		}
+	}
+	
+	
+	
 	
 	public func onRegister(){
 		
 		guard let email = emailTF.text, let pass = passTF.text, let name = nameTF.text else {
-			print("Form is not valid")
 			return
 		}
+		
 		Auth.auth().createUser(withEmail: email, password: pass) {
 			(authResult, error) in
 			
@@ -152,6 +174,15 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 		print("canceled")
 		dismiss(animated: true, completion: nil)
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }

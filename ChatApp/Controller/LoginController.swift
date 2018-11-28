@@ -24,7 +24,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
 		imageView.isUserInteractionEnabled = true
-//		imageView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		imageView.layer.masksToBounds = true
 		return imageView
 	}()
@@ -44,14 +43,15 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		let button = UIButton(type: .system)
 		button.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 		button.layer.cornerRadius = 8
-		button.setTitle("Register", for: .normal)
+		button.setTitle("Register", for: UIControlState.normal)
 		button.setTitleColor(.white, for: .normal)
+		button.setBackgroundColor(color: #colorLiteral(red: 0.58682733, green: 0.90042532, blue: 1, alpha: 1), forState: UIControlState.highlighted)
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.layer.shadowOffset = CGSize(width: 0, height: 3)
 		button.layer.shadowRadius = 3
 		button.layer.shadowOpacity = 0.3
-		button.layer.shouldRasterize = true
+//		button.layer.shouldRasterize = true
 		button.addTarget(self, action: #selector(onGoClick), for: UIControlEvents.touchUpInside)
 		return button
 	}()
@@ -66,9 +66,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
-		tf.layer.shadowOffset = CGSize(width: 0, height: 3)
-		tf.layer.shadowRadius = 3
-		tf.layer.shadowOpacity = 0.3
 		tf.layer.cornerRadius = 7
 		tf.layer.masksToBounds = true
 		return tf
@@ -87,14 +84,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.backgroundColor = .white
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.keyboardType = .emailAddress
-		tf.autocorrectionType = .no
+		tf.autocorrectionType = UITextAutocorrectionType.no
 		tf.autocapitalizationType = .none
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
 		tf.text = "A24@gmail.com" // потом убрать!
-		tf.layer.shadowOffset = CGSize(width: 0, height: 3)
-		tf.layer.shadowRadius = 3
-		tf.layer.shadowOpacity = 0.3
 		tf.layer.cornerRadius = 7
 		tf.layer.masksToBounds = true
 		return tf
@@ -110,9 +104,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
 		tf.text = "111111" // потом убрать!
-		tf.layer.shadowOffset = CGSize(width: 0, height: 3)
-		tf.layer.shadowRadius = 3
-		tf.layer.shadowOpacity = 0.3
 		tf.layer.cornerRadius = 7
 		tf.layer.masksToBounds = true
 		return tf
@@ -186,7 +177,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		setup_UI()
 		
-		
 		// изначально нужно загружать экран Логина а не Регистрации
 		loginSegmentedControl.selectedSegmentIndex = 0
 		onSegmentedClick()
@@ -204,6 +194,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 
 
+	
+	/// меняем цвет статусбара на светлый
+	override var preferredStatusBarStyle: UIStatusBarStyle {
+		return .lightContent
+	}
 	
 	
 	
@@ -249,7 +244,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor).isActive 	= true
 		inputsStackView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor).isActive = true
 		
-		let const = UIDevice.current.orientation.isPortrait ? defaultConstHeight : 0
+		let const = (UIScreen.main.bounds.width < UIScreen.main.bounds.height) ? defaultConstHeight : 0
 		baseHeightAnchor = mainStackView.centerYAnchor.constraint(equalTo: collectionView!.centerYAnchor, constant: const)
 		baseHeightAnchor!.isActive = true
 		mainStackView.centerXAnchor.constraint(equalTo: collectionView!.centerXAnchor).isActive = true
@@ -265,7 +260,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		helperElement_bottom.isHidden = true
 
 		var hei:CGFloat = 0
-		if UIDevice.current.orientation.isPortrait {
+		if UIScreen.main.bounds.width < UIScreen.main.bounds.height {
 			hei = screenSize.width / 2
 		}
 		pHeightAnchor = profileImageView.heightAnchor.constraint(equalToConstant: hei)
@@ -292,8 +287,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		waitScreen = WaitScreen(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
 		view.addSubview(waitScreen!)
 		// let finded = blackView.subviews.filter{$0.accessibilityIdentifier == "actInd"}
-		
 	}
+	
 	
 	
 	
@@ -304,7 +299,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			onChatBackingClick()
 		}
 		
-		if UIDevice.current.orientation.isLandscape {
+		if UIScreen.main.bounds.width < UIScreen.main.bounds.height { // ДО поворота будут именно эти значения
 			print("Landscape")
 			baseHeightAnchor?.constant = 0
 			pHeightAnchor?.constant = 0
@@ -331,8 +326,27 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 
 	/// нажали на Register/Login
 	@objc private func onGoClick(){
-		
+
+		onChatBackingClick()
 		waitResponse()
+		
+		// отсекаем возможность пустого поля
+		let e = emailTF.text!.filter{!" ".contains($0)}
+		let p = passTF.text!.filter{!" ".contains($0)}
+		let n = nameTF.text!.filter{!" ".contains($0)}
+		
+		if loginSegmentedControl.selectedSegmentIndex == 0 {
+			if e.count == 0 || p.count == 0 {
+				waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
+				return
+			}
+		}
+		else {
+			if e.count == 0 || p.count == 0 || n.count == 0 {
+				waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
+				return
+			}
+		}
 		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			onLogin()
@@ -344,30 +358,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	
-	private func onLogin(){
-		
-		guard let email = emailTF.text, let pass = passTF.text else {
-			waitScreen?.setInfo(str: "Form is not valid")
-			return
-		}
-		
-		Auth.auth().signIn(withEmail: email, password: pass) {
-			(authResult, error) in
-			if error != nil {
-				print(error!.localizedDescription)
-				self.waitScreen?.setInfo(str: error!.localizedDescription)
-				return
-			}
-			
-			// если всё ок - заходим в учётку
-			self.waitScreen?.removeFromSuperview()
-			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
-			self.dismiss(animated: true, completion: nil)
-		}
-	}
 	
-
-	
+	/// клик на segmentedControl
 	@objc private func onSegmentedClick(){
 		
 		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
@@ -390,12 +382,12 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 
-	
+	/// переключение
 	private func switch_AvaLogo(){
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			profileImageView.image = UIImage(named: "chatApp_logo")
-			if UIDevice.current.orientation.isPortrait {
+			if UIScreen.main.bounds.width < UIScreen.main.bounds.height{
 				profileImageView.layer.cornerRadius = 0
 				profileImageView.layer.masksToBounds = false
 			}
@@ -411,23 +403,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 				plus_label.isHidden = false
 			}
 			
-			if UIDevice.current.orientation.isPortrait {
+			if UIScreen.main.bounds.width < UIScreen.main.bounds.height {
 				profileImageView.layer.cornerRadius = pHeightAnchor!.constant / 2
 				profileImageView.layer.masksToBounds = true
 			}
 		}
 	}
 	
-	
-	
-	
-	/// меняем цвет статусбара на светлый
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
-	}
-	
-	
-	
+
 	
 	
 	/// клава выезжает
@@ -441,26 +424,28 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			let offset = keyboardSize.height - helperElement_bottom.bounds.height
 			
 			keyboardHeight = keyboardSize.height
+			 let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
 			
-			let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
-			
-			if UIDevice.current.orientation.isPortrait{
-				baseHeightAnchor?.constant -= offset
+			if UIScreen.main.bounds.width < UIScreen.main.bounds.height{
+				self.baseHeightAnchor?.constant -= offset
+				
+				UIView.animate(withDuration: keyboardDuration) {
+					self.collectionView?.layoutIfNeeded()
+				}
 			}
 			else { // в горизонт. режиме прокручиваем до нижнего поля
 				let pointToscroll = passTF.frame.origin
-				
+
 				// if let firstResponder = collectionView?.currentFirstResponder {
 				// 	 pointToscroll = CGPoint(x: firstResponder.frame.origin.x, y: firstResponder.frame.origin.y + 0)
 				// }
-
-				collectionView?.setContentOffset(pointToscroll, animated: true)
+				
+				// нужно именно в основном потоке, т.к. на emailTF не срабатывало (скорее всего потому что отключил autocorrectionType)
+				DispatchQueue.main.async {
+					self.collectionView?.setContentOffset(pointToscroll, animated: true)
+				}
 			}
 			// collectionView?.contentInset.bottom = 200 // вставка контента пораждает непонятные прыжки всей вьюшки при клике по текст. полям
-
-			UIView.animate(withDuration: keyboardDuration) {
-				self.view.layoutIfNeeded()
-			}
 		}
 	}
 	
@@ -469,9 +454,10 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	/// клава заезжает
 	@objc private func keyboardWillHide(notif: Notification){
+		
 		if ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
 			
-			if UIDevice.current.orientation.isPortrait{
+			if UIScreen.main.bounds.width < UIScreen.main.bounds.height{
 				baseHeightAnchor?.constant = defaultConstHeight
 			}
 			else {
@@ -494,46 +480,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	
-
-	
-//	@objc private func onSegmentedClick2(){
-//		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
-//		loginRegisterBttn.setTitle(str, for: .normal)
-//
-//		// изменение высоты inputsContainerView, кол-ва строк
-//		nameTFHeightAnchor?.isActive = false
-//		emailTFHeightAnchor?.isActive = false
-//		passTFHeightAnchor?.isActive = false
-//
-//		// меняем иконку аватарки/приложения
-//		switch_AvaLogo()
-//
-//		// логин
-//		if loginSegmentedControl.selectedSegmentIndex == 0 {
-//			inputsContainerViewHeightAnchor?.constant = 100
-//
-//			// т.к. nameTFHeightAnchor.multiplier - это геттер, то меняем его так(предварительно отключив):
-//			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 0)
-//			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
-//			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/2)
-//			nameSeparator.isHidden = true
-//			nameTF.isHidden = true // т.к. в iOS 10 это поле не пропадает а скукоживается
-//		}
-//			// регистрация
-//		else if loginSegmentedControl.selectedSegmentIndex == 1{
-//			inputsContainerViewHeightAnchor?.constant = 150
-//			nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-//			emailTFHeightAnchor = emailTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-//			passTFHeightAnchor = passTF.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
-//			nameSeparator.isHidden = false
-//			nameTF.isHidden = false
-//		}
-//		nameTFHeightAnchor?.isActive = true
-//		emailTFHeightAnchor?.isActive = true
-//		passTFHeightAnchor?.isActive = true
-//	}
-	
-	
 	
 //	private var point = CGPoint.zero
 //
@@ -553,13 +499,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 //			}
 //		}
 //	}
-//
-//	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//		view.endEditing(true)
-//		return true
-//	}
-	
-	
 
 }
 
