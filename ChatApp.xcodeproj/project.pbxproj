@@ -11,8 +11,8 @@
 		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
 		5639652A21924CA000691334 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639652921924CA000691334 /* UserCell.swift */; };
-		563999FA21A828C70039F7CF /* TTT.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563999F921A828C70039F7CF /* TTT.swift */; };
 		563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */; };
+		563B243B21AE1CE500EEB504 /* WaitScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B243A21AE1CE500EEB504 /* WaitScreen.swift */; };
 		563BE43C218A3DD300A3BF29 /* LoginController + hendlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563BE43B218A3DD300A3BF29 /* LoginController + hendlers.swift */; };
 		563D17882189E351000DFAD2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D17872189E351000DFAD2 /* User.swift */; };
 		563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D73AE2194682C0098300C /* ChatMessageCell.swift */; };
@@ -35,8 +35,8 @@
 		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5639652921924CA000691334 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
-		563999F921A828C70039F7CF /* TTT.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTT.swift; sourceTree = "<group>"; };
 		563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
+		563B243A21AE1CE500EEB504 /* WaitScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitScreen.swift; sourceTree = "<group>"; };
 		563BE43B218A3DD300A3BF29 /* LoginController + hendlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController + hendlers.swift"; sourceTree = "<group>"; };
 		563D17872189E351000DFAD2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		563D73AE2194682C0098300C /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
@@ -94,7 +94,7 @@
 				563D73AE2194682C0098300C /* ChatMessageCell.swift */,
 				563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */,
 				56FEF3C821A1FD1E00717A48 /* ChatInputView.swift */,
-				563999F921A828C70039F7CF /* TTT.swift */,
+				563B243A21AE1CE500EEB504 /* WaitScreen.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -310,8 +310,8 @@
 				56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */,
 				563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + hendlers.swift in Sources */,
+				563B243B21AE1CE500EEB504 /* WaitScreen.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
-				563999FA21A828C70039F7CF /* TTT.swift in Sources */,
 				5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

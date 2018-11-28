@@ -127,6 +127,20 @@ extension UIColor {
 
 
 
+extension UIView {
+	
+	var currentFirstResponder: UIView? {
+		guard !isFirstResponder else { return self }
+		
+		for subview in subviews {
+			if let firstResponder = subview.currentFirstResponder {
+				return firstResponder
+			}
+		}
+		
+		return nil
+	}
+}
 
 
 
