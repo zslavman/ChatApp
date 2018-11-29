@@ -23,6 +23,9 @@ class Message: NSObject {
 	
 	@objc public var videoUrl:String?
 	
+	public var geo_lat:NSNumber?
+	public var geo_lon:NSNumber?
+	
 	
 	
 	public func chatPartnerID() -> String? {
@@ -47,6 +50,9 @@ class Message: NSObject {
 		imageHeight = dictionary["imageHeight"] as? NSNumber
 		
 		videoUrl	= dictionary["videoUrl"] as? String
+		
+		geo_lat 	= dictionary["geo_lat"] as? NSNumber
+		geo_lon 	= dictionary["geo_lon"] as? NSNumber
 	}
 	
 	

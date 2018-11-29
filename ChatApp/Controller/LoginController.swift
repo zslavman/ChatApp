@@ -475,6 +475,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		onChatBackingClick()
+		return true
+	}
+	
 	
 	@objc private func onChatBackingClick(){
 		collectionView?.endEditing(true)

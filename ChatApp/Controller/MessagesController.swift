@@ -265,7 +265,6 @@ class MessagesController: UITableViewController {
 				var currentCount:UInt = 0
 				if dialogsLoadedCount == dialogsStartCount {
 					maxCount = snapshot.childrenCount
-					print("maxCount = \(maxCount)")
 				}
 				//***********
 
@@ -357,7 +356,7 @@ class MessagesController: UITableViewController {
 		let listener3 = refUserMessages.observe(.childRemoved, with: {
 			(snapshot) in
 			self.messagesDict.removeValue(forKey: snapshot.key)
-			self.semiSmartReloadData(firstTime: false)
+			self.semiSmartReloadData(firstTime: true)
 		})
 		
 		self.hendlers[listener3] = refUserMessages
@@ -398,8 +397,8 @@ class MessagesController: UITableViewController {
 		}
 		else {
 			// small optimization (save some array props)
-			partnerBeforeUpdate = messages.first!.chatPartnerID()! // предпоследний
-			messages = Array(self.messagesDict.values)
+			partnerBeforeUpdate = messages.first!.chatPartnerID()!
+			messages = Array(self.messagesDict.values) // здесь массив теряет свою длину
 		}
 
 		
@@ -419,7 +418,7 @@ class MessagesController: UITableViewController {
 		// if you got new message from saved partnerBeforeUpdate
 		if let partnerBeforeUpdate = partnerBeforeUpdate{
 			let newPartner = messages.first!.chatPartnerID()!
-			if newPartner == partnerBeforeUpdate{
+			if newPartner == partnerBeforeUpdate {
 				let indexPath = IndexPath(row: 0, section: 0)
 				DispatchQueue.main.async {
 					self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)

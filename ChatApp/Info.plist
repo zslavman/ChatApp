@@ -22,13 +22,9 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app want to see you photos :D</string>
+	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Required for share your location on MAP!!!</string>
-	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

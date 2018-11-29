@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import AVFoundation
+import MapKit
 
 
 class ChatMessageCell: UICollectionViewCell {
@@ -54,7 +55,10 @@ class ChatMessageCell: UICollectionViewCell {
 		bubble.backgroundColor = blueColor
 		bubble.translatesAutoresizingMaskIntoConstraints = false
 		bubble.layer.cornerRadius = cornRadius
-		bubble.clipsToBounds = true
+//		bubble.layer.masksToBounds = true
+		bubble.layer.shadowOffset = CGSize(width: 0, height: 0.5)
+		bubble.layer.shadowRadius = 0.75
+		bubble.layer.shadowOpacity = 0.6
 		return bubble
 	}()
 
@@ -92,6 +96,23 @@ class ChatMessageCell: UICollectionViewCell {
 		// если использовать в этом кложере target: self, то нужно чтоб переменная была lazy!!
 		messImag.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onImageClick)))
 		return messImag
+	}()
+	
+	private lazy var mapView: MKMapView = {
+		let map = MKMapView()
+		map.translatesAutoresizingMaskIntoConstraints = false
+		map.showsCompass = false
+		map.showsScale = true
+		map.isZoomEnabled = true
+		map.isScrollEnabled = true
+		map.showsBuildings = true
+		map.isMultipleTouchEnabled = true
+		map.isUserInteractionEnabled = true
+		map.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapMe)))
+		
+		map.layer.cornerRadius = ChatMessageCell.cornRadius
+		map.clipsToBounds = true
+		return map
 	}()
 	
 	private lazy var playButton: UIButton = {
@@ -158,48 +179,68 @@ class ChatMessageCell: UICollectionViewCell {
 		bubbleView.addSubview(activityIndicator)
 		bubbleView.addSubview(progressBar)
 		addSubview(fullScreenBttn)
+		bubbleView.addSubview(mapView)
 		
+		NSLayoutConstraint.activate([
+			// констрейнты для кнопки "полный экран"
+			fullScreenBttn.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 5),
+			fullScreenBttn.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -10),
+			fullScreenBttn.widthAnchor.constraint(equalToConstant: 25),
+			fullScreenBttn.heightAnchor.constraint(equalToConstant: 25),
 		
-		// для кнопки "полный экран"
-		fullScreenBttn.topAnchor.constraint(equalTo: bubbleView.topAnchor, constant: 5).isActive = true
-		fullScreenBttn.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -10).isActive = true
-		fullScreenBttn.widthAnchor.constraint(equalToConstant: 25).isActive = true
-		fullScreenBttn.heightAnchor.constraint(equalToConstant: 25).isActive = true
+			// для прогрессбара
+			progressBar.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -1),
+			progressBar.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 0),
+			progressBar.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: 0),
+			
+			// для вложенного фото в сообщении (если такоевое будет)
+			messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor),
+			messageImageView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor),
+			messageImageView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor),
+			messageImageView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor),
+			
+			// для геопозиции (если такоевое будет)
+			mapView.topAnchor.constraint(equalTo: bubbleView.topAnchor),
+			mapView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor),
+			mapView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor),
+			mapView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor),
+			
+			// для кнопки Плей
+			playButton.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor),
+			playButton.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor),
+			playButton.widthAnchor.constraint(equalToConstant: 40),
+			playButton.heightAnchor.constraint(equalToConstant: 50),
+			
+			// активити-индикатор (при нажатии на плей)
+			activityIndicator.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor),
+			activityIndicator.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor),
+			activityIndicator.widthAnchor.constraint(equalToConstant: 50),
+			activityIndicator.heightAnchor.constraint(equalToConstant: 50),
+			
+			// для фото собеседника
+			profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+			profileImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
+			profileImageView.widthAnchor.constraint(equalToConstant: 32),
+			profileImageView.heightAnchor.constraint(equalToConstant: 32),
+			
+			// для времени отправки
+			sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -8),
+			sendTime_TF.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -15),
+			sendTime_TF.widthAnchor.constraint(equalToConstant: 80),
+			sendTime_TF.heightAnchor.constraint(equalToConstant: 20),
+			
+			// для текста сообщения
+			textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8),
+			textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor),
+			textView.topAnchor.constraint(equalTo: topAnchor),
+			textView.heightAnchor.constraint(equalTo: heightAnchor),
+			
+			// для фона сообщения
+			bubbleView.topAnchor.constraint(equalTo: self.topAnchor),
+			bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor)
+		])
 		
-		// для прогрессбара
-		progressBar.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -1).isActive 	= true
-		progressBar.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 0).isActive = true
-		progressBar.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: 0).isActive = true
-		
-		
-		// для вложенного фото в сообщении (если такоевое будет)
-		messageImageView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive 			= true
-		messageImageView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor).isActive 		= true
-		messageImageView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor).isActive 		= true
-		messageImageView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor).isActive 	= true
-		
-		// для кнопки Плей
-		playButton.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor).isActive 		= true
-		playButton.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor).isActive 		= true
-		playButton.widthAnchor.constraint(equalToConstant: 40).isActive 						= true
-		playButton.heightAnchor.constraint(equalToConstant: 50).isActive 						= true
-
-		// активити-индикатор (при нажатии на плей)
-		activityIndicator.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor).isActive 		= true
-		activityIndicator.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor).isActive 		= true
-		activityIndicator.widthAnchor.constraint(equalToConstant: 50).isActive 						= true
-		activityIndicator.heightAnchor.constraint(equalToConstant: 50).isActive 						= true
-		
-		
-		// для фото собеседника
-		profileImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0).isActive 	= true
-		profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10).isActive = true
-		profileImageView.widthAnchor.constraint(equalToConstant: 32).isActive 					= true
-		profileImageView.heightAnchor.constraint(equalToConstant: 32).isActive 					= true
-		
-		// констрейнты для фона сообщения
-		bubbleView.topAnchor.constraint(equalTo: self.topAnchor).isActive 						= true
-		bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive 				= true
+		//  для фона сообщения
 		bubbleLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8)
 		bubbleRightAnchor = bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10)
 		bubbleWidthAnchor = bubbleView.widthAnchor.constraint(equalToConstant: 200) // тут не важно, т.к. будет переопределяться
@@ -207,19 +248,35 @@ class ChatMessageCell: UICollectionViewCell {
 		bubbleRightAnchor?.isActive = true
 		bubbleWidthAnchor?.isActive = true
 		
-		// для времени отправки
-		sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -8).isActive = true
-		sendTime_TF.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -15).isActive = true
-		sendTime_TF.widthAnchor.constraint(equalToConstant: 80).isActive 						= true
-		sendTime_TF.heightAnchor.constraint(equalToConstant: 20).isActive 						= true
+		// для 11 необходимо в карту встроить эту хрень, иначе будет: "Could not inset compass from edges 9"
+		if #available(iOS 11.0, *){
+
+			DispatchQueue.main.async {
+				
+				let scaleView = MKScaleView(mapView: self.mapView)
+				scaleView.translatesAutoresizingMaskIntoConstraints = false
+				scaleView.scaleVisibility = .visible
+				self.mapView.addSubview(scaleView)
+				
+				let guide:UILayoutGuide = self.mapView.safeAreaLayoutGuide
+				NSLayoutConstraint.activate([
+					scaleView.leftAnchor.constraint(equalTo: guide.leftAnchor),
+					scaleView.rightAnchor.constraint(equalTo: guide.rightAnchor),
+					scaleView.topAnchor.constraint(equalTo: guide.topAnchor),
+					scaleView.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
+				])
+			}
+		}
 		
-		// констрейнты для текста сообщения
-		textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8).isActive 	= true
-		textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor).isActive 				= true
-		textView.topAnchor.constraint(equalTo: self.topAnchor).isActive 						= true
-		textView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive 					= true
+		mapView.isHidden = true
 	}
 	
+	
+	
+	
+	@objc private func tapMe(){
+		print("меня тапнули")
+	}
 	
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -228,7 +285,7 @@ class ChatMessageCell: UICollectionViewCell {
 	
 	
 	
-	
+	/// вызывается только из ChatLogController
 	public func setupCell(linkToParent:ChatLogController, message:Message, indexPath:IndexPath){
 		
 		chatlogController = linkToParent
@@ -286,19 +343,45 @@ class ChatMessageCell: UICollectionViewCell {
 			sendTime_TF.textColor = ChatMessageCell.grayTextColor
 		}
 		
-		// изменим ширину фона сообщения
+		// изменим ширину фона сообщения (высота же определяется в ChatLogController sizeForItemAt)
 		if let str = message.text{
 			let estWidth = linkToParent.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 60 ? 60 : estWidth
 		}
-		else if message.imageUrl != nil ||  message.videoUrl != nil{
+		else if message.imageUrl != nil ||  message.videoUrl != nil {
 			bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 2/3
+		}
+		else if message.geo_lat != nil {
+			mapView.isHidden = false
+			bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 3/4
+			mapCenterAndAddPin()
 		}
 		
 		// прячем кнопку Плей на всех сообщениях которые не видео
 		playButton.isHidden = message.videoUrl == nil
 		fullScreenBttn.isHidden = message.videoUrl == nil
 	}
+	
+	
+	
+	
+	
+	private func mapCenterAndAddPin(){
+		
+		guard let message = message else { return }
+		
+		// центрируем карту на заданой точке
+		let coord2D = CLLocationCoordinate2D(latitude: message.geo_lat!.doubleValue, longitude: message.geo_lon!.doubleValue)
+		let viewRegion = MKCoordinateRegionMakeWithDistance(coord2D, ChatLogController.prefferedMapScale, ChatLogController.prefferedMapScale)
+		mapView.setRegion(viewRegion, animated: false)
+		
+		let annotation = MKPointAnnotation()
+		annotation.coordinate = coord2D
+		mapView.addAnnotation(annotation)
+	}
+
+	
+	
 	
 	
 	
@@ -312,6 +395,7 @@ class ChatMessageCell: UICollectionViewCell {
 		player = nil
 		progressBar.setProgress(0, animated: false)
 		messageImageView.image = nil
+		mapView.removeFromSuperview()
 		
 		activityIndicator.stopAnimating()
 	}

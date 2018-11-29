@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import MobileCoreServices
 import AVFoundation
+import CoreLocation
 
 import AVKit
 
@@ -40,6 +41,12 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	private let headerReusableView:String = "sectionHeader"
 	
 	private var primaryDataloaded:Bool = false // первичная загрузка данных таблицы
+	private var refreshControl: UIRefreshControl!
+	
+	internal var locationManager:CLLocationManager!
+	private let prefferedMapSize:CGSize	= CGSize(width: 400, height: 300) // желаемые размеры гео-сообщения (скорее пропорции)
+	static let prefferedMapScale:Double = 10000 // метров в одной клетке
+	internal var myCurrentPlace:CLLocation!
 	
 	
 	
@@ -48,6 +55,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	//*************************
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		setupGeo()
 		
 		let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
 		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
@@ -61,6 +70,13 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		// поведение клавиатуры при скроллинге
 		collectionView?.keyboardDismissMode = .interactive
+		
+		// запускаем индикацию загрузки (в виде UIRefreshControl) вручную
+		refreshControl = UIRefreshControl()
+		// refreshControl.attributedTitle = NSAttributedString(string: "Загрузка данных...")
+		collectionView?.refreshControl = refreshControl
+		refreshControl.beginRefreshing()
+		collectionView!.setContentOffset(CGPoint(x: 0, y: collectionView!.contentOffset.y - (refreshControl.frame.size.height)), animated: false)
 		
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
@@ -155,12 +171,16 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			hei = estimatedFrameForText(text: text).height + 20 + 10 //(10 - для времени)
 		}
 		else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
-			
 			// h1/w1 = h2/w2  ->  h1 = h2/w2 * w1
 			let w1:CGFloat = CGFloat(UIScreen.main.bounds.width * 2/3)
 			hei = (CGFloat(imageHeight) / CGFloat(imageWidth) * w1)
-			
 		}
+		else if message.geo_lat != nil {
+			let w1:CGFloat = CGFloat(UIScreen.main.bounds.width * 3/4)
+			hei = (CGFloat(prefferedMapSize.height) / CGFloat(prefferedMapSize.width) * w1)
+		}
+		
+		
 		return CGSize(width: UIScreen.main.bounds.width, height: hei)
 	}
 	
@@ -227,6 +247,11 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		userMessagesRef.observeSingleEvent(of: .value) {
 			(snapshot) in
 			allCount = snapshot.childrenCount
+			
+			if allCount == 0{
+				self.collectionView?.refreshControl?.endRefreshing()
+				self.collectionView?.refreshControl = nil
+			}
 
 			
 			let handler = userMessagesRef.observe(.childAdded, with: {
@@ -276,6 +301,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			DispatchQueue.main.async {
 				self.collectionView?.reloadData()
 				self.collectionView?.scrollToLast(animated: false)
+				self.collectionView?.refreshControl?.endRefreshing()
+				self.collectionView?.refreshControl = nil
 			}
 		}
 		// если это обновление путем добавления сообщений
@@ -390,21 +417,13 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	private func sendGeo(){
-		
-		
-		
-		
-	}
-	
-	
-	
+
 	
 	
 	/// клик на картинку (переслать фотку)
 	@objc public func onUploadClick(){
 		
-		sendGeo()
+		checkLocationAuthorization()
 		
 		return
 
@@ -418,6 +437,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		flag = true
 		present(imagePickerController, animated: true, completion: nil)
 	}
+	
+	
 	
 	
 	
@@ -611,7 +632,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		]
 		sendMessage_with_Properties(properties: properties)
 		
-//		inputContainerView.inputTextField.resignFirstResponder() // убираем клаву после отправки сообщения
 		growingInputView.inputTextField.text = nil
 	}
 	
@@ -629,8 +649,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	
-	private func sendMessage_with_Properties(properties: [String:Any]){
+	///  присоединяем к сообщению required поля и отправляем в БД
+	internal func sendMessage_with_Properties(properties: [String:Any]){
 		let ref = Database.database().reference().child("messages")
 		// генерация псевдо-рандомных ключей сообщения https://chatapp-2222e.firebaseio.com/messages/-LQe7kjoAJkrVNzOjERM
 		let childRef = ref.childByAutoId()
