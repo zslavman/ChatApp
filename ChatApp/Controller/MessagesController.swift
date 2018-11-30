@@ -352,14 +352,13 @@ class MessagesController: UITableViewController {
 			})
 		})
 
-		// слушатель на удаление сообщений
-		let listener3 = refUserMessages.observe(.childRemoved, with: {
-			(snapshot) in
-			self.messagesDict.removeValue(forKey: snapshot.key)
-			self.semiSmartReloadData(firstTime: true)
-		})
-		
-		self.hendlers[listener3] = refUserMessages
+		// слушатель на удаление диалога
+//		let listener3 = refUserMessages.observe(.childRemoved, with: {
+//			(snapshot) in
+//			// после удаления диалога нужно убрать прослушку на новые сообщения
+//			refUserMessages.removeObserver(withHandle: listener3)
+//		})
+//		self.hendlers[listener3] = refUserMessages
 	}
 	
 	
@@ -416,7 +415,7 @@ class MessagesController: UITableViewController {
 		})
 		
 		// if you got new message from saved partnerBeforeUpdate
-		if let partnerBeforeUpdate = partnerBeforeUpdate{
+		if let partnerBeforeUpdate = partnerBeforeUpdate {
 			let newPartner = messages.first!.chatPartnerID()!
 			if newPartner == partnerBeforeUpdate {
 				let indexPath = IndexPath(row: 0, section: 0)

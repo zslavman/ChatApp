@@ -102,14 +102,18 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		let map = MKMapView()
 		map.translatesAutoresizingMaskIntoConstraints = false
 		map.showsCompass = false
-//		map.showsScale = true
+		if #available(iOS 11.0, *){
+			map.showsScale = false
+		}
+		else {
+			map.showsScale = true
+		}
+		map.isRotateEnabled = false
 		map.isZoomEnabled = true
 		map.isScrollEnabled = true
 		map.showsBuildings = true
 		map.isMultipleTouchEnabled = true
 		map.isUserInteractionEnabled = true
-//		map.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapMe)))
-		
 		map.layer.cornerRadius = ChatMessageCell.cornRadius
 		map.clipsToBounds = true
 		return map
@@ -295,11 +299,6 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	
 	
 	
-	@objc private func tapMe(){
-		DispatchQueue.main.async {
-			print("меня тапнули")
-		}
-	}
 	
 	
 	required init?(coder aDecoder: NSCoder) {

@@ -35,7 +35,12 @@ extension ChatLogController:CLLocationManagerDelegate {
 			locationManager.requestWhenInUseAuthorization()
 			if CLLocationManager.locationServicesEnabled(){
 				myCurrentPlace = nil
-				locationManager.requestLocation()
+				if #available(iOS 11.0, *){
+					locationManager.requestLocation()
+				}
+				else{
+					getLocation()
+				}
 			}
 		case .denied, .restricted:
 			showAlert()
@@ -47,7 +52,7 @@ extension ChatLogController:CLLocationManagerDelegate {
 
 	
 	
-	/// получение координат
+	/// получение координат (iOS 11.0+) в 10-ке это тоже работает но о огромной задержкой около 10с
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 		
 		if self.myCurrentPlace != nil{ // на 10.3.3 баг - этот метод срабатывает дважды!ы
@@ -61,7 +66,7 @@ extension ChatLogController:CLLocationManagerDelegate {
 		
 		print("latitude = \(lat)   longitude = \(lon)")
 
-		 sendMessageWithGeo(lat: lat, lon: lon)
+		sendMessageWithGeo(lat: lat, lon: lon)
 		
 		let geocoder = CLGeocoder()
 		geocoder.reverseGeocodeLocation(myCurrentPlace) {
@@ -82,6 +87,22 @@ extension ChatLogController:CLLocationManagerDelegate {
 	}
 	
 	
+	/// получение координат (iOS 10)
+	private func getLocation(){
+		if let myCurrentPlace = locationManager.location?.coordinate{
+			
+			let lat = myCurrentPlace.latitude
+			let lon = myCurrentPlace.longitude
+			print("latitude = \(lat)   longitude = \(lon)")
+			
+			sendMessageWithGeo(lat: lat, lon: lon)
+		}
+	}
+	
+	
+	
+	
+	
 	
 	func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
 		print("error = \(error.localizedDescription)")
@@ -89,10 +110,10 @@ extension ChatLogController:CLLocationManagerDelegate {
 	
 
 	
-	/// показываем пояснение, что нужно разрешить использование геоположения в настройках
+	/// показываем пояснение, что нужно разрешить использование геолокации в настройках
 	private func showAlert(){
-		let message = "Для использования этой функции необходимо разрешить использование геопозиции в настройках"
-		let alertController = UIAlertController(title: "Включите геопозицию", message: message, preferredStyle: .alert)
+		let message = "Для использования этой функции необходимо разрешить использование геолокации в настройках"
+		let alertController = UIAlertController(title: "Включите геолокацию", message: message, preferredStyle: .alert)
 		let ok = UIAlertAction(title: "Ок", style: .default, handler: nil)
 		alertController.addAction(ok)
 		
