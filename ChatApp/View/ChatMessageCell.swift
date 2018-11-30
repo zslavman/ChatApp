@@ -12,7 +12,7 @@ import AVFoundation
 import MapKit
 
 
-class ChatMessageCell: UICollectionViewCell {
+class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate будет ругатся на компас!
 	
 	public var chatlogController:ChatLogController?
 	private var message:Message?
@@ -102,13 +102,13 @@ class ChatMessageCell: UICollectionViewCell {
 		let map = MKMapView()
 		map.translatesAutoresizingMaskIntoConstraints = false
 		map.showsCompass = false
-		map.showsScale = true
+//		map.showsScale = true
 		map.isZoomEnabled = true
 		map.isScrollEnabled = true
 		map.showsBuildings = true
 		map.isMultipleTouchEnabled = true
 		map.isUserInteractionEnabled = true
-		map.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapMe)))
+//		map.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapMe)))
 		
 		map.layer.cornerRadius = ChatMessageCell.cornRadius
 		map.clipsToBounds = true
@@ -179,7 +179,7 @@ class ChatMessageCell: UICollectionViewCell {
 		bubbleView.addSubview(activityIndicator)
 		bubbleView.addSubview(progressBar)
 		addSubview(fullScreenBttn)
-		bubbleView.addSubview(mapView)
+		addSubview(mapView)
 		
 		NSLayoutConstraint.activate([
 			// констрейнты для кнопки "полный экран"
@@ -248,24 +248,45 @@ class ChatMessageCell: UICollectionViewCell {
 		bubbleRightAnchor?.isActive = true
 		bubbleWidthAnchor?.isActive = true
 		
-		// для 11 необходимо в карту встроить эту хрень, иначе будет: "Could not inset compass from edges 9"
+		// для 11 необходимо в карту встроить шкалу, иначе будет: "Could not inset compass from edges 9"
 		if #available(iOS 11.0, *){
-
-			DispatchQueue.main.async {
-				
-				let scaleView = MKScaleView(mapView: self.mapView)
-				scaleView.translatesAutoresizingMaskIntoConstraints = false
-				scaleView.scaleVisibility = .visible
-				self.mapView.addSubview(scaleView)
-				
-				let guide:UILayoutGuide = self.mapView.safeAreaLayoutGuide
-				NSLayoutConstraint.activate([
-					scaleView.leftAnchor.constraint(equalTo: guide.leftAnchor),
-					scaleView.rightAnchor.constraint(equalTo: guide.rightAnchor),
-					scaleView.topAnchor.constraint(equalTo: guide.topAnchor),
-					scaleView.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
-				])
+			// шкала масштаба
+			let scaleView = MKScaleView(mapView: mapView)
+			scaleView.translatesAutoresizingMaskIntoConstraints = false
+			scaleView.scaleVisibility = .adaptive
+			scaleView.isUserInteractionEnabled = false
+			scaleView.legendAlignment = .trailing
+			mapView.addSubview(scaleView)
+			
+//			let safeGuides:UILayoutGuide = self.mapView.safeAreaLayoutGuide
+			
+			NSLayoutConstraint.activate([
+				scaleView.rightAnchor.constraint(equalTo: mapView.rightAnchor, constant: -10),
+				scaleView.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: -13),
+				scaleView.heightAnchor.constraint(equalToConstant: 30),
+				scaleView.widthAnchor.constraint(equalTo: mapView.widthAnchor, multiplier: 0.5)
+			])
+			
+//			let compassButton = MKCompassButton(mapView: mapView)
+//			compassButton.frame.origin = CGPoint(x: 10, y: 10)
+//			compassButton.compassVisibility = .visible
+//			compassButton.translatesAutoresizingMaskIntoConstraints = false
+//			mapView.addSubview(compassButton)
+//
+//			NSLayoutConstraint.activate([
+//				compassButton.centerXAnchor.constraint(equalTo: safeGuides.centerXAnchor),
+//				compassButton.centerYAnchor.constraint(equalTo: safeGuides.centerYAnchor),
+//				compassButton.heightAnchor.constraint(equalToConstant: 40)
+//			])
+			
+			// Removeing compass
+			for view in mapView.subviews {
+				if view.isKind(of: NSClassFromString("MKCompassView")!) {
+					view.removeFromSuperview()
+				}
 			}
+			
+			
 		}
 		
 		mapView.isHidden = true
@@ -275,7 +296,9 @@ class ChatMessageCell: UICollectionViewCell {
 	
 	
 	@objc private func tapMe(){
-		print("меня тапнули")
+		DispatchQueue.main.async {
+			print("меня тапнули")
+		}
 	}
 	
 	
@@ -378,6 +401,7 @@ class ChatMessageCell: UICollectionViewCell {
 		let annotation = MKPointAnnotation()
 		annotation.coordinate = coord2D
 		mapView.addAnnotation(annotation)
+		
 	}
 
 	
@@ -395,8 +419,7 @@ class ChatMessageCell: UICollectionViewCell {
 		player = nil
 		progressBar.setProgress(0, animated: false)
 		messageImageView.image = nil
-		mapView.removeFromSuperview()
-		
+		mapView.isHidden = true
 		activityIndicator.stopAnimating()
 	}
 	

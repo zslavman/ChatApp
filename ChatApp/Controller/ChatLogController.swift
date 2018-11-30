@@ -157,6 +157,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		let message = dataArray[indexPath.section][indexPath.item]
 		cell.setupCell(linkToParent: self, message: message, indexPath: indexPath)
 		
+		//TODO: ветвление на разные типы ячеек (текст/фото/видео/гео)
+		
 		return cell
 	}
 	
