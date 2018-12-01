@@ -31,7 +31,12 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}()
 	
 	
-	private let cell_ID:String = "cell_ID"
+	private let cell_ID:String 			= "cell_ID"
+	private let cell_ID_video:String 	= "cell_ID_video"
+	private let cell_ID_map:String 		= "cell_ID_map"
+	private let cell_ID_image:String 	= "cell_ID_image"
+	
+	
 	private var messages:[Message] = []
 	private var containerViewBottomAnchor:NSLayoutConstraint?
 	private var disposeVar:(DatabaseReference, UInt)!
@@ -62,10 +67,15 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
 		// layout?.headerReferenceSize = CGSize(width: 150, height: 25)
 		
-		collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0) // вставляем поля чтоб чат не соприкосался сверху и снизу
+		// вставляем поля чтоб чат не соприкосался сверху и снизу
+		collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.backgroundColor = .white
+		
 		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cell_ID)
+		collectionView?.register(Video_Cell.self, forCellWithReuseIdentifier: cell_ID_video)
+		collectionView?.register(Map_Cell.self, forCellWithReuseIdentifier: cell_ID_map)
+		collectionView?.register(Image_Cell.self, forCellWithReuseIdentifier: cell_ID_image)
 		collectionView?.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerReusableView)
 		
 		// поведение клавиатуры при скроллинге
@@ -105,7 +115,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		// убиваем слушателя базы
 		if !flag{
 			NotificationCenter.default.removeObserver(self) // убираем слушатели, иначе будет утечка памяти и многократное срабатывание
-			disposeVar.0.removeObserver(withHandle: disposeVar.1)
+			disposeVar?.0.removeObserver(withHandle: disposeVar.1)
 			disposeVar = nil
 		}
 		
@@ -113,11 +123,14 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		guard let cells = collectionView?.visibleCells as? [ChatMessageCell] else { return }
 		cells.forEach {
 			(cell) in
-			if cell.isPlaying{
-				print("Останавливаем воспроизведение!")
-				cell.removePlayObserver()
-				cell.player?.pause()
-				cell.playerLayer?.removeFromSuperlayer()
+			if cell.isKind(of: Video_Cell.self){
+				let nCell = cell as! Video_Cell
+				if nCell.isPlaying{
+					print("Останавливаем воспроизведение!")
+					nCell.removePlayObserver()
+					nCell.player?.pause()
+					nCell.playerLayer?.removeFromSuperlayer()
+				}
 			}
 		}
 	}
@@ -128,13 +141,9 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		collectionView?.collectionViewLayout.invalidateLayout()
 		
-		// врежиме просмотра картинки прячем growingInputView, т.к. по непонятной причине оно появляется
+		// в режиме просмотра картинки прячем growingInputView, т.к. по непонятной причине оно появляется
 		if (startingFrame != nil){
 			growingInputView.isHidden = true
-
-			// пересчитываем кадр куда возвращатся с просмотра картинки
-//			print("orig = \(orig?.frame)")
-//			startingFrame = orig?.convert((originalImageView?.frame)!, to: nil)
 		}
 		else{
 			collectionView?.reloadData()
@@ -151,16 +160,32 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
 		
-		cell.tag = indexPath.item
+		var cell:ChatMessageCell!
 		let message = dataArray[indexPath.section][indexPath.item]
-		cell.setupCell(linkToParent: self, message: message, indexPath: indexPath)
+		
+		
+		if message.videoUrl != nil{
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_video, for: indexPath) as! Video_Cell
+		}
+		else if message.geo_lat != nil{
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_map, for: indexPath) as! Map_Cell
+		}
+		else if message.imageUrl != nil{
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_image, for: indexPath) as! Image_Cell
+		}
+		else {
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
+		}
 		
 		//TODO: ветвление на разные типы ячеек (текст/фото/видео/гео)
+		cell.tag = indexPath.item
+		cell.setupCell(linkToParent: self, message: message, indexPath: indexPath)
 		
 		return cell
 	}
+	
+	
 	
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -425,9 +450,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	/// клик на картинку (переслать фотку)
 	@objc public func onUploadClick(){
 		
-		checkLocationAuthorization()
-		
-		return
+//		checkLocationAuthorization()
+//		return
 
 		let imagePickerController = UIImagePickerController()
 		
