@@ -10,32 +10,38 @@ import UIKit
 import MapKit
 
 
-class Map_Cell: ChatMessageCell {
+class Map_Cell: ChatMessageCell, MKMapViewDelegate {
 	
 	
-	private lazy var mapView: MKMapView = {
-		let map = MKMapView()
-		map.translatesAutoresizingMaskIntoConstraints = false
-		map.showsCompass = false
+	private let mapView: MKMapView = {
+		let mapView = MKMapView()
+		mapView.translatesAutoresizingMaskIntoConstraints = false
+		mapView.showsCompass = false
+		mapView.mapType = .standard
 		if #available(iOS 11.0, *){
-			map.showsScale = false
+			mapView.showsScale = false
 		}
 		else {
-			map.showsScale = true
+			mapView.showsScale = true
 		}
-		map.isRotateEnabled = false
-		map.isZoomEnabled = true
-		map.isScrollEnabled = true
-		map.showsBuildings = true
-		map.isMultipleTouchEnabled = true
-		map.isUserInteractionEnabled = true
-		map.layer.cornerRadius = ChatMessageCell.cornRadius
-		map.clipsToBounds = true
-		return map
+		mapView.isRotateEnabled = false
+		mapView.isZoomEnabled = true
+		mapView.isScrollEnabled = true
+		mapView.showsBuildings = true
+		mapView.isMultipleTouchEnabled = true
+		mapView.isUserInteractionEnabled = true
+		mapView.layer.cornerRadius = ChatMessageCell.cornRadius
+		mapView.clipsToBounds = true
+		mapView.showsPointsOfInterest = true
+
+		return mapView
 	}()
-	
-	
-	
+
+
+
+	func mapViewDidFinishRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
+		print("Закончили ренедеринг карты")
+	}
 	
 	
 	//*************************
@@ -44,23 +50,22 @@ class Map_Cell: ChatMessageCell {
 	override init(frame: CGRect){
 		super.init(frame: frame)
 		
+		mapView.delegate = self
 		addSubview(mapView)
 		
 		NSLayoutConstraint.activate([
-			// для геопозиции (если такоевое будет)
 			mapView.topAnchor.constraint(equalTo: bubbleView.topAnchor),
+			mapView.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor),
 			mapView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor),
-			mapView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor),
-			mapView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor)
+			mapView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor)
 		])
 		
-		
-		// для 11 можно в карту встроить шкалу где хочется а не так как в 10
+		// для 11 можно в карту встроить шкалу в желаемом месте
 		if #available(iOS 11.0, *){
 			// шкала масштаба
 			let scaleView = MKScaleView(mapView: mapView)
 			scaleView.translatesAutoresizingMaskIntoConstraints = false
-			scaleView.scaleVisibility = .adaptive
+			scaleView.scaleVisibility = .hidden
 			scaleView.isUserInteractionEnabled = false
 			scaleView.legendAlignment = .trailing
 			mapView.addSubview(scaleView)
@@ -105,7 +110,6 @@ class Map_Cell: ChatMessageCell {
 		bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 3/4
 		mapCenterAndAddPin()
 		mapView.isHidden = false
-		
 	}
 		
 	

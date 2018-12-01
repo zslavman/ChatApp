@@ -31,10 +31,14 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}()
 	
 	
-	private let cell_ID:String 			= "cell_ID"
-	private let cell_ID_video:String 	= "cell_ID_video"
-	private let cell_ID_map:String 		= "cell_ID_map"
-	private let cell_ID_image:String 	= "cell_ID_image"
+	
+	
+	struct cID {
+		static let cell_ID:String 			= "cell_ID"
+		static let cell_ID_video:String 	= "cell_ID_video"
+		static let cell_ID_map:String 		= "cell_ID_map"
+		static let cell_ID_image:String 	= "cell_ID_image"
+	}
 	
 	
 	private var messages:[Message] = []
@@ -60,8 +64,11 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	//*************************
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+
 		setupGeo()
+		
+		let buttonImg = UIImage(named: "bttn_map_pin")
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: buttonImg, style: .plain, target: self, action: #selector(onLocationClick))
 		
 		let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
 		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
@@ -72,10 +79,10 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.backgroundColor = .white
 		
-		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cell_ID)
-		collectionView?.register(Video_Cell.self, forCellWithReuseIdentifier: cell_ID_video)
-		collectionView?.register(Map_Cell.self, forCellWithReuseIdentifier: cell_ID_map)
-		collectionView?.register(Image_Cell.self, forCellWithReuseIdentifier: cell_ID_image)
+		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cID.cell_ID)
+		collectionView?.register(Video_Cell.self, forCellWithReuseIdentifier: cID.cell_ID_video)
+		collectionView?.register(Map_Cell.self, forCellWithReuseIdentifier: cID.cell_ID_map)
+		collectionView?.register(Image_Cell.self, forCellWithReuseIdentifier: cID.cell_ID_image)
 		collectionView?.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerReusableView)
 		
 		// поведение клавиатуры при скроллинге
@@ -157,6 +164,32 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		return dataArray[section].count
 	}
 	
+	override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		
+		let currentOffset = scrollView.contentOffset.y;
+		let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+		//		let dif = currentOffset - maximumOffset
+		//		print("currentOffset = \(currentOffset)")
+		//		print("maximumOffset = \(maximumOffset)")
+
+		if (currentOffset <= 0) {
+			print("скрол остановился вверху...")
+		}
+		
+	}
+	
+	override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+		print("12354544")
+		return true
+	}
+		
+	
+	
+	override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		if indexPath.item == 0 && primaryDataloaded{
+//			print("начало списка...")
+		}
+	}
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -166,24 +199,41 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		
 		if message.videoUrl != nil{
-			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_video, for: indexPath) as! Video_Cell
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID_video, for: indexPath) as! Video_Cell
+			// let myclass = stringClassFromString(className: "Video_Cell") as! ChatMessageCell.Type
+			// cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_video, for: indexPath) as! myclass
 		}
 		else if message.geo_lat != nil{
-			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_map, for: indexPath) as! Map_Cell
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID_map, for: indexPath) as! Map_Cell
 		}
 		else if message.imageUrl != nil{
-			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_image, for: indexPath) as! Image_Cell
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID_image, for: indexPath) as! Image_Cell
 		}
 		else {
-			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID, for: indexPath) as! ChatMessageCell
+			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID, for: indexPath) as! ChatMessageCell
 		}
 		
-		//TODO: ветвление на разные типы ячеек (текст/фото/видео/гео)
 		cell.tag = indexPath.item
 		cell.setupCell(linkToParent: self, message: message, indexPath: indexPath)
 		
 		return cell
 	}
+	
+	
+	
+	
+	/// получаем класс со строки
+	private func stringClassFromString(className: String) -> AnyClass! {
+		
+		/// get namespace
+		let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
+		
+		/// get 'anyClass' with classname and namespace
+		let cls: AnyClass = NSClassFromString("\(namespace).\(className)")!
+		
+		return cls
+	}
+	
 	
 	
 	
@@ -324,10 +374,10 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		// если это загрузка всего диалога
 		if !primaryDataloaded {
 			smartSort()
-			self.primaryDataloaded = true
 			DispatchQueue.main.async {
 				self.collectionView?.reloadData()
 				self.collectionView?.scrollToLast(animated: false)
+				self.primaryDataloaded = true
 				self.collectionView?.refreshControl?.endRefreshing()
 				self.collectionView?.refreshControl = nil
 			}
@@ -443,6 +493,13 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
+	// клик на булавку (отправить геолокацию)
+	@objc private func onLocationClick(){
+		checkLocationAuthorization()
+	}
+	
+	
+	
 	
 
 	
@@ -450,9 +507,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	/// клик на картинку (переслать фотку)
 	@objc public func onUploadClick(){
 		
-//		checkLocationAuthorization()
-//		return
-
 		let imagePickerController = UIImagePickerController()
 		
 		imagePickerController.allowsEditing = true
@@ -775,7 +829,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				
 				self.blackBackgroundView?.alpha = 1
 				self.growingInputView.alpha = 0 // вьюшка ввода сообщения
-				zoomingImageView.layer.cornerRadius = 0
 				
 				// по отношению сторон (умножаем коэфф. соотношения сторон на размер известной ширины)
 				let newHeight = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width

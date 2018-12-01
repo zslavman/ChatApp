@@ -36,7 +36,9 @@ extension ChatLogController:CLLocationManagerDelegate {
 			if CLLocationManager.locationServicesEnabled(){
 				myCurrentPlace = nil
 				if #available(iOS 11.0, *){
-					locationManager.requestLocation()
+//					locationManager.requestLocation()
+					print("Отправили запрос на получение коориднат...")
+					locationManager.startUpdatingLocation()
 				}
 				else{
 					getLocation()
@@ -52,10 +54,11 @@ extension ChatLogController:CLLocationManagerDelegate {
 
 	
 	
-	/// получение координат (iOS 11.0+) в 10-ке это тоже работает но о огромной задержкой около 10с
+	/// получение координат (iOS 11.0+) в 10-ке это тоже работает но с огромной задержкой около 10с
 	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 		
 		if self.myCurrentPlace != nil{ // на 10.3.3 баг - этот метод срабатывает дважды!ы
+			manager.stopUpdatingLocation()
 			return
 		}
 		

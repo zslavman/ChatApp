@@ -191,9 +191,9 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	
 
 	
-	override func prepareForReuse() {
-		super.prepareForReuse()
-	}
+//	override func prepareForReuse() {
+//		super.prepareForReuse()
+//	}
 
 	
 	

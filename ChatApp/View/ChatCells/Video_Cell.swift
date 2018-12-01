@@ -176,7 +176,6 @@ class Video_Cell: ChatMessageCell {
 				}
 			}
 		}
-		
 		bubbleView.backgroundColor = .clear
 		textView.isHidden = true
 		
@@ -247,8 +246,7 @@ class Video_Cell: ChatMessageCell {
 	}
 	
 	
-	
-	
+		
 	/// клик на отправленной картинке в сообщении или же при переходе в фулскрин
 	@objc private func onStopPlay(){
 		if isPlaying {
