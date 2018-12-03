@@ -218,7 +218,7 @@ class Video_Cell: ChatMessageCell {
 			let interval = CMTime(value: 1, timescale: 20)
 			playTimer = player!.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.main, using: {
 				[weak self] (cmtime) in
-				self?.sendTime_TF.text = ChatMessageCell.convertTime(seconds: cmtime.seconds)
+				self?.sendTime_TF.text = Calculations.convertTime(seconds: cmtime.seconds)
 				
 				
 				if let endTime = self?.player?.currentItem?.duration.seconds{
@@ -264,7 +264,7 @@ class Video_Cell: ChatMessageCell {
 		player!.seek(to: CMTime(seconds: 0.0, preferredTimescale: 1))
 		removePlayObserver()
 		progressBar.setProgress(0, animated: false)
-		sendTime_TF.text = ChatMessageCell.convertTime(seconds: 0)
+		sendTime_TF.text = Calculations.convertTime(seconds: 0)
 	}
 	
 	

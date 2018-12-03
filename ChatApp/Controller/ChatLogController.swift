@@ -29,6 +29,18 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		return inputView
 	}()
 	
+	private lazy var scrollingDownBttn:UIButton = {
+		let bttn = UIButton(type: UIButtonType.system)
+		bttn.translatesAutoresizingMaskIntoConstraints = false
+		bttn.setImage(UIImage(named: "bttn_down"), for: UIControlState.normal)
+		bttn.layer.shadowOffset = CGSize(width: 0, height: 3)
+		bttn.layer.shadowRadius = 3
+		bttn.layer.shadowOpacity = 0.3
+		bttn.alpha = 0
+		bttn.addTarget(self, action: #selector(onScrollingDownClick), for: UIControlEvents.touchUpInside)
+		return bttn
+	}()
+	
 	struct cID {
 		static let cell_ID:String 			= "cell_ID"
 		static let cell_ID_video:String 	= "cell_ID_video"
@@ -104,8 +116,15 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
-		// прослушиватели клавы
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+		
+		view.addSubview(scrollingDownBttn)
+		NSLayoutConstraint.activate([
+			scrollingDownBttn.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
+			scrollingDownBttn.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60),
+			scrollingDownBttn.widthAnchor.constraint(equalToConstant: 45),
+			scrollingDownBttn.heightAnchor.constraint(equalToConstant: 45)
+		])
 	}
 	
 	
@@ -175,16 +194,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-		//	let currentOffset = scrollView.contentOffset.y;
-		// let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
-		//		let dif = currentOffset - maximumOffset
-		//		print("currentOffset = \(currentOffset)")
-		//		print("maximumOffset = \(maximumOffset)")
-		//if (currentOffset <= 0) {
-		// 	 print("скрол остановился вверху...")
-		//}
-	}
 	
 	
 	// когда тапаешь по верху экрана (фактически по времени)
@@ -226,7 +235,23 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-
+	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		let currentOffset = scrollView.contentOffset.y
+		let frameHeight = scrollView.frame.size.height
+		let contentHeight = scrollView.contentSize.height - frameHeight
+		
+		if currentOffset <= contentHeight - 190 {
+			UIView.animate(withDuration: 0.3) {
+				self.scrollingDownBttn.alpha = 1
+			}
+		}
+		else{
+			UIView.animate(withDuration: 0.3) {
+				self.scrollingDownBttn.alpha = 0
+			}
+		}
+		
+	}
 	
 	
 	
@@ -491,7 +516,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		// создаем массив конвертированных дат (без повтора)
 		for value in dataList {
-			let dateString = gatheringData(seconds: TimeInterval(truncating: value))
+			let dateString = Calculations.gatheringData(seconds: TimeInterval(truncating: value))
 			if !stringedTimes.contains(dateString){
 				stringedTimes.append(dateString)
 				dataArray.append([])
@@ -500,7 +525,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		// заполняем массив массивов юзеров, согласно алфавита
 		for element in messages {
-			let temp = gatheringData(seconds: TimeInterval(truncating: element.timestamp!))
+			let temp = Calculations.gatheringData(seconds: TimeInterval(truncating: element.timestamp!))
 			let index = stringedTimes.index(of: temp)
 			dataArray[index!].append(element)
 		}
@@ -508,41 +533,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	
-	/// преобразования даты для секций колекшнвью
-	private func gatheringData(seconds:TimeInterval) -> String{
-		
-		let convertedDate = Date(timeIntervalSince1970: seconds)
-		let dateFormater = DateFormatter()
-		
-		// сегодня
-		if Calendar.current.isDateInToday(convertedDate){
-			return "сегодня"
-		}
-		// вчера
-		else if Calendar.current.isDateInYesterday(convertedDate){
-			return "вчера"
-		}
-		// на этой неделе (пятница)
-		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
-			var weekDayNum = Calendar.current.component(.weekday, from: convertedDate) - 1 // возвращает дни, начиная с 1
-			if weekDayNum == 7 {
-				weekDayNum = 0 // т.к. Вс - это 0-вой элемент массива
-			}
-			let weekDay = dateFormater.weekdaySymbols[weekDayNum]
-			return weekDay
-		}
-		// более недели назад (03 Окт)
-		else {
-			dateFormater.dateFormat = "dd"
-			let numDay = dateFormater.string(from: convertedDate)
-			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate) - 1]
-			if month.last == "."{
-				month = String(month.dropLast())
-			}
-			return numDay + " " + month
-		}
-	}
+
 	
 	
 	
@@ -771,6 +762,11 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		}
 	}
 	
+	
+	
+	@objc private func onScrollingDownClick(){
+		collectionView?.scrollToLast(animated: true)
+	}
 	
 	
 	

@@ -116,10 +116,7 @@ class UserCell: UITableViewCell {
 			newMessCount.centerXAnchor.constraint(equalTo: newMessBack.centerXAnchor),
 			newMessCount.centerYAnchor.constraint(equalTo: newMessBack.centerYAnchor)
 		])
-		
 	}
-	
-	
 	
 	
 	
@@ -182,7 +179,7 @@ class UserCell: UITableViewCell {
 		detailTextLabel?.text = str
 		
 		if let seconds = msg.timestamp?.doubleValue{
-			timeLabel.text = UserCell.convertTimeStamp(seconds: seconds, shouldReturn: true)
+			timeLabel.text = Calculations.convertTimeStamp(seconds: seconds, shouldReturn: true)
 		}
 		newMessBack.isHidden = false
 	}
@@ -202,50 +199,7 @@ class UserCell: UITableViewCell {
 	}
 	
 	
-	/// Возвращает время или кол-во прошедшено времени (в разных форматах) относительно текущего времени
-	/// - Parameters:
-	///   - seconds: кол-во секунд прошедшее с 1970г
-	///   - shouldReturn: нужно ли делать перенос на след. строку
-	public static func convertTimeStamp(seconds:TimeInterval, shouldReturn:Bool) -> String{
-		
-		let convertedDate = Date(timeIntervalSince1970: seconds)
-		let dateFormater = DateFormatter()
-		let caretSymbol:String = "\n"
-		
-		dateFormater.dateFormat = "HH:mm"
-		let HH_mm = dateFormater.string(from: convertedDate)
-		if !shouldReturn{
-			return HH_mm
-		}
-		
-		// сегодня (12:54)
-		if Calendar.current.isDateInToday(convertedDate){
-			return HH_mm
-		}
-		// вчера (вчера 18:36)
-		else if Calendar.current.isDateInYesterday(convertedDate){
-			return "вчера" + caretSymbol + HH_mm
-		}
-		// на этой неделе (Fri, 20:54)
-		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
-			var weekDayNum = Calendar.current.component(.weekday, from: convertedDate) - 1 // возвращает дни, начиная с 1
-			if weekDayNum == 7 {
-				weekDayNum = 0 // т.к. Вс - это 0-вой элемент массива
-			}
-			let weekDay = dateFormater.shortWeekdaySymbols[weekDayNum]
-			return weekDay + caretSymbol + HH_mm
-		}
-		// более недели назад (03 Oct, 12:47)
-		else {
-			dateFormater.dateFormat = "dd"
-			let numDay = dateFormater.string(from: convertedDate)
-			var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: convertedDate) - 1]
-			if month.last == "."{
-				month = String(month.dropLast())
-			}
-			return numDay + " " + month + caretSymbol + HH_mm
-		}
-	}
+
 	
 }
 

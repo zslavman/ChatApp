@@ -24,7 +24,6 @@ class ChatInputView: UIView, UITextViewDelegate {
         let tf = UITextView()
         tf.text = placeholderStr
         tf.textColor = UIColor.lightGray
-//        tf.backgroundColor = UIColor.red.withAlphaComponent(0.1)
         tf.backgroundColor = .clear
         tf.font = UIFont.systemFont(ofSize: 17)
         tf.translatesAutoresizingMaskIntoConstraints = false
@@ -62,43 +61,52 @@ class ChatInputView: UIView, UITextViewDelegate {
         self.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         backgroundColor = .white
 
-        // картинка слева (отправить фото)
-        addSubview(uploadImageView)
-        uploadImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4).isActive     = true
-        uploadImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 5).isActive         = true
-        uploadImageView.widthAnchor.constraint(equalToConstant: 44).isActive                     = true // эпл рекомендует размер 44
-        uploadImageView.heightAnchor.constraint(equalToConstant: 44).isActive                     = true
-        
-        // линия-сепаратор
-        let sepLine = UIView()
-        sepLine.backgroundColor = UIColor.lightGray
-        sepLine.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 1)
-        sepLine.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(sepLine)
-        sepLine.topAnchor.constraint(equalTo: topAnchor).isActive         = true
-        sepLine.leftAnchor.constraint(equalTo: leftAnchor).isActive     = true
-        sepLine.rightAnchor.constraint(equalTo: rightAnchor).isActive     = true
-        sepLine.heightAnchor.constraint(equalToConstant: 1).isActive     = true
-        
-        // кнопка "Отправить"
-        sendButton.setImage(UIImage(named: "bttn_send"), for: .normal)
-        sendButton.translatesAutoresizingMaskIntoConstraints = false
-        sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        addSubview(sendButton)
-        sendButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2).isActive = true
-        sendButton.rightAnchor.constraint(equalTo: rightAnchor).isActive     = true
-        sendButton.widthAnchor.constraint(equalToConstant: 44).isActive     = true
-        sendButton.heightAnchor.constraint(equalToConstant: 44).isActive     = true
-        
-        // текстовое поле
-        addSubview(inputTextField)
-        inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 10).isActive = true
-        inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive        = true
-        inputTextField.topAnchor.constraint(equalTo: self.topAnchor, constant: 7).isActive     = true
-        inputTextField.heightAnchor.constraint(equalTo: heightAnchor).isActive                 = true
-        
-        inputTextField.contentInset.bottom = 20 // чтоб при скролле введенного текста его не закрывала клава снизу
-    }
+		// линия-сепаратор
+		let sepLine = UIView()
+		sepLine.backgroundColor = UIColor.lightGray
+		sepLine.frame.size = CGSize(width: UIScreen.main.bounds.width, height: 1)
+		sepLine.translatesAutoresizingMaskIntoConstraints = false
+		
+		// кнопка "Отправить"
+		sendButton.setImage(UIImage(named: "bttn_send"), for: .normal)
+		sendButton.translatesAutoresizingMaskIntoConstraints = false
+		sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+		
+		addSubview(uploadImageView)
+		addSubview(sepLine)
+		addSubview(sendButton)
+		addSubview(inputTextField)
+		
+		NSLayoutConstraint.activate([
+			// картинка слева (отправить фото)
+			uploadImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+			uploadImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
+			uploadImageView.widthAnchor.constraint(equalToConstant: 44), // эпл рекомендует минимум 44
+			uploadImageView.heightAnchor.constraint(equalToConstant: 44),
+			
+			sepLine.topAnchor.constraint(equalTo: topAnchor),
+			sepLine.leftAnchor.constraint(equalTo: leftAnchor),
+			sepLine.rightAnchor.constraint(equalTo: rightAnchor),
+			sepLine.heightAnchor.constraint(equalToConstant: 1),
+			
+			sendButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
+			sendButton.rightAnchor.constraint(equalTo: rightAnchor),
+			sendButton.widthAnchor.constraint(equalToConstant: 44),
+			sendButton.heightAnchor.constraint(equalToConstant: 44),
+			
+			// текстовое поле
+			inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 10),
+			inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor),
+			inputTextField.topAnchor.constraint(equalTo: topAnchor, constant: 7),
+			inputTextField.heightAnchor.constraint(equalTo: heightAnchor)
+		])
+		inputTextField.contentInset.bottom = 20 // чтоб при скролле введенного текста его не закрывала клава снизу
+	}
+		
+	
+	
+	
+	
     
     
     

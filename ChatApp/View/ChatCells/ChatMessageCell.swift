@@ -149,7 +149,7 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		self.message = message
 		
 		textView.text = message.text
-		sendTime_TF.text = UserCell.convertTimeStamp(seconds: message.timestamp as! TimeInterval, shouldReturn: false)
+		sendTime_TF.text = Calculations.convertTimeStamp(seconds: message.timestamp as! TimeInterval, shouldReturn: false)
 		
 		// определяем какием цветом будет фон сообщения
 		// голубым (свои)
@@ -184,20 +184,6 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	}
 
 
-	
-	/// преобразует секунды в формат ММ:СС
-	public static func convertTime(seconds:Double) -> String{
-		let intValue = Int(seconds)
-		// let hou = intValue / 3600
-		let min = intValue / 60
-		let sec = intValue % 60
-		let time = String(format: "%2i:%02i", min, sec)
-		
-		return time
-	}
-	
-	
-	
 
 	
 	
