@@ -68,7 +68,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	// оптимазация (подгрузка сообщений)
 	private let maxMesOnPrimaryLoad:UInt = 25
 	private let maxMessagesPerUpdate:UInt = 25
-	private var lastKey:String!
+	private var lastKey:String!						// точка отсчета подгрузки более старых сообщений
 	private var globalPath:DatabaseReference! 		// ссылка на список сообщений
 	private var allMessagesKeyList = [String]()
 	private var allFetched:Bool = false 			// флаг, что все сообщения диалога получены
@@ -341,7 +341,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			if snapshot.childrenCount <= self.maxMesOnPrimaryLoad {
 				self.allFetched = true
 			}
-			// преобразовываем список сообщений в массив и сохраняем для дальнейших подрузок
+			// преобразовываем список сообщений в массив и сохраняем для дальнейших подгрузок
 			if let allMessagesKeyList = snapshot.children.allObjects as? [DataSnapshot]{
 				self.allMessagesKeyList = Calculations.extractKeysToArray(snapshot: allMessagesKeyList)
 			}
@@ -353,7 +353,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				self.allFetched = true
 			}
 
-
 			let tempValue = allCount == 0 ? 1 : allCount // нельзя отправлять запрос с toLast = 0
 			
 			let handler = userMessagesRef
@@ -363,17 +362,31 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				(snapshot) in
 				let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
 				
+				let savedSnap = snapshot // сохраняем снапшот, а ниже проверим если это сообщение для нас, то ...
+					
 				messagesRef.observeSingleEvent(of: .value, with: { //****(3) получение данных конкретного сообщения
 					(snapshot) in
 					curCount += 1
 					if (curCount == 1 && self.lastKey == nil){
-						self.lastKey = snapshot.key // сохраняем ключ первого из последних 5 сообщ.
+						self.lastKey = snapshot.key // сохраняем ключ первого из последних N сообщ. (дальнейшая подгрузка будет с этого места)
 					}
 					
 					guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
 					
 					let message = Message(dictionary: dictionary)
 					// message.setValuesForKeys(dictionary)
+					
+					
+					
+					// если это сообщение нам (а не от нас), то отправляем ответ что мы его прочли (только в ветку собеседника!)
+					if message.fromID != uid{
+						// обновляем статус о прочтении в списке сообщений (в ветке собеседника)
+						Database.database().reference().child("user-messages").child(message.fromID!).child(uid).child(savedSnap.key).setValue(1)
+						// обновляем статус о прочтении в самом сообщении
+						Database.database().reference().child("messages").child(snapshot.key).child("readStatus").setValue(true)
+					}
+					
+
 					self.messages.append(message)
 					
 					//  обновляем таблицу только после получения всех сообщений и последюущих (если будут)
@@ -809,7 +822,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		var values:[String:Any] = [
 			"toID"		:toID,
 			"fromID"	:fromID,
-			"timestamp"	:timestamp
+			"timestamp"	:timestamp,
+			"readStatus":false
 		]
 		
 		// добавляем к словарю values ключ + значения словаря properties (key = $0, value = $1)
@@ -824,14 +838,14 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			
 			let messRef = Database.database().reference().child("user-messages")
 			
-			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
+			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
 			let senderRef = messRef.child(fromID).child(toID)
 			let messageID = childRef.key!
-			senderRef.updateChildValues([messageID: 1])
+			senderRef.updateChildValues([messageID: 0])
 			
-			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
+			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
 			let recipientRef = messRef.child(toID).child(fromID)
-			recipientRef.updateChildValues([messageID: 1])
+			recipientRef.updateChildValues([messageID: 0])
 		}
 	}
 	

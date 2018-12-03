@@ -263,14 +263,15 @@ class MessagesController: UITableViewController {
 				var maxCount:UInt = 0
 				var currentCount:UInt = 0
 				if dialogsLoadedCount == dialogsStartCount {
-					// maxCount = snapshot.childrenCount
-					maxCount = 9
+					maxCount = snapshot.childrenCount
+//					maxCount = 9
 				}
 				//***********
 
 
 				// получаем ID сообщения внутри диалога (цикл из сообщений)
-				let listener1 = ref_DialogforEachOtherUser.queryLimited(toLast: 9).observe(.childAdded, with: {
+//				let listener1 = ref_DialogforEachOtherUser.queryLimited(toLast: 9).observe(.childAdded, with: {
+				let listener1 = ref_DialogforEachOtherUser.observe(.childAdded, with: {
 					(snapshot) in
 					let messageID = snapshot.key
 					
@@ -390,7 +391,6 @@ class MessagesController: UITableViewController {
 		func reloadTable(){
 			DispatchQueue.main.async {
 				self.tableView.reloadData()
-				print("Обновили таблицу!")
 				if firstTime {
 					self.setUnread()
 				}
@@ -421,23 +421,23 @@ class MessagesController: UITableViewController {
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
 		
-		// if you got new message from saved partnerBeforeUpdate
-		if let partnerBeforeUpdate = partnerBeforeUpdate {
-			let newPartner = messages.first!.chatPartnerID()!
-			if newPartner == partnerBeforeUpdate {
-				let indexPath = IndexPath(row: 0, section: 0)
-				DispatchQueue.main.async {
-					self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
-					print("Правильно обновили таблицу!")
-				}
-			}
-			else {
-				reloadTable()
-			}
-		}
-		else {
+//		// if you got new message from saved partnerBeforeUpdate
+//		if let partnerBeforeUpdate = partnerBeforeUpdate {
+//			let newPartner = messages.first!.chatPartnerID()!
+//			if newPartner == partnerBeforeUpdate {
+//				let indexPath = IndexPath(row: 0, section: 0)
+//				DispatchQueue.main.async {
+//					self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
+//					print("Правильно обновили таблицу!")
+//				}
+//			}
+//			else {
+//				reloadTable()
+//			}
+//		}
+//		else {
 			reloadTable()
-		}
+//		}
 	}
 	
 	

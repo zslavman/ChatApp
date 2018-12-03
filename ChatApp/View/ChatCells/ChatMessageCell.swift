@@ -132,7 +132,21 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	}
 	
 
-	
+//	override var isSelected: Bool {
+//		get {
+//			return super.isSelected
+//		}
+//		set {
+//			if newValue {
+//				super.isSelected = true
+//				print("selected")
+//			}
+//			else if newValue == false {
+//				super.isSelected = false
+//				print("deselected")
+//			}
+//		}
+//	}
 
 	
 	
@@ -171,8 +185,6 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			bubbleLeftAnchor?.isActive = true
 		}
 		
-		// messageImageView.isHidden = true
-		// textView.isHidden = false
 		sendTime_TF.layer.shadowOpacity = 0
 		sendTime_TF.textColor = ChatMessageCell.grayTextColor
 		
@@ -181,6 +193,9 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			let estWidth = linkToParent.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 60 ? 60 : estWidth
 		}
+		
+//		isSelected = !message.readStatus!
+		
 	}
 
 
