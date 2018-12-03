@@ -13,7 +13,7 @@ class ChatInputView: UIView, UITextViewDelegate {
     private let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
     public var chatLogController:ChatLogController? {
         didSet{
-//            sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
+            // sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
             sendButton.addTarget(self, action: #selector(onSend), for: UIControlEvents.touchUpInside)
             // uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
             uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatLogController, action: #selector(ChatLogController.onUploadClick)))
@@ -105,9 +105,6 @@ class ChatInputView: UIView, UITextViewDelegate {
 		
 	
 	
-	
-	
-    
     
     
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -155,20 +152,25 @@ class ChatInputView: UIView, UITextViewDelegate {
     }
     
 
-    override func layoutSubviews() {
-        self.reloadInputViews()
-		setNeedsUpdateConstraints() // проверить!
-    }
-    
-    
+//    override func layoutSubviews() {
+//		super.layoutSubviews()
+//		layoutIfNeeded()
+//        self.reloadInputViews()
+//		setNeedsUpdateConstraints() // проверить!
+//    }
+	
+
     
     /// пересчитываем собственный размер (высоту)
     override var intrinsicContentSize: CGSize {
         
         // высчитываем новый размер высоты
-        let newSize = CGSize(width: inputTextField.bounds.width, height: .infinity)
+		let newSize = CGSize(width: inputTextField.bounds.width, height: .infinity)
         var estimatedSize = inputTextField.sizeThatFits(newSize)
+		
         estimatedSize.height += 14
+		
+//		print("estimatedSize = \(estimatedSize)")
 
         return estimatedSize
     }

@@ -540,6 +540,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	@objc private func onChatBackingClick(){
 		growingInputView.inputTextField.resignFirstResponder()
+		// UIApplication.shared.sendAction(#selector(resignFirstResponder), to: nil, from: nil, for: nil)
 	}
 	
 	
