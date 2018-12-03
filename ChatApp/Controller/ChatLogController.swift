@@ -23,15 +23,11 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		}
 	}
 	
-
 	private lazy var growingInputView: ChatInputView = {
 		let inputView = ChatInputView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
 		inputView.chatLogController = self
 		return inputView
 	}()
-	
-	
-	
 	
 	struct cID {
 		static let cell_ID:String 			= "cell_ID"
@@ -40,10 +36,10 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		static let cell_ID_image:String 	= "cell_ID_image"
 	}
 	
-	
 	private var messages:[Message] = []
 	private var containerViewBottomAnchor:NSLayoutConstraint?
-	private var disposeVar:(DatabaseReference, UInt)!
+	private var disposeVar1:(DatabaseReference, UInt)!
+	private var disposeVar2:(DatabaseReference, UInt)!
 	private var flag:Bool = false 			// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
 	private var dataArray = [[Message]]() 	// двумерный массив сообщений в секциях
 	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
@@ -56,6 +52,16 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	private let prefferedMapSize:CGSize	= CGSize(width: 400, height: 300) // желаемые размеры гео-сообщения (скорее пропорции)
 	static let prefferedMapScale:Double = 10000 // метров в одной клетке
 	internal var myCurrentPlace:CLLocation!
+	
+	// оптимазация (подгрузка сообщений)
+	private let maxMesOnPrimaryLoad:UInt = 25
+	private let maxMessagesPerUpdate:UInt = 25
+	private var lastKey:String!
+	private var globalPath:DatabaseReference! 		// ссылка на список сообщений
+	private var allMessagesKeyList = [String]()
+	private var allFetched:Bool = false 			// флаг, что все сообщения диалога получены
+	private lazy var trancheCount:UInt = maxMessagesPerUpdate			 	// сколько сообщений ожидается получить при вторичной подгрузке
+	
 	
 	
 	
@@ -94,6 +100,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		collectionView?.refreshControl = refreshControl
 		refreshControl.beginRefreshing()
 		collectionView!.setContentOffset(CGPoint(x: 0, y: collectionView!.contentOffset.y - (refreshControl.frame.size.height)), animated: false)
+		refreshControl.addTarget(self, action: #selector(loadOldMessages), for: UIControlEvents.valueChanged)
 		
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
@@ -121,9 +128,11 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		// убиваем слушателя базы
 		if !flag{
-			NotificationCenter.default.removeObserver(self) // убираем слушатели, иначе будет утечка памяти и многократное срабатывание
-			disposeVar?.0.removeObserver(withHandle: disposeVar.1)
-			disposeVar = nil
+			NotificationCenter.default.removeObserver(self) // иначе при логауте будет ругатся, да и ни к чему хорошему это не приведет
+			disposeVar1?.0.removeObserver(withHandle: disposeVar1.1)
+			disposeVar2?.0.removeObserver(withHandle: disposeVar2.1)
+			disposeVar1 = nil
+			disposeVar2 = nil
 		}
 		
 		// перебираем все видимые ячейки, на предмет проигрывания вних видео
@@ -168,21 +177,18 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		let currentOffset = scrollView.contentOffset.y;
-//		let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
+		// let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
 		//		let dif = currentOffset - maximumOffset
 		//		print("currentOffset = \(currentOffset)")
 		//		print("maximumOffset = \(maximumOffset)")
-
-		if (currentOffset <= 0) {
-			print("скрол остановился вверху...")
-			loadLast()
-		}
+		//if (currentOffset <= 0) {
+		// 	 print("скрол остановился вверху...")
+		//}
 	}
 	
 	
-	
+	// когда тапаешь по верху экрана (фактически по времени)
 	override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-		print("12354544")
 		return true
 	}
 		
@@ -190,21 +196,17 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		if indexPath.item == 0 && primaryDataloaded{
-//			print("начало списка...")
+		//	print("начало списка...")
 		}
 	}
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		
 		var cell:ChatMessageCell!
 		let message = dataArray[indexPath.section][indexPath.item]
 		
-		
 		if message.videoUrl != nil{
 			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID_video, for: indexPath) as! Video_Cell
-			// let myclass = stringClassFromString(className: "Video_Cell") as! ChatMessageCell.Type
-			// cell = collectionView.dequeueReusableCell(withReuseIdentifier: cell_ID_video, for: indexPath) as! myclass
 		}
 		else if message.geo_lat != nil{
 			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID_map, for: indexPath) as! Map_Cell
@@ -224,20 +226,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	
-	/// получаем класс со строки
-	private func stringClassFromString(className: String) -> AnyClass! {
-		
-		/// get namespace
-		let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
-		
-		/// get 'anyClass' with classname and namespace
-		let cls: AnyClass = NSClassFromString("\(namespace).\(className)")!
-		
-		return cls
-	}
-	
-	
+
 	
 	
 	
@@ -259,7 +248,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			let w1:CGFloat = CGFloat(UIScreen.main.bounds.width * 3/4)
 			hei = (CGFloat(prefferedMapSize.height) / CGFloat(prefferedMapSize.width) * w1)
 		}
-		
 		
 		return CGSize(width: UIScreen.main.bounds.width, height: hei)
 	}
@@ -297,8 +285,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 
-	
-	
+
 	
 	/// подсчет ожидаемых размеров текстового поля
 	public func estimatedFrameForText(text: String) -> CGRect{
@@ -309,13 +296,10 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}
 	
 
+
 	
 	
-	private var globalPath:DatabaseReference!
-	private var allMessagesKeyList = [String]()
-	private var lastKey:String!
-	
-	/// получаем сообщения с БД + добавляем слушатель на новые
+	/// первичное получение сообощений с БД + добавляем слушатель на новые
 	private func observeMessages(){
 
 		guard let uid = Auth.auth().currentUser?.uid, let toID = user?.id else { return }
@@ -325,31 +309,36 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		var curCount:UInt = 0
 		globalPath = userMessagesRef
 		
-		userMessagesRef.queryLimited(toLast: 5).observeSingleEvent(of: .value) {			  // (1) получение списка всех сообщений юзера
+		userMessagesRef.observeSingleEvent(of: .value) {		// ****(1) получение списка всех сообщений юзера
 			
 			(snapshot) in
-			allCount = snapshot.childrenCount
-
+			allCount = min(snapshot.childrenCount, self.maxMesOnPrimaryLoad)
+			if snapshot.childrenCount <= self.maxMesOnPrimaryLoad {
+				self.allFetched = true
+			}
+			// преобразовываем список сообщений в массив и сохраняем для дальнейших подрузок
+			if let allMessagesKeyList = snapshot.children.allObjects as? [DataSnapshot]{
+				self.allMessagesKeyList = Calculations.extractKeysToArray(snapshot: allMessagesKeyList)
+			}
 			
-			
-			// преобразовываем список сообщений в массив
-			let allMessagesKeyList = snapshot.children.allObjects as? [DataSnapshot]
-			self.allMessagesKeyList = Calculations.extractKeysToArray(snapshot: allMessagesKeyList!)
-			print("snapshot = \(snapshot)")
-			
-			
-			
-			if allCount == 0{
+			// если нет сообщений или их немного
+			if allCount == 0 || allCount == self.allMessagesKeyList.count {
 				self.collectionView?.refreshControl?.endRefreshing()
 				self.collectionView?.refreshControl = nil
+				self.allFetched = true
 			}
 
-			let handler = userMessagesRef.queryLimited(toLast: 5).observe(.childAdded, with: { // (2) перебор каждого ключа сообщения
+
+			let tempValue = allCount == 0 ? 1 : allCount // нельзя отправлять запрос с toLast = 0
+			
+			let handler = userMessagesRef
+				.queryLimited(toLast: tempValue)
+				.observe(.childAdded, with: { 		// ****(2) перебор каждого ключа сообщения + дальнейшее прослушивание на новые сообщ.
+				
 				(snapshot) in
 				let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
 				
-				
-				messagesRef.observeSingleEvent(of: .value, with: { 								// (3) получение данных конкретного сообщения
+				messagesRef.observeSingleEvent(of: .value, with: { //****(3) получение данных конкретного сообщения
 					(snapshot) in
 					curCount += 1
 					if (curCount == 1 && self.lastKey == nil){
@@ -360,14 +349,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 					
 					let message = Message(dictionary: dictionary)
 					// message.setValuesForKeys(dictionary)
-					
 					self.messages.append(message)
-					
-					// нужна ли сортировка????
-//					self.messages.sort(by: {
-//						(message1, message2) -> Bool in
-//						return (message1.timestamp?.intValue)! < (message2.timestamp?.intValue)!
-//					})
 					
 					//  обновляем таблицу только после получения всех сообщений и последюущих (если будут)
 					if curCount >= allCount {
@@ -378,49 +360,72 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				
 			}, withCancel: nil)
 			
-			self.disposeVar = (userMessagesRef, handler)
+			self.disposeVar1 = (userMessagesRef, handler)
 		}
 	}
 
 	
 	
 	
+	/// пересчитываем последний ключ базы, с которого начинать подгружать более раннее сообщения
+	private func recountLastKey(currentKey:String) -> String? {
+		
+		if let currentPosition = allMessagesKeyList.index(of: currentKey){
+			var startPosition = currentPosition - 1
+			
+			// если это будет последняя подгрузка (0 тут никогда не будет)
+			if startPosition <= maxMessagesPerUpdate{
+				allFetched = true
+				trancheCount = UInt(startPosition) + 1
+				collectionView?.refreshControl?.endRefreshing()
+				collectionView?.refreshControl = nil
+			}
+			if startPosition < 0 {
+				startPosition += 1
+				allFetched = true
+			}
+			return allMessagesKeyList[startPosition]
+		}
+		return nil
+	}
+	
 
 	
 	
-	////////////////////////
-	private func loadLast(){
+	/// вторичное получение сообщений (подгрузка давних)
+	@objc private func loadOldMessages(){
 		
-		let allCount:UInt = 5
+		if allFetched {
+			collectionView?.refreshControl?.endRefreshing()
+			return
+		}
 		var curCount:UInt = 0
 		var tempArr = [Message]()
+		lastKey = recountLastKey(currentKey: lastKey)
 		
-		globalPath
+		
+		let handler = globalPath
 			.queryOrderedByKey()
 			.queryEnding(atValue: lastKey)
-			.queryLimited(toLast: allCount)
+			.queryLimited(toLast: trancheCount)
 			.observe(.childAdded, with: {		// (2) перебор каждого ключа сообщения
 			
 			(snapshot) in
 			let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
 			
-			
 			messagesRef.observeSingleEvent(of: .value, with: { 						// (3) получение данных конкретного сообщения
 				(snapshot) in
 				curCount += 1
 				if (curCount == 1){
-					print("lastKey = \(self.lastKey)")
-					self.lastKey = snapshot.key // сохраняем ключ первого из последних 5 сообщ.
+					self.lastKey = snapshot.key // сохраняем ключ первого из последних N сообщ.
 				}
 				
 				guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
-				
 				let message = Message(dictionary: dictionary)
-				
 				tempArr.append(message)
 				
 				//  обновляем таблицу только после получения всех сообщений и последюущих (если будут)
-				if curCount >= allCount {
+				if curCount >= self.trancheCount {
 					self.messages = tempArr + self.messages
 					self.updateCollectionView(prependToBegin: true)
 				}
@@ -428,82 +433,29 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 			}, withCancel: nil)
 			
 		}, withCancel: nil)
+		disposeVar2 = (globalPath, handler)
 	}
 	
 	
 	
 	
-	
-	
-	/// получаем сообщения с БД + добавляем слушатель на новые
-	private func observeMessages33(){ // РЕЗЕРВНАЯ
-		
-		guard let uid = Auth.auth().currentUser?.uid, let toID = user?.id else { return }
-		
-		let userMessagesRef = Database.database().reference().child("user-messages").child(uid).child(toID) // ссылка на список сообщений
-		var allCount:UInt = 0
-		var curCount:UInt = 0
-		
-		userMessagesRef.queryLimited(toLast: 5).observeSingleEvent(of: .value) {			  // (1) получение списка всех сообщений юзера
-			(snapshot) in
-			allCount = snapshot.childrenCount
-			print("snapshot = \(snapshot)")
-			
-			if allCount == 0{
-				self.collectionView?.refreshControl?.endRefreshing()
-				self.collectionView?.refreshControl = nil
-			}
-			
-			let handler = userMessagesRef.queryLimited(toLast: 5).observe(.childAdded, with: { // (2) перебор каждого ключа сообщения
-				(snapshot) in
-				let messagesRef = Database.database().reference().child("messages").child(snapshot.key) // ссылка на сами сообщения
-				
-				
-				messagesRef.observeSingleEvent(of: .value, with: { 								// (3) получение данных конкретного сообщения
-					(snapshot) in
-					curCount += 1
-					
-					guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
-					
-					let message = Message(dictionary: dictionary)
-					// message.setValuesForKeys(dictionary)
-					
-					self.messages.append(message)
-					
-					// нужна ли сортировка????
-					self.messages.sort(by: {
-						(message1, message2) -> Bool in
-						return (message1.timestamp?.intValue)! < (message2.timestamp?.intValue)!
-					})
-					
-					//  обновляем таблицу только после получения всех сообщений и последюущих (если будут)
-					if curCount >= allCount {
-						self.updateCollectionView()
-					}
-					
-				}, withCancel: nil)
-				
-			}, withCancel: nil)
-			
-			self.disposeVar = (userMessagesRef, handler)
-		}
-	}
+
 	
 	
 	/// умная обновлялка collectionView и его источника
 	// prependToBegin = true подгружаем начальные (давние) сообщения
 	private func updateCollectionView(prependToBegin:Bool = false){
-		// если это загрузка всего диалога
+		
+		// если это загрузка всего диалога или подгрузка старых вначало
 		if !primaryDataloaded || prependToBegin {
-			smartSort()
 			DispatchQueue.main.async {
+				self.smartSort()
+				self.collectionView?.refreshControl?.endRefreshing()
 				self.collectionView?.reloadData()
 				if !prependToBegin {
 					self.collectionView?.scrollToLast(animated: false)
 				}
 				self.primaryDataloaded = true
-				self.collectionView?.refreshControl?.endRefreshing()
-				self.collectionView?.refreshControl = nil
 			}
 		}
 		// если это обновление путем добавления сообщений
@@ -562,7 +514,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
-		// let caretSymbol:String = " "
 		
 		// сегодня
 		if Calendar.current.isDateInToday(convertedDate){
@@ -595,8 +546,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-
-	
 	
 	@objc private func onChatBackingClick(){
 		growingInputView.inputTextField.resignFirstResponder()
@@ -624,8 +573,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	
-
 	
 	
 	/// клик на картинку (переслать фотку)
@@ -744,7 +691,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				}
 			})
 		}
-		
 		uploadTask.observe(.progress) {
 			(snapshot) in
 			if let currentCount = snapshot.progress?.completedUnitCount, let totalCount = snapshot.progress?.totalUnitCount{

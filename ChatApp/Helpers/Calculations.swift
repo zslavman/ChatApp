@@ -30,6 +30,19 @@ struct Calculations {
 	
 	
 	
+	/// получаем класс со строки
+	static func stringClassFromString(className: String) -> AnyClass! {
+		
+		/// get namespace
+		let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
+		
+		let cls: AnyClass = NSClassFromString("\(namespace).\(className)")!
+		
+		return cls
+	}
+	
+	
+	
 	
 	
 }
