@@ -35,6 +35,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		static let cell_ID_map:String 		= "cell_ID_map"
 		static let cell_ID_image:String 	= "cell_ID_image"
 	}
+	private let headerReusableView:String 	= "sectionHeader"
 	
 	private var messages:[Message] = []
 	private var containerViewBottomAnchor:NSLayoutConstraint?
@@ -43,7 +44,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	private var flag:Bool = false 			// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
 	private var dataArray = [[Message]]() 	// двумерный массив сообщений в секциях
 	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
-	private let headerReusableView:String = "sectionHeader"
 	
 	private var primaryDataloaded:Bool = false // первичная загрузка данных таблицы
 	private var refreshControl: UIRefreshControl!
@@ -60,7 +60,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	private var globalPath:DatabaseReference! 		// ссылка на список сообщений
 	private var allMessagesKeyList = [String]()
 	private var allFetched:Bool = false 			// флаг, что все сообщения диалога получены
-	private lazy var trancheCount:UInt = maxMessagesPerUpdate			 	// сколько сообщений ожидается получить при вторичной подгрузке
+	private lazy var trancheCount:UInt = maxMessagesPerUpdate	// сколько сообщений ожидается получить при вторичной подгрузке
 	
 	
 	
@@ -176,7 +176,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-		let currentOffset = scrollView.contentOffset.y;
+		//	let currentOffset = scrollView.contentOffset.y;
 		// let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height;
 		//		let dif = currentOffset - maximumOffset
 		//		print("currentOffset = \(currentOffset)")

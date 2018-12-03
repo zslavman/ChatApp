@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		46EDE0D18A6394E86D550EB2 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
 		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
-		5637FD1321B357270015CAAF /* AAA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1221B357270015CAAF /* AAA.swift */; };
 		5637FD1521B365620015CAAF /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
 		5639652A21924CA000691334 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639652921924CA000691334 /* UserCell.swift */; };
@@ -23,7 +22,6 @@
 		565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565BEE8321B0A48A0028D474 /* Video_Cell.swift */; };
 		566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDA82186F8D50053F4A0 /* AppDelegate.swift */; };
 		566BEDAB2186F8D50053F4A0 /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDAA2186F8D50053F4A0 /* MessagesController.swift */; };
-		566BEDAE2186F8D50053F4A0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDAC2186F8D50053F4A0 /* Main.storyboard */; };
 		566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDAF2186F8D70053F4A0 /* Assets.xcassets */; };
 		566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */; };
 		566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDBB2186FFF00053F4A0 /* LoginController.swift */; };
@@ -39,7 +37,6 @@
 /* Begin PBXFileReference section */
 		11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
 		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
-		5637FD1221B357270015CAAF /* AAA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AAA.swift; sourceTree = "<group>"; };
 		5637FD1421B365620015CAAF /* Calculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculations.swift; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5639652921924CA000691334 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
@@ -54,7 +51,6 @@
 		566BEDA52186F8D50053F4A0 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		566BEDA82186F8D50053F4A0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		566BEDAA2186F8D50053F4A0 /* MessagesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
-		566BEDAD2186F8D50053F4A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		566BEDAF2186F8D70053F4A0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		566BEDB22186F8D70053F4A0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		566BEDB42186F8D70053F4A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -147,9 +143,8 @@
 				563D17862189E320000DFAD2 /* Model */,
 				566BEDBA2186FF940053F4A0 /* Controller */,
 				566BEDA82186F8D50053F4A0 /* AppDelegate.swift */,
-				566BEDAC2186F8D50053F4A0 /* Main.storyboard */,
-				566BEDAF2186F8D70053F4A0 /* Assets.xcassets */,
 				566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */,
+				566BEDAF2186F8D70053F4A0 /* Assets.xcassets */,
 				5637D90D21A36C9D00BA9717 /* pipk.mp3 */,
 				566BEDB42186F8D70053F4A0 /* Info.plist */,
 				56536F8B2189113F0087064D /* GoogleService-Info.plist */,
@@ -165,7 +160,6 @@
 				566BEDBB2186FFF00053F4A0 /* LoginController.swift */,
 				563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */,
 				56BEAB122191BD960008AF6B /* ChatLogController.swift */,
-				5637FD1221B357270015CAAF /* AAA.swift */,
 				56A044A021B025F70084D7FD /* LocationManaging.swift */,
 			);
 			path = Controller;
@@ -268,7 +262,6 @@
 				5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */,
 				56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */,
 				566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */,
-				566BEDAE2186F8D50053F4A0 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,21 +337,12 @@
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
 				5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */,
 				5637FD1521B365620015CAAF /* Calculations.swift in Sources */,
-				5637FD1321B357270015CAAF /* AAA.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		566BEDAC2186F8D50053F4A0 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				566BEDAD2186F8D50053F4A0 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

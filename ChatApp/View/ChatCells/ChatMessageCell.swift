@@ -10,7 +10,6 @@ import UIKit
 import Firebase
 
 
-
 class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate будет ругатся на компас!
 	
 	public var chatlogController:ChatLogController?
@@ -26,8 +25,6 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	
 	public static let cornRadius:CGFloat = 12
 
-	
-	
 	public let textView: UITextView = {
 		let label = UITextView()
 		label.text = "Опять три рубляя!!"
@@ -188,16 +185,6 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 
 
 	
-	
-
-	
-//	override func prepareForReuse() {
-//		super.prepareForReuse()
-//	}
-
-	
-	
-
 	/// преобразует секунды в формат ММ:СС
 	public static func convertTime(seconds:Double) -> String{
 		let intValue = Int(seconds)

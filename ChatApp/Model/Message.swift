@@ -26,6 +26,8 @@ class Message: NSObject {
 	public var geo_lat:NSNumber?
 	public var geo_lon:NSNumber?
 	
+	public var unread:Bool?
+	
 	
 	
 	public func chatPartnerID() -> String? {
@@ -53,6 +55,8 @@ class Message: NSObject {
 		
 		geo_lat 	= dictionary["geo_lat"] as? NSNumber
 		geo_lon 	= dictionary["geo_lon"] as? NSNumber
+		
+		unread 		= dictionary["unread"] as? Bool
 	}
 	
 	

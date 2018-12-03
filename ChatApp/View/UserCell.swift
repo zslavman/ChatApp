@@ -24,6 +24,8 @@ class UserCell: UITableViewCell {
 		imageView.contentMode = .scaleAspectFit
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.layer.cornerRadius = 26 // половина величины констрейнта ширины
+		imageView.layer.borderWidth = 0.6
+		imageView.layer.borderColor = offLineColor.cgColor
 		imageView.layer.masksToBounds = true
 		return imageView
 	}()
@@ -49,6 +51,30 @@ class UserCell: UITableViewCell {
 		label.numberOfLines = 0
 		return label
 	}()
+	
+	public let newMessBack:NeverClearView = {
+		let point = NeverClearView()
+		point.backgroundColor = .red
+		point.layer.cornerRadius = 9
+		point.layer.borderWidth = 2
+		point.layer.borderColor = UIColor.white.cgColor
+		point.layer.masksToBounds = true
+		point.translatesAutoresizingMaskIntoConstraints = false
+		point.isHidden = true
+		return point
+	}()
+	
+	public let newMessCount:UILabel = {
+		let label = UILabel()
+		label.text = "1"
+		label.font = UIFont.boldSystemFont(ofSize: 12)
+		label.textColor = UIColor.white
+		label.textAlignment = .center
+		label.translatesAutoresizingMaskIntoConstraints = false
+		return label
+	}()
+	
+	
 	public var iTag:String!
 	public var userID:String? // для идентификации, кто сейчас в ячейке
 	
@@ -63,28 +89,41 @@ class UserCell: UITableViewCell {
 		addSubview(profileImageView)
 		addSubview(timeLabel)
 		addSubview(onlinePoint)
+		addSubview(newMessBack)
+		newMessBack.addSubview(newMessCount)
 		
 		// constraints: x, y, width, height
-		profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive 	= true
-		profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive 		= true
-		profileImageView.widthAnchor.constraint(equalToConstant: 52).isActive 					= true
-		profileImageView.heightAnchor.constraint(equalToConstant: 52).isActive 					= true
+		NSLayoutConstraint.activate([
+			profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8),
+			profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+			profileImageView.widthAnchor.constraint(equalToConstant: 52),
+			profileImageView.heightAnchor.constraint(equalToConstant: 52),
+			
+			timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10),
+			timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 22),
+			timeLabel.widthAnchor.constraint(equalToConstant: 70),
+			
+			onlinePoint.centerXAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: -2),
+			onlinePoint.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: -8),
+			onlinePoint.widthAnchor.constraint(equalToConstant: 12),
+			onlinePoint.heightAnchor.constraint(equalToConstant: 12),
+			
+			newMessBack.centerXAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: -2),
+			newMessBack.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 8),
+			newMessBack.widthAnchor.constraint(equalToConstant: 18),
+			newMessBack.heightAnchor.constraint(equalToConstant: 18),
+			
+			newMessCount.centerXAnchor.constraint(equalTo: newMessBack.centerXAnchor),
+			newMessCount.centerYAnchor.constraint(equalTo: newMessBack.centerYAnchor)
+		])
 		
-		timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive 	= true
-		timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 22).isActive 			= true
-		timeLabel.widthAnchor.constraint(equalToConstant: 70).isActive 							= true
-		
-		onlinePoint.centerXAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: -2).isActive = true
-		onlinePoint.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: -8).isActive = true
-		onlinePoint.widthAnchor.constraint(equalToConstant: 12).isActive = true
-		onlinePoint.heightAnchor.constraint(equalToConstant: 12).isActive = true
 	}
 	
 	
 	
 	
 	
-	
+
 	
 	// фикс заeзжания текста под фотку профиля
 	override func layoutSubviews() {
@@ -129,7 +168,6 @@ class UserCell: UITableViewCell {
 				}
 			}
 		}
-		
 		let str:String?
 		if msg.text != nil {
 			str = msg.text
@@ -146,7 +184,7 @@ class UserCell: UITableViewCell {
 		if let seconds = msg.timestamp?.doubleValue{
 			timeLabel.text = UserCell.convertTimeStamp(seconds: seconds, shouldReturn: true)
 		}
-		
+		newMessBack.isHidden = false
 	}
 	
 

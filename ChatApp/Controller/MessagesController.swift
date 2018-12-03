@@ -95,7 +95,6 @@ class MessagesController: UITableViewController {
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		
 		let message = messages[indexPath.row]
-
 		if let partnerID = message.chatPartnerID(){
 			refUserMessages_original.child(uid).child(partnerID).removeValue {
 				(error, ref) in
@@ -138,7 +137,7 @@ class MessagesController: UITableViewController {
 			drawLoading(text: status.nomessages.rawValue)
 		}
 		
-		tableView.deleteRows(at: [indexPath], with: .automatic)
+		tableView.deleteRows(at: [indexPath], with: .right)
 	}
 		
 	
@@ -264,13 +263,14 @@ class MessagesController: UITableViewController {
 				var maxCount:UInt = 0
 				var currentCount:UInt = 0
 				if dialogsLoadedCount == dialogsStartCount {
-					maxCount = snapshot.childrenCount
+					// maxCount = snapshot.childrenCount
+					maxCount = 9
 				}
 				//***********
 
 
 				// получаем ID сообщения внутри диалога (цикл из сообщений)
-				let listener1 = ref_DialogforEachOtherUser.observe(.childAdded, with: {
+				let listener1 = ref_DialogforEachOtherUser.queryLimited(toLast: 9).observe(.childAdded, with: {
 					(snapshot) in
 					let messageID = snapshot.key
 					
@@ -292,13 +292,14 @@ class MessagesController: UITableViewController {
 							// self.attemptReloadofTable()
 							
 							// если это сообщение отправил owner или собеседник с которым сейчас чат, звук не проигрываем
-							let fromWho = dictionary["fromID"] as? String
+							let fromWho = (dictionary["fromID"] as? String)!
 							if fromWho != self.uid {
 								if fromWho != self.goToChatWithID && fromWho != self.goToChatWithID{
 									self.playSoundFile("pipk")
 								}
 								if self.goToChatWithID == nil {
 									// TODO: выделять ячейку серым (аля непрочитанные сообщ.)
+									self.countUnreadMessages(userID: fromWho, count: 1)
 								}
 							}
 							// запуск обновления таблицы первый раз
@@ -322,6 +323,9 @@ class MessagesController: UITableViewController {
 				
 				let listener2 = ref_forEachOtherUser.observe(.value, with: {
 					(snapshot) in
+					
+					guard self.allowIncomingSound else { return }
+					
 					// в массиве sender ищем юзера который пришел в snapshot'e
 					if let dict = snapshot.value as? [String:AnyObject] {
 						
@@ -387,6 +391,9 @@ class MessagesController: UITableViewController {
 			DispatchQueue.main.async {
 				self.tableView.reloadData()
 				print("Обновили таблицу!")
+				if firstTime {
+					self.setUnread()
+				}
 			}
 		}
 		//****************************
@@ -431,11 +438,36 @@ class MessagesController: UITableViewController {
 		else {
 			reloadTable()
 		}
+	}
+	
+	
+	
+	
+	private var unreadDict = [String:Int]()
+	/// калькуляция непрочитанных сообщений каждого диалогера
+	private func countUnreadMessages(userID:String, count:Int){
 		
-		
+		if unreadDict.keys.contains(userID){
+			unreadDict[userID]! += count
+		}
+		else {
+			unreadDict[userID] = count
+		}
+	}
+	
+	
+	
+	private func setUnread(){
+		messages.forEach {
+			(mes) in
+			if unreadDict.keys.contains(mes.chatPartnerID()!){
+				
+			}
+		}
 		
 		
 	}
+	
 	
 	
 	

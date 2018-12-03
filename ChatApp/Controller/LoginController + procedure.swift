@@ -45,7 +45,6 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
 			selectedImage = originalImage
 		}
-		
 		if selectedImage != nil {
 			profileImageView.image = selectedImage
 			self.selectedImage = selectedImage
@@ -145,7 +144,6 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 					print("удачно сохранили картинку")
 				})
 			}
-			
 		}
 	}
 	
