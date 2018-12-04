@@ -55,7 +55,7 @@ class Image_Cell: ChatMessageCell {
 	
 	
 	/// вызывается только из ChatLogController
-	override func setupCell(linkToParent: ChatLogController, message: Message, indexPath: IndexPath) {
+	override func setupCell(linkToParent: ChatController, message: Message, indexPath: IndexPath) {
 		super.setupCell(linkToParent: linkToParent, message: message, indexPath: indexPath)
 		
 		// загружаем картинку сообщения
@@ -78,6 +78,8 @@ class Image_Cell: ChatMessageCell {
 		sendTime_TF.layer.shadowOffset = CGSize(width: 0, height: 0.5)
 		sendTime_TF.layer.shadowOpacity = 1
 		sendTime_TF.textColor = .white
+		
+		
 		
 		bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 2/3
 	}

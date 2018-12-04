@@ -12,8 +12,8 @@ import Firebase
 
 class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate будет ругатся на компас!
 	
-	public var chatlogController:ChatLogController?
-	internal var message:Message?
+	public var chatlogController:ChatController?
+	public var message:Message?
 	
 	public static let blueColor = UIColor(r: 215, g: 235, b: 255)
 	public static let grayColor = UIColor(r: 239, g: 239, b: 238)
@@ -24,6 +24,7 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	public var bubbleLeftAnchor: NSLayoutConstraint?
 	
 	public static let cornRadius:CGFloat = 12
+//	private let galka = "\u{1F50A}"
 
 	public let textView: UITextView = {
 		let label = UITextView()
@@ -60,7 +61,6 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		return bubble
 	}()
 
-	
 	public let profileImageView: UIImageView = {
 		let iView = UIImageView()
 		iView.image = UIImage(named: "default_profile_image")
@@ -71,34 +71,42 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		return iView
 	}()
 	
-	public let sendTime_TF:UITextView = {
-		let label = UITextView()
-		label.text = "18:59"
+	public let sendTime_TF:UILabel = {
+		let label = UILabel()
 		label.textAlignment = .right
 		label.font = UIFont.systemFont(ofSize: 10)
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.backgroundColor = UIColor.clear
 		label.textColor = grayTextColor
-		label.isEditable = false
-		label.isScrollEnabled = false
 		return label
 	}()
 	
-	
+	public let checkMark:UILabel = {
+		let label = UILabel()
+		label.text = "\u{2713}"
+		label.textAlignment = .right
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.font = UIFont.boldSystemFont(ofSize: 23)
+		label.textColor = #colorLiteral(red: 0.368880786, green: 0.8189723923, blue: 0.2133175089, alpha: 1).withAlphaComponent(0.6)
+		label.backgroundColor = UIColor.clear
+//		label.isHidden = true
+		label.isUserInteractionEnabled = false
+		return label
+	}()
 
-	
+
 
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-		
+
 		addSubview(bubbleView)
 		addSubview(textView)
 		addSubview(sendTime_TF)
 		addSubview(profileImageView)
+		addSubview(checkMark)
 		
 		NSLayoutConstraint.activate([
-			
 			// для фото собеседника
 			profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
 			profileImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
@@ -108,8 +116,10 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			// для времени отправки
 			sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -8),
 			sendTime_TF.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -15),
-			sendTime_TF.widthAnchor.constraint(equalToConstant: 80),
-			sendTime_TF.heightAnchor.constraint(equalToConstant: 20),
+			
+			// зеленая галочка
+			checkMark.topAnchor.constraint(equalTo: sendTime_TF.topAnchor, constant: -9),
+			checkMark.rightAnchor.constraint(equalTo: sendTime_TF.leftAnchor),
 			
 			// для текста сообщения
 			textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8),
@@ -132,21 +142,14 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	}
 	
 
-//	override var isSelected: Bool {
-//		get {
-//			return super.isSelected
-//		}
-//		set {
-//			if newValue {
-//				super.isSelected = true
-//				print("selected")
-//			}
-//			else if newValue == false {
-//				super.isSelected = false
-//				print("deselected")
-//			}
-//		}
-//	}
+
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		
+		message = nil
+		backgroundColor = nil
+		checkMark.isHidden = true
+	}
 
 	
 	
@@ -157,7 +160,7 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	
 	
 	/// вызывается только из ChatLogController
-	public func setupCell(linkToParent:ChatLogController, message:Message, indexPath:IndexPath){
+	public func setupCell(linkToParent:ChatController, message:Message, indexPath:IndexPath){
 		
 		chatlogController = linkToParent
 		self.message = message
@@ -190,15 +193,48 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		
 		// изменим ширину фона сообщения (высота же определяется в ChatLogController sizeForItemAt)
 		if let str = message.text{
-			let estWidth = linkToParent.estimatedFrameForText(text: str).width + 30
-			bubbleWidthAnchor?.constant = estWidth < 60 ? 60 : estWidth
+			let estWidth = Calculations.estimatedFrameForText(text: str).width + 30
+			bubbleWidthAnchor?.constant = estWidth < 60 ? 70 : estWidth
 		}
 		
-//		isSelected = !message.readStatus!
+		// если это исходящее сообщ. - показываем статус прочитанности
+//		if message.fromID == Auth.auth().currentUser?.uid && !message.readStatus! {
+//			backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
+//		}
+//		else {
+//			backgroundColor = nil
+//		}
 		
+		// если это исходящее сообщ. - показываем статус прочитанности
+		if message.fromID == Auth.auth().currentUser?.uid {
+			checkMark.isHidden = false
+			if !message.readStatus! {
+				checkMark.textColor = ChatMessageCell.grayTextColor.withAlphaComponent(0.1)
+			}
+			else {
+				setToGreen()
+			}
+		}
+		else{
+			checkMark.isHidden = true
+			if !message.readStatus! {
+				setBackgroundForFreshMess()
+			}
+		}
+	}
+		
+	
+	
+	
+	
+
+	public func setToGreen(){
+		checkMark.textColor = #colorLiteral(red: 0.368880786, green: 0.8189723923, blue: 0.2133175089, alpha: 1).withAlphaComponent(0.6)
 	}
 
-
+	public func setBackgroundForFreshMess(){
+		backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
+	}
 
 	
 	

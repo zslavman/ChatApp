@@ -142,6 +142,20 @@ struct Calculations {
 	}
 	
 	
+	
+	
+	/// подсчет ожидаемых размеров текстового поля
+	static func estimatedFrameForText(text: String) -> CGRect{
+		let siz = CGSize(width: UIScreen.main.bounds.width * 2/3, height: .infinity)
+		let opt = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+		
+		return NSString(string: text).boundingRect(with: siz, options: opt, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 16)], context: nil)
+	}
+	
+	
+	
+	
+	
 }
 
 

@@ -1,5 +1,5 @@
 //
-//  ChatLogController.swift
+//  ChatController.swift
 //  ChatApp
 //
 //  Created by Zinko Vyacheslav on 06.11.2018.
@@ -8,13 +8,11 @@
 
 import UIKit
 import Firebase
-import MobileCoreServices
-import AVFoundation
 import CoreLocation
 
 import AVKit
 
-class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 	
 	public var user:User? {
 		didSet{
@@ -23,8 +21,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		}
 	}
 	
-	private lazy var growingInputView: ChatInputView = {
-		let inputView = ChatInputView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
+	internal lazy var growingInputView: InputAccessory = {
+		let inputView = InputAccessory(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
 		inputView.chatLogController = self
 		return inputView
 	}()
@@ -49,11 +47,16 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}
 	private let headerReusableView:String 	= "sectionHeader"
 	
+	internal var startingFrame:CGRect?
+	internal var blackBackgroundView:UIView?
+	internal var originalImageView:UIView?
+	internal var orig:UIView?
+	
 	private var messages:[Message] = []
 	private var containerViewBottomAnchor:NSLayoutConstraint?
 	private var disposeVar1:(DatabaseReference, UInt)!
 	private var disposeVar2:(DatabaseReference, UInt)!
-	private var flag:Bool = false 			// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
+	internal var flag:Bool = false 			// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
 	private var dataArray = [[Message]]() 	// двумерный массив сообщений в секциях
 	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
 	
@@ -72,7 +75,10 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	private var globalPath:DatabaseReference! 		// ссылка на список сообщений
 	private var allMessagesKeyList = [String]()
 	private var allFetched:Bool = false 			// флаг, что все сообщения диалога получены
-	private lazy var trancheCount:UInt = maxMessagesPerUpdate	// сколько сообщений ожидается получить при вторичной подгрузке
+	private lazy var trancheCount:UInt = maxMessagesPerUpdate // сколько сообщений ожидается получить при вторичной подгрузке
+	
+	private var statusListeners = [UInt:DatabaseReference]() 	// для диспоза слушателей
+	
 	
 	
 	
@@ -168,6 +174,9 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				}
 			}
 		}
+		for (key, ref) in statusListeners {
+			ref.removeObserver(withHandle: key)
+		}
 	}
 	
 	
@@ -203,11 +212,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 	
 	
-	override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-		if indexPath.item == 0 && primaryDataloaded{
-		//	print("начало списка...")
-		}
-	}
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -250,8 +254,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				self.scrollingDownBttn.alpha = 0
 			}
 		}
-		
 	}
+	
 	
 	
 	
@@ -262,7 +266,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		
 		// получаем ожидаемую высоту
 		if let text = message.text {
-			hei = estimatedFrameForText(text: text).height + 20 + 10 //(10 - для времени)
+			hei = Calculations.estimatedFrameForText(text: text).height + 20 + 10 //(10 - для времени)
 		}
 		else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
 			// h1/w1 = h2/w2  ->  h1 = h2/w2 * w1
@@ -312,15 +316,6 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 
 
 	
-	/// подсчет ожидаемых размеров текстового поля
-	public func estimatedFrameForText(text: String) -> CGRect{
-		let siz = CGSize(width: UIScreen.main.bounds.width * 2/3, height: .infinity)
-		let opt = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-		
-		return NSString(string: text).boundingRect(with: siz, options: opt, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 16)], context: nil)
-	}
-	
-
 
 	
 	
@@ -372,20 +367,25 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 					}
 					
 					guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
-					
 					let message = Message(dictionary: dictionary)
-					// message.setValuesForKeys(dictionary)
 					
+					// если это исходящее сообщ., и оно не прочтено - добавляем слушатели на прочтение
+					if message.fromID == uid && !message.readStatus!{
+						let refStatus = Database.database().reference().child("messages").child(snapshot.key)
+						let number = refStatus.observe(.value, with: {
+							(snapShot) in
+							self.readStatusUpdate(snapshot: snapShot)
+						})
+						self.statusListeners[number] = refStatus
+					}
 					
-					
-					// если это сообщение нам (а не от нас), то отправляем ответ что мы его прочли (только в ветку собеседника!)
-					if message.fromID != uid{
+					// если это входящее сообщ., то отправляем ответ что мы его прочли (только в ветку собеседника!)
+					else if message.fromID != uid{
 						// обновляем статус о прочтении в списке сообщений (в ветке собеседника)
 						Database.database().reference().child("user-messages").child(message.fromID!).child(uid).child(savedSnap.key).setValue(1)
 						// обновляем статус о прочтении в самом сообщении
 						Database.database().reference().child("messages").child(snapshot.key).child("readStatus").setValue(true)
 					}
-					
 
 					self.messages.append(message)
 					
@@ -402,6 +402,63 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		}
 	}
 
+	
+	private var counter:Int = 0
+	
+	/// обновление статуса сообщения в видимых ячейках + обновление источника
+	private func readStatusUpdate(snapshot:DataSnapshot){
+		
+		// проверяем, чтоб флаг readStatus == true (при установке слушателя тоже зайдет, когда readStatus == false)
+		guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+		let tempMess = Message(dictionary: dictionary)
+		guard tempMess.readStatus! else { return }
+		
+		// находим слушателя в словаре и удаляем
+		let listenerRef = Database.database().reference().child("messages").child(snapshot.key)
+		
+		for (element) in statusListeners{
+			if element.value.description() == listenerRef.description{
+				element.value.removeObserver(withHandle: element.key)
+				statusListeners.removeValue(forKey: element.key)
+			}
+		}
+		
+		// обновляем источники
+		messages.forEach {
+			(mes:Message) in
+			if mes.self_ID == tempMess.self_ID! {
+				mes.readStatus = true
+			}
+		}
+		dataArray.forEach {
+			(mes:[Message]) in
+			mes.forEach({
+				(insideMes:Message) in
+				if insideMes.self_ID == tempMess.self_ID! {
+					insideMes.readStatus = true
+				}
+			})
+		}
+		
+		// проверяем, нет ли в видимых ячейках сообщения со снапшотом snapshot
+//		collectionView?.visibleCells.forEach({
+//			(cell) in
+//			if (cell as! ChatMessageCell).message?.self_ID == tempMess.self_ID!{
+//				(cell as! ChatMessageCell).setToGreen()
+//			}
+//		})
+		
+		counter += 1
+		collectionView?.reloadData()
+	}
+	
+	
+	
+	override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		print("indexPath = \(indexPath.row)")
+	}
+	
+	
 	
 	
 	
@@ -492,6 +549,11 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 				self.collectionView?.reloadData()
 				if !prependToBegin {
 					self.collectionView?.scrollToLast(animated: false)
+//					if self.counter > 0 {
+//						DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
+//							self.collectionView?.reloadData()
+//						})
+//					}
 				}
 				self.primaryDataloaded = true
 			}
@@ -545,12 +607,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}
 	
 	
-	
 
-	
-	
-	
-	
 	@objc private func onChatBackingClick(){
 		growingInputView.inputTextField.resignFirstResponder()
 		// UIApplication.shared.sendAction(#selector(resignFirstResponder), to: nil, from: nil, for: nil)
@@ -578,168 +635,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	
-	
-	/// клик на картинку (переслать фотку)
-	@objc public func onUploadClick(){
-		
-		let imagePickerController = UIImagePickerController()
-		
-		imagePickerController.allowsEditing = true
-		imagePickerController.delegate = self
-		// разрешаем выбирать видеофайлы из библиотеки
-		imagePickerController.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
-		
-		flag = true
-		present(imagePickerController, animated: true, completion: nil)
-	}
-	
-	
-	
-	
-	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-		
-		var permission:Bool = true
-		flag = false
-		
-		// если выбрали видеофайл
-		if let videoURL = info[UIImagePickerControllerMediaURL] as? URL{
-			if let bytes = NSData(contentsOf: videoURL)?.length{ // в обычной Data нет свойства length
-				let MB = (bytes / 1024) / 1000
-				print("Размер файла = \(MB) МБ")
-				if MB > 10 {
-					permission = false
-				}
-			}
-			if permission {
-				videoSelectedForInfo(videoFilePath: videoURL)
-			}
-		}
-		else { // если выбрали фото
-			imageSelectedForInfo(info: info)
-		}
-		
-		dismiss(animated: true, completion: {
-			if !permission{
-				let message = "Выберите другое видео (не более 10 МБ), или сократите его длительность"
-				let alertController = UIAlertController(title: "Слишком большой файл", message: message, preferredStyle: .alert)
-				let ok = UIAlertAction(title: "Ок", style: .default, handler: nil)
-				alertController.addAction(ok)
-				
-				self.present(alertController, animated: true, completion: nil)
-				return
-			}
-		})
-	}
-	
-	
-	
-	private func imageSelectedForInfo(info:[String: Any]){
-		var selectedImage:UIImage?
-		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
-			selectedImage = editedImage
-		}
-		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
-			selectedImage = originalImage
-		}
-		
-		if let selectedImage = selectedImage {
-			uploadingImageToStorage(image: selectedImage, completion: {
-				(imageUrl) in
-				self.sendMessageWithImage(imageUrl: imageUrl, image: selectedImage)
-			})
-		}
-	}
-	
-	
-	
-	
-	/// Когда выбрали видеофайл для выгрузки
-	///
-	/// - Parameter videoURL: внутренняя ссылка на видео (ссылка ведущя в альбом с видеофайлом)
-	/// - 	restriction: разрешение загружать, если false - не загружаем
-	private func videoSelectedForInfo(videoFilePath:URL){
-		
-		let uniqueImageName = UUID().uuidString
-		let ref = Storage.storage().reference().child("message_videos").child("\(uniqueImageName).mov")
-		
-		let uploadTask = ref.putFile(from: videoFilePath, metadata: nil) {
-			(metadata, error) in
-			if error != nil {
-				print(error!.localizedDescription)
-				return
-			}
-			
-			ref.downloadURL(completion: {
-				(url, errorFromGettinfPicLink) in
-				
-				if let errorFromGettinfPicLink = errorFromGettinfPicLink {
-					print(errorFromGettinfPicLink.localizedDescription)
-					return
-				}
-				if let videoUrl = url?.absoluteString{
-					// нам нужен первый кадр с видео для картинки
-					if let thumbnailImge = self.thumbnailImageForFileURL(fileUrl: videoFilePath){
-						self.uploadingImageToStorage(image: thumbnailImge, completion: {
-							(imageUrl) in
-							
-							let properties:[String:Any] = [
-								"imageWidth"	:thumbnailImge.size.width,
-								"imageHeight"	:thumbnailImge.size.height,
-								"videoUrl"		:videoUrl,
-								"imageUrl"		:imageUrl
-							]
-							self.sendMessage_with_Properties(properties: properties)
-						})
-					}
-				}
-			})
-		}
-		uploadTask.observe(.progress) {
-			(snapshot) in
-			if let currentCount = snapshot.progress?.completedUnitCount, let totalCount = snapshot.progress?.totalUnitCount{
-				let percentComplete = 100 * Double(currentCount) / Double(totalCount)
-				self.navigationItem.title = String(format: "%.0f", percentComplete) + " %"
-			}
-		}
-		uploadTask.observe(.success) {
-			(snapshot) in
-			self.navigationItem.title = self.user?.name
-		}
-	}
-	
-	
-	
-	///  Генерирует картинку первого кадра видеофайла
-	///
-	/// - Parameter fileUrl: путь к видеофайлу на телефоне
-	private func thumbnailImageForFileURL(fileUrl: URL) -> UIImage? {
-		
-		let avasset = AVAsset(url: fileUrl)
-		let imageGenerator = AVAssetImageGenerator(asset: avasset)
-		let cmtime = CMTime(value: 1, timescale: 60)
-		
-		do {
-			let thumbnail_CGImage = try imageGenerator.copyCGImage(at: cmtime, actualTime: nil)
-			return UIImage(cgImage: thumbnail_CGImage)
-		}
-		catch let err{
-			print(err.localizedDescription)
-		}
-		
-		return nil
-	}
-	
-	
-	
-	
-	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		flag = true
-		dismiss(animated: true, completion: nil)
-	}
-	
-	
+
 	
 	
 	/// Загрузка картинки в хранилище
@@ -747,7 +643,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	/// - Parameters:
 	///   - image: сама картинка
 	///   - completion: фукнция которая дернется когда будет загружена картинка и получен на нее URL
-	private func uploadingImageToStorage(image:UIImage, completion: @escaping (_ imageUrl:String) -> Void){
+	internal func uploadingImageToStorage(image:UIImage, completion: @escaping (_ imageUrl:String) -> Void){
+		
 		let uniqueImageName = UUID().uuidString
 		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
 		
@@ -796,17 +693,8 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	}
 	
 	
-	/// сохранение сообщения с картинкой в БД
-	private func sendMessageWithImage(imageUrl: String, image: UIImage){
-		let properties:[String:Any] = [
-			"imageUrl"		:imageUrl,
-			"imageWidth"	:image.size.width,
-			"imageHeight"	:image.size.height
-		]
-		sendMessage_with_Properties(properties: properties)
-	}
-	
-	
+
+
 	
 	
 	///  присоединяем к сообщению required поля и отправляем в БД
@@ -819,11 +707,15 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 		let fromID = Auth.auth().currentUser!.uid
 		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
 		
+		var self_ID = childRef.description().split(separator: "-").last!
+		self_ID = "-" + self_ID
+		
 		var values:[String:Any] = [
 			"toID"		:toID,
 			"fromID"	:fromID,
 			"timestamp"	:timestamp,
-			"readStatus":false
+			"readStatus":false,
+			"self_ID"	:self_ID
 		]
 		
 		// добавляем к словарю values ключ + значения словаря properties (key = $0, value = $1)
@@ -851,102 +743,7 @@ class ChatLogController: UICollectionViewController, UICollectionViewDelegateFlo
 	
 	
 	
-	private var startingFrame:CGRect?
-	private var blackBackgroundView:UIView?
-	private var originalImageView:UIView?
-	
-	private var orig:UIView?
-	
-	/// кастомный зум при клике на отосланную картинку в чате
-	public func performZoomForImageView(imageView: UIImageView){
-		
-		// прячем оригинальное изображение при клике на него
-		originalImageView = imageView
-		originalImageView?.isHidden = true
-		orig = imageView.superview
-		
-		// определяем фрейм картинки для рендера
-		startingFrame = imageView.superview?.convert(imageView.frame, to: nil)
-		
-		// создаем картинку которая будет зумится
-		let zoomingImageView = UIImageView(frame: startingFrame!)
-		zoomingImageView.image = imageView.image
-		zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onZoomedImageClick)))
-		zoomingImageView.isUserInteractionEnabled = true
-		zoomingImageView.layer.cornerRadius = 12
-		zoomingImageView.clipsToBounds = true
-		
-		zoomingImageView.contentMode = .scaleAspectFit
-		zoomingImageView.translatesAutoresizingMaskIntoConstraints = false
-		
-		// находим в иерархии окон нужное окно (куда будем добавлять вьюшку)
-		if let keyWindow = UIApplication.shared.keyWindow {
-			
-			// добавляем чёрный фон
-			blackBackgroundView = UIView(frame: keyWindow.frame)
-			blackBackgroundView?.backgroundColor = .black
-			// начальный альфа для фона (чтоб плавно анимировалось)
-			blackBackgroundView?.alpha = 0
-			
-			keyWindow.addSubview(blackBackgroundView!)
-			keyWindow.addSubview(zoomingImageView)
-			
-			blackBackgroundView?.translatesAutoresizingMaskIntoConstraints = false
-			blackBackgroundView?.topAnchor.constraint(equalTo: keyWindow.topAnchor).isActive 		= true
-			blackBackgroundView?.bottomAnchor.constraint(equalTo: keyWindow.bottomAnchor).isActive 	= true
-			blackBackgroundView?.leftAnchor.constraint(equalTo: keyWindow.leftAnchor).isActive 		= true
-			blackBackgroundView?.rightAnchor.constraint(equalTo: keyWindow.rightAnchor).isActive 	= true
-			
-			zoomingImageView.topAnchor.constraint(equalTo: keyWindow.topAnchor).isActive 		= true
-			zoomingImageView.bottomAnchor.constraint(equalTo: keyWindow.bottomAnchor).isActive 	= true
-			zoomingImageView.leftAnchor.constraint(equalTo: keyWindow.leftAnchor).isActive 		= true
-			zoomingImageView.rightAnchor.constraint(equalTo: keyWindow.rightAnchor).isActive 	= true
-			
-			
-			// *****************
-			// * Блок анимации *
-			// *****************
-			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-				
-				self.blackBackgroundView?.alpha = 1
-				self.growingInputView.alpha = 0 // вьюшка ввода сообщения
-				
-				// по отношению сторон (умножаем коэфф. соотношения сторон на размер известной ширины)
-				let newHeight = self.startingFrame!.height / self.startingFrame!.width * keyWindow.frame.width
-				zoomingImageView.frame = CGRect(x: 0, y: 0, width: keyWindow.frame.width, height: newHeight)
-				zoomingImageView.center = keyWindow.center
-			})
-		}
-	}
-	
 
-	
-
-	@objc private func onZoomedImageClick(tapGesture: UITapGestureRecognizer){
-		
-		if let tapedImageView = tapGesture.view{
-			
-			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-				
-				tapedImageView.frame = self.startingFrame!
-				self.startingFrame = nil
-				self.blackBackgroundView?.alpha = 0
-				self.growingInputView.alpha = 1
-				tapedImageView.layer.cornerRadius = 12
-				tapedImageView.clipsToBounds = true
-			}, completion: {
-				(completed:Bool) in
-				tapedImageView.removeFromSuperview()
-				self.blackBackgroundView = nil
-				self.blackBackgroundView?.removeFromSuperview()
-				self.originalImageView?.isHidden = false
-				self.growingInputView.isHidden = false
-			})
-		}
-	}
-	
-	
-	
 
 	
 	/// воспроизведение видео на нативном плеере в фулскрине

@@ -679,7 +679,7 @@ class MessagesController: UITableViewController {
 		// запоминаем юзера, с которым перешли в чат (для блокировки проигрыв звуков при сообщениях от него)
 		goToChatWithID = user.id!
 		
-		let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+		let chatLogController = ChatController(collectionViewLayout: UICollectionViewFlowLayout())
 		chatLogController.user = user
 		navigationController?.pushViewController(chatLogController, animated: true)
 	}

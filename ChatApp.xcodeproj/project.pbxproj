@@ -12,6 +12,7 @@
 		5637FD1521B365620015CAAF /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
 		5639652A21924CA000691334 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639652921924CA000691334 /* UserCell.swift */; };
+		5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */; };
 		563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */; };
 		563B243B21AE1CE500EEB504 /* WaitScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B243A21AE1CE500EEB504 /* WaitScreen.swift */; };
 		563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */; };
@@ -27,10 +28,10 @@
 		566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDBB2186FFF00053F4A0 /* LoginController.swift */; };
 		5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5680E759218B52D500B9CC3B /* Extensions.swift */; };
 		56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A044A021B025F70084D7FD /* LocationManaging.swift */; };
-		56BEAB132191BD960008AF6B /* ChatLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatLogController.swift */; };
+		56BEAB132191BD960008AF6B /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatController.swift */; };
 		56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D03BEA21B2250600E1688F /* Image_Cell.swift */; };
 		56E5A50A21B2019C0076EB67 /* Map_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E5A50921B2019C0076EB67 /* Map_Cell.swift */; };
-		56FEF3C921A1FD1E00717A48 /* ChatInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3C821A1FD1E00717A48 /* ChatInputView.swift */; };
+		56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */; };
 		56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3CA21A231C500717A48 /* OnlineService.swift */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		5637FD1421B365620015CAAF /* Calculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculations.swift; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		5639652921924CA000691334 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVideoManaging.swift; sourceTree = "<group>"; };
 		563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		563B243A21AE1CE500EEB504 /* WaitScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitScreen.swift; sourceTree = "<group>"; };
 		563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController + procedure.swift"; sourceTree = "<group>"; };
@@ -57,10 +59,10 @@
 		566BEDBB2186FFF00053F4A0 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		5680E759218B52D500B9CC3B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		56A044A021B025F70084D7FD /* LocationManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManaging.swift; sourceTree = "<group>"; };
-		56BEAB122191BD960008AF6B /* ChatLogController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogController.swift; sourceTree = "<group>"; };
+		56BEAB122191BD960008AF6B /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		56D03BEA21B2250600E1688F /* Image_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_Cell.swift; sourceTree = "<group>"; };
 		56E5A50921B2019C0076EB67 /* Map_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map_Cell.swift; sourceTree = "<group>"; };
-		56FEF3C821A1FD1E00717A48 /* ChatInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputView.swift; sourceTree = "<group>"; };
+		56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessory.swift; sourceTree = "<group>"; };
 		56FEF3CA21A231C500717A48 /* OnlineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineService.swift; sourceTree = "<group>"; };
 		A2E4397522028D0D9A51C49E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
 		E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,7 +103,7 @@
 				56E5A50B21B202190076EB67 /* ChatCells */,
 				5639652921924CA000691334 /* UserCell.swift */,
 				563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */,
-				56FEF3C821A1FD1E00717A48 /* ChatInputView.swift */,
+				56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */,
 				563B243A21AE1CE500EEB504 /* WaitScreen.swift */,
 			);
 			path = View;
@@ -159,7 +161,8 @@
 				563EFADF2189D04900F16BF8 /* NewMessageController.swift */,
 				566BEDBB2186FFF00053F4A0 /* LoginController.swift */,
 				563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */,
-				56BEAB122191BD960008AF6B /* ChatLogController.swift */,
+				56BEAB122191BD960008AF6B /* ChatController.swift */,
+				5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */,
 				56A044A021B025F70084D7FD /* LocationManaging.swift */,
 			);
 			path = Controller;
@@ -317,7 +320,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56BEAB132191BD960008AF6B /* ChatLogController.swift in Sources */,
+				56BEAB132191BD960008AF6B /* ChatController.swift in Sources */,
 				563EFAE02189D04900F16BF8 /* NewMessageController.swift in Sources */,
 				56E5A50A21B2019C0076EB67 /* Map_Cell.swift in Sources */,
 				566BEDAB2186F8D50053F4A0 /* MessagesController.swift in Sources */,
@@ -325,11 +328,12 @@
 				565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */,
 				566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */,
 				56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */,
-				56FEF3C921A1FD1E00717A48 /* ChatInputView.swift in Sources */,
+				56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */,
 				5639652A21924CA000691334 /* UserCell.swift in Sources */,
 				563D17882189E351000DFAD2 /* User.swift in Sources */,
 				563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */,
 				56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */,
+				5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */,
 				563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */,
 				56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */,

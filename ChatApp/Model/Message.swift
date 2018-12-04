@@ -12,22 +12,25 @@ import Firebase
 
 class Message: NSObject {
 
-	@objc public var fromID:String?
-	@objc public var toID:String?
-	@objc public var timestamp:NSNumber?
-	@objc public var text:String?
 	
-	@objc public var imageUrl:String?
-	@objc public var imageWidth:NSNumber?
-	@objc public var imageHeight:NSNumber?
+	// @objc - для использования автозаполнялки (экземпляр.setValuesForKeys) переменных класа
 	
-	@objc public var videoUrl:String?
+	public var fromID:String?
+	public var toID:String?
+	public var timestamp:NSNumber?
+	public var text:String?
+	public var self_ID:String?
+	
+	public var imageUrl:String?
+	public var imageWidth:NSNumber?
+	public var imageHeight:NSNumber?
+	
+	public var videoUrl:String?
 	
 	public var geo_lat:NSNumber?
 	public var geo_lon:NSNumber?
 	
 	public var readStatus:Bool?
-	
 	
 	
 	public func chatPartnerID() -> String? {
@@ -42,6 +45,7 @@ class Message: NSObject {
 	init(dictionary: [String:Any]){
 		super.init()
 		
+		self_ID		= dictionary["self_ID"] as? String
 		fromID 		= dictionary["fromID"] as? String
 		toID 		= dictionary["toID"] as? String
 		timestamp 	= dictionary["timestamp"] as? NSNumber

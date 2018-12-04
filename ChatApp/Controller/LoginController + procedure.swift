@@ -13,7 +13,6 @@ import Firebase
 extension LoginController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	
-	
 	@objc public func onProfileClick(){
 		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {

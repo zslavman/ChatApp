@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 
 
-extension ChatLogController:CLLocationManagerDelegate {
+extension ChatController:CLLocationManagerDelegate {
 	
 	
 	

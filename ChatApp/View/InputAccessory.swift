@@ -1,5 +1,5 @@
 //
-//  ChatInputView.swift
+//  InputAccessory.swift
 //  ChatApp
 //
 //  Created by Zinko Vyacheslav on 18.11.2018.
@@ -8,15 +8,15 @@
 
 import UIKit
 
-class ChatInputView: UIView, UITextViewDelegate {
-    
+class InputAccessory: UIView, UITextViewDelegate {
+	
     private let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
-    public var chatLogController:ChatLogController? {
+    public var chatLogController:ChatController? {
         didSet{
             // sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
             sendButton.addTarget(self, action: #selector(onSend), for: UIControlEvents.touchUpInside)
             // uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
-            uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatLogController, action: #selector(ChatLogController.onUploadClick)))
+            uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatLogController, action: #selector(ChatController.onUploadClick)))
         }
     }
     

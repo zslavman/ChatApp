@@ -162,7 +162,7 @@ class Video_Cell: ChatMessageCell {
 	
 	
 	/// вызывается только из ChatLogController
-	override func setupCell(linkToParent: ChatLogController, message: Message, indexPath: IndexPath) {
+	override func setupCell(linkToParent: ChatController, message: Message, indexPath: IndexPath) {
 		super.setupCell(linkToParent: linkToParent, message: message, indexPath: indexPath)
 		
 		if let messageImageUrl = message.imageUrl {

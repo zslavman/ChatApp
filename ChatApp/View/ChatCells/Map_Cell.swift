@@ -101,7 +101,7 @@ class Map_Cell: ChatMessageCell, MKMapViewDelegate {
 	
 	
 	/// вызывается только из ChatLogController
-	override func setupCell(linkToParent: ChatLogController, message: Message, indexPath: IndexPath) {
+	override func setupCell(linkToParent: ChatController, message: Message, indexPath: IndexPath) {
 		super.setupCell(linkToParent: linkToParent, message: message, indexPath: indexPath)
 	
 		bubbleView.backgroundColor = .clear
@@ -135,7 +135,7 @@ class Map_Cell: ChatMessageCell, MKMapViewDelegate {
 		
 		// центрируем карту на заданой точке
 		let coord2D = CLLocationCoordinate2D(latitude: message.geo_lat!.doubleValue, longitude: message.geo_lon!.doubleValue)
-		let viewRegion = MKCoordinateRegionMakeWithDistance(coord2D, ChatLogController.prefferedMapScale, ChatLogController.prefferedMapScale)
+		let viewRegion = MKCoordinateRegionMakeWithDistance(coord2D, ChatController.prefferedMapScale, ChatController.prefferedMapScale)
 		mapView.setRegion(viewRegion, animated: false)
 		
 		let annotation = MKPointAnnotation()
