@@ -385,6 +385,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 						Database.database().reference().child("user-messages").child(message.fromID!).child(uid).child(savedSnap.key).setValue(1)
 						// обновляем статус о прочтении в самом сообщении
 						Database.database().reference().child("messages").child(snapshot.key).child("readStatus").setValue(true)
+//						message.readStatus = true
 					}
 
 					self.messages.append(message)
@@ -403,10 +404,10 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	}
 
 	
-	private var counter:Int = 0
+
 	
-	/// обновление статуса сообщения в видимых ячейках + обновление источника
-	private func readStatusUpdate(snapshot:DataSnapshot){
+	/// обновление статуса исходящего сообщения + обновление источника
+	private func readStatusUpdate(snapshot:DataSnapshot){ // сюда зайдет только после первичной загрузки
 		
 		// проверяем, чтоб флаг readStatus == true (при установке слушателя тоже зайдет, когда readStatus == false)
 		guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
@@ -439,27 +440,51 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				}
 			})
 		}
-		
 		// проверяем, нет ли в видимых ячейках сообщения со снапшотом snapshot
+		// так не обновляются ячейки, которые на 2 выше и ниже выдимых
 //		collectionView?.visibleCells.forEach({
 //			(cell) in
 //			if (cell as! ChatMessageCell).message?.self_ID == tempMess.self_ID!{
 //				(cell as! ChatMessageCell).setToGreen()
 //			}
 //		})
-		
-		counter += 1
 		collectionView?.reloadData()
 	}
 	
 	
 	
-	override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-		print("indexPath = \(indexPath.row)")
+	
+
+	/// задержанная (только 1-й раз) анимация прочтения входящих сообщений (если таковы будут)
+	private func delayedReadStatusUpdate(){
+		
+		var count:Int = 0
+		
+		// обновляем источники
+		messages.forEach {
+			(mes:Message) in
+			if !mes.readStatus! && mes.toID == Auth.auth().currentUser?.uid {
+				mes.readStatus = true
+				count += 1
+			}
+		}
+		dataArray.forEach {
+			(mes:[Message]) in
+			mes.forEach({
+				(insideMes:Message) in
+				if !insideMes.readStatus! && insideMes.toID == Auth.auth().currentUser?.uid {
+					insideMes.readStatus = true
+				}
+			})
+		}
+		if count > 0 {
+			collectionView?.reloadData()
+		}
 	}
 	
 	
 	
+
 	
 	
 	/// пересчитываем последний ключ базы, с которого начинать подгружать более раннее сообщения
@@ -549,11 +574,9 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				self.collectionView?.reloadData()
 				if !prependToBegin {
 					self.collectionView?.scrollToLast(animated: false)
-//					if self.counter > 0 {
-//						DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
-//							self.collectionView?.reloadData()
-//						})
-//					}
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
+						self.delayedReadStatusUpdate()
+					})
 				}
 				self.primaryDataloaded = true
 			}
@@ -565,12 +588,16 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			dataArray[dataArray.count - 1].append(messages.last!)
 			
 			// обновляем саму таблицу
+			let indexPath = IndexPath(item: dataArray[dataArray.count - 1].count - 1, section: dataArray.count - 1)
+			
 			collectionView?.performBatchUpdates({
-				let indexPath = IndexPath(item: dataArray[dataArray.count - 1].count - 1, section: dataArray.count - 1)
 				collectionView?.insertItems(at: [indexPath])
 			}, completion: {
 				(bool) in
 				self.collectionView?.scrollToLast(animated: true)
+//				let cell = self.collectionView?.cellForItem(at: indexPath) as! ChatMessageCell
+//				cell.backgroundView = nil
+				self.delayedReadStatusUpdate()
 			})
 		}
 		print("Обновили чат")
