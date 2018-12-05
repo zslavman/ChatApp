@@ -230,11 +230,11 @@ class MessagesController: UITableViewController {
 	
 	
 	/// получаем сообщения с сервера, добавляя слушатель на новые
-	private func observeUserMessages(){
+	private func fetchDialogs(){
 		
 		guard let uid = Auth.auth().currentUser?.uid else { return } // если взять uid из self то при регистрации тут выйдет
 		
-		var dialogsStartCount:UInt = 0
+		var dialogsStartCount:UInt = 0 // общее кол-во диалогов
 		var dialogsLoadedCount:UInt = 0
 		refUserMessages = refUserMessages_original.child(uid)
 		
@@ -263,15 +263,13 @@ class MessagesController: UITableViewController {
 				var maxCount:UInt = 0
 				var currentCount:UInt = 0
 				if dialogsLoadedCount == dialogsStartCount {
-					maxCount = snapshot.childrenCount
-//					maxCount = 9
+					maxCount = min(1, snapshot.childrenCount)
 				}
 				//***********
 
 
 				// получаем ID сообщения внутри диалога (цикл из сообщений)
-//				let listener1 = ref_DialogforEachOtherUser.queryLimited(toLast: 9).observe(.childAdded, with: {
-				let listener1 = ref_DialogforEachOtherUser.observe(.childAdded, with: {
+				let listener1 = ref_DialogforEachOtherUser.queryLimited(toLast: 1).observe(.childAdded, with: {
 					(snapshot) in
 					let messageID = snapshot.key
 					
@@ -555,7 +553,7 @@ class MessagesController: UITableViewController {
 //		tableView.reloadData()
 		
 		drawLoading()
-		observeUserMessages()
+		fetchDialogs()
 		
 		// контейнер
 		let titleView = UIView()

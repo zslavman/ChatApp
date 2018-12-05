@@ -182,6 +182,48 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 	
 	
 	
+	
+	/// Загрузка картинки в хранилище
+	///
+	/// - Parameters:
+	///   - image: сама картинка
+	///   - completion: фукнция которая дернется когда будет загружена картинка и получен на нее URL
+	private func uploadingImageToStorage(image:UIImage, completion: @escaping (_ imageUrl:String) -> Void){
+		
+		let uniqueImageName = UUID().uuidString
+		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
+		
+		if let uploadData = UIImageJPEGRepresentation(image, 0.5){
+			ref.putData(uploadData, metadata: nil, completion: {
+				(metadata, error) in
+				if let error = error {
+					print(error.localizedDescription)
+					return
+				}
+				// когда получаем метадату, даем запрос на получение ссылки на эту картинку (разработчкики Firebase 5 - дауны)
+				ref.downloadURL(completion: {
+					(url, errorFromGettinfPicLink) in
+					
+					if let errorFromGettinfPicLink = errorFromGettinfPicLink {
+						print(errorFromGettinfPicLink.localizedDescription)
+						return
+					}
+					if let imageUrl = url{
+						// запускаем ф-цию обратного вызова
+						completion(imageUrl.absoluteString)
+					}
+				})
+				print("удачно сохранили картинку")
+			})
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
 		flag = true
 		dismiss(animated: true, completion: nil)

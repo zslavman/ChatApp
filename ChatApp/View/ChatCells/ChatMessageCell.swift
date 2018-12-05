@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 
-class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate будет ругатся на компас!
+class ChatMessageCell: UICollectionViewCell {
 	
 	public var chatlogController:ChatController?
 	public var message:Message?
@@ -22,9 +22,9 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 	public var bubbleWidthAnchor: NSLayoutConstraint?
 	public var bubbleRightAnchor: NSLayoutConstraint?
 	public var bubbleLeftAnchor: NSLayoutConstraint?
+	private var checkMarkWidth:NSLayoutConstraint?
 	
 	public static let cornRadius:CGFloat = 12
-//	private let galka = "\u{1F50A}"
 
 	public let textView: UITextView = {
 		let label = UITextView()
@@ -89,10 +89,10 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		label.font = UIFont.boldSystemFont(ofSize: 23)
 		label.textColor = #colorLiteral(red: 0.368880786, green: 0.8189723923, blue: 0.2133175089, alpha: 1).withAlphaComponent(0.6)
 		label.backgroundColor = UIColor.clear
-//		label.isHidden = true
 		label.isUserInteractionEnabled = false
 		return label
 	}()
+	
 
 
 
@@ -114,12 +114,12 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			profileImageView.heightAnchor.constraint(equalToConstant: 32),
 			
 			// для времени отправки
+			sendTime_TF.rightAnchor.constraint(equalTo: checkMark.leftAnchor),
 			sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -8),
-			sendTime_TF.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -15),
 			
 			// зеленая галочка
+			checkMark.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -15),
 			checkMark.topAnchor.constraint(equalTo: sendTime_TF.topAnchor, constant: -9),
-			checkMark.rightAnchor.constraint(equalTo: sendTime_TF.leftAnchor),
 			
 			// для текста сообщения
 			textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8),
@@ -131,6 +131,9 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			bubbleView.topAnchor.constraint(equalTo: self.topAnchor),
 			bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor)
 		])
+		
+		checkMarkWidth = checkMark.widthAnchor.constraint(equalToConstant: 23)
+		checkMarkWidth?.isActive = true
 		
 		//  для фона сообщения
 		bubbleLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8)
@@ -175,6 +178,7 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			profileImageView.isHidden = true
 			bubbleLeftAnchor?.isActive = false
 			bubbleRightAnchor?.isActive = true
+			checkMarkWidth?.constant = 23
 		}
 		// серым (собеседника)
 		else {
@@ -186,6 +190,7 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			}
 			bubbleRightAnchor?.isActive = false
 			bubbleLeftAnchor?.isActive = true
+			checkMarkWidth?.constant = 0
 		}
 		
 		sendTime_TF.layer.shadowOpacity = 0
@@ -196,14 +201,6 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 			let estWidth = Calculations.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 60 ? 70 : estWidth
 		}
-		
-		// если это исходящее сообщ. - показываем статус прочитанности
-//		if message.fromID == Auth.auth().currentUser?.uid && !message.readStatus! {
-//			backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
-//		}
-//		else {
-//			backgroundColor = nil
-//		}
 		
 		// если это исходящее сообщ. - показываем статус прочитанности
 		if message.fromID == Auth.auth().currentUser?.uid {
@@ -218,7 +215,7 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		else{
 			checkMark.isHidden = true
 			if !message.readStatus! {
-				setBackgroundForFreshMess()
+				setBackgroundForUnread()
 			}
 		}
 	}
@@ -232,7 +229,7 @@ class ChatMessageCell: UICollectionViewCell { // без MKMapViewDelegate буд
 		checkMark.textColor = #colorLiteral(red: 0.368880786, green: 0.8189723923, blue: 0.2133175089, alpha: 1).withAlphaComponent(0.6)
 	}
 
-	public func setBackgroundForFreshMess(){
+	public func setBackgroundForUnread(){
 		backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
 	}
 

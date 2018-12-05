@@ -17,7 +17,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	public var user:User? {
 		didSet{
 			navigationItem.title = user?.name
-			observeMessages()
+			fetchMessages()
 		}
 	}
 	
@@ -78,7 +78,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	private lazy var trancheCount:UInt = maxMessagesPerUpdate // сколько сообщений ожидается получить при вторичной подгрузке
 	
 	private var statusListeners = [UInt:DatabaseReference]() 	// для диспоза слушателей
-	
+	private let delayBeforeReadUnreaded:Double = 1.0 // задержка перед тем как входящие непрочитанные станут прочитанными
 	
 	
 	
@@ -98,7 +98,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
 		// layout?.headerReferenceSize = CGSize(width: 150, height: 25)
 		
-		// вставляем поля чтоб чат не соприкосался сверху и снизу
+		// вставляем поля отделяющие чат сверху и снизу
 		collectionView?.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.backgroundColor = .white
@@ -113,12 +113,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		collectionView?.keyboardDismissMode = .interactive
 		
 		// запускаем индикацию загрузки (в виде UIRefreshControl) вручную
-		refreshControl = UIRefreshControl()
-		// refreshControl.attributedTitle = NSAttributedString(string: "Загрузка данных...")
-		collectionView?.refreshControl = refreshControl
-		refreshControl.beginRefreshing()
-		collectionView!.setContentOffset(CGPoint(x: 0, y: collectionView!.contentOffset.y - (refreshControl.frame.size.height)), animated: false)
-		refreshControl.addTarget(self, action: #selector(loadOldMessages), for: UIControlEvents.valueChanged)
+		showRefreshControl()
 		
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
@@ -211,8 +206,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	}
 		
 	
-	
-	
+
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		var cell:ChatMessageCell!
@@ -320,7 +314,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	
 	/// первичное получение сообощений с БД + добавляем слушатель на новые
-	private func observeMessages(){
+	private func fetchMessages(){
 
 		guard let uid = Auth.auth().currentUser?.uid, let toID = user?.id else { return }
 		
@@ -559,7 +553,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	
 	
-
+	
 	
 	
 	/// умная обновлялка collectionView и его источника
@@ -574,7 +568,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				self.collectionView?.reloadData()
 				if !prependToBegin {
 					self.collectionView?.scrollToLast(animated: false)
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
+					DispatchQueue.main.asyncAfter(deadline: .now() + self.delayBeforeReadUnreaded, execute: {
 						self.delayedReadStatusUpdate()
 					})
 				}
@@ -602,6 +596,21 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		}
 		print("Обновили чат")
 	}
+	
+	
+	
+	
+	/// автоматич. запуск showRefreshControl, аля индикация загрузки
+	private func showRefreshControl(){
+		
+		refreshControl = UIRefreshControl()
+		// refreshControl.attributedTitle = NSAttributedString(string: "Загрузка данных...")
+		collectionView?.refreshControl = refreshControl
+		refreshControl.beginRefreshing()
+		collectionView!.setContentOffset(CGPoint(x: 0, y: collectionView!.contentOffset.y - (refreshControl.frame.size.height)), animated: false)
+		refreshControl.addTarget(self, action: #selector(loadOldMessages), for: UIControlEvents.valueChanged)
+	}
+	
 	
 	
 	
@@ -634,6 +643,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	}
 	
 	
+	
 
 	@objc private func onChatBackingClick(){
 		growingInputView.inputTextField.resignFirstResponder()
@@ -663,45 +673,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	
 
-	
-	
-	/// Загрузка картинки в хранилище
-	///
-	/// - Parameters:
-	///   - image: сама картинка
-	///   - completion: фукнция которая дернется когда будет загружена картинка и получен на нее URL
-	internal func uploadingImageToStorage(image:UIImage, completion: @escaping (_ imageUrl:String) -> Void){
-		
-		let uniqueImageName = UUID().uuidString
-		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
-		
-		if let uploadData = UIImageJPEGRepresentation(image, 0.5){
-			ref.putData(uploadData, metadata: nil, completion: {
-				(metadata, error) in
-				if let error = error {
-					print(error.localizedDescription)
-					return
-				}
-				// когда получаем метадату, даем запрос на получение ссылки на эту картинку (разработчкики Firebase 5 - дауны)
-				ref.downloadURL(completion: {
-					(url, errorFromGettinfPicLink) in
-					
-					if let errorFromGettinfPicLink = errorFromGettinfPicLink {
-						print(errorFromGettinfPicLink.localizedDescription)
-						return
-					}
-					if let imageUrl = url{
-						// запускаем ф-цию обратного вызова
-						completion(imageUrl.absoluteString)
-					}
-				})
-				print("удачно сохранили картинку")
-			})
-		}
-	}
-	
-	
-	
 	@objc private func onScrollingDownClick(){
 		collectionView?.scrollToLast(animated: true)
 	}
@@ -709,7 +680,9 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	
 	@objc public func onSendClick(){
-		if growingInputView.inputTextField.text == "" || growingInputView.inputTextField.text == " " { return }
+		if growingInputView.inputTextField.text == "" { return }
+		let filtered = growingInputView.inputTextField.text!.filter{!" ".contains($0)} // отфильтровываем пробелы
+		if filtered.count == 0 { return }
 		
 		let properties:[String:Any] = [
 			"text" :growingInputView.inputTextField.text!
