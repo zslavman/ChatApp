@@ -337,6 +337,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		let p = passTF.text!.filter{!" ".contains($0)}
 		let n = nameTF.text!.filter{!" ".contains($0)}
 		
+//		let str = nameTF.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			if e.count == 0 || p.count == 0 {
 				waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")

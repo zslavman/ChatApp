@@ -16,7 +16,6 @@ class MessagesController: UITableViewController {
 	internal var owner:User!
 	internal var uid:String!
 	private var messages:[Message] = [] 				// массив диалогов
-	private var messagesDict:[String: Message] = [:] 	// словарь сгруппированных сообщений
 	private let cell_id = "cell_id"
 	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
 	
@@ -112,8 +111,6 @@ class MessagesController: UITableViewController {
 	
 	/// убираем собеседника и само сообщение отовсюду
 	private func removeDialog(collocutorID: String, indexPath:IndexPath){
-		// удаляем сообщение с общего словаря
-		messagesDict.removeValue(forKey: collocutorID)
 
 		// находим собеседника в массиве senders и убираем из массива
 		senders = senders.filter({$0.id == collocutorID})
@@ -228,7 +225,7 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
+	// MARK: получение диалогов
 	/// получаем сообщения с сервера, добавляя слушатель на новые
 	private func fetchDialogs(){
 		
@@ -282,12 +279,15 @@ class MessagesController: UITableViewController {
 						
 						if let dictionary = snapshot.value as? [String:AnyObject] {
 							let message = Message(dictionary: dictionary) // message.setValuesForKeys(dictionary)
-							self.messages.append(message)
+							
+							if !self.allowIncomingSound {
+								self.messages.append(message)
+							}
 							
 							// заполняем словарь и меняем массив
-							if let chatPartner = message.chatPartnerID() {
-								self.messagesDict[chatPartner] = message
-							}
+//							if let chatPartner = message.chatPartnerID() {
+//								self.messagesDict[chatPartner] = message
+//							}
 							// self.attemptReloadofTable()
 							
 							// если это сообщение отправил owner или собеседник с которым сейчас чат, звук не проигрываем
@@ -297,18 +297,18 @@ class MessagesController: UITableViewController {
 									self.playSoundFile("pipk")
 								}
 								if self.goToChatWithID == nil {
-									// TODO: выделять ячейку серым (аля непрочитанные сообщ.)
 									self.countUnreadMessages(userID: fromWho, count: 1)
 								}
 							}
 							// запуск обновления таблицы первый раз
 							if (dialogsLoadedCount == dialogsStartCount && currentCount == maxCount){
-								self.semiSmartReloadData(firstTime: true)
+								self.reloadTableData(firstTime: true)
 								self.allowIncomingSound = true
 							}
 							// последюущие разы
 							else if (self.allowIncomingSound && currentCount > maxCount) {
-								self.semiSmartReloadData(firstTime: false)
+//								self.reloadTableData(firstTime: false)
+								self.updateMessagesInsideDialogs(newMessage: message)
 							}
 						}
 						
@@ -366,8 +366,7 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
-	
+
 	
 	
 	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
@@ -375,37 +374,43 @@ class MessagesController: UITableViewController {
 	/// [НЕ ИСПОЛЬЗУЕТСЯ, т.к. нашел более рациональное решение]
 	private func attemptReloadofTable(){
 		timer?.invalidate()
-		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.semiSmartReloadData), userInfo: nil, repeats: false)
+		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.reloadTableData), userInfo: nil, repeats: false)
 	}
 	
 	
 	
 	
 	
-	/// отложенная перезагрузка таблицы и данных
-	@objc private func semiSmartReloadData(firstTime:Bool){
+	
+	/// обновление диалогов
+	private func updateMessagesInsideDialogs(newMessage:Message){
 		
-		var partnerBeforeUpdate:String?
-		func reloadTable(){
-			DispatchQueue.main.async {
-				self.tableView.reloadData()
-				if firstTime {
-					self.setUnread()
-				}
+		// если диалогер уже есть в списке - удаляем его
+		for index in messages.indices {
+			if messages[index].chatPartnerID()! == newMessage.chatPartnerID()!{
+				messages.remove(at: index)
+				break
 			}
 		}
-		//****************************
-		
-		if firstTime {
-			messages = Array(self.messagesDict.values)
-		}
-		else {
-			// small optimization (save some array props)
-			partnerBeforeUpdate = messages.first!.chatPartnerID()!
-			messages = Array(self.messagesDict.values) // здесь массив теряет свою длину
-		}
+		// вставляем в начало новое сообщ.
+		messages.insert(newMessage, at: 0)
 
+		DispatchQueue.main.async {
+			self.tableView.reloadData()
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	/// перезагрузка таблицы и данных
+	@objc private func reloadTableData(firstTime:Bool){
 		
+//		messages = Array(self.messagesDict.values) // здесь массив теряет свою длину
+
 		if messages.isEmpty{
 			labelNoMessages?.text = status.nomessages.rawValue
 		}
@@ -419,23 +424,13 @@ class MessagesController: UITableViewController {
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
 		
-//		// if you got new message from saved partnerBeforeUpdate
-//		if let partnerBeforeUpdate = partnerBeforeUpdate {
-//			let newPartner = messages.first!.chatPartnerID()!
-//			if newPartner == partnerBeforeUpdate {
-//				let indexPath = IndexPath(row: 0, section: 0)
-//				DispatchQueue.main.async {
-//					self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.none)
-//					print("Правильно обновили таблицу!")
-//				}
-//			}
-//			else {
-//				reloadTable()
-//			}
-//		}
-//		else {
-			reloadTable()
-//		}
+		DispatchQueue.main.async {
+			self.tableView.reloadData()
+			if firstTime {
+				self.setUnread()
+			}
+		}
+
 	}
 	
 	
@@ -631,7 +626,6 @@ class MessagesController: UITableViewController {
 		uid = nil
 		
 		messages.removeAll()
-		messagesDict.removeAll()
 		hendlers.removeAll()
 		tableView.reloadData()
 		allowIncomingSound = false
