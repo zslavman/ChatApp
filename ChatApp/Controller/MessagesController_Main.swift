@@ -39,7 +39,12 @@ extension MessagesController {
 	
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return messages.count
+//		return messages.count
+		return currentList[section].cells.count
+	}
+	
+	override func numberOfSections(in tableView: UITableView) -> Int {
+		return currentList.count
 	}
 	
 	
@@ -73,7 +78,7 @@ extension MessagesController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: cell_id, for: indexPath) as! UserCell
-		let msg = messages[indexPath.row]
+		let msg = currentList[0][indexPath.row]
 		
 		if msg.toID != nil {
 			cell.iTag = (indexPath.section).description + (indexPath.row).description

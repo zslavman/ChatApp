@@ -16,7 +16,7 @@ class MessagesController: UITableViewController {
 	
 	internal var owner:User!
 	internal var uid:String!
-	public var messages:[Message] = [] 				// массив диалогов
+	
 	internal let cell_id = "cell_id"
 	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
 	
@@ -43,14 +43,24 @@ class MessagesController: UITableViewController {
 	public var savedIndexPath:IndexPath?		// тут будет путь к ячейке по которой кликнули
 	
 	
+	public var messages:[Message] = [] 				// массив диалогов
 	var currentList: [MySection]! = nil
+	
 	let animator = TableAnimator<MySection>()
+//	let animator: TableAnimator<MySection> = {
+//		let config = TableAnimatorConfiguration<MySection>(cellMoveCalculatingStrategy: MoveCalculatingStrategy<Message>.top, sectionMoveCalculatingStrategy: MoveCalculatingStrategy<MySection>.bottom, isConsistencyValidationEnabled: true)
+//		let a = TableAnimator<MySection>.init(configuration: config)
+//		return a
+//	}()
 	
 	
 	
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		// currentList = [MySection(id: 0, cells: messages)]
+		currentList = [MySection(cells: messages)]
 
 		let bttnImage1 = UIImage(named: "bttn_logout")
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
@@ -167,6 +177,7 @@ class MessagesController: UITableViewController {
 							
 							if !self.allowIncomingSound {
 								self.messages.append(message)
+								self.currentList[0].cells.append(message)
 							}
 							
 							// если это сообщение отправил owner или собеседник с которым сейчас чат, звук не проигрываем
@@ -183,8 +194,6 @@ class MessagesController: UITableViewController {
 								 3) Слушать изменения в диалогах
 										а) запрос на кол-во непрочтенных
 										б) перетасовка таблицы с перезагрузкой */
-								let sections = MySection(id: 0, cells: self.messages)
-								self.currentList = [sections]
 								
 								self.countUnreadMessages()
 							}
@@ -253,10 +262,21 @@ class MessagesController: UITableViewController {
 
 	private func reloadTable(){
 		print("перегрузили таблицу")
-		DispatchQueue.main.async {
-			self.tableView.reloadData()
-		}
+		
+		let toList: [MySection] = [MySection(cells: messages)]
+		
+		tableView.apply(owner: self,
+						newList: toList,
+						animator: animator,
+						animated: true,
+						options: [.cancelPreviousAddedOperations, .withoutAnimationForEmptyTable],
+						getCurrentListBlock: { $0.currentList },
+						setNewListBlock: { $0.currentList = $1 },
+						rowAnimation: .fade,
+						completion: nil,
+						error: nil)
 	}
+	
 
 	
 	
@@ -363,7 +383,10 @@ class MessagesController: UITableViewController {
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
 		
-		reloadTable()
+//		reloadTable()
+		DispatchQueue.main.async {
+			self.tableView.reloadData()
+		}
 	}
 	
 	

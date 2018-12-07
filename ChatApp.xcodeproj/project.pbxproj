@@ -19,6 +19,7 @@
 		563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */; };
 		563D17882189E351000DFAD2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D17872189E351000DFAD2 /* User.swift */; };
 		563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D73AE2194682C0098300C /* ChatMessageCell.swift */; };
+		563DCA0221BB2720007CD452 /* MySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DCA0121BB2720007CD452 /* MySection.swift */; };
 		563EFAE02189D04900F16BF8 /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* NewMessageController.swift */; };
 		56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56536F8B2189113F0087064D /* GoogleService-Info.plist */; };
 		565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565BEE8321B0A48A0028D474 /* Video_Cell.swift */; };
@@ -49,6 +50,7 @@
 		563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController + procedure.swift"; sourceTree = "<group>"; };
 		563D17872189E351000DFAD2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		563D73AE2194682C0098300C /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
+		563DCA0121BB2720007CD452 /* MySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySection.swift; sourceTree = "<group>"; };
 		563EFADF2189D04900F16BF8 /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		56536F8B2189113F0087064D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		565BEE8321B0A48A0028D474 /* Video_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video_Cell.swift; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 			children = (
 				563D17872189E351000DFAD2 /* User.swift */,
 				5638D8E321923CA400EC2FE3 /* Message.swift */,
+				563DCA0121BB2720007CD452 /* MySection.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				56397AF721BA9BEA00372B61 /* MessagesController_Main.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
 				5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */,
+				563DCA0221BB2720007CD452 /* MySection.swift in Sources */,
 				5637FD1521B365620015CAAF /* Calculations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
