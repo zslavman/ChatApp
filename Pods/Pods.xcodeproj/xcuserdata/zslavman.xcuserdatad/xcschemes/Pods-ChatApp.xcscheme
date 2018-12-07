@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "0940"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4EE6435D2AF611E4F291E5FF81A4C0B4"
+               BlueprintIdentifier = "C28BB2CB437668C5601FD6D49D799C22"
                BuildableName = "Pods_ChatApp.framework"
                BlueprintName = "Pods-ChatApp"
                ReferencedContainer = "container:Pods.xcodeproj">
@@ -45,7 +45,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4EE6435D2AF611E4F291E5FF81A4C0B4"
+            BlueprintIdentifier = "C28BB2CB437668C5601FD6D49D799C22"
             BuildableName = "Pods_ChatApp.framework"
             BlueprintName = "Pods-ChatApp"
             ReferencedContainer = "container:Pods.xcodeproj">

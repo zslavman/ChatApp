@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import AVFoundation
+import NPTableAnimator
 
 class MessagesController: UITableViewController {
 
@@ -42,6 +43,8 @@ class MessagesController: UITableViewController {
 	public var savedIndexPath:IndexPath?		// тут будет путь к ячейке по которой кликнули
 	
 	
+	var currentList: [MySection]! = nil
+	let animator = TableAnimator<MySection>()
 	
 	
 	
@@ -180,6 +183,9 @@ class MessagesController: UITableViewController {
 								 3) Слушать изменения в диалогах
 										а) запрос на кол-во непрочтенных
 										б) перетасовка таблицы с перезагрузкой */
+								let sections = MySection(id: 0, cells: self.messages)
+								self.currentList = [sections]
+								
 								self.countUnreadMessages()
 							}
 							// последюущие разы

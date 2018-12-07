@@ -8,13 +8,27 @@
 
 import UIKit
 import Firebase
+import NPTableAnimator
 
 
-class Message: NSObject {
-
+//public class Message: NSObject, TableAnimatorCell {
+public class Message: TableAnimatorCell {
+	
+	
+	public var hashValue: Int{
+		return timestamp!.hashValue
+	}
+	public typealias UpdateCellType = NSNumber
+	public var updateField: NSNumber
+	
+	public static func == (lhs: Message, rhs: Message) -> Bool {
+		return lhs.timestamp! == rhs.timestamp!
+	}
+	
+	
+	
 	
 	// @objc - для использования автозаполнялки (экземпляр.setValuesForKeys) переменных класа
-	
 	public var fromID:String?
 	public var toID:String?
 	public var timestamp:NSNumber?
@@ -44,7 +58,7 @@ class Message: NSObject {
 
 	
 	init(dictionary: [String:Any]){
-		super.init()
+//		super.init()
 		
 		self_ID			= dictionary["self_ID"] as? String
 		fromID 			= dictionary["fromID"] as? String
@@ -62,10 +76,34 @@ class Message: NSObject {
 		geo_lon 		= dictionary["geo_lon"] as? NSNumber
 		
 		readStatus		= dictionary["readStatus"] as? Bool
+		
+		updateField = timestamp!
+	}
+	
+}
+
+
+
+
+public struct MySection: TableAnimatorSection {
+	
+	let id: Int
+	
+	public var cells: [Message]
+	
+	public var updateField: Int {
+		return 0
+	}
+	
+	subscript(value: Int) -> Message {
+		return cells[value]
 	}
 	
 	
-	
+	public static func == (lhs: MySection, rhs: MySection) -> Bool {
+		// return lhs.id == rhs.id // когда секций больше 1
+		return true
+	}
 	
 }
 

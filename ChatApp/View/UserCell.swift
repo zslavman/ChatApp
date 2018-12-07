@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 
 
+
 // кастомизация стандартной ячейки таблицы (для того, чтоб иметь доступ к текстовому полю detailTextLabel)
 class UserCell: UITableViewCell {
 	
@@ -187,6 +188,7 @@ class UserCell: UITableViewCell {
 		detailTextLabel?.text = str
 		
 		if let seconds = msg.timestamp?.doubleValue{
+			
 			timeLabel.text = Calculations.convertTimeStamp(seconds: seconds, shouldReturn: true)
 		}
 
