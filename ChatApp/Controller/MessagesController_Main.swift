@@ -29,8 +29,10 @@ extension MessagesController {
 		super.viewDidDisappear(animated)
 		
 		// перезагружаем ячейку по которой кликнули для обнуления кол-ва непрочит. сообщ.
-		if let savedIndexPath = savedIndexPath {
-			tableView.reloadRows(at: [savedIndexPath], with: .none)
+//		if let savedIndexPath = savedIndexPath {
+		if savedIndexPath != nil {
+			reloadTable()
+//			tableView.reloadRows(at: [savedIndexPath], with: .none)
 			self.savedIndexPath = nil
 		}
 	}
@@ -39,7 +41,6 @@ extension MessagesController {
 	
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//		return messages.count
 		return currentList[section].cells.count
 	}
 	
@@ -56,7 +57,7 @@ extension MessagesController {
 	/// то, что будет выполнено при нажатии на "удалить"
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		
-		let message = messages[indexPath.row]
+		let message = currentList[0][indexPath.row]
 		if let partnerID = message.chatPartnerID(){
 			refUserMessages_original.child(uid).child(partnerID).removeValue {
 				(error, ref) in
@@ -136,7 +137,7 @@ extension MessagesController {
 	/// при клике на диалог (юзера)
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
-		let messag = messages[indexPath.row]
+		let messag = currentList[0][indexPath.row]
 		
 		// сначала обнуляем данные о непрочтенных, в viewDidDisappear обновим вьюшку
 		messages[indexPath.row].unreadCount = nil

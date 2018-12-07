@@ -43,15 +43,17 @@ class MessagesController: UITableViewController {
 	public var savedIndexPath:IndexPath?		// тут будет путь к ячейке по которой кликнули
 	
 	
-	public var messages:[Message] = [] 				// массив диалогов
-	var currentList: [MySection]! = nil
+	public var messages:[Message] = [] 			// массив диалогов (здесь проходит вся математика манипуляций, во вьюшки он не идет)
+												// после завершения мманевров с данными всегда необходимо вызвать reloadTable()
+	var currentList: [MySection]! = nil			// то что отображается после манипуляций с messages (для вьюшек)
 	
 	let animator = TableAnimator<MySection>()
-//	let animator: TableAnimator<MySection> = {
-//		let config = TableAnimatorConfiguration<MySection>(cellMoveCalculatingStrategy: MoveCalculatingStrategy<Message>.top, sectionMoveCalculatingStrategy: MoveCalculatingStrategy<MySection>.bottom, isConsistencyValidationEnabled: true)
-//		let a = TableAnimator<MySection>.init(configuration: config)
-//		return a
-//	}()
+	
+	//	let animator: TableAnimator<MySection> = {
+	//		let config = TableAnimatorConfiguration<MySection>(cellMoveCalculatingStrategy: MoveCalculatingStrategy<Message>.top, sectionMoveCalculatingStrategy: MoveCalculatingStrategy<MySection>.bottom, isConsistencyValidationEnabled: true)
+	//		let a = TableAnimator<MySection>.init(configuration: config)
+	//		return a
+	//	}()
 	
 	
 	
@@ -59,8 +61,8 @@ class MessagesController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		// currentList = [MySection(id: 0, cells: messages)]
-		currentList = [MySection(cells: messages)]
+		currentList = [MySection(id: 0, cells: messages)]
+		// currentList = [MySection(cells: messages)]
 
 		let bttnImage1 = UIImage(named: "bttn_logout")
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
@@ -112,7 +114,8 @@ class MessagesController: UITableViewController {
 		if messages.isEmpty {
 			drawLoading(text: status.nomessages.rawValue)
 		}
-		tableView.deleteRows(at: [indexPath], with: .right)
+		//tableView.deleteRows(at: [indexPath], with: .right)
+		reloadTable()
 	}
 		
 	
@@ -260,21 +263,24 @@ class MessagesController: UITableViewController {
 	
 	
 
-	private func reloadTable(){
-		print("перегрузили таблицу")
+	internal func reloadTable(){
 		
-		let toList: [MySection] = [MySection(cells: messages)]
+		// в этот момент, самые свежие изменения есть только в messages
+		// с свою очередь, currentList еще этих изменений не имеет
+		let toList:[MySection] = [MySection(id: 0, cells: messages)]
 		
-		tableView.apply(owner: self,
-						newList: toList,
-						animator: animator,
-						animated: true,
-						options: [.cancelPreviousAddedOperations, .withoutAnimationForEmptyTable],
+		tableView.apply(owner			: self,
+						newList			: toList,
+						animator		: animator,
+						animated		: true,
+						options			: [.cancelPreviousAddedOperations, .withoutAnimationForEmptyTable],
 						getCurrentListBlock: { $0.currentList },
-						setNewListBlock: { $0.currentList = $1 },
-						rowAnimation: .fade,
-						completion: nil,
-						error: nil)
+						setNewListBlock	: { $0.currentList = $1 },
+						rowAnimation	: .fade,
+						completion		: nil,
+						error			: nil)
+		
+		print("перезагружаем таблицу")
 	}
 	
 
@@ -378,12 +384,11 @@ class MessagesController: UITableViewController {
 			labelNoMessages = nil
 		}
 		
-		messages.sort(by: {
+		currentList[0].cells.sort(by: {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
 		
-//		reloadTable()
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
 		}
@@ -552,6 +557,7 @@ class MessagesController: UITableViewController {
 		uid = nil
 		
 		messages.removeAll()
+		currentList[0].cells.removeAll()
 		hendlers.removeAll()
 		tableView.reloadData()
 		allowIncomingSound = false

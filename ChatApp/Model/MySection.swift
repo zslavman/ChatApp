@@ -11,7 +11,7 @@ import NPTableAnimator
 
 public struct MySection: TableAnimatorSection {
 	
-	//	let id: Int
+	let id: Int
 	
 	public var cells: [Message]
 	
