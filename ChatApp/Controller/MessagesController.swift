@@ -39,6 +39,8 @@ class MessagesController: UITableViewController {
 	private var audioPlayer = AVAudioPlayer()
 	private var allowIncomingSound:Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
 	private var goToChatWithID:String?			// ID собеседника, с которым перешли в чат
+	public var savedIndexPath:IndexPath?		// тут будет путь к ячейке по которой кликнули
+	
 	
 	
 	
@@ -199,7 +201,7 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	public var savedIndexPath:IndexPath?
+	
 	
 	/// при клике на диалог (юзера)
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -228,7 +230,11 @@ class MessagesController: UITableViewController {
 	
 	
 	
+	
+	
 	override func viewDidDisappear(_ animated: Bool) {
+		
+		// перезагружаем ячейку по которой кликнули для обнуления кол-ва непрочит. сообщ.
 		if let savedIndexPath = savedIndexPath {
 			tableView.reloadRows(at: [savedIndexPath], with: .none)
 			self.savedIndexPath = nil
@@ -240,7 +246,7 @@ class MessagesController: UITableViewController {
 	
 	
 	// MARK: получение диалогов
-	/// получаем сообщения с сервера, добавляя слушатель на новые
+	/// получаем сообщения с сервера, добавляем слушатели на новые
 	private func fetchDialogs(){
 		
 		guard let uid = Auth.auth().currentUser?.uid else { return } // если взять uid из self то при регистрации тут выйдет
@@ -248,6 +254,7 @@ class MessagesController: UITableViewController {
 		var dialogsStartCount:UInt = 0 // общее кол-во диалогов
 		var dialogsLoadedCount:UInt = 0
 		refUserMessages = refUserMessages_original.child(uid)
+		
 		
 		// проверяем сколько (диалогов) имеет owner
 		refUserMessages.observeSingleEvent(of: .value, with: {
@@ -307,13 +314,11 @@ class MessagesController: UITableViewController {
 							}
 							// запуск обновления таблицы первый раз
 							if (dialogsLoadedCount == dialogsStartCount && currentCount == maxCount){
-								
-								// 1) проверить каждый диалог на наличие непрочтенных сообщ
-								// 2) Перезагрузить таблицу
-								// 3) Слушать изменения в диалогах
-								//		а) запрос на кол-во непрочтенных
-								//		б) перетасовка таблицы с перезагрузкой
-								
+								/* 1) проверить каждый диалог на наличие непрочтенных сообщ
+								 2) Перезагрузить таблицу
+								 3) Слушать изменения в диалогах
+										а) запрос на кол-во непрочтенных
+										б) перетасовка таблицы с перезагрузкой */
 								self.countUnreadMessages()
 							}
 							// последюущие разы
@@ -321,60 +326,65 @@ class MessagesController: UITableViewController {
 								self.checkUnread(msg: message)
 							}
 						}
-						
-					}, withCancel: nil)
-					
-				}, withCancel: nil)
-				
-				
-				// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
-				let ref_forEachOtherUser = Database.database().reference().child("users").child(userID)
-				
-				let listener2 = ref_forEachOtherUser.observe(.value, with: {
-					(snapshot) in
-					
-					guard self.allowIncomingSound else { return }
-					
-					// в массиве sender ищем юзера который пришел в snapshot'e
-					if let dict = snapshot.value as? [String:AnyObject] {
-						
-						let id_WhoChangedStatus = dict["id"] as! String
-						let newStatus 			= dict["isOnline"] as! Bool
-						
-						for (_, value) in self.senders.enumerated() {
-							if id_WhoChangedStatus == value.id{
-								value.isOnline = newStatus
-								
-								// чтоб не перегружать всю таблицу
-								let visible = self.tableView.visibleCells as! [UserCell]
-								visible.forEach({
-									(cell) in
-									if cell.userID == id_WhoChangedStatus{
-										cell.onlinePoint.backgroundColor = newStatus ? UserCell.onLineColor : UserCell.offLineColor
-									}
-								})
-								break
-							}
-						}
-					}
+					})
 				})
 				
-				// записываем слушателей и ссылки в словарь (для дальнейшего диспоза)
-				self.hendlers[listener1] = ref_DialogforEachOtherUser 	// для прослушки изменения диалога
-				self.hendlers[listener2] = ref_forEachOtherUser 		// для прослушки онлайн ли юзер
+				// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
+				let ref_forOnlineListener = Database.database().reference().child("users").child(userID)
+				self.addOnlineListener(ref: ref_forOnlineListener)
+				
+				// записываем слушателя (на изменение диалога) и ссылки в словарь (для дальнейшего диспоза)
+				self.hendlers[listener1] = ref_DialogforEachOtherUser
 			})
 		})
-
-		// слушатель на удаление диалога
-//		let listener3 = refUserMessages.observe(.childRemoved, with: {
-//			(snapshot) in
-//			// после удаления диалога нужно убрать прослушку на новые сообщения
-//			refUserMessages.removeObserver(withHandle: listener3)
-//		})
-//		self.hendlers[listener3] = refUserMessages
 	}
 	
 	
+	
+	
+	
+	
+	/// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
+	private func addOnlineListener(ref:DatabaseReference){
+		
+		let listener = ref.observe(.value, with: {
+			(snapshot) in
+			
+			guard self.allowIncomingSound else { return }
+			
+			// в массиве sender ищем юзера который пришел в snapshot'e
+			if let dict = snapshot.value as? [String:AnyObject] {
+				
+				let id_WhoChangedStatus = dict["id"] as! String
+				let newStatus 			= dict["isOnline"] as! Bool
+				
+				for (_, value) in self.senders.enumerated() {
+					if id_WhoChangedStatus == value.id{
+						value.isOnline = newStatus
+						
+						// чтоб не перегружать всю таблицу
+						let visible = self.tableView.visibleCells as! [UserCell]
+						visible.forEach({
+							(cell) in
+							if cell.userID == id_WhoChangedStatus{
+								cell.onlinePoint.backgroundColor = newStatus ? UserCell.onLineColor : UserCell.offLineColor
+							}
+						})
+						break
+					}
+				}
+			}
+		})
+		
+		// записываем слушателей и ссылки в словарь (для дальнейшего диспоза)
+		hendlers[listener] = ref
+	}
+	
+	
+	
+	
+	
+
 	
 
 	private func reloadTable(){
@@ -390,7 +400,7 @@ class MessagesController: UITableViewController {
 	private func checkUnread(msg:Message){
 		
 		if msg.fromID == uid {
-			updateMessagesInsideDialogs(newMessage: msg)
+			moveDialogs(newMessage: msg)
 			return
 		}
 		
@@ -410,7 +420,7 @@ class MessagesController: UITableViewController {
 				if !flag {
 					msg.unreadCount = snapshot.childrenCount
 				}
-				self.updateMessagesInsideDialogs(newMessage: msg)
+				self.moveDialogs(newMessage: msg)
 			}
 		}
 	}
@@ -418,8 +428,8 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	/// обновление диалогов
-	private func updateMessagesInsideDialogs(newMessage:Message){
+	/// обновление порядка следования диалогов
+	private func moveDialogs(newMessage:Message){
 		
 		// если диалогер уже есть в списке - удаляем его
 		for index in messages.indices {
@@ -429,7 +439,7 @@ class MessagesController: UITableViewController {
 				break
 			}
 		}
-		// вставляем в начало новое сообщ.
+		// вставляем новое сообщ. в начало
 		messages.insert(newMessage, at: 0)
 		
 		reloadTable()
@@ -437,7 +447,7 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	/// калькуляция непрочитанных сообщений каждого диалогера
+	/// калькуляция непрочитанных сообщений каждого диалогера (запускается 1 раз при загрузке, когда получили все диалоги)
 	private func countUnreadMessages(){
 
 		// получаем весь словарь непрочтенных
@@ -453,9 +463,9 @@ class MessagesController: UITableViewController {
 					if dictionary.keys.contains(keyName){
 						self.messages[index].unreadCount = UInt(dictionary[keyName]!.count)
 					}
-					else {
-						self.messages[index].unreadCount = nil
-					}
+//					else {
+//						self.messages[index].unreadCount = nil
+//					}
 				}
 			}
 			else {
@@ -474,8 +484,8 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	/// перезагрузка таблицы и данных
-	@objc private func firstReloadTable(){
+	/// первая перезагрузка таблицы и данных
+	private func firstReloadTable(){
 
 		allowIncomingSound = true
 		
@@ -536,7 +546,8 @@ class MessagesController: UITableViewController {
 	private func chekIfUserLoggedIn(){
 		// выходим, если не залогинены
 		if Auth.auth().currentUser?.uid == nil{
-			perform(#selector(onLogout), with: nil, afterDelay: 0) // для устранения Unbalanced calls to begin/end appearance transitions for <UINavigationController: 0x7f...
+			// аля задержка, для устранения Unbalanced calls to begin/end appearance transitions for <UINavigationController: 0x7f...
+			perform(#selector(onLogout), with: nil, afterDelay: 0)
 		}
 		// автологинка
 		else {
@@ -707,6 +718,27 @@ class MessagesController: UITableViewController {
 	}
 	
 	
+	
+	private func playSoundFile(_ soundName:String) {
+		
+		if !allowIncomingSound { return }
+		audioPlayer.play()
+		
+		//		let url = Bundle.main.url(forResource: soundName, withExtension: "mp3")!
+		//
+		//		do {
+		//			let sound = try AVAudioPlayer(contentsOf: url)
+		//			audioPlayer = sound
+		//			sound.numberOfLoops = 0
+		//			sound.prepareToPlay()
+		//			sound.play()
+		//		}
+		//		catch {
+		//			print("error loading file")
+		//		}
+	}
+	
+	
 }
 
 
@@ -799,34 +831,17 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 	
 	
 	
-	private func playSoundFile(_ soundName:String) {
-		
-		if !allowIncomingSound { return }
-		audioPlayer.play()
-		
-//		let url = Bundle.main.url(forResource: soundName, withExtension: "mp3")!
-//
-//		do {
-//			let sound = try AVAudioPlayer(contentsOf: url)
-//			audioPlayer = sound
-//			sound.numberOfLoops = 0
-//			sound.prepareToPlay()
-//			sound.play()
-//		}
-//		catch {
-//			print("error loading file")
-//		}
-	}
+
 	
 	
 	
 	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
 	/// попытка перегрузить таблицу
 	/// [НЕ ИСПОЛЬЗУЕТСЯ, т.к. нашел более рациональное решение]
-	private func attemptReloadofTable(){
-		timer?.invalidate()
-		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.firstReloadTable), userInfo: nil, repeats: false)
-	}
+//	private func attemptReloadofTable(){
+//		timer?.invalidate()
+//		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.firstReloadTable), userInfo: nil, repeats: false)
+//	}
 	
 }
 
