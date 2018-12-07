@@ -11,12 +11,12 @@ import UIKit
 class InputAccessory: UIView, UITextViewDelegate {
 	
     private let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
-    public var chatLogController:ChatController? {
+    public var chatController:ChatController? {
         didSet{
             // sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
             sendButton.addTarget(self, action: #selector(onSend), for: UIControlEvents.touchUpInside)
             // uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
-            uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatLogController, action: #selector(ChatController.onUploadClick)))
+            uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatController, action: #selector(ChatController.onUploadClick)))
         }
     }
     
@@ -186,7 +186,7 @@ class InputAccessory: UIView, UITextViewDelegate {
             inputTextField.setContentOffset(.zero, animated: false)// нужно чтоб потом плейсхолдер не сполз вниз
         }
         
-        chatLogController?.onSendClick() // сдесь очищается текст
+        chatController?.onSendClick() // сдесь очищается текст
         self.invalidateIntrinsicContentSize()
         
         if !inputTextField.isFirstResponder { // если поле заполнено текстом но клава уже заехала

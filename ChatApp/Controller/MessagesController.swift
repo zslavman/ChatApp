@@ -15,7 +15,7 @@ class MessagesController: UITableViewController {
 	
 	internal var owner:User!
 	internal var uid:String!
-	private var messages:[Message] = [] 				// массив диалогов
+	public var messages:[Message] = [] 				// массив диалогов
 	private let cell_id = "cell_id"
 	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
 	
@@ -190,8 +190,6 @@ class MessagesController: UITableViewController {
 		selectionColor.backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
 		cell.selectedBackgroundView = selectionColor
 		
-		
-		
 		return cell
 	}
 	
@@ -201,11 +199,16 @@ class MessagesController: UITableViewController {
 	}
 	
 	
+	public var savedIndexPath:IndexPath?
 	
 	/// при клике на диалог (юзера)
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
 		let messag = messages[indexPath.row]
+		
+		// сначала обнуляем данные о непрочтенных, в viewDidDisappear обновим вьюшку
+		messages[indexPath.row].unreadCount = nil
+		savedIndexPath = indexPath
 		
 		guard let chatPartnerID = messag.chatPartnerID() else { return } 		// достаем ID юзера (кому собираемся писать)
 		
@@ -219,9 +222,20 @@ class MessagesController: UITableViewController {
 			user.setValuesForKeys(dict)
 
 			self.goToChatWith(user: user)
-
-		}, withCancel: nil)
+		})
 	}
+	
+	
+	
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		if let savedIndexPath = savedIndexPath {
+			tableView.reloadRows(at: [savedIndexPath], with: .none)
+			self.savedIndexPath = nil
+		}
+	}
+	
+	
 	
 	
 	
@@ -249,7 +263,7 @@ class MessagesController: UITableViewController {
 			// получаем ID юзеров, которые писали owner'у (цикл из диалогов)
 			self.refUserMessages.observe(.childAdded, with: {
 				(snapshot) in
-//				print("snapshot = \(snapshot)")
+
 				dialogsLoadedCount += 1
 				let userID = snapshot.key
 				let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
@@ -284,31 +298,27 @@ class MessagesController: UITableViewController {
 								self.messages.append(message)
 							}
 							
-							// заполняем словарь и меняем массив
-//							if let chatPartner = message.chatPartnerID() {
-//								self.messagesDict[chatPartner] = message
-//							}
-							// self.attemptReloadofTable()
-							
 							// если это сообщение отправил owner или собеседник с которым сейчас чат, звук не проигрываем
 							let fromWho = (dictionary["fromID"] as? String)!
 							if fromWho != self.uid {
 								if fromWho != self.goToChatWithID && fromWho != self.goToChatWithID{
 									self.playSoundFile("pipk")
 								}
-								if self.goToChatWithID == nil {
-									self.countUnreadMessages(userID: fromWho, count: 1)
-								}
 							}
 							// запуск обновления таблицы первый раз
 							if (dialogsLoadedCount == dialogsStartCount && currentCount == maxCount){
-								self.reloadTableData(firstTime: true)
-								self.allowIncomingSound = true
+								
+								// 1) проверить каждый диалог на наличие непрочтенных сообщ
+								// 2) Перезагрузить таблицу
+								// 3) Слушать изменения в диалогах
+								//		а) запрос на кол-во непрочтенных
+								//		б) перетасовка таблицы с перезагрузкой
+								
+								self.countUnreadMessages()
 							}
 							// последюущие разы
 							else if (self.allowIncomingSound && currentCount > maxCount) {
-//								self.reloadTableData(firstTime: false)
-								self.updateMessagesInsideDialogs(newMessage: message)
+								self.checkUnread(msg: message)
 							}
 						}
 						
@@ -335,7 +345,7 @@ class MessagesController: UITableViewController {
 							if id_WhoChangedStatus == value.id{
 								value.isOnline = newStatus
 								
-								// чтоб не перегружать всю таблицу (иначе фотки блымают)
+								// чтоб не перегружать всю таблицу
 								let visible = self.tableView.visibleCells as! [UserCell]
 								visible.forEach({
 									(cell) in
@@ -367,17 +377,43 @@ class MessagesController: UITableViewController {
 	
 	
 
-	
-	
-	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
-	/// попытка перегрузить таблицу
-	/// [НЕ ИСПОЛЬЗУЕТСЯ, т.к. нашел более рациональное решение]
-	private func attemptReloadofTable(){
-		timer?.invalidate()
-		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.reloadTableData), userInfo: nil, repeats: false)
+	private func reloadTable(){
+		print("перегрузили таблицу")
+		DispatchQueue.main.async {
+			self.tableView.reloadData()
+		}
 	}
+
 	
 	
+	// проверка кол-ва непрочтенных сообщений (вызывается при каждом приходе нового сообщ.)
+	private func checkUnread(msg:Message){
+		
+		if msg.fromID == uid {
+			updateMessagesInsideDialogs(newMessage: msg)
+			return
+		}
+		
+		let unreadRef = Database.database().reference().child("unread-messages-foreach").child(uid).child(msg.fromID!)
+
+		unreadRef.observeSingleEvent(of: .value) {
+			(snapshot) in
+			var flag:Bool = false
+			if snapshot.exists() && snapshot.childrenCount > 0 {
+				for index in self.messages.indices{
+					if self.messages[index].chatPartnerID()! == msg.fromID! {
+						self.messages[index].unreadCount = snapshot.childrenCount
+						flag = true
+						break
+					}
+				}
+				if !flag {
+					msg.unreadCount = snapshot.childrenCount
+				}
+				self.updateMessagesInsideDialogs(newMessage: msg)
+			}
+		}
+	}
 	
 	
 	
@@ -388,29 +424,61 @@ class MessagesController: UITableViewController {
 		// если диалогер уже есть в списке - удаляем его
 		for index in messages.indices {
 			if messages[index].chatPartnerID()! == newMessage.chatPartnerID()!{
+				newMessage.unreadCount = messages[index].unreadCount // перекидываем непрочтенные, если есть
 				messages.remove(at: index)
 				break
 			}
 		}
 		// вставляем в начало новое сообщ.
 		messages.insert(newMessage, at: 0)
+		
+		reloadTable()
+	}
+	
+	
+	
+	/// калькуляция непрочитанных сообщений каждого диалогера
+	private func countUnreadMessages(){
 
-		DispatchQueue.main.async {
-			self.tableView.reloadData()
+		// получаем весь словарь непрочтенных
+		let unreadRef = Database.database().reference().child("unread-messages-foreach").child(uid)
+
+		unreadRef.observeSingleEvent(of: .value) {
+			(snapshot) in
+
+			if let dictionary = snapshot.value as? [String:AnyObject] {
+				// устанавливаем в каждого диалогера кол-во непрочтенных
+				for index in self.messages.indices{
+					let keyName = self.messages[index].chatPartnerID()!
+					if dictionary.keys.contains(keyName){
+						self.messages[index].unreadCount = UInt(dictionary[keyName]!.count)
+					}
+					else {
+						self.messages[index].unreadCount = nil
+					}
+				}
+			}
+			else {
+				self.messages = self.messages.map({
+					(mes) -> Message in
+					mes.unreadCount = nil
+					return mes
+				})
+			}
+			self.firstReloadTable()
 		}
 	}
+	
+	
 
-	
-	
-	
 	
 	
 	
 	/// перезагрузка таблицы и данных
-	@objc private func reloadTableData(firstTime:Bool){
-		
-//		messages = Array(self.messagesDict.values) // здесь массив теряет свою длину
+	@objc private func firstReloadTable(){
 
+		allowIncomingSound = true
+		
 		if messages.isEmpty{
 			labelNoMessages?.text = status.nomessages.rawValue
 		}
@@ -424,43 +492,11 @@ class MessagesController: UITableViewController {
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
 		
-		DispatchQueue.main.async {
-			self.tableView.reloadData()
-			if firstTime {
-				self.setUnread()
-			}
-		}
+		reloadTable()
+	}
+	
+	
 
-	}
-	
-	
-	
-	
-	private var unreadDict = [String:Int]()
-	/// калькуляция непрочитанных сообщений каждого диалогера
-	private func countUnreadMessages(userID:String, count:Int){
-		
-		if unreadDict.keys.contains(userID){
-			unreadDict[userID]! += count
-		}
-		else {
-			unreadDict[userID] = count
-		}
-	}
-	
-	
-	
-	private func setUnread(){
-		messages.forEach {
-			(mes) in
-			if unreadDict.keys.contains(mes.chatPartnerID()!){
-				
-			}
-		}
-		
-		
-	}
-	
 	
 	
 	
@@ -510,6 +546,7 @@ class MessagesController: UITableViewController {
 	
 	
 	
+	
 	/// Проверка аутентиф. юзера и первое заполнение данных юзера
 	public func fetchUserAndSetupNavbarTitle(){
 		
@@ -532,6 +569,7 @@ class MessagesController: UITableViewController {
 	
 	
 	
+	
 	/// Отрисовка навбара с картинкой (этот метод может дергаться при регистрации из LoginController)
 	public func setupNavbarWithUser(user: User){
 		
@@ -542,11 +580,6 @@ class MessagesController: UITableViewController {
 		// устанавливаем индикацию онлайн
 		OnlineService.setUserStatus(status: true)
 
-		// чистим данные, т.к. если перелогинится под другим юзером они остаются
-//		messages.removeAll()
-//		messagesDict.removeAll()
-//		tableView.reloadData()
-		
 		drawLoading()
 		fetchDialogs()
 		
@@ -599,13 +632,11 @@ class MessagesController: UITableViewController {
 		// добавим клик к фотке для изменения ее
 		titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPhotoClick(sender:))))
 		titleView.isUserInteractionEnabled = true
-		
 	}
+	
 
 
-//	override var intrinsicContentSize: CGSize {
-//		return CGSize(width: 150, height: 36)
-//	}
+	
 
 	
 	@objc private func onLogout(){
@@ -643,7 +674,6 @@ class MessagesController: UITableViewController {
 			print(logoutError)
 			return
 		}
-		
 
 		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
 
@@ -768,6 +798,7 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 	
 	
 	
+	
 	private func playSoundFile(_ soundName:String) {
 		
 		if !allowIncomingSound { return }
@@ -788,6 +819,14 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 	}
 	
 	
+	
+	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
+	/// попытка перегрузить таблицу
+	/// [НЕ ИСПОЛЬЗУЕТСЯ, т.к. нашел более рациональное решение]
+	private func attemptReloadofTable(){
+		timer?.invalidate()
+		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.firstReloadTable), userInfo: nil, repeats: false)
+	}
 	
 }
 

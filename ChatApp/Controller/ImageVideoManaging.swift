@@ -18,6 +18,9 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 	/// клик на картинку (переслать фотку)
 	@objc public func onUploadClick(){
 		
+		waitScreen = WaitScreen(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+		view.addSubview(waitScreen!)
+		
 		let imagePickerController = UIImagePickerController()
 		
 		imagePickerController.allowsEditing = true
@@ -25,8 +28,10 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 		// разрешаем выбирать видеофайлы из библиотеки
 		imagePickerController.mediaTypes = [kUTTypeImage as String, kUTTypeMovie as String]
 		
-		flag = true
-		present(imagePickerController, animated: true, completion: nil)
+		selectMediaContentOpened = true
+		present(imagePickerController, animated: true, completion: {
+			self.waitScreen!.removeFromSuperview()
+		})
 	}
 	
 	
@@ -36,7 +41,7 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 		
 		var permission:Bool = true
-		flag = false
+		selectMediaContentOpened = false
 		
 		// если выбрали видеофайл
 		if let videoURL = info[UIImagePickerControllerMediaURL] as? URL{
@@ -225,7 +230,7 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 	
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-		flag = true
+		selectMediaContentOpened = true
 		dismiss(animated: true, completion: nil)
 	}
 	

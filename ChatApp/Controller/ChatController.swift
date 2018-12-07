@@ -23,7 +23,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	internal lazy var growingInputView: InputAccessory = {
 		let inputView = InputAccessory(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
-		inputView.chatLogController = self
+		inputView.chatController = self
 		return inputView
 	}()
 	
@@ -56,7 +56,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	private var containerViewBottomAnchor:NSLayoutConstraint?
 	private var disposeVar1:(DatabaseReference, UInt)!
 	private var disposeVar2:(DatabaseReference, UInt)!
-	internal var flag:Bool = false 			// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
+	internal var selectMediaContentOpened:Bool = false 	// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
 	private var dataArray = [[Message]]() 	// двумерный массив сообщений в секциях
 	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
 	
@@ -78,8 +78,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	private lazy var trancheCount:UInt = maxMessagesPerUpdate // сколько сообщений ожидается получить при вторичной подгрузке
 	
 	private var statusListeners = [UInt:DatabaseReference]() 	// для диспоза слушателей
-	private let delayBeforeReadUnreaded:Double = 1.0 // задержка перед тем как входящие непрочитанные станут прочитанными
-	
+	private let delayBeforeReadUnreaded:Double = 1.2 // задержка перед тем как входящие непрочитанные станут прочитанными
+	internal var waitScreen:WaitScreen?
 	
 	
 	
@@ -147,7 +147,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		super.viewDidDisappear(animated)
 		
 		// убиваем слушателя базы
-		if !flag{
+		if !selectMediaContentOpened{
 			NotificationCenter.default.removeObserver(self) // иначе при логауте будет ругатся, да и ни к чему хорошему это не приведет
 			disposeVar1?.0.removeObserver(withHandle: disposeVar1.1)
 			disposeVar2?.0.removeObserver(withHandle: disposeVar2.1)
@@ -312,7 +312,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 
 	
-	
+	// MARK: получение сообщений
 	/// первичное получение сообощений с БД + добавляем слушатель на новые
 	private func fetchMessages(){
 
@@ -379,13 +379,18 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 						Database.database().reference().child("user-messages").child(message.fromID!).child(uid).child(savedSnap.key).setValue(1)
 						// обновляем статус о прочтении в самом сообщении
 						Database.database().reference().child("messages").child(snapshot.key).child("readStatus").setValue(true)
-//						message.readStatus = true
+						// message.readStatus = true
 					}
 
 					self.messages.append(message)
 					
 					//  обновляем таблицу только после получения всех сообщений и последюущих (если будут)
 					if curCount >= allCount {
+						if curCount == allCount{
+							// во избежании накопления, полностью убираем инфу о непрочитанных
+							let unreadRef = Database.database().reference().child("unread-messages-foreach").child(uid).child(toID)
+							unreadRef.removeValue()
+						}
 						self.updateCollectionView()
 					}
 			
@@ -696,7 +701,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
 
 	
-	
+	// MARK: отправка сообщения
 	///  присоединяем к сообщению required поля и отправляем в БД
 	internal func sendMessage_with_Properties(properties: [String:Any]){
 		let ref = Database.database().reference().child("messages")
@@ -707,15 +712,16 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		let fromID = Auth.auth().currentUser!.uid
 		let timestamp:Int = Int(NSDate().timeIntervalSince1970)
 		
-		var self_ID = childRef.description().split(separator: "-").last!
-		self_ID = "-" + self_ID
+		let self_ID = childRef.description().split(separator: "/").last!
+//		self_ID = "-" + self_ID
+
 		
 		var values:[String:Any] = [
-			"toID"		:toID,
-			"fromID"	:fromID,
-			"timestamp"	:timestamp,
-			"readStatus":false,
-			"self_ID"	:self_ID
+			"toID"			:toID,
+			"fromID"		:fromID,
+			"timestamp"		:timestamp,
+			"readStatus"	:false,
+			"self_ID"		:self_ID
 		]
 		
 		// добавляем к словарю values ключ + значения словаря properties (key = $0, value = $1)
@@ -738,6 +744,9 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			// создаем структуру цепочки сообщений ОТ определенного пользователя (тут будут лишь ID сообщений)
 			let recipientRef = messRef.child(toID).child(fromID)
 			recipientRef.updateChildValues([messageID: 0])
+			// тоже самое записываем и в ветку с непрочтенными
+			let unreadRef = Database.database().reference().child("unread-messages-foreach").child(toID).child(fromID)
+			unreadRef.updateChildValues([messageID: 0])
 		}
 	}
 	

@@ -31,6 +31,7 @@ class Message: NSObject {
 	public var geo_lon:NSNumber?
 	
 	public var readStatus:Bool?
+	public var unreadCount:UInt?
 	
 	
 	public func chatPartnerID() -> String? {
@@ -45,22 +46,22 @@ class Message: NSObject {
 	init(dictionary: [String:Any]){
 		super.init()
 		
-		self_ID		= dictionary["self_ID"] as? String
-		fromID 		= dictionary["fromID"] as? String
-		toID 		= dictionary["toID"] as? String
-		timestamp 	= dictionary["timestamp"] as? NSNumber
-		text 		= dictionary["text"] as? String
+		self_ID			= dictionary["self_ID"] as? String
+		fromID 			= dictionary["fromID"] as? String
+		toID 			= dictionary["toID"] as? String
+		timestamp 		= dictionary["timestamp"] as? NSNumber
+		text 			= dictionary["text"] as? String
 		
-		imageUrl 	= dictionary["imageUrl"] as? String
-		imageWidth 	= dictionary["imageWidth"] as? NSNumber
-		imageHeight = dictionary["imageHeight"] as? NSNumber
+		imageUrl 		= dictionary["imageUrl"] as? String
+		imageWidth 		= dictionary["imageWidth"] as? NSNumber
+		imageHeight 	= dictionary["imageHeight"] as? NSNumber
 		
-		videoUrl	= dictionary["videoUrl"] as? String
+		videoUrl		= dictionary["videoUrl"] as? String
 		
-		geo_lat 	= dictionary["geo_lat"] as? NSNumber
-		geo_lon 	= dictionary["geo_lon"] as? NSNumber
+		geo_lat 		= dictionary["geo_lat"] as? NSNumber
+		geo_lon 		= dictionary["geo_lon"] as? NSNumber
 		
-		readStatus	= dictionary["readStatus"] as? Bool
+		readStatus		= dictionary["readStatus"] as? Bool
 	}
 	
 	

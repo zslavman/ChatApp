@@ -64,7 +64,8 @@ class WaitScreen: UIView {
 		
 		NSLayoutConstraint.activate([
 			activityIndicator.centerXAnchor.constraint(equalTo: blackView.centerXAnchor),
-			activityIndicator.centerYAnchor.constraint(equalTo: blackView.topAnchor, constant: 120),
+			activityIndicator.centerYAnchor.constraint(equalTo: blackView.centerYAnchor),
+//			activityIndicator.centerYAnchor.constraint(equalTo: blackView.topAnchor, constant: 120),
 			activityIndicator.widthAnchor.constraint(equalToConstant: 80),
 			activityIndicator.heightAnchor.constraint(equalToConstant: 80)
 		])

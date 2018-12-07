@@ -66,7 +66,7 @@ class UserCell: UITableViewCell {
 	
 	public let newMessCount:UILabel = {
 		let label = UILabel()
-		label.text = "1"
+		label.text = "0"
 		label.font = UIFont.boldSystemFont(ofSize: 12)
 		label.textColor = UIColor.white
 		label.textAlignment = .center
@@ -142,6 +142,14 @@ class UserCell: UITableViewCell {
 		userID = user.id
 		textLabel?.text = user.name
 		
+		if let count = msg.unreadCount, count > 0 {
+			newMessBack.isHidden = false
+			newMessCount.text = count.description
+		}
+		else {
+			newMessBack.isHidden = true
+		}
+		
 		if user.isOnline {
 			onlinePoint.backgroundColor = UserCell.onLineColor
 		}
@@ -181,7 +189,7 @@ class UserCell: UITableViewCell {
 		if let seconds = msg.timestamp?.doubleValue{
 			timeLabel.text = Calculations.convertTimeStamp(seconds: seconds, shouldReturn: true)
 		}
-		newMessBack.isHidden = false
+
 	}
 	
 
@@ -196,6 +204,7 @@ class UserCell: UITableViewCell {
 		iTag = ""
 		// если оставить так, то после каждого обновлении таблицы фотки блымнут
 		profileImageView.image = UIImage(named: "default_profile_image")
+		newMessBack.isHidden = true
 	}
 	
 	

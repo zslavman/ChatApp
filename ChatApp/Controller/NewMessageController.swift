@@ -42,6 +42,10 @@ class NewMessageController: UITableViewController {
 		// section headers не будут прилипать сверху таблицы
 		// self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
 		
+		// чтоб до viewDidLoad не отображалась дефолтная таблица
+		tableView.tableFooterView = UIView(frame: CGRect.zero)
+		tableView.backgroundColor = UIColor.white
+		
 		navigationItem.title = "Все юзеры"
 
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
@@ -251,6 +255,18 @@ class NewMessageController: UITableViewController {
 		dismiss(animated: true) {
 			// дожидаемся окончания убивания этого контроллера и в контроллере-родителе запускаем ф-цию goToChat()
 			let user = self.twoD[indexPath.section][indexPath.row]
+			
+			// чиститим непрочит. сообщения от юзера(если таковой был ранее) с которым идем на диалог
+			var indexPath:IndexPath? = nil
+			for (index, value) in self.messagesController!.messages.enumerated(){
+				if value.chatPartnerID() == user.id {
+					indexPath = IndexPath(row: index, section: 0)
+					self.messagesController!.messages[index].unreadCount = nil
+					break
+				}
+			}
+			self.messagesController?.savedIndexPath = indexPath
+			
 			self.messagesController?.goToChatWith(user: user)
 		}
 	}
