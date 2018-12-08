@@ -156,7 +156,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	private var pWidthAnchor:NSLayoutConstraint? // ширина фотки
 	
 	private var screenSize = CGSize.zero
-	internal var waitScreen:WaitScreen?
+//	internal var waitScreen:WaitScreen?
 	
 	
 	
@@ -285,9 +285,9 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 
 	
 	internal func waitResponse(){
-		
-		waitScreen = WaitScreen(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
-		view.addSubview(waitScreen!)
+		AppDelegate.waitScreen = WaitScreen()
+//		waitScreen = WaitScreen()
+		view.addSubview(AppDelegate.waitScreen!)
 		// let finded = blackView.subviews.filter{$0.accessibilityIdentifier == "actInd"}
 	}
 	
@@ -341,13 +341,13 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			if e.count == 0 || p.count == 0 {
-				waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
+				AppDelegate.waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
 				return
 			}
 		}
 		else {
 			if e.count == 0 || p.count == 0 || n.count == 0 {
-				waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
+				AppDelegate.waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
 				return
 			}
 		}

@@ -4,7 +4,7 @@
 //
 //  Created by Zinko Vyacheslav on 28.11.2018.
 //  Copyright © 2018 Zinko Vyacheslav. All rights reserved.
-//
+//	Класс убивается самостоятельно если вызвать setInfo() иначе вручную удалять из вьюшки
 
 import UIKit
 
@@ -20,8 +20,7 @@ class WaitScreen: UIView {
 	
 	
 	override init(frame: CGRect) {
-		super.init(frame: frame)
-		
+		super.init(frame: UIScreen.main.bounds)
 		setup()
 	}
 	
@@ -115,7 +114,6 @@ class WaitScreen: UIView {
 	
 	
 	
-	
 	public func setInfo(str:String){
 		
 		activityIndicator.stopAnimating()
@@ -130,6 +128,7 @@ class WaitScreen: UIView {
 			}, completion: {
 				(bool) in
 				self.removeFromSuperview()
+				AppDelegate.waitScreen = nil
 			})
 		}
 	}

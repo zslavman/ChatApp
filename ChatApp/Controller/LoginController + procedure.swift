@@ -28,7 +28,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 		
 		present(picker, animated: true, completion: {
 			// при первом клике долго подгружает библиотеку фоток, показываем отклик, что юзер тапнул по иконке
-			self.waitScreen!.removeFromSuperview()
+			AppDelegate.waitScreen!.removeFromSuperview()
 		})
 	}
 	
@@ -64,12 +64,12 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			(authResult, error) in
 			if error != nil {
 				print(error!.localizedDescription)
-				self.waitScreen?.setInfo(str: error!.localizedDescription)
+				AppDelegate.waitScreen?.setInfo(str: error!.localizedDescription)
 				return
 			}
 			
 			// если всё ок - заходим в учётку
-			self.waitScreen?.removeFromSuperview()
+			AppDelegate.waitScreen?.removeFromSuperview()
 			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
 			self.dismiss(animated: true, completion: nil)
 		}
@@ -89,7 +89,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			
 			guard let user = authResult?.user, error == nil else {
 				let strErr = error!.localizedDescription
-				self.waitScreen?.setInfo(str: strErr)
+				AppDelegate.waitScreen?.setInfo(str: strErr)
 				print(strErr)
 				return
 			}
@@ -125,7 +125,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 					(metadata, error) in
 					if let error = error {
 						print(error.localizedDescription)
-						self.waitScreen?.setInfo(str: error.localizedDescription)
+						AppDelegate.waitScreen?.setInfo(str: error.localizedDescription)
 						return
 					}
 					// когда получаем метадату, даем запрос на получение ссылки на эту картинку (разработчкики Firebase 5 - дауны)
@@ -134,7 +134,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 						
 						if let errorFromGettinfPicLink = errorFromGettinfPicLink {
 							print(errorFromGettinfPicLink.localizedDescription)
-							self.waitScreen?.setInfo(str: errorFromGettinfPicLink.localizedDescription)
+							AppDelegate.waitScreen?.setInfo(str: errorFromGettinfPicLink.localizedDescription)
 							return
 						}
 						values["profileImageUrl"] = url!.absoluteString
@@ -164,7 +164,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
-			self.waitScreen?.removeFromSuperview()
+			AppDelegate.waitScreen?.removeFromSuperview()
 			self.dismiss(animated: true, completion: nil)
 			print("Удачно сохранили юзера")
 		})

@@ -80,7 +80,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	private var statusListeners = [UInt:DatabaseReference]() 	// для диспоза слушателей
 	private let delayBeforeReadUnreaded:Double = 1.2 // задержка перед тем как входящие непрочитанные станут прочитанными
-	internal var waitScreen:WaitScreen?
 	
 	
 	
