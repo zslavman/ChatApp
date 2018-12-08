@@ -68,6 +68,7 @@ class UserCell: UITableViewCell {
 	public let newMessCount:UILabel = {
 		let label = UILabel()
 		label.text = "0"
+//		label.adjustsFontSizeToFitWidth = true
 		label.font = UIFont.boldSystemFont(ofSize: 12)
 		label.textColor = UIColor.white
 		label.textAlignment = .center

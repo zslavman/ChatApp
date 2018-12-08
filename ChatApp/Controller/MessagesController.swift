@@ -129,6 +129,9 @@ class MessagesController: UITableViewController {
 	private func fetchDialogs(){
 		
 		guard let uid = Auth.auth().currentUser?.uid else { return } // если взять uid из self то при регистрации тут выйдет
+		if self.uid == nil {
+			self.uid = uid
+		}
 		
 		var dialogsStartCount:UInt = 0 // общее кол-во диалогов
 		var dialogsLoadedCount:UInt = 0
@@ -147,12 +150,12 @@ class MessagesController: UITableViewController {
 			
 			
 			// получаем ID юзеров, которые писали owner'у (цикл из диалогов)
-			self.refUserMessages.observe(.childAdded, with: {
+			let newMesListener = self.refUserMessages.observe(.childAdded, with: {
 				(snapshot) in
 
 				dialogsLoadedCount += 1
 				let userID = snapshot.key
-				let ref_DialogforEachOtherUser = self.refUserMessages_original.child(self.uid).child(userID)
+				let ref_DialogforEachOtherUser = self.refUserMessages_original.child(uid).child(userID)
 				
 				//***********
 				// если это последний скачиваемый диалогер, смотрим сколько в диалоге сообщений
@@ -217,6 +220,7 @@ class MessagesController: UITableViewController {
 				// записываем слушателя (на изменение диалога) и ссылки в словарь (для дальнейшего диспоза)
 				self.hendlers[listener1] = ref_DialogforEachOtherUser
 			})
+			self.hendlers[newMesListener] = self.refUserMessages // фикс -> вышел, зарегился, пишешь кому-то и ошибка
 		})
 	}
 	

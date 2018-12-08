@@ -124,12 +124,12 @@ class ChatMessageCell: UICollectionViewCell {
 			// для текста сообщения
 			textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8),
 			textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor),
-			textView.topAnchor.constraint(equalTo: topAnchor),
+			textView.topAnchor.constraint(equalTo: bubbleView.topAnchor),
 			textView.heightAnchor.constraint(equalTo: heightAnchor),
 			
 			// для фона сообщения
-			bubbleView.topAnchor.constraint(equalTo: self.topAnchor),
-			bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor)
+			bubbleView.topAnchor.constraint(equalTo: self.topAnchor, constant: 7),
+			bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor, constant: -14)
 		])
 		
 		checkMarkWidth = checkMark.widthAnchor.constraint(equalToConstant: 23)
@@ -199,7 +199,7 @@ class ChatMessageCell: UICollectionViewCell {
 		// изменим ширину фона сообщения (высота же определяется в ChatLogController sizeForItemAt)
 		if let str = message.text{
 			let estWidth = Calculations.estimatedFrameForText(text: str).width + 30
-			bubbleWidthAnchor?.constant = estWidth < 60 ? 70 : estWidth
+			bubbleWidthAnchor?.constant = estWidth < 80 ? 80 : estWidth
 		}
 		
 		// если это исходящее сообщ. - показываем статус прочитанности

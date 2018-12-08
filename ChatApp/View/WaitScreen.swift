@@ -79,6 +79,8 @@ class WaitScreen: UIView {
 		textBacking.layer.masksToBounds = true
 		blackView.addSubview(textBacking)
 		textBacking.isHidden = true
+		textBacking.layer.borderWidth = 1.4
+		textBacking.layer.borderColor = UIColor.white.cgColor
 		
 		NSLayoutConstraint.activate([
 			textBacking.centerXAnchor.constraint(equalTo: blackView.centerXAnchor),

@@ -260,7 +260,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		
 		// получаем ожидаемую высоту
 		if let text = message.text {
-			hei = Calculations.estimatedFrameForText(text: text).height + 20 + 10 //(10 - для времени)
+			hei = Calculations.estimatedFrameForText(text: text).height + 20 + 10 + 12 //(10 - для времени, 12 - для простора)
 		}
 		else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
 			// h1/w1 = h2/w2  ->  h1 = h2/w2 * w1
