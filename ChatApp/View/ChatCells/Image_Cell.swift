@@ -16,7 +16,7 @@ class Image_Cell: ChatMessageCell {
 	private lazy var messageImageView:UIImageView = {
 		let messImag = UIImageView()
 		messImag.translatesAutoresizingMaskIntoConstraints = false
-		messImag.contentMode = .scaleAspectFill
+		messImag.contentMode = .scaleToFill
 		messImag.layer.cornerRadius = ChatMessageCell.cornRadius
 		messImag.clipsToBounds = true
 		messImag.isUserInteractionEnabled = true

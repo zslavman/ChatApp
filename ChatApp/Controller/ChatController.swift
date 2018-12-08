@@ -6,6 +6,7 @@
 //  Copyright © 2018 Zinko Vyacheslav. All rights reserved.
 //
 
+
 import UIKit
 import Firebase
 import CoreLocation
@@ -130,6 +131,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	
 	
+	
+	
 	/// прицепляем "аксессуар" в виде вьюшки на клавиатуру
 	override var inputAccessoryView: UIView? {
 		get {
@@ -141,7 +144,11 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	}
 	
 	
-	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+//		// автоматический выезд клавиатуры
+//		growingInputView.inputTextField.becomeFirstResponder()
+	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
@@ -340,6 +347,12 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				self.collectionView?.refreshControl?.endRefreshing()
 				self.collectionView?.refreshControl = nil
 				self.allFetched = true
+				// автоматический выезд клавиатуры
+				if allCount == 0 {
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+						self.growingInputView.inputTextField.becomeFirstResponder()
+					})
+				}
 			}
 
 			let tempValue = allCount == 0 ? 1 : allCount // нельзя отправлять запрос с toLast = 0

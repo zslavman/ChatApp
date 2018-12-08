@@ -57,7 +57,6 @@ class FindUserForChatController: UITableViewController {
 
 	
 	
-	
 	private func drawSearchBar(){
 		
 		tableView.addSubview(searchBar)
@@ -70,11 +69,6 @@ class FindUserForChatController: UITableViewController {
 	
 	
 	
-	
-	
-	
-	
-
 	private func fetchUsers(){
 		
 		let ref = Database.database().reference(withPath: "users")
@@ -143,8 +137,7 @@ class FindUserForChatController: UITableViewController {
 	
 	
 	
-	
-	
+
 	
 	private func attemptReloadofTable(){
 		timer?.invalidate()
@@ -225,8 +218,6 @@ class FindUserForChatController: UITableViewController {
 		
 		// цвет выделения при клике на ячейку
 		let selectionColor = UIView()
-//		selectionColor.layer.borderWidth = 1
-//		selectionColor.layer.borderColor = UIColor.white.cgColor
 		selectionColor.backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
 		cell.selectedBackgroundView = selectionColor
 
