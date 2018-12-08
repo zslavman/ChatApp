@@ -20,7 +20,7 @@
 		563D17882189E351000DFAD2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D17872189E351000DFAD2 /* User.swift */; };
 		563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D73AE2194682C0098300C /* ChatMessageCell.swift */; };
 		563DCA0221BB2720007CD452 /* MySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DCA0121BB2720007CD452 /* MySection.swift */; };
-		563EFAE02189D04900F16BF8 /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* NewMessageController.swift */; };
+		563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */; };
 		56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56536F8B2189113F0087064D /* GoogleService-Info.plist */; };
 		565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565BEE8321B0A48A0028D474 /* Video_Cell.swift */; };
 		566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDA82186F8D50053F4A0 /* AppDelegate.swift */; };
@@ -51,7 +51,7 @@
 		563D17872189E351000DFAD2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		563D73AE2194682C0098300C /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		563DCA0121BB2720007CD452 /* MySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySection.swift; sourceTree = "<group>"; };
-		563EFADF2189D04900F16BF8 /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
+		563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserForChatController.swift; sourceTree = "<group>"; };
 		56536F8B2189113F0087064D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		565BEE8321B0A48A0028D474 /* Video_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video_Cell.swift; sourceTree = "<group>"; };
 		566BEDA52186F8D50053F4A0 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -162,9 +162,9 @@
 		566BEDBA2186FF940053F4A0 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */,
 				566BEDAA2186F8D50053F4A0 /* MessagesController.swift */,
-				563EFADF2189D04900F16BF8 /* NewMessageController.swift */,
+				56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */,
+				563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */,
 				566BEDBB2186FFF00053F4A0 /* LoginController.swift */,
 				563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */,
 				56BEAB122191BD960008AF6B /* ChatController.swift */,
@@ -329,7 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56BEAB132191BD960008AF6B /* ChatController.swift in Sources */,
-				563EFAE02189D04900F16BF8 /* NewMessageController.swift in Sources */,
+				563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */,
 				56E5A50A21B2019C0076EB67 /* Map_Cell.swift in Sources */,
 				566BEDAB2186F8D50053F4A0 /* MessagesController.swift in Sources */,
 				5638D8E421923CA400EC2FE3 /* Message.swift in Sources */,

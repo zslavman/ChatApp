@@ -95,7 +95,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: buttonImg, style: .plain, target: self, action: #selector(onLocationClick))
 		
 		let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
-		layout?.minimumLineSpacing = 12 // расстояние сверху и снизу ячеек (по дефолту = 12)
+		layout?.minimumLineSpacing = 0 // расстояние сверху и снизу ячеек (по дефолту = 12)
 		// layout?.headerReferenceSize = CGSize(width: 150, height: 25)
 		
 		// вставляем поля отделяющие чат сверху и снизу

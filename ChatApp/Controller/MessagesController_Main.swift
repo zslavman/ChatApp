@@ -29,10 +29,10 @@ extension MessagesController {
 		super.viewDidDisappear(animated)
 		
 		// перезагружаем ячейку по которой кликнули для обнуления кол-ва непрочит. сообщ.
-//		if let savedIndexPath = savedIndexPath {
-		if savedIndexPath != nil {
-			reloadTable()
-//			tableView.reloadRows(at: [savedIndexPath], with: .none)
+		if let savedIndexPath = savedIndexPath {
+			messages[savedIndexPath.row].unreadCount = nil
+			currentList[0].cells[savedIndexPath.row].unreadCount = nil
+			tableView.reloadRows(at: [savedIndexPath], with: .none)
 			self.savedIndexPath = nil
 		}
 	}
@@ -139,8 +139,7 @@ extension MessagesController {
 		
 		let messag = currentList[0][indexPath.row]
 		
-		// сначала обнуляем данные о непрочтенных, в viewDidDisappear обновим вьюшку
-		messages[indexPath.row].unreadCount = nil
+		// для удаления непрочтенных сообщ. если таковые будут имется
 		savedIndexPath = indexPath
 		
 		guard let chatPartnerID = messag.chatPartnerID() else { return } 		// достаем ID юзера (кому собираемся писать)

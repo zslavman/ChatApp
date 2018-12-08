@@ -43,17 +43,20 @@ class MessagesController: UITableViewController {
 	public var savedIndexPath:IndexPath?		// тут будет путь к ячейке по которой кликнули
 	
 	
-	public var messages:[Message] = [] 			// массив диалогов (здесь проходит вся математика манипуляций, во вьюшки он не идет)
-												// после завершения мманевров с данными всегда необходимо вызвать reloadTable()
-	var currentList: [MySection]! = nil			// то что отображается после манипуляций с messages (для вьюшек)
+	// массив диалогов (здесь проходит вся математика манипуляций, во вьюшки он не идет)
+	// после завершения мманевров с данными всегда необходимо вызвать reloadTable()
+	// но, если время в ячейке не придет новое - то и никакиие другие параметры не обновятся!!
+	// т.е. для обновления статуса непрочтенности необходимо записать новый статус в оба массива
+	public var messages:[Message] = []
+	var currentList: [MySection]! = nil // то что отображается после манипуляций с messages (для вьюшек)
 	
 	let animator = TableAnimator<MySection>()
 	
-	//	let animator: TableAnimator<MySection> = {
-	//		let config = TableAnimatorConfiguration<MySection>(cellMoveCalculatingStrategy: MoveCalculatingStrategy<Message>.top, sectionMoveCalculatingStrategy: MoveCalculatingStrategy<MySection>.bottom, isConsistencyValidationEnabled: true)
-	//		let a = TableAnimator<MySection>.init(configuration: config)
-	//		return a
-	//	}()
+//	let animator: TableAnimator<MySection> = {
+//		let config = TableAnimatorConfiguration<MySection>(cellMoveCalculatingStrategy: MoveCalculatingStrategy<Message>.top, sectionMoveCalculatingStrategy: MoveCalculatingStrategy<MySection>.bottom, isConsistencyValidationEnabled: true)
+//		let a = TableAnimator<MySection>.init(configuration: config)
+//		return a
+//	}()
 	
 	
 	
@@ -61,8 +64,7 @@ class MessagesController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		currentList = [MySection(id: 0, cells: messages)]
-		// currentList = [MySection(cells: messages)]
+		currentList = [MySection(cells: messages)]
 
 		let bttnImage1 = UIImage(named: "bttn_logout")
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
@@ -263,27 +265,6 @@ class MessagesController: UITableViewController {
 	
 	
 
-	internal func reloadTable(){
-		
-		// в этот момент, самые свежие изменения есть только в messages
-		// с свою очередь, currentList еще этих изменений не имеет
-		let toList:[MySection] = [MySection(id: 0, cells: messages)]
-		
-		tableView.apply(owner			: self,
-						newList			: toList,
-						animator		: animator,
-						animated		: true,
-						options			: [.cancelPreviousAddedOperations, .withoutAnimationForEmptyTable],
-						getCurrentListBlock: { $0.currentList },
-						setNewListBlock	: { $0.currentList = $1 },
-						rowAnimation	: .fade,
-						completion		: nil,
-						error			: nil)
-		
-		print("перезагружаем таблицу")
-	}
-	
-
 	
 	
 	// проверка кол-ва непрочтенных сообщений (вызывается при каждом приходе нового сообщ.)
@@ -388,6 +369,10 @@ class MessagesController: UITableViewController {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
+		messages.sort(by: {
+			(message1, message2) -> Bool in
+			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+		})
 		
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
@@ -396,6 +381,31 @@ class MessagesController: UITableViewController {
 	
 	
 
+	
+	internal func reloadTable(){
+		
+		messages.sort(by: {
+			(message1, message2) -> Bool in
+			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
+		})
+		
+		// в этот момент, самые свежие изменения есть только в messages
+		// с свою очередь, currentList еще этих изменений не имеет
+		let toList:[MySection] = [MySection(cells: messages)]
+		
+		tableView.apply(owner			: self,
+						newList			: toList,
+						animator		: animator,
+						animated		: true,
+						options			: [.cancelPreviousAddedOperations, .withoutAnimationForEmptyTable],
+						getCurrentListBlock: { $0.currentList },
+						setNewListBlock	: { $0.currentList = $1 },
+						rowAnimation	: .fade,
+						completion		: nil,
+						error			: nil)
+		
+		print("перезагружаем таблицу")
+	}
 	
 	
 	
@@ -588,7 +598,7 @@ class MessagesController: UITableViewController {
 	
 	
 	@objc private func onNewMessageClick(){
-		let newMessContr = NewMessageController()
+		let newMessContr = FindUserForChatController()
 		newMessContr.messagesController = self
 		newMessContr.owner = owner
 		let navContr = UINavigationController(rootViewController: newMessContr)

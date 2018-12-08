@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class NewMessageController: UITableViewController {
+class FindUserForChatController: UITableViewController {
 
 	private var cellID = "cellID"
 	private var users = [User]()
@@ -51,8 +51,8 @@ class NewMessageController: UITableViewController {
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
 		fetchUsers()
-		
 	}
+		
 	
 
 	
@@ -261,7 +261,6 @@ class NewMessageController: UITableViewController {
 			for (index, value) in self.messagesController!.messages.enumerated(){
 				if value.chatPartnerID() == user.id {
 					indexPath = IndexPath(row: index, section: 0)
-					self.messagesController!.messages[index].unreadCount = nil
 					break
 				}
 			}

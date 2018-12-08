@@ -21,13 +21,12 @@ public class Message: TableAnimatorCell {
 	public typealias UpdateCellType = NSNumber
 	public var updateField: NSNumber
 	
+	// Equatable
 	public static func == (lhs: Message, rhs: Message) -> Bool {
 		return lhs.timestamp! == rhs.timestamp!
 	}
 	
-	
-	
-	
+
 	// @objc - для использования автозаполнялки (экземпляр.setValuesForKeys) переменных класа
 	public var fromID:String?
 	public var toID:String?
@@ -58,7 +57,7 @@ public class Message: TableAnimatorCell {
 
 	
 	init(dictionary: [String:Any]){
-//		super.init()
+		// super.init()
 		
 		self_ID			= dictionary["self_ID"] as? String
 		fromID 			= dictionary["fromID"] as? String
