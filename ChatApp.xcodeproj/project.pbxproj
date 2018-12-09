@@ -11,6 +11,7 @@
 		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
 		5637FD1521B365620015CAAF /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
+		56394A1621BD69E10026C7EF /* UIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56394A1521BD69E10026C7EF /* UIConfig.swift */; };
 		5639652A21924CA000691334 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639652921924CA000691334 /* UserCell.swift */; };
 		56397AF721BA9BEA00372B61 /* MessagesController_Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */; };
 		5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */; };
@@ -42,6 +43,7 @@
 		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
 		5637FD1421B365620015CAAF /* Calculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculations.swift; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		56394A1521BD69E10026C7EF /* UIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConfig.swift; sourceTree = "<group>"; };
 		5639652921924CA000691334 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController_Main.swift; sourceTree = "<group>"; };
 		5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVideoManaging.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				563D17862189E320000DFAD2 /* Model */,
 				566BEDBA2186FF940053F4A0 /* Controller */,
 				566BEDA82186F8D50053F4A0 /* AppDelegate.swift */,
+				56394A1521BD69E10026C7EF /* UIConfig.swift */,
 				566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */,
 				566BEDAF2186F8D70053F4A0 /* Assets.xcassets */,
 				5637D90D21A36C9D00BA9717 /* pipk.mp3 */,
@@ -349,6 +352,7 @@
 				56397AF721BA9BEA00372B61 /* MessagesController_Main.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
 				5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */,
+				56394A1621BD69E10026C7EF /* UIConfig.swift in Sources */,
 				563DCA0221BB2720007CD452 /* MySection.swift in Sources */,
 				5637FD1521B365620015CAAF /* Calculations.swift in Sources */,
 			);

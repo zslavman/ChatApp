@@ -59,7 +59,6 @@ class MessagesController: UITableViewController {
 //	}()
 	
 	
-	
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -76,22 +75,13 @@ class MessagesController: UITableViewController {
 		chekIfUserLoggedIn()
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
+		tableView.separatorColor = UIConfig.mainThemeColor.withAlphaComponent(0.5)
 		
 		let url = Bundle.main.url(forResource: "pipk", withExtension: "mp3")!
 		do { audioPlayer = try AVAudioPlayer(contentsOf: url) }
 		catch { print("error loading file") }
 		
-		if let pp = navigationController?.navigationBar.heightAnchor {
-			print("pp = \(pp)")
-		}
-		
 	}
-	
-	
-	override func viewDidLayoutSubviews() {
-		print("5454454545454 = \(45)")
-	}
-
 	
 	
 	
@@ -552,8 +542,9 @@ class MessagesController: UITableViewController {
 		titleView.isUserInteractionEnabled = true
 	}
 	
-
-	private var avaHeightAnchor:NSLayoutConstraint?
+	
+	
+	
 	
 	public func setupNavbarWithUser(user: User){
 		
@@ -566,45 +557,49 @@ class MessagesController: UITableViewController {
 		drawLoading()
 		fetchDialogs()
 		
+		if isViewLoaded{
+			extractedFunc()
+		}
+	}
+	
+	
+	
+	private var avaHeightAnchor:NSLayoutConstraint?
+	private var avaWidthAnchor:NSLayoutConstraint?
+	
+	private func extractedFunc() {
 		// фотка
 		profileImageView = UIImageView()
 		profileImageView.translatesAutoresizingMaskIntoConstraints = false
 		profileImageView.contentMode = .scaleAspectFill
 		profileImageView.layer.cornerRadius = 18
 		profileImageView.clipsToBounds = true
-		profileImageView.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+		profileImageView.image = UIImage(named: "default_profile_image")
 		if let profileImageUrl = owner.profileImageUrl {
 			profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
 		}
-		print("aaaaaaaaa")
 		NSLayoutConstraint.activate([
-			profileImageView.widthAnchor.constraint(equalToConstant: 32)
+			profileImageView.widthAnchor.constraint(equalToConstant: 32),
+			profileImageView.heightAnchor.constraint(equalToConstant: 32)
 		])
-//		avaHeightAnchor = profileImageView.heightAnchor.co
-		//		profileImageView.heightAnchor.constraint(equalToConstant: 32)
-		//		profileImageView.heightAnchor.constraint(equalTo: navigationController!.navigationBar.heightAnchor)
+		profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPhotoClick(sender:))))
+		profileImageView.isUserInteractionEnabled = true
 		
 		let nameLabel = UILabel()
 		nameLabel.text = owner.name
 		nameLabel.textColor = UIColor.white
 		nameLabel.adjustsFontSizeToFitWidth = true
+		nameLabel.minimumScaleFactor = 0.9
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false
-
+		
 		let stackView = UIStackView(arrangedSubviews: [profileImageView, nameLabel])
 		stackView.axis = .horizontal
 		stackView.spacing = 6
 		stackView.backgroundColor = UIColor.orange
 		stackView.frame.size = CGSize(width: profileImageView.frame.width + nameLabel.frame.width, height: max(nameLabel.frame.height, profileImageView.frame.height))
-
+		
 		navigationItem.titleView = stackView
 	}
-	
-	
-	
-	
-	
-	
-	
 	
 	
 
@@ -717,12 +712,17 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 	
 	@objc internal func onPhotoClick(sender: UITapGestureRecognizer){
 		
+		AppDelegate.waitScreen = WaitScreen()
+		view.addSubview(AppDelegate.waitScreen!)
+		
 		let picker = UIImagePickerController()
 		
 		picker.delegate = self
 		picker.allowsEditing = true
 		
-		present(picker, animated: true, completion: nil)
+		present(picker, animated: true, completion: {
+			AppDelegate.waitScreen!.removeFromSuperview()
+		})
 	}
 	
 	

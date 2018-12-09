@@ -173,7 +173,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		collectionView?.keyboardDismissMode = .interactive
 		// collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
 		
-		collectionView?.backgroundColor = UIColor(r: 45, g: 127, b: 193)
+		collectionView?.backgroundColor = UIConfig.mainThemeColor
 		
 		screenSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
 		

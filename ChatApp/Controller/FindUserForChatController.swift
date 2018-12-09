@@ -32,9 +32,14 @@ class FindUserForChatController: UITableViewController {
 		sb.translatesAutoresizingMaskIntoConstraints = false
 		return sb
 	}()
+	private var searchController:UISearchController!
+//	private var fetchResultsController:NSFetchedResultsController
+	private var filteredResultArray = [[User]]()
 	
 	
-
+	
+	
+	
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,29 +47,61 @@ class FindUserForChatController: UITableViewController {
 		// section headers не будут прилипать сверху таблицы
 		// self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
 		
+		fetchUsers()
+		
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
 		
 		navigationItem.title = "Все юзеры"
-
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
-		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
-		fetchUsers()
-	}
+		searchController = UISearchController(searchResultsController: nil)
 		
+		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
+		tableView.sectionIndexColor = UIConfig.mainThemeColor
+		tableView.separatorColor = UIConfig.mainThemeColor.withAlphaComponent(0.5)
+		
+		setupSearchBar()
+	}
 	
+		
 
 	
 	
-	private func drawSearchBar(){
+	private func setupSearchBar(){
 		
-		tableView.addSubview(searchBar)
+		guard #available(iOS 11.0, *) else { return }
 		
-		searchBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-		searchBar.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-		searchBar.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		navigationItem.searchController = searchController
+		navigationItem.hidesSearchBarWhenScrolling = false
+		//searchController.searchResultsUpdater = self
+		//searchController.searchBar.delegate = self
+		
+		//отключаем затемнение вьюконтроллера при вводе
+		searchController.dimsBackgroundDuringPresentation = false
+		
+		searchController.searchBar.barTintColor = .white
+		searchController.searchBar.tintColor = UIConfig.mainThemeColor
+		searchController.searchBar.searchBarStyle = .minimal
+		searchController.searchBar.backgroundImage = UIImage()
+		searchController.searchBar.backgroundColor = .clear
+		// цвет текста в поиске
+		// UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIConfig.mainThemeColor]
+		
+		// цвет кнопки "Отмена" в поисковой строке, а точнее цвет надписи
+		UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): UIColor.white], for: .normal)
+		
+		if let textfield = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+			if let backgroundview = textfield.subviews.first {
+				// Background color
+				backgroundview.backgroundColor = UIColor.white
+				// Rounded corner
+				backgroundview.layer.cornerRadius = 12
+				backgroundview.clipsToBounds = true
+			}
+		}
 	}
+	
 	
 	
 	
@@ -166,8 +203,8 @@ class FindUserForChatController: UITableViewController {
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let label = UILabel()
 		label.text = "       " + letter[section]
+		label.textColor = UIConfig.mainThemeColor
 		label.backgroundColor = ChatMessageCell.blueColor
-//		label.contentInset = UIEdgeInsets(top: 0, left: 25, bottom: 0, right: 25)
 		label.font = UIFont.boldSystemFont(ofSize: 16)
 		return label
 	}
@@ -220,7 +257,8 @@ class FindUserForChatController: UITableViewController {
 		let selectionColor = UIView()
 		selectionColor.backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
 		cell.selectedBackgroundView = selectionColor
-
+		cell.selectionStyle = .default
+		
 		return cell
 	}
 	
@@ -239,6 +277,10 @@ class FindUserForChatController: UITableViewController {
 	
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		
+		if searchController.isActive{
+			return
+		}
 		
 		// убиваем слушателя базы
 		disposeVar.0.removeObserver(withHandle: disposeVar.1)

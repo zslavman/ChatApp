@@ -208,7 +208,8 @@ class InputAccessory: UIView, UITextViewDelegate {
                 sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
             }
             else {
-                sendButton.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
+				// sendButton.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
+                sendButton.tintColor = UIConfig.mainThemeColor
             }
         }
     }
