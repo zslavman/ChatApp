@@ -170,8 +170,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		
 		collectionView?.alwaysBounceVertical = true
-		collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
 		collectionView?.keyboardDismissMode = .interactive
+		// collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
 		
 		collectionView?.backgroundColor = UIColor(r: 45, g: 127, b: 193)
 		

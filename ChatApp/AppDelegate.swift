@@ -19,7 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
 		FirebaseApp.configure()
-//		Database.database().isPersistenceEnabled = true
+		// Database.database().isPersistenceEnabled = true
+		
+		configureUI()
 		
 		// не будем использовать сторибоард
 		window = UIWindow(frame: UIScreen.main.bounds)
@@ -32,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 	// Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 	func applicationWillResignActive(_ application: UIApplication) {
-		OnlineService.setUserStatus(status: false)
+		OnlineService.setUserStatus(false)
 	}
 	
 
@@ -47,14 +49,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 	func applicationDidBecomeActive(_ application: UIApplication) {
-		OnlineService.setUserStatus(status: true)
+		OnlineService.setUserStatus(true)
 	}
 
 	
 	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	func applicationWillTerminate(_ application: UIApplication) {
-		OnlineService.setUserStatus(status: false)
+		OnlineService.setUserStatus(false)
 	}
+	
+	
+	
+	
+	
+	private func configureUI() {
+		
+//		UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
+		UINavigationBar.appearance().barTintColor = UIColor(r: 45, g: 127, b: 193)
+		UINavigationBar.appearance().tintColor = UIColor.white
+		UINavigationBar.appearance().shadowImage = UIImage()
+		UINavigationBar.appearance().isTranslucent = false
+		UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+		
+		UIApplication.shared.statusBarStyle = .lightContent
+	
+	}
+	
+	
 	
 	
 	

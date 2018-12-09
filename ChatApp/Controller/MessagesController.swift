@@ -44,15 +44,15 @@ class MessagesController: UITableViewController {
 	
 	
 	// массив диалогов (здесь проходит вся математика манипуляций, во вьюшки он не идет)
-	// после завершения мманевров с данными всегда необходимо вызвать reloadTable()
+	// после завершения маневров с данными всегда необходимо вызвать reloadTable()
 	// но, если время в ячейке не придет новое - то и никакиие другие параметры не обновятся!!
 	// т.е. для обновления статуса непрочтенности необходимо записать новый статус в оба массива
 	public var messages:[Message] = []
-	var currentList: [MySection]! = nil // то что отображается после манипуляций с messages (для вьюшек)
+	internal var currentList: [MySection]! = nil // то что отображается после манипуляций с messages (для вьюшек)
 	
-	let animator = TableAnimator<MySection>()
+	internal let animator = TableAnimator<MySection>()
 	
-//	let animator: TableAnimator<MySection> = {
+//	internal let animator: TableAnimator<MySection> = {
 //		let config = TableAnimatorConfiguration<MySection>(cellMoveCalculatingStrategy: MoveCalculatingStrategy<Message>.top, sectionMoveCalculatingStrategy: MoveCalculatingStrategy<MySection>.bottom, isConsistencyValidationEnabled: true)
 //		let a = TableAnimator<MySection>.init(configuration: config)
 //		return a
@@ -68,25 +68,29 @@ class MessagesController: UITableViewController {
 
 		let bttnImage1 = UIImage(named: "bttn_logout")
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
-		navigationItem.leftBarButtonItem?.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
 		
 		let bttnImage2 = UIImage(named: "bttn_find_user")
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage2, style: .plain, target: self, action: #selector(onNewMessageClick))
-		navigationItem.rightBarButtonItem?.tintColor = #colorLiteral(red: 0.1450980392, green: 0.5294117647, blue: 1, alpha: 1)
+
 		
 		chekIfUserLoggedIn()
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
 		
-
 		let url = Bundle.main.url(forResource: "pipk", withExtension: "mp3")!
 		do { audioPlayer = try AVAudioPlayer(contentsOf: url) }
 		catch { print("error loading file") }
+		
+		if let pp = navigationController?.navigationBar.heightAnchor {
+			print("pp = \(pp)")
+		}
+		
 	}
 	
 	
-	
-	
+	override func viewDidLayoutSubviews() {
+		print("5454454545454 = \(45)")
+	}
 
 	
 	
@@ -485,14 +489,14 @@ class MessagesController: UITableViewController {
 	
 	
 	/// Отрисовка навбара с картинкой (этот метод может дергаться при регистрации из LoginController)
-	public func setupNavbarWithUser(user: User){
+	public func setupNavbarWithUser_old(user: User){
 		
 		if owner == nil {
 			owner = user
 		}
 		
 		// устанавливаем индикацию онлайн
-		OnlineService.setUserStatus(status: true)
+		OnlineService.setUserStatus(true)
 
 		drawLoading()
 		fetchDialogs()
@@ -541,7 +545,7 @@ class MessagesController: UITableViewController {
 		nameLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
 		
-		self.navigationItem.titleView = titleView
+		navigationItem.titleView = titleView
 		
 		// добавим клик к фотке для изменения ее
 		titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPhotoClick(sender:))))
@@ -549,6 +553,60 @@ class MessagesController: UITableViewController {
 	}
 	
 
+	private var avaHeightAnchor:NSLayoutConstraint?
+	
+	public func setupNavbarWithUser(user: User){
+		
+		if owner == nil {
+			owner = user
+		}
+		// устанавливаем индикацию онлайн
+		OnlineService.setUserStatus(true)
+		
+		drawLoading()
+		fetchDialogs()
+		
+		// фотка
+		profileImageView = UIImageView()
+		profileImageView.translatesAutoresizingMaskIntoConstraints = false
+		profileImageView.contentMode = .scaleAspectFill
+		profileImageView.layer.cornerRadius = 18
+		profileImageView.clipsToBounds = true
+		profileImageView.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+		if let profileImageUrl = owner.profileImageUrl {
+			profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
+		}
+		print("aaaaaaaaa")
+		NSLayoutConstraint.activate([
+			profileImageView.widthAnchor.constraint(equalToConstant: 32)
+		])
+//		avaHeightAnchor = profileImageView.heightAnchor.co
+		//		profileImageView.heightAnchor.constraint(equalToConstant: 32)
+		//		profileImageView.heightAnchor.constraint(equalTo: navigationController!.navigationBar.heightAnchor)
+		
+		let nameLabel = UILabel()
+		nameLabel.text = owner.name
+		nameLabel.textColor = UIColor.white
+		nameLabel.adjustsFontSizeToFitWidth = true
+		nameLabel.translatesAutoresizingMaskIntoConstraints = false
+
+		let stackView = UIStackView(arrangedSubviews: [profileImageView, nameLabel])
+		stackView.axis = .horizontal
+		stackView.spacing = 6
+		stackView.backgroundColor = UIColor.orange
+		stackView.frame.size = CGSize(width: profileImageView.frame.width + nameLabel.frame.width, height: max(nameLabel.frame.height, profileImageView.frame.height))
+
+		navigationItem.titleView = stackView
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	
 
@@ -557,7 +615,7 @@ class MessagesController: UITableViewController {
 		
 		// записуем на сервер состояние "offline"
 		if (uid != nil){
-			OnlineService.setUserStatus(status: false)
+			OnlineService.setUserStatus(false)
 		}
 		
 		// удаляем слушателя собственных сообщений

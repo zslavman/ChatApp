@@ -16,7 +16,7 @@ struct OnlineService {
 	///
 	/// - Parameters:
 	///   - status: true(online)/false(offline)
-	static func setUserStatus(status: Bool) {
+	static func setUserStatus(_ status: Bool) {
 		
 		if let uid = Auth.auth().currentUser?.uid {
 			let onlinesRef = Database.database().reference().child("users").child(uid).child("isOnline")
