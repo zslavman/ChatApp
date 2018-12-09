@@ -9,7 +9,8 @@
 import UIKit
 import Firebase
 
-class FindUserForChatController: UITableViewController {
+
+class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 	private var cellID = "cellID"
 	private var users = [User]()
@@ -33,7 +34,6 @@ class FindUserForChatController: UITableViewController {
 		return sb
 	}()
 	private var searchController:UISearchController!
-//	private var fetchResultsController:NSFetchedResultsController
 	private var filteredResultArray = [[User]]()
 	
 	
@@ -47,15 +47,16 @@ class FindUserForChatController: UITableViewController {
 		// section headers не будут прилипать сверху таблицы
 		// self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
 		
+		searchController = UISearchController(searchResultsController: nil)
+		navigationItem.title = "Все юзеры"
+		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
+		
 		fetchUsers()
 		
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
 		
-		navigationItem.title = "Все юзеры"
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
-		searchController = UISearchController(searchResultsController: nil)
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
 		tableView.sectionIndexColor = UIConfig.mainThemeColor
@@ -74,8 +75,7 @@ class FindUserForChatController: UITableViewController {
 		
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false
-		//searchController.searchResultsUpdater = self
-		//searchController.searchBar.delegate = self
+		searchController.searchBar.delegate = self
 		
 		//отключаем затемнение вьюконтроллера при вводе
 		searchController.dimsBackgroundDuringPresentation = false
@@ -104,6 +104,33 @@ class FindUserForChatController: UITableViewController {
 	
 	
 	
+	
+	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+		
+		// фильтруем 2-мерный массив
+		filteredResultArray = twoD.filter({
+			(userArr:[User]) -> Bool in
+			
+			let newArr = userArr.filter({
+				(user:User) -> Bool in
+				
+				let bool = user.email!.lowercased().contains(searchText.lowercased()) || user.name!.lowercased().contains(searchText.lowercased())
+				return bool
+				
+			})
+			return newArr.count > 0
+		})
+		tableView.reloadData()
+	}
+	
+	
+	
+	
+	
+	
+	func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+		tableView.reloadData()
+	}
 	
 	
 	private func fetchUsers(){
@@ -212,10 +239,18 @@ class FindUserForChatController: UITableViewController {
 
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		if searchController.isActive && !searchController.searchBar.text!.isEmpty {
+			return filteredResultArray[section].count
+		}
 		return twoD[section].count
 	}
 	
+	
+	
 	override func numberOfSections(in tableView: UITableView) -> Int {
+		if searchController.isActive && !searchController.searchBar.text!.isEmpty {
+			return filteredResultArray.count
+		}
 		return twoD.count
 	}
 	
@@ -224,7 +259,14 @@ class FindUserForChatController: UITableViewController {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! UserCell
 		
-		let user = twoD[indexPath.section][indexPath.row]
+		var user:User
+		if searchController.isActive && !searchController.searchBar.text!.isEmpty {
+			user = filteredResultArray[indexPath.section][indexPath.row]
+		}
+		else {
+			user = twoD[indexPath.section][indexPath.row]
+		}
+		
 		cell.textLabel?.text = user.name
 		cell.detailTextLabel?.text = user.email
 		
@@ -235,9 +277,6 @@ class FindUserForChatController: UITableViewController {
 			cell.onlinePoint.backgroundColor = UserCell.offLineColor
 		}
 		
-		
-//		cell.iTag = ((indexPath.section).description + (indexPath.row).description) // для идентификации ячейки в кложере
-//		let basePath = cell.iTag
 
 		if let profileImageUrl = user.profileImageUrl{
 			// качаем картинку
@@ -246,9 +285,7 @@ class FindUserForChatController: UITableViewController {
 				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
 				// и обновить ее в главном потоке
 				DispatchQueue.main.async {
-//					if cell.iTag == basePath{
-						cell.profileImageView.image = image
-//					}
+					cell.profileImageView.image = image
 				}
 			}
 		}
