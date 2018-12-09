@@ -123,19 +123,16 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 //			return newArr.count > 0
 //		})
 		
-		filteredResultArray.removeAll()
-		
-		for index in twoD.indices {
-			let f = twoD[index].filter {
-				(user:User) -> Bool in
-				return user.email!.lowercased().contains(searchText.lowercased()) || user.name!.lowercased().contains(searchText.lowercased())
-			}
-			if f.count > 0 {
-				filteredResultArray.append(f)
+		let filtered = users.filter {
+			(user:User) -> Bool in
+			return user.email!.lowercased().contains(searchText.lowercased()) || user.name!.lowercased().contains(searchText.lowercased())
+		}
+		if filtered.count > 0 {
+			prepareData(source: filtered)
+			DispatchQueue.main.async {
+				self.tableView.reloadData()
 			}
 		}
-		
-		tableView.reloadData()
 	}
 	
 	
@@ -146,6 +143,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
 		if !searchBar.text!.isEmpty{
 			searchBar.resignFirstResponder()
+			prepareData(source: users)
 			tableView.reloadData()
 		}
 	}
@@ -177,25 +175,20 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	/// преобразовывает масив юзеров в 2-х мерного массив для секций таблицы
-	private func prepareData(source:[User], ){
+	private func prepareData(source:[User]){
 		
+		var temp1D = [User]()
 		var temp2D = [[User]]()
-		
-		if !isSearchingNow{
-			twoD.removeAll()
-		}
 		letter.removeAll()
 		
-		
-		
 		// убираем себя из массива
-		users = users.filter { // нужно возвратить то, что должно остатся
+		temp1D = source.filter { // нужно возвратить то, что должно остатся
 			(user) -> Bool in
 			return user.name != owner?.name
 		}
 		
 		// создаем массив букв (без повтора)
-		for value in users {
+		for value in temp1D {
 			let char = value.name?.prefix(1).uppercased()
 			if !letter.contains(char!){
 				letter.append(char!)
@@ -205,7 +198,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		}
 		
 		// заполняем массив массивов юзеров, согласно алфавита
-		for value in users {
+		for value in temp1D {
 			let char = value.name?.prefix(1).uppercased()
 			let index = letter.index(of: char!)
 			temp2D[index!].append(value)
@@ -219,13 +212,10 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 			
 			newArr.append(value)
 		}
-		if isSearchingNow{
-			
-		}
-		else {
-			twoD = newArr
-		}
+		
+		twoD = newArr
 	}
+	
 	
 	
 	
@@ -235,11 +225,11 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		timer?.invalidate()
 		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.delayedRelodTable), userInfo: nil, repeats: false)
 	}
-	/// (без этого таблица перезагружается десятки раз)
+
 	@objc private func delayedRelodTable(){
-		users.sort{$0.email!.localizedCaseInsensitiveCompare($1.email!) == .orderedAscending}
+		// users.sort{$0.email!.localizedCaseInsensitiveCompare($1.email!) == .orderedAscending}
+		prepareData(source: users)
 		DispatchQueue.main.async {
-			self.prepareData()
 			self.tableView.reloadData()
 		}
 	}
@@ -267,18 +257,12 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if isSearchingNow {
-			return filteredResultArray[section].count
-		}
 		return twoD[section].count
 	}
 	
 	
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		if isSearchingNow {
-			return filteredResultArray.count
-		}
 		return twoD.count
 	}
 	
@@ -287,14 +271,8 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! UserCell
 		
-		var user:User
-		if isSearchingNow {
-			user = filteredResultArray[indexPath.section][indexPath.row]
-		}
-		else {
-			user = twoD[indexPath.section][indexPath.row]
-		}
-		
+		let user = twoD[indexPath.section][indexPath.row]
+
 		cell.textLabel?.text = user.name
 		cell.detailTextLabel?.text = user.email
 		
@@ -349,15 +327,8 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		// убиваем слушателя базы
 		disposeVar.0.removeObserver(withHandle: disposeVar.1)
-		// дожидаемся окончания убивания этого контроллера и в контроллере-родителе запускаем ф-цию goToChat()
-		var user:User
-		if isSearchingNow {
-			user = self.filteredResultArray[indexPath.section][indexPath.row]
-		}
-		else {
-			user = self.twoD[indexPath.section][indexPath.row]
-		}
-		
+		let user = twoD[indexPath.section][indexPath.row]
+
 		// деактивируем searchController, иначе просто выберется ячейка и ничего не будет
 		if searchController.searchBar.isFirstResponder{
 			searchController.isActive = false
@@ -372,6 +343,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 			}
 		}
 		dismiss(animated: true) {
+			// дожидаемся окончания убивания этого контроллера и в контроллере-родителе запускаем ф-цию goToChat()
 			self.messagesController?.savedIndexPath = indexPath
 			self.messagesController?.goToChatWith(user: user)
 		}
@@ -382,21 +354,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	/// алфавитный указатель секций справа
 	override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-		
-		
-//		print("filteredResultArray = \(filteredResultArray.count)")
-//		var dict = [String:Any]()
-//
-//		filteredResultArray.forEach {
-//			(userArr:[User]) in
-//			userArr.forEach({
-//				(user:User) in
-//				let firstLetter = user.name!.first!.description.uppercased()
-//				dict[firstLetter] = 1
-//			})
-//		}
-//		let pp = dict.keys
-		
 		return letter
 	}
 	
