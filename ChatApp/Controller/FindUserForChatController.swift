@@ -32,7 +32,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	private var filteredResultArray = [[User]]()
 	
 	private var isSearchingNow: Bool {
-//		return searchController.isActive && !searchController.searchBar.text!.isEmpty
+		// return searchController.isActive && !searchController.searchBar.text!.isEmpty
 		return searchController.searchBar.isFirstResponder && !searchController.searchBar.text!.isEmpty
 	}
 	
@@ -122,17 +122,21 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 //			})
 //			return newArr.count > 0
 //		})
-		
-		let filtered = users.filter {
-			(user:User) -> Bool in
-			return user.email!.lowercased().contains(searchText.lowercased()) || user.name!.lowercased().contains(searchText.lowercased())
-		}
-		if filtered.count > 0 {
-			prepareData(source: filtered)
-			DispatchQueue.main.async {
-				self.tableView.reloadData()
+		if !searchText.isEmpty{
+			let filtered = users.filter {
+				(user:User) -> Bool in
+				return user.email!.lowercased().contains(searchText.lowercased()) || user.name!.lowercased().contains(searchText.lowercased())
 			}
+			prepareData(source: filtered)
 		}
+		else {
+			prepareData(source: users)
+		}
+		
+		DispatchQueue.main.async {
+			self.tableView.reloadData()
+		}
+
 	}
 	
 	
@@ -141,11 +145,11 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-		if !searchBar.text!.isEmpty{
+//		if !searchBar.text!.isEmpty{
 			searchBar.resignFirstResponder()
 			prepareData(source: users)
 			tableView.reloadData()
-		}
+//		}
 	}
 	
 	
