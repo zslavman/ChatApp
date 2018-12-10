@@ -38,6 +38,8 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	
+
+	
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +52,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		searchController.searchBar.isTranslucent = false
 		
 		navigationItem.title = "Все юзеры"
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
+//		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
 		
 		fetchUsers()
 		
@@ -331,7 +333,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 //	override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		
 		
 		// убиваем слушателя базы
 		disposeVar.0.removeObserver(withHandle: disposeVar.1)

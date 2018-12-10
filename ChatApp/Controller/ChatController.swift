@@ -31,11 +31,13 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	private lazy var scrollingDownBttn:UIButton = {
 		let bttn = UIButton(type: UIButtonType.system)
 		bttn.translatesAutoresizingMaskIntoConstraints = false
-		bttn.setImage(UIImage(named: "bttn_down"), for: UIControlState.normal)
+		let img = UIImage(named: "bttn_down")// ?.withRenderingMode(.alwaysTemplate)
+		bttn.setImage(img, for: UIControlState.normal)
 		bttn.layer.shadowOffset = CGSize(width: 0, height: 3)
 		bttn.layer.shadowRadius = 3
 		bttn.layer.shadowOpacity = 0.3
 		bttn.alpha = 0
+		bttn.tintColor = UIConfig.mainThemeColor
 		bttn.addTarget(self, action: #selector(onScrollingDownClick), for: UIControlEvents.touchUpInside)
 		return bttn
 	}()

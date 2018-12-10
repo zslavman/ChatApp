@@ -60,16 +60,18 @@ class MessagesController: UITableViewController {
 	
 	
 
+	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+	
 		currentList = [MySection(cells: messages)]
 
 		let bttnImage1 = UIImage(named: "bttn_logout")
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
 		
-		let bttnImage2 = UIImage(named: "bttn_find_user")
-		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage2, style: .plain, target: self, action: #selector(onNewMessageClick))
+//		let bttnImage2 = UIImage(named: "bttn_find_user")
+//		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage2, style: .plain, target: self, action: #selector(onNewMessageClick))
 
 		
 		chekIfUserLoggedIn()
@@ -658,12 +660,12 @@ class MessagesController: UITableViewController {
 	
 	
 	@objc private func onNewMessageClick(){
-		let newMessContr = FindUserForChatController()
-		newMessContr.messagesController = self
-		newMessContr.owner = owner
-		let navContr = UINavigationController(rootViewController: newMessContr)
+		let findUserContr = FindUserForChatController()
+		findUserContr.messagesController = self
+		findUserContr.owner = owner
+		let navContr = UINavigationController(rootViewController: findUserContr)
 		present(navContr, animated: true, completion: nil)
-//		navigationController?.pushViewController(newMessContr, animated: true)
+//		navigationController?.pushViewController(findUserContr, animated: true)
 	}
 	
 	

@@ -87,6 +87,7 @@ class UserCell: UITableViewCell {
 		super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
 		
 		detailTextLabel?.textColor = .gray
+		detailTextLabel?.backgroundColor = .red
 		
 		addSubview(profileImageView)
 		addSubview(timeLabel)
@@ -127,7 +128,7 @@ class UserCell: UITableViewCell {
 	// фикс заeзжания текста под фотку профиля
 	override func layoutSubviews() {
 		super.layoutSubviews()
-
+	
 		// подвигаем тайтл
 		textLabel?.frame = CGRect(x: 72, y: textLabel!.frame.origin.y + 2, width: self.frame.width - 150, height: textLabel!.frame.height)
 		// подвигаем емайл

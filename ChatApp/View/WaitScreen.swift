@@ -37,9 +37,14 @@ class WaitScreen: UIView {
 		
 		// фон
 		blackView = UIView()
-		blackView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+		blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
 		blackView.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(blackView)
+		blackView.alpha = 0
+		
+		UIView.animate(withDuration: 0.3) {
+			self.blackView.alpha = 1
+		}
 		
 		NSLayoutConstraint.activate([
 			blackView.topAnchor.constraint(equalTo: self.topAnchor),
