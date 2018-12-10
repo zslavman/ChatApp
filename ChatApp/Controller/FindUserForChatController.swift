@@ -72,17 +72,21 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	private func setupSearchBar(){
 		
-		guard #available(iOS 11.0, *) else { return }
-		
-		navigationItem.searchController = searchController
-		navigationItem.hidesSearchBarWhenScrolling = false
-		
+		if #available(iOS 11.0, *) {
+			navigationItem.searchController = searchController
+			navigationItem.hidesSearchBarWhenScrolling = false
+		}
+		else {
+			navigationItem.titleView = searchController.searchBar
+			searchController.hidesNavigationBarDuringPresentation = false
+			searchController.searchBar.placeholder = "Найти собеседника"
+			//definesPresentationContext = false
+		}
 		
 		//отключаем затемнение вьюконтроллера при вводе
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.obscuresBackgroundDuringPresentation = false
 
-		
 		searchController.searchBar.barTintColor = .white
 		searchController.searchBar.tintColor = UIConfig.mainThemeColor
 		searchController.searchBar.searchBarStyle = .minimal
@@ -334,7 +338,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		let user = twoD[indexPath.section][indexPath.row]
 
 		// деактивируем searchController, иначе просто выберется ячейка и ничего не будет
-		if searchController.searchBar.isFirstResponder{
+		if searchController.searchBar.isFirstResponder || !searchController.searchBar.text!.isEmpty{
 			searchController.isActive = false
 		}
 		

@@ -169,9 +169,6 @@ class InputAccessory: UIView, UITextViewDelegate {
         var estimatedSize = inputTextField.sizeThatFits(newSize)
 		
         estimatedSize.height += 14
-		
-//		print("estimatedSize = \(estimatedSize)")
-
         return estimatedSize
     }
     
@@ -183,10 +180,10 @@ class InputAccessory: UIView, UITextViewDelegate {
         }
         
         if !inputTextField.isFocused {
-            inputTextField.setContentOffset(.zero, animated: false)// нужно чтоб потом плейсхолдер не сполз вниз
+            inputTextField.setContentOffset(.zero, animated: false)// фикс - плейсхолдер не сползает вниз
         }
         
-        chatController?.onSendClick() // сдесь очищается текст
+        chatController?.onSendClick() // здесь очищается текст
         self.invalidateIntrinsicContentSize()
         
         if !inputTextField.isFirstResponder { // если поле заполнено текстом но клава уже заехала

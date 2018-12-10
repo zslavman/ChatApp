@@ -557,24 +557,25 @@ class MessagesController: UITableViewController {
 		drawLoading()
 		fetchDialogs()
 		
-		if isViewLoaded{
-			extractedFunc()
-		}
+
+		drawAvaAndName()
 	}
 	
 	
+
 	
-	private var avaHeightAnchor:NSLayoutConstraint?
-	private var avaWidthAnchor:NSLayoutConstraint?
 	
-	private func extractedFunc() {
+	
+	private func drawAvaAndName() {
 		// фотка
 		profileImageView = UIImageView()
 		profileImageView.translatesAutoresizingMaskIntoConstraints = false
 		profileImageView.contentMode = .scaleAspectFill
 		profileImageView.layer.cornerRadius = 18
 		profileImageView.clipsToBounds = true
+		profileImageView.frame.size = CGSize(width: 32, height: 32) // for iOS 10
 		profileImageView.image = UIImage(named: "default_profile_image")
+		
 		if let profileImageUrl = owner.profileImageUrl {
 			profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
 		}
@@ -590,7 +591,9 @@ class MessagesController: UITableViewController {
 		nameLabel.textColor = UIColor.white
 		nameLabel.adjustsFontSizeToFitWidth = true
 		nameLabel.minimumScaleFactor = 0.9
-		nameLabel.translatesAutoresizingMaskIntoConstraints = false
+		nameLabel.frame.size = CGSize(width: 500, height: 50) // for iOS 10
+		nameLabel.sizeToFit()
+		// nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		
 		let stackView = UIStackView(arrangedSubviews: [profileImageView, nameLabel])
 		stackView.axis = .horizontal
