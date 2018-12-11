@@ -156,7 +156,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	private var pWidthAnchor:NSLayoutConstraint? // ширина фотки
 	
 	private var screenSize = CGSize.zero
-//	internal var waitScreen:WaitScreen?
+
 	
 	
 	
@@ -284,12 +284,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 
 
 	
-	internal func waitResponse(){
-		AppDelegate.waitScreen = WaitScreen()
-//		waitScreen = WaitScreen()
-		view.addSubview(AppDelegate.waitScreen!)
-		// let finded = blackView.subviews.filter{$0.accessibilityIdentifier == "actInd"}
-	}
+
 	
 	
 	
@@ -330,7 +325,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	@objc private func onGoClick(){
 
 		onChatBackingClick()
-		waitResponse()
+		AppDelegate.waitScreen.show()
 		
 		// отсекаем возможность пустого поля
 		let e = emailTF.text!.filter{!" ".contains($0)}

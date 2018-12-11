@@ -1,5 +1,5 @@
 //
-//  WaitScreen.swift
+//  BlackView.swift
 //  ChatApp
 //
 //  Created by Zinko Vyacheslav on 28.11.2018.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WaitScreen: UIView {
+class BlackView: UIView {
 
 	
 	private var blackView: UIView!
@@ -40,11 +40,7 @@ class WaitScreen: UIView {
 		blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
 		blackView.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(blackView)
-		blackView.alpha = 0
-		
-		UIView.animate(withDuration: 0.3) {
-			self.blackView.alpha = 1
-		}
+
 		
 		NSLayoutConstraint.activate([
 			blackView.topAnchor.constraint(equalTo: self.topAnchor),
@@ -69,7 +65,6 @@ class WaitScreen: UIView {
 		NSLayoutConstraint.activate([
 			activityIndicator.centerXAnchor.constraint(equalTo: blackView.centerXAnchor),
 			activityIndicator.centerYAnchor.constraint(equalTo: blackView.centerYAnchor),
-//			activityIndicator.centerYAnchor.constraint(equalTo: blackView.topAnchor, constant: 120),
 			activityIndicator.widthAnchor.constraint(equalToConstant: 80),
 			activityIndicator.heightAnchor.constraint(equalToConstant: 80)
 		])
@@ -124,19 +119,14 @@ class WaitScreen: UIView {
 		activityIndicator.stopAnimating()
 		textBacking.isHidden = false
 		textView.text = str
-		
-		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-			
-			UIView.animate(withDuration: 1, animations: {
-				self.alpha = 0
-				self.transform = CGAffineTransform(scaleX: 2, y: 2)
-			}, completion: {
-				(bool) in
-				self.removeFromSuperview()
-				AppDelegate.waitScreen = nil
-			})
-		}
 	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

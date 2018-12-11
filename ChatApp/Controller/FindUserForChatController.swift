@@ -52,14 +52,14 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		searchController.searchBar.isTranslucent = false
 		
 		navigationItem.title = "Все юзеры"
-//		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Отмена", style: .plain, target: self, action: #selector(onCancelClick))
+		navigationController?.view.backgroundColor = UIConfig.mainThemeColor
 		
 		fetchUsers()
 		
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
+//		tableView.backgroundColor = UIConfig.mainThemeColor
 		tableView.backgroundColor = UIColor.white
-		
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
 		tableView.sectionIndexColor = UIConfig.mainThemeColor
@@ -76,7 +76,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		if #available(iOS 11.0, *) {
 			navigationItem.searchController = searchController
-			navigationItem.hidesSearchBarWhenScrolling = false
+//			navigationItem.hidesSearchBarWhenScrolling = false
 		}
 		else {
 			navigationItem.titleView = searchController.searchBar
@@ -106,8 +106,12 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 			if let backgroundview = textfield.subviews.first {
 				// Background color
 				backgroundview.backgroundColor = UIColor.white
-				// Rounded corner
-				backgroundview.layer.cornerRadius = 12
+				if #available(iOS 11.0, *) {
+					backgroundview.layer.cornerRadius = 18
+				}
+				else {
+					backgroundview.layer.cornerRadius = 14
+				}
 				backgroundview.clipsToBounds = true
 			}
 		}
@@ -147,16 +151,23 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+//		disposeVar.0.removeObserver(withHandle: disposeVar.1)
+//		disposeVar = nil
+		
+//		searchBarCancelButtonClicked(searchController.searchBar)
+	}
 	
 	
 	
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-//		if !searchBar.text!.isEmpty{
-			searchBar.resignFirstResponder()
-			prepareData(source: users)
-			tableView.reloadData()
-//		}
+
+		searchBar.resignFirstResponder()
+		prepareData(source: users)
+		tableView.reloadData()
 	}
+	
 	
 	
 	private func fetchUsers(){
@@ -246,13 +257,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	
-	@objc private func onCancelClick(){
-		disposeVar.0.removeObserver(withHandle: disposeVar.1)
-		disposeVar = nil
-		dismiss(animated: true, completion: nil)
-	}
-	
-	
 
 	
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -335,27 +339,39 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
 		// убиваем слушателя базы
-		disposeVar.0.removeObserver(withHandle: disposeVar.1)
+//		disposeVar.0.removeObserver(withHandle: disposeVar.1)
 		let user = twoD[indexPath.section][indexPath.row]
 
 		// деактивируем searchController, иначе просто выберется ячейка и ничего не будет
 		if searchController.searchBar.isFirstResponder || !searchController.searchBar.text!.isEmpty{
-			searchController.isActive = false
+//			DispatchQueue.main.async {
+				self.searchController.isActive = false
+				self.searchBarCancelButtonClicked(self.searchController.searchBar)
+//			}
 		}
 		
+		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+		let mess = messagesController.messages
+	
 		// чиститим непрочит. сообщения от юзера(если таковой был ранее) с которым идем на диалог
 		var indexPath:IndexPath? = nil
-		for (index, value) in self.messagesController!.messages.enumerated(){
+		for (index, value) in mess.enumerated(){
 			if value.chatPartnerID() == user.id {
 				indexPath = IndexPath(row: index, section: 0)
 				break
 			}
 		}
-		dismiss(animated: true) {
-			// дожидаемся окончания убивания этого контроллера и в контроллере-родителе запускаем ф-цию goToChat()
-			self.messagesController?.savedIndexPath = indexPath
-			self.messagesController?.goToChatWith(user: user)
+
+		messagesController.savedIndexPath = indexPath
+		
+		return
+			
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+			self.tabBarController?.selectedIndex = 0
+//			messagesController.goToChatWith(user: user)
 		}
+		
+
 	}
 	
 	

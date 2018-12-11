@@ -16,7 +16,7 @@
 		56397AF721BA9BEA00372B61 /* MessagesController_Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */; };
 		5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */; };
 		563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */; };
-		563B243B21AE1CE500EEB504 /* WaitScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B243A21AE1CE500EEB504 /* WaitScreen.swift */; };
+		563B243B21AE1CE500EEB504 /* BlackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B243A21AE1CE500EEB504 /* BlackView.swift */; };
 		563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */; };
 		563D17882189E351000DFAD2 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D17872189E351000DFAD2 /* User.swift */; };
 		563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D73AE2194682C0098300C /* ChatMessageCell.swift */; };
@@ -24,6 +24,7 @@
 		563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */; };
 		564ECEC921BEC03E0011C04A /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECEC821BEC03E0011C04A /* TabBarController.swift */; };
 		564ECECB21BED1380011C04A /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECECA21BED1380011C04A /* SettingsController.swift */; };
+		564ECECD21BEF9C50011C04A /* WaitScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECECC21BEF9C50011C04A /* WaitScreen.swift */; };
 		56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56536F8B2189113F0087064D /* GoogleService-Info.plist */; };
 		565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565BEE8321B0A48A0028D474 /* Video_Cell.swift */; };
 		566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDA82186F8D50053F4A0 /* AppDelegate.swift */; };
@@ -50,7 +51,7 @@
 		56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController_Main.swift; sourceTree = "<group>"; };
 		5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVideoManaging.swift; sourceTree = "<group>"; };
 		563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
-		563B243A21AE1CE500EEB504 /* WaitScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitScreen.swift; sourceTree = "<group>"; };
+		563B243A21AE1CE500EEB504 /* BlackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackView.swift; sourceTree = "<group>"; };
 		563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController + procedure.swift"; sourceTree = "<group>"; };
 		563D17872189E351000DFAD2 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		563D73AE2194682C0098300C /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
@@ -58,6 +59,7 @@
 		563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserForChatController.swift; sourceTree = "<group>"; };
 		564ECEC821BEC03E0011C04A /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		564ECECA21BED1380011C04A /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		564ECECC21BEF9C50011C04A /* WaitScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitScreen.swift; sourceTree = "<group>"; };
 		56536F8B2189113F0087064D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		565BEE8321B0A48A0028D474 /* Video_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video_Cell.swift; sourceTree = "<group>"; };
 		566BEDA52186F8D50053F4A0 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,7 +116,7 @@
 				5639652921924CA000691334 /* UserCell.swift */,
 				563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */,
 				56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */,
-				563B243A21AE1CE500EEB504 /* WaitScreen.swift */,
+				563B243A21AE1CE500EEB504 /* BlackView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -188,6 +190,7 @@
 			children = (
 				56FEF3CA21A231C500717A48 /* OnlineService.swift */,
 				5637FD1421B365620015CAAF /* Calculations.swift */,
+				564ECECC21BEF9C50011C04A /* WaitScreen.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -355,12 +358,13 @@
 				563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */,
 				56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */,
-				563B243B21AE1CE500EEB504 /* WaitScreen.swift in Sources */,
+				563B243B21AE1CE500EEB504 /* BlackView.swift in Sources */,
 				564ECEC921BEC03E0011C04A /* TabBarController.swift in Sources */,
 				56397AF721BA9BEA00372B61 /* MessagesController_Main.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
 				5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */,
 				56394A1621BD69E10026C7EF /* UIConfig.swift in Sources */,
+				564ECECD21BEF9C50011C04A /* WaitScreen.swift in Sources */,
 				563DCA0221BB2720007CD452 /* MySection.swift in Sources */,
 				5637FD1521B365620015CAAF /* Calculations.swift in Sources */,
 			);

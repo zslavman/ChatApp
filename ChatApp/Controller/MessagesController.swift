@@ -59,7 +59,9 @@ class MessagesController: UITableViewController {
 //	}()
 	
 	
-
+	override var description: String {
+		return "Я тот что надо!"
+	}
 	
 
 	override func viewDidLoad() {
@@ -70,9 +72,7 @@ class MessagesController: UITableViewController {
 		let bttnImage1 = UIImage(named: "bttn_logout")
 		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
 		
-//		let bttnImage2 = UIImage(named: "bttn_find_user")
-//		navigationItem.rightBarButtonItem = UIBarButtonItem(image: bttnImage2, style: .plain, target: self, action: #selector(onNewMessageClick))
-
+		navigationController?.view.backgroundColor = UIConfig.mainThemeColor
 		
 		chekIfUserLoggedIn()
 		
@@ -717,8 +717,8 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 	
 	@objc internal func onPhotoClick(sender: UITapGestureRecognizer){
 		
-		AppDelegate.waitScreen = WaitScreen()
-		view.addSubview(AppDelegate.waitScreen!)
+
+		AppDelegate.waitScreen.show()
 		
 		let picker = UIImagePickerController()
 		
@@ -726,7 +726,7 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 		picker.allowsEditing = true
 		
 		present(picker, animated: true, completion: {
-			AppDelegate.waitScreen!.removeFromSuperview()
+			AppDelegate.waitScreen.hideNow()
 		})
 	}
 	

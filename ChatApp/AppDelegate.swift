@@ -13,7 +13,7 @@ import Firebase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
-	public static var waitScreen:WaitScreen?
+	public static var waitScreen:WaitScreen!
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window?.makeKeyAndVisible()
 //		window?.rootViewController = UINavigationController(rootViewController: MessagesController())
 		window?.rootViewController = UINavigationController(rootViewController: TabBarController())
-		
+		AppDelegate.waitScreen = WaitScreen()
 		return true
 	}
 
@@ -72,6 +72,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		UINavigationBar.appearance().isTranslucent = false
 		UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
 		
+		UITabBarItem.appearance().titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -5)
+
 	}
 	
 	

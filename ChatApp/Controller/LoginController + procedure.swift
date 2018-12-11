@@ -24,11 +24,11 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 		picker.delegate = self
 		picker.allowsEditing = true
 		
-		waitResponse()
+		AppDelegate.waitScreen.show()
 		
 		present(picker, animated: true, completion: {
 			// при первом клике долго подгружает библиотеку фоток, показываем отклик, что юзер тапнул по иконке
-			AppDelegate.waitScreen!.removeFromSuperview()
+			AppDelegate.waitScreen.hideNow()
 		})
 	}
 	
@@ -69,7 +69,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			}
 			
 			// если всё ок - заходим в учётку
-			AppDelegate.waitScreen?.removeFromSuperview()
+			AppDelegate.waitScreen.hideNow()
 			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
 			self.dismiss(animated: true, completion: nil)
 		}
@@ -164,7 +164,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
-			AppDelegate.waitScreen?.removeFromSuperview()
+			AppDelegate.waitScreen.hideNow()
 			self.dismiss(animated: true, completion: nil)
 			print("Удачно сохранили юзера")
 		})

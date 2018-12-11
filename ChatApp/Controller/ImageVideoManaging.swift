@@ -18,8 +18,7 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 	/// клик на картинку (переслать фотку)
 	@objc public func onUploadClick(){
 		
-		AppDelegate.waitScreen = WaitScreen()
-		view.addSubview(AppDelegate.waitScreen!)
+		AppDelegate.waitScreen.show()
 		
 		let imagePickerController = UIImagePickerController()
 		
@@ -30,7 +29,7 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 		
 		selectMediaContentOpened = true
 		present(imagePickerController, animated: true, completion: {
-			AppDelegate.waitScreen!.removeFromSuperview()
+			AppDelegate.waitScreen.hideNow()
 		})
 	}
 	
