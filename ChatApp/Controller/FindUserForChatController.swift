@@ -49,16 +49,16 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		searchController = UISearchController(searchResultsController: nil)
 		searchController.searchBar.delegate = self
-		searchController.searchBar.isTranslucent = false
-		
+
 		navigationItem.title = "Все юзеры"
 		navigationController?.view.backgroundColor = UIConfig.mainThemeColor
+		navigationController!.navigationBar.isTranslucent = false
 		
 		fetchUsers()
 		
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
-//		tableView.backgroundColor = UIConfig.mainThemeColor
+		// tableView.backgroundColor = UIConfig.mainThemeColor
 		tableView.backgroundColor = UIColor.white
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
@@ -76,13 +76,13 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		if #available(iOS 11.0, *) {
 			navigationItem.searchController = searchController
-//			navigationItem.hidesSearchBarWhenScrolling = false
+			// navigationItem.hidesSearchBarWhenScrolling = false
 		}
 		else {
 			navigationItem.titleView = searchController.searchBar
+			// searchController.searchBar.placeholder = "Найти собеседника"
+			definesPresentationContext = false
 			searchController.hidesNavigationBarDuringPresentation = false
-			searchController.searchBar.placeholder = "Найти собеседника"
-			//definesPresentationContext = false
 		}
 		
 		//отключаем затемнение вьюконтроллера при вводе
@@ -91,9 +91,10 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 		searchController.searchBar.barTintColor = .white
 		searchController.searchBar.tintColor = UIConfig.mainThemeColor
-		searchController.searchBar.searchBarStyle = .minimal
+		searchController.searchBar.searchBarStyle = .default
 		searchController.searchBar.backgroundImage = UIImage()
 		searchController.searchBar.backgroundColor = .clear
+		searchController.searchBar.isTranslucent = false
 		
 		
 		// цвет текста в поиске
@@ -102,18 +103,27 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		// цвет кнопки "Отмена" в поисковой строке, а точнее цвет надписи
 		UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): UIColor.white], for: .normal)
 		
-		if let textfield = searchController.searchBar.value(forKey: "searchField") as? UITextField {
-			if let backgroundview = textfield.subviews.first {
-				// Background color
-				backgroundview.backgroundColor = UIColor.white
-				if #available(iOS 11.0, *) {
-					backgroundview.layer.cornerRadius = 18
-				}
-				else {
-					backgroundview.layer.cornerRadius = 14
-				}
-				backgroundview.clipsToBounds = true
+		if let searchTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
+			
+			searchTextField.layer.cornerRadius = 10
+			searchTextField.clipsToBounds = true
+
+			for subView in searchTextField.subviews {
+				subView.removeFromSuperview()
 			}
+			
+			
+//			if let backgroundview = searchTextField.subviews.first {
+//
+//				backgroundview.backgroundColor = UIColor.white
+//				if #available(iOS 11.0, *) {
+//					backgroundview.layer.cornerRadius = 10 // 18
+//				}
+//				else {
+//					backgroundview.layer.cornerRadius = 14
+//				}
+//				backgroundview.clipsToBounds = true
+//			}
 		}
 	}
 	
@@ -157,6 +167,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 //		disposeVar = nil
 		
 //		searchBarCancelButtonClicked(searchController.searchBar)
+//		searchController.dismiss(animated: false, completion: nil)
 	}
 	
 	
@@ -341,14 +352,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		// убиваем слушателя базы
 //		disposeVar.0.removeObserver(withHandle: disposeVar.1)
 		let user = twoD[indexPath.section][indexPath.row]
-
-		// деактивируем searchController, иначе просто выберется ячейка и ничего не будет
-		if searchController.searchBar.isFirstResponder || !searchController.searchBar.text!.isEmpty{
-//			DispatchQueue.main.async {
-				self.searchController.isActive = false
-				self.searchBarCancelButtonClicked(self.searchController.searchBar)
-//			}
-		}
 		
 		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
 		let mess = messagesController.messages
@@ -364,13 +367,13 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 		messagesController.savedIndexPath = indexPath
 		
-		return
-			
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-			self.tabBarController?.selectedIndex = 0
-//			messagesController.goToChatWith(user: user)
+		// деактивируем searchController
+		if searchController.searchBar.isFirstResponder || !searchController.searchBar.text!.isEmpty{
+			searchController.dismiss(animated: false, completion: {
+				self.tabBarController?.selectedIndex = 0
+				messagesController.goToChatWith(user: user)
+			})
 		}
-		
 
 	}
 	
