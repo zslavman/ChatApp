@@ -36,7 +36,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		return searchController.searchBar.isFirstResponder && !searchController.searchBar.text!.isEmpty
 	}
 	
-	
+	private var labelNoResults:UILabel!
 	
 
 	
@@ -46,6 +46,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		// section headers не будут прилипать сверху таблицы
 		// self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
+
 		
 		searchController = UISearchController(searchResultsController: nil)
 		searchController.searchBar.delegate = self
@@ -66,37 +67,62 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		tableView.separatorColor = UIConfig.mainThemeColor.withAlphaComponent(0.5)
 		
 		setupSearchBar()
+		installNoResultsLabel()
 	}
 	
 		
 
 	
 	
+	private func installNoResultsLabel(){
+		
+		labelNoResults = {
+			let label = UILabel()
+			label.text = "Нет результатов"
+			label.backgroundColor = .clear
+			label.textColor = .lightGray
+			label.font = UIFont.boldSystemFont(ofSize: 22)
+			label.textAlignment = .center
+			label.translatesAutoresizingMaskIntoConstraints = false
+			label.isHidden = true
+			return label
+		}()
+		
+		tableView.addSubview(labelNoResults)
+		
+		labelNoResults.centerXAnchor.constraint(equalTo: tableView.centerXAnchor).isActive = true
+		labelNoResults.topAnchor.constraint(equalTo: tableView.topAnchor, constant: 150).isActive = true
+	}
+
+
+	
+	
+	
+	
 	private func setupSearchBar(){
 		
-		if #available(iOS 11.0, *) {
-			navigationItem.searchController = searchController
-			// navigationItem.hidesSearchBarWhenScrolling = false
-		}
-		else {
-			navigationItem.titleView = searchController.searchBar
+//		if #available(iOS 11.0, *) {
+//			navigationItem.searchController = searchController
+//			//navigationItem.hidesSearchBarWhenScrolling = false
+//		}
+//		else {
 			// searchController.searchBar.placeholder = "Найти собеседника"
+			navigationItem.titleView = searchController.searchBar
 			definesPresentationContext = false
 			searchController.hidesNavigationBarDuringPresentation = false
-		}
+//		}
 		
 		//отключаем затемнение вьюконтроллера при вводе
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.obscuresBackgroundDuringPresentation = false
 
 		searchController.searchBar.barTintColor = .white
-		searchController.searchBar.tintColor = UIConfig.mainThemeColor
-		searchController.searchBar.searchBarStyle = .default
-		searchController.searchBar.backgroundImage = UIImage()
-		searchController.searchBar.backgroundColor = .clear
+		searchController.searchBar.tintColor = UIConfig.mainThemeColor // цвет курсора
+		searchController.searchBar.searchBarStyle = .prominent
+//		searchController.searchBar.backgroundImage = UIImage() 	// не дает эффекта
+//		searchController.searchBar.backgroundColor = .clear 	// не дает эффекта
 		searchController.searchBar.isTranslucent = false
-		
-		
+
 		// цвет текста в поиске
 		// UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIConfig.mainThemeColor]
 		
@@ -105,27 +131,29 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		if let searchTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
 			
-			searchTextField.layer.cornerRadius = 10
-			searchTextField.clipsToBounds = true
-
-			for subView in searchTextField.subviews {
-				subView.removeFromSuperview()
+			if #available(iOS 11.0, *) {
+				searchTextField.layer.cornerRadius = 18 // 18
 			}
+			else {
+				searchTextField.layer.cornerRadius = 14
+			}
+			searchTextField.clipsToBounds = true
 			
-			
-//			if let backgroundview = searchTextField.subviews.first {
-//
-//				backgroundview.backgroundColor = UIColor.white
-//				if #available(iOS 11.0, *) {
-//					backgroundview.layer.cornerRadius = 10 // 18
-//				}
-//				else {
-//					backgroundview.layer.cornerRadius = 14
-//				}
-//				backgroundview.clipsToBounds = true
-//			}
+			if let some = searchTextField.subviews.first {
+				some.backgroundColor = UIColor.white
+				some.layer.backgroundColor = UIColor.white.cgColor
+			}
 		}
+		
+		// изменение размеров searchBar
+//		let image = Calculations.getImageWithColor(color: UIColor.white, size: CGSize(width: 180, height: 26))
+//		searchController.searchBar.setSearchFieldBackgroundImage(image, for: .normal)
+		
 	}
+	
+	
+	
+	
 	
 	
 	
@@ -148,6 +176,12 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 				return user.email!.lowercased().contains(searchText.lowercased()) || user.name!.lowercased().contains(searchText.lowercased())
 			}
 			prepareData(source: filtered)
+			if twoD.isEmpty {
+				labelNoResults?.isHidden = false
+			}
+			else {
+				labelNoResults?.isHidden = true
+			}
 		}
 		else {
 			prepareData(source: users)
@@ -177,6 +211,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		searchBar.resignFirstResponder()
 		prepareData(source: users)
 		tableView.reloadData()
+		labelNoResults?.isHidden = true
 	}
 	
 	
@@ -246,6 +281,9 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		}
 		
 		twoD = newArr
+		if !twoD.isEmpty{
+			labelNoResults.isHidden = true
+		}
 	}
 	
 	
@@ -367,13 +405,24 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 		messagesController.savedIndexPath = indexPath
 		
+		func go(){
+			self.tabBarController?.selectedIndex = 0
+			messagesController.goToChatWith(user: user)
+		}
+		
 		// деактивируем searchController
 		if searchController.searchBar.isFirstResponder || !searchController.searchBar.text!.isEmpty{
 			searchController.dismiss(animated: false, completion: {
-				self.tabBarController?.selectedIndex = 0
-				messagesController.goToChatWith(user: user)
+				go()
 			})
 		}
+		else {
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+				go()
+			}
+		}
+		
+		
 
 	}
 	

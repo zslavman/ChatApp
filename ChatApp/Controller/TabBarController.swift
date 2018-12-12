@@ -22,7 +22,13 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 		
 		let tab1 = createTab(vc: MessagesController(), buttonImage_unselected: "bttn_menu", title: names[0])
 		let tab2 = createTab(vc: FindUserForChatController(), buttonImage_unselected: "bttn_find_user", title: names[1])
-		let tab3 = createTab(vc: SettingsController(), buttonImage_unselected: "bttn_settings", title: names[2])
+//		let tab3 = createTab(vc: SettingsController(), buttonImage_unselected: "bttn_settings", title: names[2])
+		
+		
+		let tableViewStoryboard = UIStoryboard(name: "tBoard", bundle: nil)
+		let customViewController = tableViewStoryboard.instantiateViewController(withIdentifier: "myTable")
+		let tab3 = createTab(vc: customViewController, buttonImage_unselected: "bttn_settings", title: names[2])
+		
 		
 		viewControllers = [tab1, tab2, tab3]
 		
@@ -45,7 +51,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 			return false
 		}
 		if fromView != toView {
-			UIView.transition(from: fromView, to: toView, duration: 0.2, options: [.transitionCrossDissolve], completion: nil)
+			UIView.transition(from: fromView, to: toView, duration: 0.0, options: [.transitionCrossDissolve], completion: nil)
 		}
 		return true
 	}

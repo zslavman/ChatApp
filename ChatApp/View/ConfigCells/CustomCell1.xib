@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="5hb-wh-QZf" customClass="CustomCell1" customModule="ChatApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5hb-wh-QZf" id="dIz-Gl-vof">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GOp-qu-46a">
+                        <rect key="frame" x="310" y="7" width="51" height="31"/>
+                        <color key="onTintColor" red="0.15294117647058825" green="0.45490196078431372" blue="0.72549019607843135" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </switch>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Проигрывать звук" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.90000000000000002" translatesAutoresizingMaskIntoConstraints="NO" id="o9n-Cc-y3X">
+                        <rect key="frame" x="16" y="9.5" width="286" height="26"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="GOp-qu-46a" firstAttribute="leading" secondItem="o9n-Cc-y3X" secondAttribute="trailing" constant="8" id="Grw-hV-ZEV"/>
+                    <constraint firstItem="GOp-qu-46a" firstAttribute="centerY" secondItem="dIz-Gl-vof" secondAttribute="centerY" id="OoW-eb-lPy"/>
+                    <constraint firstItem="o9n-Cc-y3X" firstAttribute="centerY" secondItem="dIz-Gl-vof" secondAttribute="centerY" id="PdN-vd-2m0"/>
+                    <constraint firstAttribute="trailing" secondItem="GOp-qu-46a" secondAttribute="trailing" constant="16" id="k02-AO-oH1"/>
+                    <constraint firstItem="o9n-Cc-y3X" firstAttribute="leading" secondItem="dIz-Gl-vof" secondAttribute="leading" constant="16" id="zUD-p3-NMQ"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="SW" destination="GOp-qu-46a" id="pTA-11-fBN"/>
+                <outlet property="title" destination="o9n-Cc-y3X" id="OUh-GT-Z5i"/>
+            </connections>
+            <point key="canvasLocation" x="25.5" y="40"/>
+        </tableViewCell>
+    </objects>
+</document>

@@ -22,8 +22,9 @@
 		563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D73AE2194682C0098300C /* ChatMessageCell.swift */; };
 		563DCA0221BB2720007CD452 /* MySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DCA0121BB2720007CD452 /* MySection.swift */; };
 		563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */; };
+		563F14C221C049CB00B3FC80 /* CustomCell1.xib in Resources */ = {isa = PBXBuildFile; fileRef = 563F14C121C049CB00B3FC80 /* CustomCell1.xib */; };
 		564ECEC921BEC03E0011C04A /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECEC821BEC03E0011C04A /* TabBarController.swift */; };
-		564ECECB21BED1380011C04A /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECECA21BED1380011C04A /* SettingsController.swift */; };
+		564ECECB21BED1380011C04A /* _SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECECA21BED1380011C04A /* _SettingsController.swift */; };
 		564ECECD21BEF9C50011C04A /* WaitScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECECC21BEF9C50011C04A /* WaitScreen.swift */; };
 		56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 56536F8B2189113F0087064D /* GoogleService-Info.plist */; };
 		565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565BEE8321B0A48A0028D474 /* Video_Cell.swift */; };
@@ -33,6 +34,14 @@
 		566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */; };
 		566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDBB2186FFF00053F4A0 /* LoginController.swift */; };
 		5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5680E759218B52D500B9CC3B /* Extensions.swift */; };
+		56852E4921C0542800E7A62F /* CustomCell1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E4821C0542800E7A62F /* CustomCell1.swift */; };
+		56852E4B21C05D3200E7A62F /* CustomCell2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56852E4A21C05D3200E7A62F /* CustomCell2.xib */; };
+		56852E4D21C0610A00E7A62F /* CustomCell3.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56852E4C21C0610A00E7A62F /* CustomCell3.xib */; };
+		56852E4F21C063FC00E7A62F /* Locales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E4E21C063FC00E7A62F /* Locales.swift */; };
+		56852E5121C0767500E7A62F /* CustomCell2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E5021C0767500E7A62F /* CustomCell2.swift */; };
+		56852E5321C0769D00E7A62F /* CustomCell3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E5221C0769D00E7A62F /* CustomCell3.swift */; };
+		56852E5521C08CA600E7A62F /* tBoard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56852E5421C08CA600E7A62F /* tBoard.storyboard */; };
+		56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E5621C0962F00E7A62F /* SettingsController.swift */; };
 		56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A044A021B025F70084D7FD /* LocationManaging.swift */; };
 		56BEAB132191BD960008AF6B /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatController.swift */; };
 		56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D03BEA21B2250600E1688F /* Image_Cell.swift */; };
@@ -57,8 +66,9 @@
 		563D73AE2194682C0098300C /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
 		563DCA0121BB2720007CD452 /* MySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySection.swift; sourceTree = "<group>"; };
 		563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserForChatController.swift; sourceTree = "<group>"; };
+		563F14C121C049CB00B3FC80 /* CustomCell1.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCell1.xib; sourceTree = "<group>"; };
 		564ECEC821BEC03E0011C04A /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
-		564ECECA21BED1380011C04A /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		564ECECA21BED1380011C04A /* _SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _SettingsController.swift; sourceTree = "<group>"; };
 		564ECECC21BEF9C50011C04A /* WaitScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitScreen.swift; sourceTree = "<group>"; };
 		56536F8B2189113F0087064D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		565BEE8321B0A48A0028D474 /* Video_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video_Cell.swift; sourceTree = "<group>"; };
@@ -70,6 +80,14 @@
 		566BEDB42186F8D70053F4A0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		566BEDBB2186FFF00053F4A0 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		5680E759218B52D500B9CC3B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		56852E4821C0542800E7A62F /* CustomCell1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell1.swift; sourceTree = "<group>"; };
+		56852E4A21C05D3200E7A62F /* CustomCell2.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCell2.xib; sourceTree = "<group>"; };
+		56852E4C21C0610A00E7A62F /* CustomCell3.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomCell3.xib; sourceTree = "<group>"; };
+		56852E4E21C063FC00E7A62F /* Locales.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locales.swift; sourceTree = "<group>"; };
+		56852E5021C0767500E7A62F /* CustomCell2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell2.swift; sourceTree = "<group>"; };
+		56852E5221C0769D00E7A62F /* CustomCell3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell3.swift; sourceTree = "<group>"; };
+		56852E5421C08CA600E7A62F /* tBoard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = tBoard.storyboard; sourceTree = "<group>"; };
+		56852E5621C0962F00E7A62F /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		56A044A021B025F70084D7FD /* LocationManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManaging.swift; sourceTree = "<group>"; };
 		56BEAB122191BD960008AF6B /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		56D03BEA21B2250600E1688F /* Image_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_Cell.swift; sourceTree = "<group>"; };
@@ -112,6 +130,7 @@
 		5639652B21924D1F00691334 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				56852E4721C053FE00E7A62F /* ConfigCells */,
 				56E5A50B21B202190076EB67 /* ChatCells */,
 				5639652921924CA000691334 /* UserCell.swift */,
 				563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */,
@@ -124,6 +143,7 @@
 		563D17862189E320000DFAD2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				56852E4E21C063FC00E7A62F /* Locales.swift */,
 				563D17872189E351000DFAD2 /* User.swift */,
 				5638D8E321923CA400EC2FE3 /* Message.swift */,
 				563DCA0121BB2720007CD452 /* MySection.swift */,
@@ -172,7 +192,8 @@
 			isa = PBXGroup;
 			children = (
 				564ECEC821BEC03E0011C04A /* TabBarController.swift */,
-				564ECECA21BED1380011C04A /* SettingsController.swift */,
+				56852E5621C0962F00E7A62F /* SettingsController.swift */,
+				564ECECA21BED1380011C04A /* _SettingsController.swift */,
 				566BEDAA2186F8D50053F4A0 /* MessagesController.swift */,
 				56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */,
 				563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */,
@@ -193,6 +214,20 @@
 				564ECECC21BEF9C50011C04A /* WaitScreen.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		56852E4721C053FE00E7A62F /* ConfigCells */ = {
+			isa = PBXGroup;
+			children = (
+				563F14C121C049CB00B3FC80 /* CustomCell1.xib */,
+				56852E4A21C05D3200E7A62F /* CustomCell2.xib */,
+				56852E4C21C0610A00E7A62F /* CustomCell3.xib */,
+				56852E4821C0542800E7A62F /* CustomCell1.swift */,
+				56852E5021C0767500E7A62F /* CustomCell2.swift */,
+				56852E5221C0769D00E7A62F /* CustomCell3.swift */,
+				56852E5421C08CA600E7A62F /* tBoard.storyboard */,
+			);
+			path = ConfigCells;
 			sourceTree = "<group>";
 		};
 		56E5A50B21B202190076EB67 /* ChatCells */ = {
@@ -281,8 +316,12 @@
 			files = (
 				566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */,
 				5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */,
+				563F14C221C049CB00B3FC80 /* CustomCell1.xib in Resources */,
+				56852E4B21C05D3200E7A62F /* CustomCell2.xib in Resources */,
+				56852E4D21C0610A00E7A62F /* CustomCell3.xib in Resources */,
 				56536F8C2189113F0087064D /* GoogleService-Info.plist in Resources */,
 				566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */,
+				56852E5521C08CA600E7A62F /* tBoard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,20 +380,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				56BEAB132191BD960008AF6B /* ChatController.swift in Sources */,
+				56852E4F21C063FC00E7A62F /* Locales.swift in Sources */,
 				563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */,
 				56E5A50A21B2019C0076EB67 /* Map_Cell.swift in Sources */,
 				566BEDAB2186F8D50053F4A0 /* MessagesController.swift in Sources */,
 				5638D8E421923CA400EC2FE3 /* Message.swift in Sources */,
 				565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */,
 				566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */,
+				56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */,
 				56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */,
+				56852E5121C0767500E7A62F /* CustomCell2.swift in Sources */,
 				56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */,
 				5639652A21924CA000691334 /* UserCell.swift in Sources */,
 				563D17882189E351000DFAD2 /* User.swift in Sources */,
 				563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */,
+				56852E5321C0769D00E7A62F /* CustomCell3.swift in Sources */,
 				56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */,
 				5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */,
-				564ECECB21BED1380011C04A /* SettingsController.swift in Sources */,
+				564ECECB21BED1380011C04A /* _SettingsController.swift in Sources */,
 				563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */,
 				56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */,
@@ -366,6 +409,7 @@
 				56394A1621BD69E10026C7EF /* UIConfig.swift in Sources */,
 				564ECECD21BEF9C50011C04A /* WaitScreen.swift in Sources */,
 				563DCA0221BB2720007CD452 /* MySection.swift in Sources */,
+				56852E4921C0542800E7A62F /* CustomCell1.swift in Sources */,
 				5637FD1521B365620015CAAF /* Calculations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

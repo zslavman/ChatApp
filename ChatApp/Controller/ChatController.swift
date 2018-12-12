@@ -119,7 +119,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: Notification.Name.UIKeyboardDidShow, object: nil)
 		
 		view.addSubview(scrollingDownBttn)
 		NSLayoutConstraint.activate([
@@ -130,6 +130,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		])
 	}
 	
+	
+
 	
 	
 	
@@ -145,11 +147,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	}
 	
 	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-//		// автоматический выезд клавиатуры
-//		growingInputView.inputTextField.becomeFirstResponder()
-	}
+
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
@@ -242,6 +240,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		
+		// высчитываем появление кнопки "Вниз"
 		let currentOffset = scrollView.contentOffset.y
 		let frameHeight = scrollView.frame.size.height
 		let contentHeight = scrollView.contentSize.height - frameHeight
