@@ -79,6 +79,7 @@ class AboutController: UIViewController {
 		let attribetedTitle = NSMutableAttributedString(string: dict[41]![LANG], attributes: [NSAttributedStringKey.font : UIFont(name:"MarkerFelt-Wide", size: 30)!])
 		let attribetedVer = NSMutableAttributedString(string: dict[42]![LANG], attributes: [NSAttributedStringKey.font : UIFont(name:"AppleSDGothicNeo-Medium", size: 18)!])
 		attribetedTitle.append(attribetedVer)
+		
 		titleApp.attributedText = attribetedTitle
 		
 		installScene()
@@ -88,9 +89,6 @@ class AboutController: UIViewController {
 	
 	
 	private func installScene(){
-		
-		
-		
 		
 		view.addSubview(backImage)
 		view.addSubview(logo)
@@ -115,13 +113,13 @@ class AboutController: UIViewController {
 			support.topAnchor.constraint(equalTo: titleApp.bottomAnchor, constant: 10),
 			support.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 			
-			bottomLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
+			bottomLabel.bottomAnchor.constraint(equalTo: view.safeBottomAnchor, constant: -20),
 			bottomLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			
 		])
-		
-		
 	}
+	
+	
+	
 	
 	
 	

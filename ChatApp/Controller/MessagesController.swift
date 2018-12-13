@@ -662,6 +662,7 @@ class MessagesController: UITableViewController {
 		
 		let chatLogController = ChatController(collectionViewLayout: UICollectionViewFlowLayout())
 		chatLogController.user = user
+		chatLogController.hidesBottomBarWhenPushed = true
 		navigationController?.pushViewController(chatLogController, animated: true)
 	}
 	

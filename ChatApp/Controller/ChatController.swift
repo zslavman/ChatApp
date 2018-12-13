@@ -22,9 +22,11 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		}
 	}
 	
+	
 	internal lazy var growingInputView: InputAccessory = {
 		let inputView = InputAccessory(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
 		inputView.chatController = self
+		
 		return inputView
 	}()
 	
@@ -130,6 +132,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			scrollingDownBttn.widthAnchor.constraint(equalToConstant: 45),
 			scrollingDownBttn.heightAnchor.constraint(equalToConstant: 45)
 		])
+		
+		
 	}
 	
 	

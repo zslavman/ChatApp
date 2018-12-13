@@ -16,7 +16,7 @@ class Image_Cell: ChatMessageCell {
 	private lazy var messageImageView:UIImageView = {
 		let messImag = UIImageView()
 		messImag.translatesAutoresizingMaskIntoConstraints = false
-		messImag.contentMode = .scaleToFill
+		messImag.contentMode = .scaleAspectFill
 		messImag.layer.cornerRadius = ChatMessageCell.cornRadius
 		messImag.clipsToBounds = true
 		messImag.isUserInteractionEnabled = true
@@ -78,8 +78,6 @@ class Image_Cell: ChatMessageCell {
 		sendTime_TF.layer.shadowOffset = CGSize(width: 0, height: 0.5)
 		sendTime_TF.layer.shadowOpacity = 1
 		sendTime_TF.textColor = .white
-		
-		
 		
 		bubbleWidthAnchor?.constant = UIScreen.main.bounds.width * 2/3
 	}

@@ -200,6 +200,7 @@ class Video_Cell: ChatMessageCell {
 				playerLayer = AVPlayerLayer(player: player)
 				playerLayer?.frame = bubbleView.bounds
 				
+				
 				bubbleView.layer.addSublayer(playerLayer!)
 				activityIndicator.startAnimating() // когда загрузится видео, оно его перекроет
 				

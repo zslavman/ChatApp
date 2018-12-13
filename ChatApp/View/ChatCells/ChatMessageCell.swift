@@ -196,7 +196,7 @@ class ChatMessageCell: UICollectionViewCell {
 		sendTime_TF.layer.shadowOpacity = 0
 		sendTime_TF.textColor = ChatMessageCell.grayTextColor
 		
-		// изменим ширину фона сообщения (высота же определяется в ChatLogController sizeForItemAt)
+		// изменим ширину фона сообщения (высота же определяется в ChatController sizeForItemAt)
 		if let str = message.text{
 			let estWidth = Calculations.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 80 ? 80 : estWidth

@@ -222,9 +222,9 @@
 			isa = PBXGroup;
 			children = (
 				563D73AE2194682C0098300C /* ChatMessageCell.swift */,
+				56D03BEA21B2250600E1688F /* Image_Cell.swift */,
 				565BEE8321B0A48A0028D474 /* Video_Cell.swift */,
 				56E5A50921B2019C0076EB67 /* Map_Cell.swift */,
-				56D03BEA21B2250600E1688F /* Image_Cell.swift */,
 			);
 			path = ChatCells;
 			sourceTree = "<group>";

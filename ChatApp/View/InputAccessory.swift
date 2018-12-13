@@ -42,7 +42,7 @@ class InputAccessory: UIView, UITextViewDelegate {
         return uv
     }()
     
-   // private var placeholderStr:String = "Введите сообщение..."
+   
     
     
     
@@ -51,7 +51,19 @@ class InputAccessory: UIView, UITextViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    
+	
+	
+	// adding the bottom constraint here to make sure we belong to window
+	override func didMoveToWindow() {
+		super.didMoveToWindow()
+		if #available(iOS 11.0, *) {
+//			if let window = window {
+//				bottomAnchor.constraintLessThanOrEqualToSystemSpacingBelow(window.safeAreaLayoutGuide.bottomAnchor, multiplier: 1.0).isActive = true
+//			}
+		}
+	}
+	
+
     
     
     
@@ -79,7 +91,8 @@ class InputAccessory: UIView, UITextViewDelegate {
 		
 		NSLayoutConstraint.activate([
 			// картинка слева (отправить фото)
-			uploadImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+//			uploadImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+			uploadImageView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -6),
 			uploadImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
 			uploadImageView.widthAnchor.constraint(equalToConstant: 44), // эпл рекомендует минимум 44
 			uploadImageView.heightAnchor.constraint(equalToConstant: 44),
@@ -89,7 +102,8 @@ class InputAccessory: UIView, UITextViewDelegate {
 			sepLine.rightAnchor.constraint(equalTo: rightAnchor),
 			sepLine.heightAnchor.constraint(equalToConstant: 1),
 			
-			sendButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
+//			sendButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
+			sendButton.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -6),
 			sendButton.rightAnchor.constraint(equalTo: rightAnchor),
 			sendButton.widthAnchor.constraint(equalToConstant: 44),
 			sendButton.heightAnchor.constraint(equalToConstant: 44),
@@ -98,7 +112,9 @@ class InputAccessory: UIView, UITextViewDelegate {
 			inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 10),
 			inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor),
 			inputTextField.topAnchor.constraint(equalTo: topAnchor, constant: 7),
-			inputTextField.heightAnchor.constraint(equalTo: heightAnchor)
+//			inputTextField.heightAnchor.constraint(equalTo: heightAnchor),
+			
+			inputTextField.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -6)
 		])
 		inputTextField.contentInset.bottom = 20 // чтоб при скролле введенного текста его не закрывала клава снизу
 	}
@@ -147,6 +163,7 @@ class InputAccessory: UIView, UITextViewDelegate {
             textView.isScrollEnabled = false
             // пересчитываем высоту self под новую высоту textView
             self.invalidateIntrinsicContentSize()
+			textView.invalidateIntrinsicContentSize()
         }
         checkOnEmpty()
     }
