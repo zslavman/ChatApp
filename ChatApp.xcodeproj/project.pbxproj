@@ -192,7 +192,6 @@
 				56BEAB122191BD960008AF6B /* ChatController.swift */,
 				5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */,
 				56A044A021B025F70084D7FD /* LocationManaging.swift */,
-				563959D721C1F556005EA8AD /* AboutController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -213,6 +212,7 @@
 				5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */,
 				56852E5621C0962F00E7A62F /* SettingsController.swift */,
 				563C467C21C15167002F59D8 /* ChangeLanguageController.swift */,
+				563959D721C1F556005EA8AD /* AboutController.swift */,
 				56852E5421C08CA600E7A62F /* tBoard.storyboard */,
 			);
 			path = Settings;
