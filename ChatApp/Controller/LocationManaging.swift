@@ -115,9 +115,9 @@ extension ChatController:CLLocationManagerDelegate {
 	
 	/// показываем пояснение, что нужно разрешить использование геолокации в настройках
 	private func showAlert(){
-		let message = "Для использования этой функции необходимо разрешить использование геолокации в настройках"
-		let alertController = UIAlertController(title: "Включите геолокацию", message: message, preferredStyle: .alert)
-		let ok = UIAlertAction(title: "Ок", style: .default, handler: nil)
+		let message = dict[36]![LANG] // "Для использования этой функции необходимо разрешить использование геолокации в настройках"
+		let alertController = UIAlertController(title: dict[37]![LANG], message: message, preferredStyle: .alert) // "Включите геолокацию"
+		let ok = UIAlertAction(title: dict[38]![LANG], style: .default, handler: nil) // OK
 		alertController.addAction(ok)
 		
 		present(alertController, animated: true, completion: nil)

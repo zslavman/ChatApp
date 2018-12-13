@@ -8,10 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		46EDE0D18A6394E86D550EB2 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
+		5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */; };
 		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
 		5637FD1521B365620015CAAF /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
 		56394A1621BD69E10026C7EF /* UIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56394A1521BD69E10026C7EF /* UIConfig.swift */; };
+		563959D821C1F556005EA8AD /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563959D721C1F556005EA8AD /* AboutController.swift */; };
 		5639652A21924CA000691334 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639652921924CA000691334 /* UserCell.swift */; };
 		56397AF721BA9BEA00372B61 /* MessagesController_Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */; };
 		5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */; };
@@ -46,10 +48,12 @@
 
 /* Begin PBXFileReference section */
 		11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
+		5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefFlags.swift; sourceTree = "<group>"; };
 		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
 		5637FD1421B365620015CAAF /* Calculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculations.swift; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		56394A1521BD69E10026C7EF /* UIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConfig.swift; sourceTree = "<group>"; };
+		563959D721C1F556005EA8AD /* AboutController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = "<group>"; };
 		5639652921924CA000691334 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController_Main.swift; sourceTree = "<group>"; };
 		5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVideoManaging.swift; sourceTree = "<group>"; };
@@ -179,15 +183,16 @@
 		566BEDBA2186FF940053F4A0 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				566BEDBB2186FFF00053F4A0 /* LoginController.swift */,
+				563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */,
 				564ECEC821BEC03E0011C04A /* TabBarController.swift */,
 				566BEDAA2186F8D50053F4A0 /* MessagesController.swift */,
 				56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */,
 				563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */,
-				566BEDBB2186FFF00053F4A0 /* LoginController.swift */,
-				563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */,
 				56BEAB122191BD960008AF6B /* ChatController.swift */,
 				5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */,
 				56A044A021B025F70084D7FD /* LocationManaging.swift */,
+				563959D721C1F556005EA8AD /* AboutController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -205,6 +210,7 @@
 		56852E4721C053FE00E7A62F /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */,
 				56852E5621C0962F00E7A62F /* SettingsController.swift */,
 				563C467C21C15167002F59D8 /* ChangeLanguageController.swift */,
 				56852E5421C08CA600E7A62F /* tBoard.storyboard */,
@@ -369,7 +375,9 @@
 				56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */,
 				56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */,
 				563C467D21C15167002F59D8 /* ChangeLanguageController.swift in Sources */,
+				563959D821C1F556005EA8AD /* AboutController.swift in Sources */,
 				56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */,
+				5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */,
 				5639652A21924CA000691334 /* UserCell.swift in Sources */,
 				563D17882189E351000DFAD2 /* User.swift in Sources */,
 				563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */,

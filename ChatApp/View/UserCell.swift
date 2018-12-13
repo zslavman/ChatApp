@@ -181,10 +181,10 @@ class UserCell: UITableViewCell {
 			str = msg.text
 		}
 		else if msg.videoUrl != nil {
-			str = "[видео]"
+			str = dict[29]![LANG] // "[видео]"
 		}
 		else {
-			str = "[картинка]"
+			str = dict[30]![LANG] // "[картинка]"
 		}
 		
 		detailTextLabel?.text = str

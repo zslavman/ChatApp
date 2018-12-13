@@ -32,10 +32,8 @@ class MessagesController: UITableViewController {
 	internal var profileImageView:UIImageView!
 	internal var senders = [User]() 						// данные юзеров с которым есть чаты
 	
-	enum status:String {
-		case loading 	= "Загрузка..."
-		case nomessages = "Нет сообщений"
-	}
+//	private let STATUS_LOADING:String 		= dict[31]![LANG] // "Загрузка..."
+//	private let STATUS_NOMESSAGES:String 	= dict[32]![LANG] // "Нет сообщений"
 
 	private var audioPlayer = AVAudioPlayer()
 	private var allowIncomingSound:Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
@@ -66,9 +64,6 @@ class MessagesController: UITableViewController {
 	
 		currentList = [MySection(cells: messages)]
 
-		let bttnImage1 = UIImage(named: "bttn_logout")
-		navigationItem.leftBarButtonItem = UIBarButtonItem(image: bttnImage1, style: .plain, target: self, action: #selector(onLogout))
-		
 		navigationController?.view.backgroundColor = UIConfig.mainThemeColor
 		
 		chekIfUserLoggedIn()
@@ -107,7 +102,7 @@ class MessagesController: UITableViewController {
 		messages.remove(at: indexPath.row)
 		
 		if messages.isEmpty {
-			drawLoading(text: status.nomessages.rawValue)
+			drawLoading(text: dict[32]![LANG])
 		}
 		//tableView.deleteRows(at: [indexPath], with: .right)
 		reloadTable()
@@ -136,7 +131,7 @@ class MessagesController: UITableViewController {
 			(snapshot) in
 			// если вообще нет сообщений
 			if !snapshot.hasChildren() {
-				self.labelNoMessages?.text = status.nomessages.rawValue
+				self.labelNoMessages?.text = dict[32]![LANG]
 				self.allowIncomingSound = true
 			}
 			dialogsStartCount = snapshot.childrenCount
@@ -355,7 +350,7 @@ class MessagesController: UITableViewController {
 		allowIncomingSound = true
 		
 		if messages.isEmpty{
-			labelNoMessages?.text = status.nomessages.rawValue
+			labelNoMessages?.text = dict[32]![LANG]
 		}
 		else {
 			labelNoMessages?.removeFromSuperview()
@@ -408,7 +403,7 @@ class MessagesController: UITableViewController {
 	
 	
 	/// рисует лейблу с надписью Загрузка/Нет сообщений
-	private func drawLoading(text:String = status.loading.rawValue){
+	private func drawLoading(text: String){
 		
 		if !messages.isEmpty {
 			return
@@ -443,6 +438,7 @@ class MessagesController: UITableViewController {
 		// выходим, если не залогинены
 		if Auth.auth().currentUser?.uid == nil{
 			// аля задержка, для устранения Unbalanced calls to begin/end appearance transitions for <UINavigationController: 0x7f...
+			dispose()
 			perform(#selector(onLogout), with: nil, afterDelay: 0)
 		}
 		// автологинка
@@ -487,7 +483,7 @@ class MessagesController: UITableViewController {
 		// устанавливаем индикацию онлайн
 		OnlineService.setUserStatus(true)
 
-		drawLoading()
+		drawLoading(text: dict[31]![LANG])
 		fetchDialogs()
 		
 		// контейнер
@@ -553,7 +549,7 @@ class MessagesController: UITableViewController {
 		// устанавливаем индикацию онлайн
 		OnlineService.setUserStatus(true)
 		
-		drawLoading()
+		drawLoading(text: dict[31]![LANG])
 		fetchDialogs()
 		
 
@@ -608,7 +604,7 @@ class MessagesController: UITableViewController {
 	
 
 	
-	@objc private func onLogout(){
+	public func dispose(){
 		
 		// записуем на сервер состояние "offline"
 		if (uid != nil){
@@ -636,17 +632,12 @@ class MessagesController: UITableViewController {
 		owner = nil
 		labelNoMessages?.removeFromSuperview()
 		labelNoMessages = nil
-		
-		do {
-			try Auth.auth().signOut()
-		}
-		catch let logoutError{
-			print(logoutError)
-			return
-		}
-
+	}
+	
+	
+	
+	@objc private func onLogout(){
 		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
-
 		// фикс бага когда выходишь и регишся а тайтл не меняется
 		loginController.messagesController = self
 		

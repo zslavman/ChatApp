@@ -20,6 +20,8 @@ class ChangeLanguageController: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		
 		dataArr = dict[10]!
 		
 		tableView = UITableView(frame: CGRect.zero, style: .grouped)
@@ -35,11 +37,7 @@ class ChangeLanguageController: UITableViewController {
 //		navigationItem.setLeftBarButton(tp, animated: true)
 	}
 	
-	override func viewWillAppear(_ animated: Bool) {
-		DispatchQueue.main.async {
-			self.tableView.reloadData()
-		}
-	}
+
 
 	
 	

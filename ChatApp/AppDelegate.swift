@@ -74,7 +74,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
 		
 		UITabBarItem.appearance().titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -5)
-
+		
+//		UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.white], for: .selected)
+//		UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.lightGray], for: .normal)
+//		UITabBar.appearance().barTintColor = UIConfig.mainThemeColor
+		UITabBar.appearance().tintColor = UIConfig.mainThemeColor // иконки при выделении
+		
 	}
 	
 	

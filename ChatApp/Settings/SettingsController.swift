@@ -7,62 +7,7 @@
 //
 
 import UIKit
-
-struct UserDefFlags {
-	
-	private enum keys:String {
-		case sound_mess = "sound_mess"
-		case vibro_mess = "vibro_mess"
-		case limit_mess = "limit_mess"
-		case lang 		= "lang"
-	}
-	
-	static var sound_mess:Bool! {
-		didSet{
-			save(value: sound_mess, key: .sound_mess)
-		}
-	}
-	static var vibro_mess:Bool! {
-		didSet{
-			save(value: vibro_mess, key: .vibro_mess)
-		}
-	}
-	static var limit_mess:UInt! {
-		didSet{
-			save(value: limit_mess, key: .limit_mess)
-		}
-	}
-	static var lang:UInt! {
-		didSet{
-			save(value: lang, key: .lang)
-			LANG = Int(lang)
-		}
-	}
-	
-	init() {
-		let s_flag = UserDefaults.standard.object(forKey: keys.sound_mess.rawValue)
-		UserDefFlags.sound_mess = (s_flag == nil) ? true : s_flag as! Bool
-
-		let v_flag = UserDefaults.standard.object(forKey: keys.vibro_mess.rawValue)
-		UserDefFlags.vibro_mess = (v_flag == nil) ? false : v_flag as! Bool
-		
-		let lim_flag = UserDefaults.standard.object(forKey: keys.limit_mess.rawValue)
-		UserDefFlags.limit_mess = (lim_flag == nil) ? 25 : lim_flag as! UInt
-		
-		let lang_flag = UserDefaults.standard.object(forKey: keys.lang.rawValue)
-		UserDefFlags.lang = (lang_flag == nil) ? 0 : lang_flag as! UInt
-	}
-	
-	
-	private static func save(value:Any, key:keys){
-//		print("key = \(key.rawValue) ---> value = \(value)")
-		UserDefaults.standard.set(value, forKey: key.rawValue)
-		UserDefaults.standard.synchronize()
-	}
-}
-
-
-
+import Firebase
 
 
 class SettingsController: UITableViewController {
@@ -85,6 +30,8 @@ class SettingsController: UITableViewController {
 		configureLocales()
 		configureUI()
 	}
+	
+	
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
@@ -192,13 +139,54 @@ class SettingsController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
+		// Language
 		if indexPath.section == 2 && indexPath.row == 0 {
 			let vc = ChangeLanguageController()
+			vc.hidesBottomBarWhenPushed = true
 			navigationController?.pushViewController(vc, animated: true)
 		}
 		
+		// About
+		if indexPath.section == 2 && indexPath.row == 1 {
+			let vc = AboutController()
+			vc.hidesBottomBarWhenPushed = true
+			navigationController?.pushViewController(vc, animated: true)
+		}
+		
+		// Logout
+		if indexPath.section == 3 && indexPath.row == 0 {
+			logout()
+			tabBarController?.selectedIndex = 0
+		}
 		
 	}
+	
+	
+	
+	private func logout(){
+		
+		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+		messagesController.dispose()
+		
+		let findUsersController = tabBarController?.viewControllers![1].childViewControllers.first as! FindUserForChatController
+		findUsersController.dispose()
+		
+		do {
+			try Auth.auth().signOut()
+		}
+		catch let logoutError{
+			print(logoutError)
+			return
+		}
+		
+		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
+		// фикс бага когда выходишь и регишся а тайтл не меняется
+		loginController.messagesController = messagesController
+		
+		present(loginController, animated: true, completion: nil)
+	}
+		
+	
 	
 	
 }

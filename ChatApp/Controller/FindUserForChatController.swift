@@ -47,7 +47,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		searchController = SearchController(searchResultsController: nil)
 		searchController.searchBar.delegate = self
 
-		navigationItem.title = "Все юзеры"
+		//navigationItem.title = "Все юзеры"
 		navigationController?.view.backgroundColor = UIConfig.mainThemeColor
 		navigationController!.navigationBar.isTranslucent = false
 		
@@ -75,6 +75,8 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 			cancelButton.setTitle(dict[19]![LANG], for: .normal) // Отмена
 		}
 		
+		labelNoResults.text = dict[33]![LANG] // "Нет результатов"
+		
 //		UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = dict[19]![LANG] // Отмена
 //		for view in (searchController.searchBar.subviews[0]).subviews{
 //			if let button = view as? UIButton{
@@ -89,23 +91,23 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
-		//		disposeVar.0.removeObserver(withHandle: disposeVar.1)
-		//		disposeVar = nil
-		
 		searchController.isActive = false
 		searchController.dismiss(animated: false, completion: nil)
 	}
 
 	
 	
-
+	public func dispose(){
+		disposeVar?.0.removeObserver(withHandle: disposeVar.1)
+		disposeVar = nil
+	}
 	
 	
 	private func installNoResultsLabel(){
 		
 		labelNoResults = {
 			let label = UILabel()
-			label.text = "Нет результатов"
+			label.text = dict[33]![LANG]   // "Нет результатов"
 			label.backgroundColor = .clear
 			label.textColor = .lightGray
 			label.font = UIFont.boldSystemFont(ofSize: 22)
@@ -181,10 +183,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	
-	
-	
-	
-	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 		
 		// фильтруем 2-мерный массив
@@ -222,7 +220,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 
-	
 	
 	
 	func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
