@@ -18,6 +18,8 @@ class ChatMessageCell: UICollectionViewCell {
 	public static let blueColor = UIColor(r: 215, g: 235, b: 255)
 	public static let grayColor = UIColor(r: 239, g: 239, b: 238)
 	public static let grayTextColor = UIColor(r: 127, g: 138, b: 150)
+	public static let paddingTop:CGFloat = 7 // расстояние контента до верха ячейки
+	
 	
 	public var bubbleWidthAnchor: NSLayoutConstraint?
 	public var bubbleRightAnchor: NSLayoutConstraint?
@@ -128,8 +130,8 @@ class ChatMessageCell: UICollectionViewCell {
 			textView.heightAnchor.constraint(equalTo: heightAnchor),
 			
 			// для фона сообщения
-			bubbleView.topAnchor.constraint(equalTo: self.topAnchor, constant: 7),
-			bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor, constant: -14)
+			bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor, constant: -ChatMessageCell.paddingTop * 2),
+			bubbleView.centerYAnchor.constraint(equalTo: centerYAnchor)
 		])
 		
 		checkMarkWidth = checkMark.widthAnchor.constraint(equalToConstant: 23)

@@ -63,7 +63,7 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 			if !permission{
 				let message = dict[34]![LANG] // "Выберите другое видео (не более 10 МБ), или сократите его длительность"
 				let alertController = UIAlertController(title: dict[35]![LANG], message: message, preferredStyle: .alert) // "Слишком большой файл"
-				let ok = UIAlertAction(title: "Ок", style: .default, handler: nil)
+				let ok = UIAlertAction(title: dict[38]![LANG], style: .default, handler: nil) // ok
 				alertController.addAction(ok)
 				
 				self.present(alertController, animated: true, completion: nil)

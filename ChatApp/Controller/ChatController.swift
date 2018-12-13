@@ -279,7 +279,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
 			// h1/w1 = h2/w2  ->  h1 = h2/w2 * w1
 			let w1:CGFloat = CGFloat(UIScreen.main.bounds.width * 2/3)
-			hei = (CGFloat(imageHeight) / CGFloat(imageWidth) * w1)
+			hei = (CGFloat(imageHeight) / CGFloat(imageWidth) * w1) + ChatMessageCell.paddingTop * 2
 		}
 		else if message.geo_lat != nil {
 			let w1:CGFloat = CGFloat(UIScreen.main.bounds.width * 3/4)
