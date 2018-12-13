@@ -49,14 +49,15 @@ struct Calculations {
 		
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
+		dateFormater.locale = Locale(identifier: dict[24]![LANG]) // локаль (ru_US)
 		
 		// сегодня
 		if Calendar.current.isDateInToday(convertedDate){
-			return "сегодня"
+			return dict[23]![LANG] // сегодня
 		}
 			// вчера
 		else if Calendar.current.isDateInYesterday(convertedDate){
-			return "вчера"
+			return dict[22]![LANG] // вчера
 		}
 			// на этой неделе (пятница)
 		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
@@ -104,6 +105,7 @@ struct Calculations {
 		
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
+		dateFormater.locale = Locale(identifier: dict[24]![LANG])
 		let caretSymbol:String = "\n"
 		
 		dateFormater.dateFormat = "HH:mm"
@@ -118,7 +120,7 @@ struct Calculations {
 		}
 			// вчера (вчера 18:36)
 		else if Calendar.current.isDateInYesterday(convertedDate){
-			return "вчера" + caretSymbol + HH_mm
+			return dict[22]![LANG] + caretSymbol + HH_mm // вчера
 		}
 			// на этой неделе (Fri, 20:54)
 		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {

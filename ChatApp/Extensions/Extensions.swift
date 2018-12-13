@@ -196,7 +196,14 @@ extension UIView {
 
 	
 
-
+class SearchController: UISearchController {
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		// to avoid black screen when switching tabs while searching
+		isActive = false
+		super.viewWillDisappear(animated)
+	}
+}
 
 
 

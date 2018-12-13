@@ -58,10 +58,7 @@ class MessagesController: UITableViewController {
 //		return a
 //	}()
 	
-	
-	override var description: String {
-		return "Я тот что надо!"
-	}
+
 	
 
 	override func viewDidLoad() {
@@ -658,14 +655,12 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
+	// NOT USED
 	@objc private func onNewMessageClick(){
 		let findUserContr = FindUserForChatController()
-		findUserContr.messagesController = self
-		findUserContr.owner = owner
 		let navContr = UINavigationController(rootViewController: findUserContr)
 		present(navContr, animated: true, completion: nil)
-//		navigationController?.pushViewController(findUserContr, animated: true)
+		// navigationController?.pushViewController(findUserContr, animated: true)
 	}
 	
 	
@@ -684,7 +679,13 @@ class MessagesController: UITableViewController {
 	private func playSoundFile(_ soundName:String) {
 		
 		if !allowIncomingSound { return }
+		if !UserDefFlags.sound_mess { return }
+		
 		audioPlayer.play()
+		
+		if UserDefFlags.vibro_mess{
+			AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+		}
 		
 		//		let url = Bundle.main.url(forResource: soundName, withExtension: "mp3")!
 		//

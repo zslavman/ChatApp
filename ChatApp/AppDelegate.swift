@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		FirebaseApp.configure()
 		// Database.database().isPersistenceEnabled = true
 		
+		_ = UserDefFlags()
 		configureUI()
 		
 		// не будем использовать сторибоард

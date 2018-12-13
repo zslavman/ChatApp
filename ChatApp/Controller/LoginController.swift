@@ -59,7 +59,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	internal let nameTF:UITextField = {
 		let tf = UITextField()
-		tf.placeholder = "Имя"
+		tf.placeholder = dict[27]![LANG] // Имя
 		tf.backgroundColor = .white
 		tf.autocapitalizationType = .words
 		tf.autocorrectionType = UITextAutocorrectionType.no
@@ -97,7 +97,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	internal let passTF:UITextField = {
 		let tf = UITextField()
-		tf.placeholder = "Пароль"
+		tf.placeholder = dict[26]![LANG] // Пароль
 		tf.backgroundColor = .white
 		tf.translatesAutoresizingMaskIntoConstraints = false
 		tf.isSecureTextEntry = true
@@ -112,7 +112,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	internal let loginSegmentedControl:UISegmentedControl = {
-		let sc = UISegmentedControl(items: ["Login", "Register"])
+		let sc = UISegmentedControl(items: [dict[11]![LANG], dict[25]![LANG]]) // Login, Register
 		sc.translatesAutoresizingMaskIntoConstraints = false
 		sc.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
 		sc.selectedSegmentIndex = 1
@@ -336,13 +336,13 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			if e.count == 0 || p.count == 0 {
-				AppDelegate.waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
+				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG]) // Обнаружены незаполненные поля, все поля обязательные!
 				return
 			}
 		}
 		else {
 			if e.count == 0 || p.count == 0 || n.count == 0 {
-				AppDelegate.waitScreen?.setInfo(str: "Emty field(s) detected. All fields are required!")
+				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG])
 				return
 			}
 		}

@@ -14,16 +14,9 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 	private var cellID = "cellID"
 	private var users = [User]()
-	public var messagesController:MessagesController?
 	private var timer:Timer? // таймер-задержка перезагрузки таблицы
-	public var owner:User?
+	private var owner:User?
 	
-	// образец 2-х мерного массива, используемого в этой таблице
-	let arr = [
-		["Андрей", "Алексей", "Аня"],
-		["Боря", "Богдан"],
-		["Витя", "Вова", "Владик"]
-	]
 	private var twoD = [[User]]()
 	private var letter = [String]() // массив первых букв юзеров
 	private var disposeVar:(DatabaseReference, UInt)!
@@ -46,9 +39,12 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		// section headers не будут прилипать сверху таблицы
 		// self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
-
 		
-		searchController = UISearchController(searchResultsController: nil)
+		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+		owner = messagesController.owner
+		
+		// searchController = UISearchController(searchResultsController: nil)
+		searchController = SearchController(searchResultsController: nil)
 		searchController.searchBar.delegate = self
 
 		navigationItem.title = "Все юзеры"
@@ -59,7 +55,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
-		// tableView.backgroundColor = UIConfig.mainThemeColor
 		tableView.backgroundColor = UIColor.white
 		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cellID)
@@ -70,7 +65,39 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		installNoResultsLabel()
 	}
 	
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 		
+		searchController.searchBar.placeholder = dict[18]![LANG] // Поиск
+		
+		if let cancelButton = searchController.searchBar.value(forKey: "cancelButton") as? UIButton {
+			cancelButton.setTitle(dict[19]![LANG], for: .normal) // Отмена
+		}
+		
+//		UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = dict[19]![LANG] // Отмена
+//		for view in (searchController.searchBar.subviews[0]).subviews{
+//			if let button = view as? UIButton{
+//				button.setTitle(dict[19]![LANG], for:.normal)
+//			}
+//		}
+	}
+
+	
+	
+	// не сработает, если не закончили поиск
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		//		disposeVar.0.removeObserver(withHandle: disposeVar.1)
+		//		disposeVar = nil
+		
+		searchController.isActive = false
+		searchController.dismiss(animated: false, completion: nil)
+	}
+
+	
+	
 
 	
 	
@@ -194,15 +221,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	}
 	
 	
-	
-	override func viewDidDisappear(_ animated: Bool) {
-		super.viewDidDisappear(animated)
-//		disposeVar.0.removeObserver(withHandle: disposeVar.1)
-//		disposeVar = nil
-		
-//		searchBarCancelButtonClicked(searchController.searchBar)
-//		searchController.dismiss(animated: false, completion: nil)
-	}
+
 	
 	
 	

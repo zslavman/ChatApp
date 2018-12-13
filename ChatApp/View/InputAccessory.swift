@@ -22,7 +22,7 @@ class InputAccessory: UIView, UITextViewDelegate {
     
     public lazy var inputTextField: UITextView = {
         let tf = UITextView()
-        tf.text = placeholderStr
+        tf.text = dict[21]![LANG]
         tf.textColor = UIColor.lightGray
         tf.backgroundColor = .clear
         tf.font = UIFont.systemFont(ofSize: 17)
@@ -42,7 +42,7 @@ class InputAccessory: UIView, UITextViewDelegate {
         return uv
     }()
     
-    private var placeholderStr:String = "Введите сообщение..."
+   // private var placeholderStr:String = "Введите сообщение..."
     
     
     
@@ -116,7 +116,7 @@ class InputAccessory: UIView, UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
             textView.isScrollEnabled = false
-            textView.text = placeholderStr
+            textView.text = dict[21]![LANG]
             textView.textColor = UIColor.lightGray
         }
         else {
@@ -188,7 +188,7 @@ class InputAccessory: UIView, UITextViewDelegate {
         
         if !inputTextField.isFirstResponder { // если поле заполнено текстом но клава уже заехала
             inputTextField.isScrollEnabled = false
-            inputTextField.text = placeholderStr
+            inputTextField.text = dict[21]![LANG]
             inputTextField.textColor = UIColor.lightGray
         }
         checkOnEmpty()

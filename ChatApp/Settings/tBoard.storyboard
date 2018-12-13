@@ -170,6 +170,43 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="header s3" footerTitle="footer s3" id="uje-pf-hIK">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="h5u-GM-Arn">
+                                        <rect key="frame" x="0.0" y="502" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="h5u-GM-Arn" id="se0-VN-eoS">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2KS-mv-DMQ">
+                                                    <rect key="frame" x="63" y="11" width="296" height="23"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bttn_logout" translatesAutoresizingMaskIntoConstraints="NO" id="bMc-Gd-zRe">
+                                                    <rect key="frame" x="16" y="7" width="30" height="30"/>
+                                                    <color key="backgroundColor" red="0.1450980392" green="0.52941176469999995" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="tintColor" red="1" green="0.39607843139999999" blue="0.0039215686269999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="12H-Fw-xoP"/>
+                                                        <constraint firstAttribute="width" constant="30" id="OjV-f2-4AM"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="2KS-mv-DMQ" secondAttribute="trailing" constant="16" id="8Kz-kd-xPc"/>
+                                                <constraint firstItem="2KS-mv-DMQ" firstAttribute="leading" secondItem="bMc-Gd-zRe" secondAttribute="trailing" constant="17" id="Xht-Vv-GRP"/>
+                                                <constraint firstItem="bMc-Gd-zRe" firstAttribute="leading" secondItem="se0-VN-eoS" secondAttribute="leading" constant="16" id="mP1-Ee-Tgm"/>
+                                                <constraint firstItem="bMc-Gd-zRe" firstAttribute="centerY" secondItem="se0-VN-eoS" secondAttribute="centerY" id="nlQ-0y-h8H"/>
+                                                <constraint firstItem="bMc-Gd-zRe" firstAttribute="centerY" secondItem="se0-VN-eoS" secondAttribute="centerY" id="odt-o2-hdX"/>
+                                                <constraint firstItem="2KS-mv-DMQ" firstAttribute="centerY" secondItem="se0-VN-eoS" secondAttribute="centerY" id="s0E-6b-Joa"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="Py3-db-6Kh" id="Y88-gh-xRP"/>
@@ -207,4 +244,7 @@
             <point key="canvasLocation" x="37.600000000000001" y="178.56071964017991"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="bttn_logout" width="25" height="25"/>
+    </resources>
 </document>

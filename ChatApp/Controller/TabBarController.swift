@@ -12,22 +12,19 @@ import UIKit
 
 class TabBarController: UITabBarController, UITabBarControllerDelegate {
 	
-	let names:[String] = ["Чаты", "Контакты", "Настройки"]
-	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		delegate = self
 		
-		let tab1 = createTab(vc: MessagesController(), buttonImage_unselected: "bttn_menu", title: names[0])
-		let tab2 = createTab(vc: FindUserForChatController(), buttonImage_unselected: "bttn_find_user", title: names[1])
-//		let tab3 = createTab(vc: SettingsController(), buttonImage_unselected: "bttn_settings", title: names[2])
-		
+		let tab1 = createTab(vc: MessagesController(), buttonImage_unselected: "bttn_menu")
+		let tab2 = createTab(vc: FindUserForChatController(), buttonImage_unselected: "bttn_find_user")
+//		let tab3 = createTab(vc: SettingsController(), buttonImage_unselected: "bttn_settings")
 		
 		let tableViewStoryboard = UIStoryboard(name: "tBoard", bundle: nil)
 		let customViewController = tableViewStoryboard.instantiateViewController(withIdentifier: "myTable")
-		let tab3 = createTab(vc: customViewController, buttonImage_unselected: "bttn_settings", title: names[2])
+		let tab3 = createTab(vc: customViewController, buttonImage_unselected: "bttn_settings")
 		
 		
 		viewControllers = [tab1, tab2, tab3]
@@ -39,8 +36,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 		navigationController?.setNavigationBarHidden(true, animated: false)
 	}
 	
-	
-
 	
 
 	
@@ -66,13 +61,13 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 
 	
 	
-	private func switchTabTitles(for size: CGSize){
+	public func switchTabTitles(for size: CGSize){
 		
 		guard let items = tabBar.items else { return }
 		
 		for index in items.indices {
 			if size.width < size.height {
-				items[index].title = names[index]
+				items[index].title = dict[15 + index]![LANG]
 			}
 			else {
 				items[index].title = ""
@@ -85,11 +80,11 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 	
 	
 	
-	private func createTab(vc:UIViewController, buttonImage_unselected:String, title:String) -> UINavigationController {
+	private func createTab(vc:UIViewController, buttonImage_unselected:String) -> UINavigationController {
 		let navController = UINavigationController(rootViewController: vc)
 		navController.tabBarItem.image = UIImage(named: buttonImage_unselected)
 		// navController.tabBarItem.selectedImage = UIImage(named: buttonImage_selected)
-		navController.tabBarItem.title = title
+//		navController.tabBarItem.title = title
 		return navController
 	}
 	

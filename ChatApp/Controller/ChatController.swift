@@ -72,7 +72,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	internal var myCurrentPlace:CLLocation!
 	
 	// оптимазация (подгрузка сообщений)
-	private let maxMesOnPrimaryLoad:UInt = 25
+	private let maxMesOnPrimaryLoad:UInt = UserDefFlags.limit_mess
 	private let maxMessagesPerUpdate:UInt = 25
 	private var lastKey:String!						// точка отсчета подгрузки более старых сообщений
 	private var globalPath:DatabaseReference! 		// ссылка на список сообщений
@@ -92,6 +92,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		super.viewDidLoad()
 
 		setupGeo()
+		
+		navigationController?.navigationBar.items![0].title = dict[20]![LANG]
 		
 		let buttonImg = UIImage(named: "bttn_map_pin")
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: buttonImg, style: .plain, target: self, action: #selector(onLocationClick))

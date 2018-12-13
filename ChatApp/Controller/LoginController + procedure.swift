@@ -12,6 +12,25 @@ import Firebase
 
 extension LoginController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
+	// error_name=ERROR_USER_NOT_FOUND
+	// Code=17011
+	// There is no user record corresponding to this identifier. The user may have been deleted
+	
+	// error_name=ERROR_WRONG_PASSWORD
+	// Code=17009
+	// The password is invalid or the user does not have a password.
+	
+	// error_name=ERROR_EMAIL_ALREADY_IN_USE})"
+	// Code=17007
+	// The email address is already in use by another account.
+	
+	// error_name=ERROR_INVALID_EMAIL})"
+	// Code=17008
+	// The email address is badly formatted.
+	
+	// error_name=ERROR_WEAK_PASSWORD,
+	// Code=17026
+	// The password must be 6 characters long or more. })"
 	
 	@objc public func onProfileClick(){
 		
