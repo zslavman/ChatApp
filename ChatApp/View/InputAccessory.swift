@@ -16,13 +16,14 @@ class InputAccessory: UIView, UITextViewDelegate {
             // sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
             sendButton.addTarget(self, action: #selector(onSend), for: UIControlEvents.touchUpInside)
             // uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
-            uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatController, action: #selector(ChatController.onUploadClick)))
+			uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatController, action: #selector(ChatController.onUploadClick)))
+            insertGeo.addGestureRecognizer(UITapGestureRecognizer(target: chatController, action: #selector(ChatController.checkLocationAuthorization)))
         }
     }
     
     public lazy var inputTextField: UITextView = {
         let tf = UITextView()
-        tf.text = dict[21]![LANG]
+        tf.text = dict[21]![0]
         tf.textColor = UIColor.lightGray
         tf.backgroundColor = .clear
         tf.font = UIFont.systemFont(ofSize: 17)
@@ -30,6 +31,12 @@ class InputAccessory: UIView, UITextViewDelegate {
         tf.returnKeyType = .send // всего лишь вид кнопки "Enter"
         tf.delegate = self
         tf.isScrollEnabled = false
+//		tf.backgroundColor = UIColor.red.withAlphaComponent(0.2)
+		tf.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.3).cgColor
+		tf.layer.borderWidth = 1
+		tf.layer.cornerRadius = 20
+		tf.textContainer.lineFragmentPadding = 20
+//		tf.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 10)
         return tf
     }()
     
@@ -41,7 +48,16 @@ class InputAccessory: UIView, UITextViewDelegate {
         uv.translatesAutoresizingMaskIntoConstraints = false
         return uv
     }()
-    
+	
+	private let insertGeo: UIImageView = {
+		let ig = UIImageView()
+		ig.image = UIImage(named: "bttn_map_pin")?.withRenderingMode(.alwaysTemplate)
+		ig.isUserInteractionEnabled = true
+		ig.contentMode = .scaleAspectFit
+		ig.translatesAutoresizingMaskIntoConstraints = false
+		ig.tintColor = UIColor.lightGray.withAlphaComponent(0.6)
+		return ig
+	}()
    
     
     
@@ -65,7 +81,8 @@ class InputAccessory: UIView, UITextViewDelegate {
 	
 
     
-    
+	private var leftConstraint:NSLayoutConstraint! // дефолтная
+	private var leftConstraint2:NSLayoutConstraint! // когда начали ввод текста
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -84,41 +101,68 @@ class InputAccessory: UIView, UITextViewDelegate {
 		sendButton.translatesAutoresizingMaskIntoConstraints = false
 		sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
 		
+		
 		addSubview(uploadImageView)
 		addSubview(sepLine)
 		addSubview(sendButton)
 		addSubview(inputTextField)
+		addSubview(insertGeo)
 		
 		NSLayoutConstraint.activate([
 			// картинка слева (отправить фото)
-//			uploadImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
-			uploadImageView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -6),
-			uploadImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 5),
+			uploadImageView.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -5),
 			uploadImageView.widthAnchor.constraint(equalToConstant: 44), // эпл рекомендует минимум 44
 			uploadImageView.heightAnchor.constraint(equalToConstant: 44),
+			
+			insertGeo.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -14),
+			insertGeo.rightAnchor.constraint(equalTo: uploadImageView.leftAnchor, constant: 5),
+			insertGeo.widthAnchor.constraint(equalToConstant: 34),
+			insertGeo.heightAnchor.constraint(equalToConstant: 28),
 			
 			sepLine.topAnchor.constraint(equalTo: topAnchor),
 			sepLine.leftAnchor.constraint(equalTo: leftAnchor),
 			sepLine.rightAnchor.constraint(equalTo: rightAnchor),
 			sepLine.heightAnchor.constraint(equalToConstant: 1),
 			
-//			sendButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2),
-			sendButton.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -6),
+			sendButton.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -4),
 			sendButton.rightAnchor.constraint(equalTo: rightAnchor),
 			sendButton.widthAnchor.constraint(equalToConstant: 44),
 			sendButton.heightAnchor.constraint(equalToConstant: 44),
 			
 			// текстовое поле
-			inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 10),
+			inputTextField.leftAnchor.constraint(equalTo: uploadImageView.rightAnchor, constant: 5),
 			inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor),
 			inputTextField.topAnchor.constraint(equalTo: topAnchor, constant: 7),
-//			inputTextField.heightAnchor.constraint(equalTo: heightAnchor),
 			
 			inputTextField.bottomAnchor.constraint(equalTo: self.layoutMarginsGuide.bottomAnchor, constant: -6)
 		])
 		inputTextField.contentInset.bottom = 20 // чтоб при скролле введенного текста его не закрывала клава снизу
-	}
 		
+		leftConstraint = uploadImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 40)
+		leftConstraint.isActive = true
+		leftConstraint2 = uploadImageView.rightAnchor.constraint(equalTo: leftAnchor, constant: 0)
+		leftConstraint2.isActive = false
+	}
+	
+	
+		
+	
+	private func switchConstraint(){
+		
+		if leftConstraint.isActive {
+			leftConstraint.isActive = false
+			leftConstraint2.isActive = true
+		}
+		else{
+			leftConstraint2.isActive = false
+			leftConstraint.isActive = true
+		}
+		UIView.animate(withDuration: 0.4) {
+			self.layoutIfNeeded()
+			
+		}
+	}
+	
 	
 	
     
@@ -127,13 +171,15 @@ class InputAccessory: UIView, UITextViewDelegate {
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
             textView.textColor = UIColor.black
+			switchConstraint()
         }
     }
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
             textView.isScrollEnabled = false
-            textView.text = dict[21]![LANG]
+            textView.text = dict[21]![0]
             textView.textColor = UIColor.lightGray
+			switchConstraint()
         }
         else {
             textView.setContentOffset(.zero, animated: true)
@@ -205,8 +251,9 @@ class InputAccessory: UIView, UITextViewDelegate {
         
         if !inputTextField.isFirstResponder { // если поле заполнено текстом но клава уже заехала
             inputTextField.isScrollEnabled = false
-            inputTextField.text = dict[21]![LANG]
+            inputTextField.text = dict[21]![0]
             inputTextField.textColor = UIColor.lightGray
+			switchConstraint()
         }
         checkOnEmpty()
     }

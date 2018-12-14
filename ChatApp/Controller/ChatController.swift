@@ -97,9 +97,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		
 		navigationController?.navigationBar.items![0].title = dict[20]![LANG]
 		
-		let buttonImg = UIImage(named: "bttn_map_pin")
-		navigationItem.rightBarButtonItem = UIBarButtonItem(image: buttonImg, style: .plain, target: self, action: #selector(onLocationClick))
-		
 		let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout
 		layout?.minimumLineSpacing = 0 // расстояние сверху и снизу ячеек (по дефолту = 12)
 		// layout?.headerReferenceSize = CGSize(width: 150, height: 25)
@@ -685,14 +682,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				collectionView?.scrollToLast(animated: true)
 			}
 		}
-	}
-	
-	
-	
-	
-	// клик на булавку (отправить геолокацию)
-	@objc private func onLocationClick(){
-		checkLocationAuthorization()
 	}
 	
 	

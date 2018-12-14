@@ -54,7 +54,21 @@ struct UserDefFlags {
 		
 		let lang_flag = UserDefaults.standard.object(forKey: keys.lang.rawValue)
 		UserDefFlags.lang = (lang_flag == nil) ? 0 : lang_flag as! UInt
+		if lang_flag == nil{
+			if Locale.current.languageCode == "ru"{
+				UserDefFlags.lang = 0
+			}
+			else {
+				UserDefFlags.lang = 1
+			}
+		}
+		else {
+			UserDefFlags.lang = lang_flag as! UInt
+		}
 	}
+	
+	
+	
 	
 	
 	
@@ -64,6 +78,10 @@ struct UserDefFlags {
 		UserDefaults.standard.synchronize()
 	}
 }
+
+
+
+
 
 
 

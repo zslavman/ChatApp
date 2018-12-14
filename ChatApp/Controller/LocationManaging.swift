@@ -27,7 +27,7 @@ extension ChatController:CLLocationManagerDelegate {
 	
 	
 	// при нажатии на "Поделиться координатами"
-	internal func checkLocationAuthorization() {
+	@objc internal func checkLocationAuthorization() {
 		
 		switch CLLocationManager.authorizationStatus() {
 			
