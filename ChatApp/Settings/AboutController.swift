@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MessageUI
 
-class AboutController: UIViewController {
+class AboutController: UIViewController,MFMailComposeViewControllerDelegate, UITextViewDelegate {
 
 	
 	private let backImage:UIImageView = {
@@ -20,7 +21,7 @@ class AboutController: UIViewController {
 	}()
 	
 	
-	private let logo: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
+	private let logo: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: "chatApp_logo")
 		imageView.contentMode = .scaleAspectFit
@@ -35,24 +36,24 @@ class AboutController: UIViewController {
 	
 	let titleApp:UILabel = {
 		let label = UILabel()
-		label.text = dict[41]![LANG] // ChatApp
-//		label.font = UIFont(name:"MarkerFelt-Wide", size: 30)
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.textColor = #colorLiteral(red: 0.9764705882, green: 0.9843137255, blue: 0.9921568627, alpha: 1)
+		label.textColor = #colorLiteral(red: 0.8950331762, green: 0.9014148843, blue: 0.9205600086, alpha: 1)
 		label.textAlignment = .center
 		label.backgroundColor = UIColor.clear
 		return label
 	}()
 	
-	let support:UILabel = {
-		let label = UILabel()
-		label.numberOfLines = 2
-		label.text = dict[40]![LANG] // Разработка и поддержка
+	let support:UnselectableTextView = {
+		let label = UnselectableTextView()
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.textColor = #colorLiteral(red: 0.3697214447, green: 0.8389293235, blue: 1, alpha: 1)
-		label.font = UIFont.systemFont(ofSize: 16)
 		label.textAlignment = .center
 		label.backgroundColor = UIColor.clear
+		label.dataDetectorTypes = .link
+		label.isScrollEnabled = false
+		label.isEditable = false
+		label.delaysContentTouches = false
+		label.linkTextAttributes = ["yopta": UIColor.white]
 		return label
 	}()
 	
@@ -76,14 +77,13 @@ class AboutController: UIViewController {
 		title = dict[4]![LANG] // О приложении
 		//shouldAutorotate = false
 		
-		let attribetedTitle = NSMutableAttributedString(string: dict[41]![LANG], attributes: [NSAttributedStringKey.font : UIFont(name:"MarkerFelt-Wide", size: 30)!])
-		let attribetedVer = NSMutableAttributedString(string: dict[42]![LANG], attributes: [NSAttributedStringKey.font : UIFont(name:"AppleSDGothicNeo-Medium", size: 18)!])
-		attribetedTitle.append(attribetedVer)
-		
-		titleApp.attributedText = attribetedTitle
+		support.delegate = self
 		
 		installScene()
+		
+		drawNSAttrinuredTexts()
 	}
+	
 	
 	
 	
@@ -96,7 +96,6 @@ class AboutController: UIViewController {
 		view.addSubview(support)
 		view.addSubview(titleApp)
 		
-		
 		NSLayoutConstraint.activate([
 			backImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 			backImage.widthAnchor.constraint(equalTo: view.widthAnchor),
@@ -107,11 +106,13 @@ class AboutController: UIViewController {
 			logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5, constant: 0),
 			logo.widthAnchor.constraint(equalTo: logo.heightAnchor),
 			
-			titleApp.topAnchor.constraint(equalTo: logo.bottomAnchor, constant: 0),
+			titleApp.topAnchor.constraint(equalTo: logo.bottomAnchor, constant: -10),
 			titleApp.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-
+			
 			support.topAnchor.constraint(equalTo: titleApp.bottomAnchor, constant: 10),
 			support.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			support.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
+			support.heightAnchor.constraint(equalToConstant: 60),
 			
 			bottomLabel.bottomAnchor.constraint(equalTo: view.safeBottomAnchor, constant: -20),
 			bottomLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -119,8 +120,76 @@ class AboutController: UIViewController {
 	}
 	
 	
+	private func drawNSAttrinuredTexts(){
+		// ChatApp + v1.0
+		let attribetedTitle = NSMutableAttributedString(string: dict[41]![0], attributes: [NSAttributedStringKey.font : UIFont(name:"MarkerFelt-Wide", size: 30)!]) // ChatApp
+		let attribetedVer = NSMutableAttributedString(string: dict[42]![0], attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 18)]) // v1.0
+		attribetedTitle.append(attribetedVer)
+		
+		titleApp.attributedText = attribetedTitle
+		
+		
+		// колдовство с надписью "Разработка и поддержка:"
+		let style = NSMutableParagraphStyle()
+		style.alignment = NSTextAlignment.center
+		
+		let styleForSupport: [NSAttributedStringKey : Any] = [
+			.foregroundColor: #colorLiteral(red: 0.3529411765, green: 0.7960784314, blue: 0.9450980392, alpha: 1),
+			.paragraphStyle : style,
+			.font: UIFont.systemFont(ofSize: 16)
+		]
+		let atrSupport = NSMutableAttributedString(string: dict[40]![LANG], attributes: styleForSupport)
+		
+		// колдовство с линкованным текстом
+		let styleForLink: [NSAttributedStringKey : Any] = [
+			.foregroundColor: #colorLiteral(red: 0.3529411765, green: 0.7960784314, blue: 0.9450980392, alpha: 1),
+			.paragraphStyle : style,
+			.font: UIFont.systemFont(ofSize: 16),
+			.underlineStyle: NSUnderlineStyle.styleSingle.rawValue,
+			.link: dict[44]![0]
+		]
+		let attrEmail = NSMutableAttributedString(string: dict[46]![LANG])
+		attrEmail.addAttributes(styleForLink, range: NSRange(location: 0, length: dict[46]![LANG].count))
+		
+		atrSupport.append(attrEmail)
+		
+		support.attributedText = atrSupport
+	}
 	
 	
+	
+	
+	private func sendMail(){
+		
+		let mailComposerVC = MFMailComposeViewController()
+		mailComposerVC.mailComposeDelegate = self
+		
+		mailComposerVC.setToRecipients([dict[44]![0]]) // email
+		mailComposerVC.setSubject(dict[43]![0]) 		// "ChatApp проблема"
+		mailComposerVC.setMessageBody("Hi Viacheslav, \n[describe problem here]", isHTML: false)
+		
+		
+		if MFMailComposeViewController.canSendMail() {
+			present(mailComposerVC, animated: true, completion: nil)
+		}
+		else {
+			AppDelegate.waitScreen?.setInfo(str: dict[44]![0]) // Не удалось отправить письмо
+		}
+	}
+	
+	
+	// при окончании отправки
+	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+		print("dismiss for MFMailComposeViewController")
+		controller.dismiss(animated: true, completion: nil)
+	}
+	
+	
+	
+	func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+		sendMail()
+		return false
+	}
 	
 	
 	

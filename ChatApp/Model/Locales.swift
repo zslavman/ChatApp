@@ -65,16 +65,24 @@ let dict:[Int:[String]] = [
 	39:["© 2018 ChatApp все права защищены",
 		"© 2018 ChatApp All rights reserved",
 		""],
-	40:["Разработка и поддержка: \nВячеслав Зинько",
-		"Development and support: \nViacheslav Zinko",
-		""],
-	41:["ChatApp", "ChatApp", "ChatApp"],
-	42:[" v1.0", " v1.0", " v1.0"],
-	43:["", "", ""]
+	40:["Разработка и поддержка:\n", "Development and support:\n", ""],
+	41:["ChatApp"], 			// 1
+	42:[" v1.0"], 				// 1
+	44:["zslavman@gmail.com"], 	// 1
+	43:["ChatApp проблема", "ChatApp issue", ""],
+	45:["Не удалось отправить письмо", "Failed to send email", ""],
+	46:["Вячеслав Зинько", "Viacheslav Zinko", ""],
+	47:["", "", ""],
+	48:["", "", ""],
+	49:["", "", ""],
+	50:["", "", ""],
+	51:["", "", ""],
+	52:["", "", ""],
+	53:["", "", ""],
 
-	
-	
 ]
+
+
 
 class Locales {
 	
