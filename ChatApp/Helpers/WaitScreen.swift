@@ -58,6 +58,9 @@ class WaitScreen: NSObject {
 	
 	
 	public func setInfo(str:String) {
+		if blackView == nil {
+			show()
+		}
 		blackView.setInfo(str: str)
 		hide()
 	}

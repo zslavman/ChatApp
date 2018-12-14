@@ -72,7 +72,7 @@ let dict:[Int:[String]] = [
 	43:["ChatApp проблема", "ChatApp issue", ""],
 	45:["Не удалось отправить письмо", "Failed to send email", ""],
 	46:["Вячеслав Зинько", "Viacheslav Zinko", ""],
-	47:["", "", ""],
+	47:["Привет, Вячеслав \n \n[~опишите свою проблему здесь~]", "Hi Viacheslav, \n \n[~describe problem here~]", ""],
 	48:["", "", ""],
 	49:["", "", ""],
 	50:["", "", ""],

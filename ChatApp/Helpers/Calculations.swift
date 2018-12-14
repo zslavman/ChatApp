@@ -168,9 +168,42 @@ struct Calculations {
 	
 	
 	
+	static func gatherDeviceInfo() -> [String]{
+		
+		var returnedArr = [String]()
+		returnedArr.append(UIDevice.current.modelName)
+		returnedArr.append(UIDevice.current.systemName + " " + UIDevice.current.systemVersion)
+		return returnedArr
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

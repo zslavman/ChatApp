@@ -9,7 +9,7 @@
 import UIKit
 import MessageUI
 
-class AboutController: UIViewController,MFMailComposeViewControllerDelegate, UITextViewDelegate {
+class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UITextViewDelegate {
 
 	
 	private let backImage:UIImageView = {
@@ -165,15 +165,20 @@ class AboutController: UIViewController,MFMailComposeViewControllerDelegate, UIT
 		mailComposerVC.mailComposeDelegate = self
 		
 		mailComposerVC.setToRecipients([dict[44]![0]]) // email
-		mailComposerVC.setSubject(dict[43]![0]) 		// "ChatApp проблема"
-		mailComposerVC.setMessageBody("Hi Viacheslav, \n[describe problem here]", isHTML: false)
+		mailComposerVC.setSubject(dict[43]![LANG]) 		// "ChatApp проблема"
 		
+		// компонуем информацию тела письма
+		let info = Calculations.gatherDeviceInfo()
+		let str = "Info: " + info.joined(separator: ", ") + "\n" + dict[47]![LANG] + "\n" // ... Hi Viacheslav, \n[describe problem here]
+		
+		mailComposerVC.setMessageBody(str, isHTML: false)
+		mailComposerVC.navigationBar.tintColor = UIColor.white
 		
 		if MFMailComposeViewController.canSendMail() {
 			present(mailComposerVC, animated: true, completion: nil)
 		}
 		else {
-			AppDelegate.waitScreen?.setInfo(str: dict[44]![0]) // Не удалось отправить письмо
+			AppDelegate.waitScreen?.setInfo(str: dict[45]![LANG]) // Не удалось отправить письмо
 		}
 	}
 	
@@ -190,6 +195,10 @@ class AboutController: UIViewController,MFMailComposeViewControllerDelegate, UIT
 		sendMail()
 		return false
 	}
+	
+	
+	
+	
 	
 	
 	
