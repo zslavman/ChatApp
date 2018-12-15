@@ -125,7 +125,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		view.addSubview(scrollingDownBttn)
 		NSLayoutConstraint.activate([
 			scrollingDownBttn.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10),
-			scrollingDownBttn.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60),
+			scrollingDownBttn.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -60),
 			scrollingDownBttn.widthAnchor.constraint(equalToConstant: 45),
 			scrollingDownBttn.heightAnchor.constraint(equalToConstant: 45)
 		])
