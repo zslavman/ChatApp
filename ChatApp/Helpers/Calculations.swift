@@ -171,6 +171,14 @@ struct Calculations {
 	static func gatherDeviceInfo() -> [String]{
 		
 		var returnedArr = [String]()
+		
+		let plistDictionary = Bundle.main.infoDictionary!
+		let appVersion = plistDictionary["CFBundleShortVersionString"] as! String
+		let build = plistDictionary["CFBundleVersion"] as! String
+		let fullVersion = dict[41]![0] + " v." + appVersion + " build " + build
+		
+		returnedArr.append(fullVersion)
+		
 		returnedArr.append(UIDevice.current.modelName)
 		returnedArr.append(UIDevice.current.systemName + " " + UIDevice.current.systemVersion)
 		return returnedArr
@@ -178,6 +186,17 @@ struct Calculations {
 	
 	
 	
+	static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
+		if let delegate = UIApplication.shared.delegate as? AppDelegate {
+			delegate.orientationLock = orientation
+		}
+	}
+	
+	/// OPTIONAL Added method to adjust lock and rotate to the desired orientation
+	static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
+		Calculations.lockOrientation(orientation)
+		UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
+	}
 	
 	
 	

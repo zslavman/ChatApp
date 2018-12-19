@@ -9,7 +9,7 @@
 import UIKit
 import MessageUI
 
-class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UITextViewDelegate {
+class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UITextViewDelegate, UINavigationControllerDelegate {
 
 	
 	private let backImage:UIImageView = {
@@ -73,6 +73,8 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		Calculations.lockOrientation(.portrait)
 
 		title = dict[4]![LANG] // О приложении
 		//shouldAutorotate = false
@@ -85,6 +87,11 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	}
 	
 	
+	
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		Calculations.lockOrientation(.all)
+	}
 	
 	
 	
@@ -169,7 +176,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		
 		// компонуем информацию тела письма
 		let info = Calculations.gatherDeviceInfo()
-		let str = "Info: " + info.joined(separator: ", ") + "\n" + dict[47]![LANG] + "\n" // ... Hi Viacheslav, \n[describe problem here]
+		let str = "INFO: " + info.joined(separator: ", ") + "\n\n" + dict[47]![LANG] + "\n" // ... Hi Viacheslav, \n[describe problem here]
 		
 		mailComposerVC.setMessageBody(str, isHTML: false)
 		mailComposerVC.navigationBar.tintColor = UIColor.white
@@ -198,20 +205,25 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	
 	
 	
-	
-	
-	
-	
 	override func shouldAutomaticallyForwardRotationMethods() -> Bool {
 		return false
 	}
 	
-//	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//		get {
-//			return .portrait
-//		}
-//	}
 
+	
+	
+	
+	
+	
+
+//	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//		return UIInterfaceOrientationMask.portrait
+//	}
+//	override var shouldAutorotate: Bool {
+//		return false
+//	}
+	
+	
 
 	
 

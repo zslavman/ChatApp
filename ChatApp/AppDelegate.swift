@@ -8,15 +8,44 @@
 
 import UIKit
 import Firebase
+import UserNotifications
+import FirebaseMessaging
+import FirebaseInstanceID
+
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
 
 	var window: UIWindow?
 	public static var waitScreen:WaitScreen!
+	public var orientationLock = UIInterfaceOrientationMask.all
+	
+	
+	func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+		return self.orientationLock
+	}
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+		
+		UNUserNotificationCenter.current().delegate = self
+		
+		// нотификейшны
+		let center = UNUserNotificationCenter.current()
+		let options: UNAuthorizationOptions = [.alert, .badge, .sound]
+		center.requestAuthorization(options: options, completionHandler: {
+			authorized, error in
+			
+			if authorized {
+//				UNUserNotificationCenter.current().delegate = self
+				Messaging.messaging().delegate = self
+				
+				DispatchQueue.main.async {
+					UIApplication.shared.registerForRemoteNotifications()
+					// application.registerForRemoteNotifications()
+				}
+			}
+		})
 		
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false
@@ -43,6 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationDidEnterBackground(_ application: UIApplication) {
 		// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
 		// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+		Messaging.messaging().shouldEstablishDirectChannel = false
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {
@@ -52,6 +82,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		OnlineService.setUserStatus(true)
+		ConnectToFCM()
 	}
 
 	
@@ -62,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	
 	
-	
+
 	
 	private func configureUI() {
 		
@@ -80,6 +111,71 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //		UITabBar.appearance().barTintColor = UIConfig.mainThemeColor
 		UITabBar.appearance().tintColor = UIConfig.mainThemeColor // иконки при выделении
 		
+	}
+	
+	
+	
+	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+		let tokenParts = deviceToken.map {
+			data -> String in
+			return String(format: "%02.2hhx", data)
+		}
+		
+		let token = tokenParts.joined()
+		print("Device Token: \(token)")
+		
+		Messaging.messaging().apnsToken = deviceToken
+	}
+	
+	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+		print("Failed to register: \(error)")
+	}
+	
+	
+	
+	
+	
+	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+		ConnectToFCM()
+	}
+	
+	
+	func ConnectToFCM() {
+		Messaging.messaging().shouldEstablishDirectChannel = true
+		
+		InstanceID.instanceID().instanceID(handler: {
+			(result, error) in
+			if let error = error {
+				print("Error fetching remote instange ID: \(error)")
+			}
+			else if let result = result {
+				print("Remote instance ID token: \(result.token)")
+			}
+		})
+	}
+	
+	
+
+	// Called When Cloud Message is Received While App is in Background or is Closed
+	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+		
+		print("response = \(response)")
+	}
+	
+	
+	// 
+	func application(_ application: UIApplication, didReceiveRemoteNotification: [AnyHashable : Any]) {
+		print("didReceiveRemoteNotification = \(didReceiveRemoteNotification)")
+	}
+	
+	
+	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		
+		UIApplication.shared.applicationIconBadgeNumber += 1
+		
+		print("Всего сообщений = \(UIApplication.shared.applicationIconBadgeNumber)")
+		
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "organic.ChatApp.BadgeWasUpdated"), object: nil)
 	}
 	
 	

@@ -71,6 +71,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return tf
 	}()
 	private let nameSeparator:UIView = {
+
 		let separator = UIView()
 		separator.backgroundColor = UIColor.lightGray
 		separator.translatesAutoresizingMaskIntoConstraints = false
@@ -167,7 +168,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-		
 		
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.keyboardDismissMode = .interactive
