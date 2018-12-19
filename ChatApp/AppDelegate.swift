@@ -10,11 +10,10 @@ import UIKit
 import Firebase
 import UserNotifications
 import FirebaseMessaging
-import FirebaseInstanceID
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 	public static var waitScreen:WaitScreen!
@@ -29,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
 		UNUserNotificationCenter.current().delegate = self
+		Messaging.messaging().delegate = self
 		
 		// нотификейшны
 		let center = UNUserNotificationCenter.current()
@@ -37,13 +37,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 			authorized, error in
 			
 			if authorized {
-//				UNUserNotificationCenter.current().delegate = self
-				Messaging.messaging().delegate = self
-				
-				DispatchQueue.main.async {
-					UIApplication.shared.registerForRemoteNotifications()
-					// application.registerForRemoteNotifications()
-				}
+				application.registerForRemoteNotifications()
+				// UIApplication.shared.registerForRemoteNotifications()
 			}
 		})
 		
@@ -62,6 +57,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 		return true
 	}
 
+	
+	
 	// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
 	// Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
 	func applicationWillResignActive(_ application: UIApplication) {
@@ -97,7 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	
 	private func configureUI() {
 		
-//		UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
+		// UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 		UINavigationBar.appearance().barTintColor = UIConfig.mainThemeColor
 		UINavigationBar.appearance().tintColor = UIColor.white
 		UINavigationBar.appearance().shadowImage = UIImage()
@@ -106,15 +103,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 		
 		UITabBarItem.appearance().titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -5)
 		
-//		UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.white], for: .selected)
-//		UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.lightGray], for: .normal)
-//		UITabBar.appearance().barTintColor = UIConfig.mainThemeColor
+		// UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.white], for: .selected)
+		// UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.lightGray], for: .normal)
+		// UITabBar.appearance().barTintColor = UIConfig.mainThemeColor
 		UITabBar.appearance().tintColor = UIConfig.mainThemeColor // иконки при выделении
-		
 	}
 	
 	
 	
+	// при получении токена
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
 		let tokenParts = deviceToken.map {
 			data -> String in
@@ -123,15 +120,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 		
 		let token = tokenParts.joined()
 		print("Device Token: \(token)")
+		// ef423b66e7b036165112949b09f2bd4d9535a0bf60d0f6af5f97dc0ec08b110a     - мой
+		// 7f3e270f445b1103646828452791fe8a05b317913a7142fa1616e7604505ca14     - ксю
 		
 		Messaging.messaging().apnsToken = deviceToken
 	}
 	
+	
+	// если ошибка при получении токина
 	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
 		print("Failed to register: \(error)")
 	}
-	
-	
 	
 	
 	
@@ -154,36 +153,62 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 		})
 	}
 	
+}
+
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+	
+	func userNotificationCenter(_ center: UNUserNotificationCenter,
+								didReceive response: UNNotificationResponse,
+								withCompletionHandler completionHandler: @escaping () -> Void) {
+		// 1
+		let userInfo = response.notification.request.content.userInfo
+		let aps = userInfo["aps"] as! [String: AnyObject]
+		
+		print("1111111111111111111 = \(aps)")
+		completionHandler()
+	}
 	
 
-	// Called When Cloud Message is Received While App is in Background or is Closed
-	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+	
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		
-		print("response = \(response)")
+		// отправляем аналитику сообщений в FCM
+		Messaging.messaging().appDidReceiveMessage(userInfo)
+		//Messaging.messaging().subscribe(toTopic: <#T##String#>)
+		
+		print(" Entire message \(userInfo)")
+		print("Article avaialble for download: \(userInfo["articleId"]!)")
+		
+		let state : UIApplicationState = application.applicationState
+		switch state {
+		case UIApplicationState.active:
+			print("If needed notify user about the message")
+		default:
+			print("Run code to download content")
+		}
+		
+		completionHandler(UIBackgroundFetchResult.newData)
 	}
 	
 	
-	// 
-	func application(_ application: UIApplication, didReceiveRemoteNotification: [AnyHashable : Any]) {
-		print("didReceiveRemoteNotification = \(didReceiveRemoteNotification)")
-	}
-	
-	
-	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-		
-		UIApplication.shared.applicationIconBadgeNumber += 1
-		
-		print("Всего сообщений = \(UIApplication.shared.applicationIconBadgeNumber)")
-		
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "organic.ChatApp.BadgeWasUpdated"), object: nil)
-	}
-	
-	
-	
-	
-	
+}
 
 
+extension AppDelegate: MessagingDelegate {
+	
+	// при получении уведомления (если это "content-available": 1)
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+		print("222222222222222222 = \(userInfo)")
+		
+		if UIApplication.shared.applicationState == .active {
+			//TODO: Handle foreground notification
+		}
+		else {
+			//TODO: Handle background notification
+		}
+	}
+	
 }
 
 

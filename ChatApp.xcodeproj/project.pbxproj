@@ -10,7 +10,6 @@
 		46EDE0D18A6394E86D550EB2 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
 		5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */; };
 		5632FA7C21C8ED6000FBEE80 /* DeviceOrientationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */; };
-		5637379A21C982DC00EA0044 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5637379921C982DB00EA0044 /* GoogleService-Info.plist */; };
 		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
 		5637FD1521B365620015CAAF /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
@@ -18,6 +17,7 @@
 		563959D821C1F556005EA8AD /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563959D721C1F556005EA8AD /* AboutController.swift */; };
 		5639652A21924CA000691334 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639652921924CA000691334 /* UserCell.swift */; };
 		56397AF721BA9BEA00372B61 /* MessagesController_Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */; };
+		563991B421CA081D00884B75 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 563991B321CA081D00884B75 /* GoogleService-Info.plist */; };
 		5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */; };
 		563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */; };
 		563B243B21AE1CE500EEB504 /* BlackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B243A21AE1CE500EEB504 /* BlackView.swift */; };
@@ -52,7 +52,6 @@
 		5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefFlags.swift; sourceTree = "<group>"; };
 		5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOrientationHelper.swift; sourceTree = "<group>"; };
 		5636A1CE21C902E30065BFD5 /* ChatApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChatApp.entitlements; sourceTree = "<group>"; };
-		5637379921C982DB00EA0044 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
 		5637FD1421B365620015CAAF /* Calculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculations.swift; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
@@ -60,6 +59,7 @@
 		563959D721C1F556005EA8AD /* AboutController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = "<group>"; };
 		5639652921924CA000691334 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		56397AF621BA9BEA00372B61 /* MessagesController_Main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController_Main.swift; sourceTree = "<group>"; };
+		563991B321CA081D00884B75 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVideoManaging.swift; sourceTree = "<group>"; };
 		563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
 		563B243A21AE1CE500EEB504 /* BlackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackView.swift; sourceTree = "<group>"; };
@@ -178,7 +178,7 @@
 				566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */,
 				566BEDAF2186F8D70053F4A0 /* Assets.xcassets */,
 				5637D90D21A36C9D00BA9717 /* pipk.mp3 */,
-				5637379921C982DB00EA0044 /* GoogleService-Info.plist */,
+				563991B321CA081D00884B75 /* GoogleService-Info.plist */,
 				566BEDB42186F8D70053F4A0 /* Info.plist */,
 			);
 			path = ChatApp;
@@ -315,7 +315,7 @@
 			files = (
 				566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */,
 				5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */,
-				5637379A21C982DC00EA0044 /* GoogleService-Info.plist in Resources */,
+				563991B421CA081D00884B75 /* GoogleService-Info.plist in Resources */,
 				566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */,
 				56852E5521C08CA600E7A62F /* tBoard.storyboard in Resources */,
 			);
