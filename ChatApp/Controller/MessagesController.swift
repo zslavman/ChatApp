@@ -30,11 +30,8 @@ class MessagesController: UITableViewController {
 	
 	private var hendlers = [UInt:DatabaseReference]() 	// для правильного диспоза слушателей базы
 	internal var profileImageView:UIImageView!
-	internal var senders = [User]() 						// данные юзеров с которым есть чаты
+	internal var senders = [User]() 					// данные юзеров с которым есть чаты
 	
-//	private let STATUS_LOADING:String 		= dict[31]![LANG] // "Загрузка..."
-//	private let STATUS_NOMESSAGES:String 	= dict[32]![LANG] // "Нет сообщений"
-
 	private var audioPlayer = AVAudioPlayer()
 	private var allowIncomingSound:Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
 	internal var goToChatWithID:String?			// ID собеседника, с которым перешли в чат
@@ -275,13 +272,19 @@ class MessagesController: UITableViewController {
 			if snapshot.exists() && snapshot.childrenCount > 0 {
 				for index in self.messages.indices{
 					if self.messages[index].chatPartnerID()! == msg.fromID! {
-						self.messages[index].unreadCount = snapshot.childrenCount
+						if self.goToChatWithID != msg.chatPartnerID(){ // добавляем непрочтенные только если не общаемся с диалогером
+							self.messages[index].unreadCount = snapshot.childrenCount
+						}
 						flag = true
 						break
 					}
 				}
 				if !flag {
 					msg.unreadCount = snapshot.childrenCount
+				}
+				// добавляем непрочтенные только если не общаемся с диалогером
+				if snapshot.childrenCount == 1 && self.goToChatWithID != msg.chatPartnerID() {
+					self.addBageValue(val: 1)
 				}
 				self.moveDialogs(newMessage: msg)
 			}
@@ -312,9 +315,9 @@ class MessagesController: UITableViewController {
 	
 	/// калькуляция непрочитанных сообщений каждого диалогера (запускается 1 раз при загрузке, когда получили все диалоги)
 	private func countUnreadMessages(){
-
 		// получаем весь словарь непрочтенных
 		let unreadRef = Database.database().reference().child("unread-messages-foreach").child(uid)
+		var count:Int = 0
 
 		unreadRef.observeSingleEvent(of: .value) {
 			(snapshot) in
@@ -325,6 +328,7 @@ class MessagesController: UITableViewController {
 					let keyName = self.messages[index].chatPartnerID()!
 					if dictionary.keys.contains(keyName){
 						self.messages[index].unreadCount = UInt(dictionary[keyName]!.count)
+						count += 1
 					}
 				}
 			}
@@ -335,12 +339,40 @@ class MessagesController: UITableViewController {
 					return mes
 				})
 			}
+			self.addBageValue(val: count)
 			self.firstReloadTable()
 		}
 	}
 	
 	
 
+	
+	
+	// плюсуем счетчик ярлыка текущей вкладки
+	internal func addBageValue(val:Int){
+		
+		guard val != 0 else { return }
+		
+		let thisTabItem = tabBarController?.tabBar.items!.first
+		var currentCount:Int = 0
+		
+		if thisTabItem?.badgeValue != nil{
+			currentCount = Int(thisTabItem!.badgeValue!)!
+		}
+		currentCount += val
+		
+		if currentCount <= 0 {
+			thisTabItem?.badgeValue = nil
+			UIApplication.shared.applicationIconBadgeNumber = 0
+		}
+		else {
+			thisTabItem?.badgeValue = String(currentCount)
+			UIApplication.shared.applicationIconBadgeNumber = currentCount
+		}
+	}
+	
+	
+	
 	
 	
 	

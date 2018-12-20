@@ -34,6 +34,9 @@ extension MessagesController {
 			currentList[0].cells[savedIndexPath.row].unreadCount = nil
 			tableView.reloadRows(at: [savedIndexPath], with: .none)
 			self.savedIndexPath = nil
+			
+			// обновляем счетчик бейджа
+			addBageValue(val: -1)
 		}
 	}
 	
