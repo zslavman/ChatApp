@@ -50,7 +50,7 @@ class SettingsController: UITableViewController {
 		localRows = [
 			0: [dict[0]![LANG], dict[1]![LANG]],
 			1: [dict[2]![LANG]],
-			2: [dict[3]![LANG], dict[4]![LANG]],
+			2: [dict[48]![LANG], dict[3]![LANG], dict[4]![LANG]],
 			3: [dict[12]![LANG]]
 		]
 		localSection = [
@@ -117,7 +117,7 @@ class SettingsController: UITableViewController {
 
 		let cell = super.tableView(tableView, cellForRowAt: indexPath)
 		
-		if indexPath.section == 2 || indexPath.section == 3{
+		if indexPath.section == 2 || indexPath.section == 3 {
 			// цвет выделения при клике на ячейку
 			let selectionColor = UIView()
 			selectionColor.backgroundColor = ChatMessageCell.blueColor.withAlphaComponent(0.45)
@@ -140,18 +140,26 @@ class SettingsController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
-		// Language
-		if indexPath.section == 2 && indexPath.row == 0 {
-			let vc = ChangeLanguageController()
-			vc.hidesBottomBarWhenPushed = true
-			navigationController?.pushViewController(vc, animated: true)
-		}
-		
-		// About
-		if indexPath.section == 2 && indexPath.row == 1 {
-			let vc = AboutController()
-			vc.hidesBottomBarWhenPushed = true
-			navigationController?.pushViewController(vc, animated: true)
+		if indexPath.section == 2 {
+			// Edit profile
+			if indexPath.row == 0 {
+				let alertController = Calculations.alert(message: dict[49]![LANG], OK_action: {
+					tableView.deselectRow(at: indexPath, animated: true)
+				})
+				present(alertController, animated: true, completion: nil)
+			}
+			// Language
+			if indexPath.row == 1 {
+				let vc = ChangeLanguageController()
+				vc.hidesBottomBarWhenPushed = true
+				navigationController?.pushViewController(vc, animated: true)
+			}
+			// About
+			if indexPath.row == 2 {
+				let vc = AboutController()
+				vc.hidesBottomBarWhenPushed = true
+				navigationController?.pushViewController(vc, animated: true)
+			}
 		}
 		
 		// Logout

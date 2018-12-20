@@ -129,11 +129,21 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	
 	private func drawNSAttrinuredTexts(){
 		// ChatApp + v1.0
+		
+//		let styleFor: [NSAttributedStringKey : Any] = [
+//			.foregroundColor: #colorLiteral(red: 0.8950331762, green: 0.9014148843, blue: 0.9205600086, alpha: 1),
+//			.font: UIFont(name:"MarkerFelt-Wide", size: 30)!,
+//			NSAttributedStringKey.shadow
+//		]
+		
 		let attribetedTitle = NSMutableAttributedString(string: dict[41]![0], attributes: [NSAttributedStringKey.font : UIFont(name:"MarkerFelt-Wide", size: 30)!]) // ChatApp
 		let attribetedVer = NSMutableAttributedString(string: dict[42]![0], attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 18)]) // v1.0
 		attribetedTitle.append(attribetedVer)
 		
 		titleApp.attributedText = attribetedTitle
+		titleApp.layer.shadowOffset = CGSize(width: 1, height: 2)
+		titleApp.layer.shadowOpacity = 0.5
+		titleApp.layer.shadowRadius = 1
 		
 		
 		// колдовство с надписью "Разработка и поддержка:"

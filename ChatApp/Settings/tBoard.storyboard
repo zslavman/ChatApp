@@ -42,7 +42,7 @@
                                 <constraint firstItem="2xT-7v-t5s" firstAttribute="centerX" secondItem="evx-XL-l1N" secondAttribute="centerX" id="PeK-Y6-xw0"/>
                                 <constraint firstAttribute="trailing" secondItem="Gy5-bU-Nwj" secondAttribute="trailing" id="UZn-kF-fus"/>
                                 <constraint firstItem="Gy5-bU-Nwj" firstAttribute="leading" secondItem="evx-XL-l1N" secondAttribute="leading" id="ayN-iB-CK6"/>
-                                <constraint firstItem="2xT-7v-t5s" firstAttribute="centerY" secondItem="evx-XL-l1N" secondAttribute="centerY" id="jsC-iz-EiR"/>
+                                <constraint firstItem="2xT-7v-t5s" firstAttribute="centerY" secondItem="Gy5-bU-Nwj" secondAttribute="centerY" id="jsC-iz-EiR"/>
                             </constraints>
                         </view>
                         <sections>
@@ -196,12 +196,33 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="Z3Q-qA-aJw">
+                                        <rect key="frame" x="0.0" y="576.5" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Z3Q-qA-aJw" id="oud-pP-W6E">
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ll2-Iq-Y7G">
+                                                    <rect key="frame" x="16" y="10.5" width="322" height="23"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="ll2-Iq-Y7G" secondAttribute="trailing" constant="3" id="dKO-zl-I4C"/>
+                                                <constraint firstItem="ll2-Iq-Y7G" firstAttribute="centerY" secondItem="oud-pP-W6E" secondAttribute="centerY" id="di3-kK-QTR"/>
+                                                <constraint firstItem="ll2-Iq-Y7G" firstAttribute="leading" secondItem="oud-pP-W6E" secondAttribute="leading" constant="16" id="n1o-EK-Ob3"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="header s3" footerTitle="footer s3" id="uje-pf-hIK">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="h5u-GM-Arn">
-                                        <rect key="frame" x="0.0" y="652" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="696" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="h5u-GM-Arn" id="se0-VN-eoS">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>

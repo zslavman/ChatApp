@@ -201,6 +201,18 @@ struct Calculations {
 	
 	
 	
+	static func alert(message: String, title: String = "", OK_action: (() -> ())?) -> UIAlertController {
+		let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+		let OK_action = UIAlertAction(title: dict[38]![LANG], style: .default, handler: {
+			(action) in
+			if let OK_action = OK_action {
+				OK_action()
+			}
+		})
+		
+		alertController.addAction(OK_action)
+		return alertController
+	}
 	
 	
 	

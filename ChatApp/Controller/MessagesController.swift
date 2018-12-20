@@ -375,7 +375,6 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
 	/// первая перезагрузка таблицы и данных
 	private func firstReloadTable(){
 
@@ -664,6 +663,9 @@ class MessagesController: UITableViewController {
 		owner = nil
 		labelNoMessages?.removeFromSuperview()
 		labelNoMessages = nil
+		
+		tabBarController?.tabBar.items!.first?.badgeValue = nil
+		UIApplication.shared.applicationIconBadgeNumber = 0
 	}
 	
 	
