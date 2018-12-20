@@ -22,10 +22,12 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ChatApp" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q5d-g3-Ogh">
-                                <rect key="frame" x="116" y="263.5" width="143" height="50"/>
+                                <rect key="frame" x="115.5" y="263" width="144" height="51.5"/>
                                 <fontDescription key="fontDescription" name="MarkerFelt-Wide" family="Marker Felt" pointSize="38"/>
                                 <color key="textColor" red="0.95294117649999999" green="0.95294117649999999" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
+                                <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <size key="shadowOffset" width="1" height="2"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" red="0.13333333333333333" green="0.32549019607843138" blue="0.5490196078431373" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

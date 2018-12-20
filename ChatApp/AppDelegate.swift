@@ -36,10 +36,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		center.requestAuthorization(options: options, completionHandler: {
 			authorized, error in
 			
+			#if targetEnvironment(simulator)
+				// code for simulator
+			#else
 			if authorized {
-				application.registerForRemoteNotifications()
-				// UIApplication.shared.registerForRemoteNotifications()
+				DispatchQueue.main.async {
+					application.registerForRemoteNotifications()
+					// UIApplication.shared.registerForRemoteNotifications()
+				}
 			}
+			#endif
 		})
 		
 		FirebaseApp.configure()
