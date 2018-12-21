@@ -10,6 +10,7 @@
 		46EDE0D18A6394E86D550EB2 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
 		5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */; };
 		5632FA7C21C8ED6000FBEE80 /* DeviceOrientationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */; };
+		5636315921CC99ED00FDDA7D /* FCMService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5636315821CC99ED00FDDA7D /* FCMService.swift */; };
 		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
 		5637FD1521B365620015CAAF /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
@@ -52,6 +53,7 @@
 		11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
 		5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefFlags.swift; sourceTree = "<group>"; };
 		5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOrientationHelper.swift; sourceTree = "<group>"; };
+		5636315821CC99ED00FDDA7D /* FCMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMService.swift; sourceTree = "<group>"; };
 		5636A1CE21C902E30065BFD5 /* ChatApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChatApp.entitlements; sourceTree = "<group>"; };
 		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
 		5637FD1421B365620015CAAF /* Calculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculations.swift; sourceTree = "<group>"; };
@@ -168,7 +170,6 @@
 		566BEDA72186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
-				5636A1CE21C902E30065BFD5 /* ChatApp.entitlements */,
 				5637D90A21A3606500BA9717 /* Extensions */,
 				5680E758218B52B500B9CC3B /* Helpers */,
 				5639652B21924D1F00691334 /* View */,
@@ -182,6 +183,7 @@
 				5637D90D21A36C9D00BA9717 /* pipk.mp3 */,
 				563991B321CA081D00884B75 /* GoogleService-Info.plist */,
 				566BEDB42186F8D70053F4A0 /* Info.plist */,
+				5636A1CE21C902E30065BFD5 /* ChatApp.entitlements */,
 			);
 			path = ChatApp;
 			sourceTree = "<group>";
@@ -206,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				56FEF3CA21A231C500717A48 /* OnlineService.swift */,
+				5636315821CC99ED00FDDA7D /* FCMService.swift */,
 				5637FD1421B365620015CAAF /* Calculations.swift */,
 				564ECECC21BEF9C50011C04A /* WaitScreen.swift */,
 				5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */,
@@ -400,6 +403,7 @@
 				56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */,
 				5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */,
 				563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */,
+				5636315921CC99ED00FDDA7D /* FCMService.swift in Sources */,
 				5632FA7C21C8ED6000FBEE80 /* DeviceOrientationHelper.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */,
 				56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */,

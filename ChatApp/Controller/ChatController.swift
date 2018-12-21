@@ -756,7 +756,22 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			// тоже самое записываем и в ветку с непрочтенными
 			let unreadRef = Database.database().reference().child("unread-messages-foreach").child(toID).child(fromID)
 			unreadRef.updateChildValues([messageID: 0])
+			
 		}
+		
+		if let fcmToken = user?.fcmToken {
+			
+			let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+			let name = messagesController.owner.name
+			
+			FCMService.sendNotification(taskDictionary: [
+				"to" 	: fcmToken,
+				"title"	: name!,
+				"body"	: values["text"] as! String
+			])
+		}
+		
+		
 	}
 	
 	

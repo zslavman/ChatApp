@@ -10,14 +10,19 @@ import UIKit
 import Firebase
 import UserNotifications
 import FirebaseMessaging
+import FirebaseInstanceID
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
 
+	
 	var window: UIWindow?
 	public static var waitScreen:WaitScreen!
 	public var orientationLock = UIInterfaceOrientationMask.all
+	
+	
+	
 	
 	
 	func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
@@ -99,7 +104,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	
 	private func configureUI() {
-		
 		// UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 		UINavigationBar.appearance().barTintColor = UIConfig.mainThemeColor
 		UINavigationBar.appearance().tintColor = UIColor.white
@@ -117,19 +121,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	
 	
+	// ef423b66e7b036165112949b09f2bd4d9535a0bf60d0f6af5f97dc0ec08b110a     - мой
+	// fcmToken
+	// e4n8TH3GqnI:APA91bGE5MN_sJDZaDOjDA07vY31SXMEr6I4cWAo7AiC-QuPsglyiRdjvJbQrYaDo7KgJy7tqRpWlB40ezNWFceuflUpebNIHqmjlcg36PDsrARFrpsw5RJA9X02wbeoVwWSiXVPlnEt
+	// 7f3e270f445b1103646828452791fe8a05b317913a7142fa1616e7604505ca14     - ксю
+	// "condition":"'KxDQNTywa9ghlyBPvEmIa7oQZ0G3' in topics",
+	
+	
 	// при получении токена
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+		
+		// собираем токен из битов
 		let tokenParts = deviceToken.map {
 			data -> String in
 			return String(format: "%02.2hhx", data)
 		}
 		
 		let token = tokenParts.joined()
-		print("Device Token: \(token)")
-		// ef423b66e7b036165112949b09f2bd4d9535a0bf60d0f6af5f97dc0ec08b110a     - мой
-		// 7f3e270f445b1103646828452791fe8a05b317913a7142fa1616e7604505ca14     - ксю
+		print("Device Token (apnsToken): \(token)")
 		
-		Messaging.messaging().apnsToken = deviceToken
+		if let fcmToken = Messaging.messaging().fcmToken {
+			print("fcmToken = \(fcmToken)")
+		}
+		
+		//Messaging.messaging().apnsToken = deviceToken
+		//Messaging.messaging().setAPNSToken(deviceToken, type: MessagingAPNSTokenType.sandbox)
+		
+		InstanceID.instanceID().instanceID(handler: {
+			(result, error) in
+			if let error = error {
+				print("Error fetching remote instange ID: \(error)")
+			}
+			else if let result = result {
+				print("instanceIdToken: \(result.token)")
+			}
+			
+			
+			// не работает т.к. пишет что нет токена
+//			// подписываемся на тему
+//			if let topic = Auth.auth().currentUser?.uid {
+//				print("topic = \(topic)")
+//				DispatchQueue.main.async {
+//					Messaging.messaging().subscribe(toTopic: "topics/\(topic)")
+//				}
+//			}
+		})
 	}
 	
 	
@@ -138,53 +174,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		print("Failed to register: \(error)")
 	}
 	
-	
-	
-	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-		ConnectToFCM()
-	}
-	
+
 	
 	func ConnectToFCM() {
 		Messaging.messaging().shouldEstablishDirectChannel = true
-		
-		InstanceID.instanceID().instanceID(handler: {
-			(result, error) in
-			if let error = error {
-				print("Error fetching remote instange ID: \(error)")
-			}
-			else if let result = result {
-				print("Remote instance ID token: \(result.token)")
-			}
-		})
 	}
 	
-}
-
-
-extension AppDelegate: UNUserNotificationCenterDelegate {
+	
+	
+	
+	
+	
+	//***********************************
+	// UNUserNotificationCenterDelegate *
+	//***********************************
+	
 	
 	func userNotificationCenter(_ center: UNUserNotificationCenter,
 								didReceive response: UNNotificationResponse,
 								withCompletionHandler completionHandler: @escaping () -> Void) {
-		// 1
-		let userInfo = response.notification.request.content.userInfo
-		let aps = userInfo["aps"] as! [String: AnyObject]
 		
-		print("1111111111111111111 = \(aps)")
+		//let userInfo = response.notification.request.content.userInfo
+		//let aps = userInfo["aps"] as! [String: AnyObject]
+		
+		print("doesn't work")
 		completionHandler()
 	}
 	
-
 	
+	// сработает только если приложение не в фоне
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		
 		// отправляем аналитику сообщений в FCM
 		Messaging.messaging().appDidReceiveMessage(userInfo)
-		//Messaging.messaging().subscribe(toTopic: <#T##String#>)
-		
-		print(" Entire message \(userInfo)")
-		print("Article avaialble for download: \(userInfo["articleId"]!)")
 		
 		let state : UIApplicationState = application.applicationState
 		switch state {
@@ -198,10 +220,11 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 	}
 	
 	
-}
-
-
-extension AppDelegate: MessagingDelegate {
+	
+	
+	//********************
+	// MessagingDelegate *
+	//********************
 	
 	// при получении уведомления (если это "content-available": 1)
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
@@ -215,7 +238,41 @@ extension AppDelegate: MessagingDelegate {
 		}
 	}
 	
+	// doesn't work
+	func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
+		print("Refreshed Token: \(fcmToken)")
+	}
+	
+	
+	// doesn't work
+	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+		print("fcmToken = \(fcmToken)")
+		ConnectToFCM()
+	}
+	
+	
+	
+	
+	
 }
+
+
+
+
+
+
+	
+
+	
+
+
+
+
+
+
+
+	
+
 
 
 

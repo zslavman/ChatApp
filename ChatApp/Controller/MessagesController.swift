@@ -14,7 +14,7 @@ import NPTableAnimator
 class MessagesController: UITableViewController {
 
 	
-	internal var owner:User!
+	public var owner:User!
 	internal var uid:String!
 	
 	internal let cell_id = "cell_id"
@@ -664,8 +664,10 @@ class MessagesController: UITableViewController {
 		labelNoMessages?.removeFromSuperview()
 		labelNoMessages = nil
 		
+		// чистим ярлыки
 		tabBarController?.tabBar.items!.first?.badgeValue = nil
 		UIApplication.shared.applicationIconBadgeNumber = 0
+		
 	}
 	
 	

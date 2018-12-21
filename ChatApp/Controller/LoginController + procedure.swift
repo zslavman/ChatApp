@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-
+import FirebaseMessaging
 
 extension LoginController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
@@ -87,6 +87,8 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				return
 			}
 			
+			FCMService.setNewToken()
+			
 			// если всё ок - заходим в учётку
 			AppDelegate.waitScreen.hideNow()
 			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
@@ -123,7 +125,8 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				"email"			 : email,
 				"id"			 : user.uid,
 				"isOnline"		 : true,
-				"profileImageUrl": "none"
+				"profileImageUrl": "none",
+				"fcmToken"		 : ""
 				]
 			// safety unwrapping image
 			guard let profileImage = self.profileImageView.image else { return }
@@ -183,6 +186,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
+			FCMService.setNewToken() //// проверить!
 			AppDelegate.waitScreen.hideNow()
 			self.dismiss(animated: true, completion: nil)
 			print("Удачно сохранили юзера")
