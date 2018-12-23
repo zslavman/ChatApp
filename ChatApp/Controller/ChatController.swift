@@ -130,8 +130,11 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			scrollingDownBttn.heightAnchor.constraint(equalToConstant: 45)
 		])
 		
-		
+		// скрываем родную навбаровскую кнопку назад ибо не красиво
+		let tp = UIBarButtonItem(image: UIImage(named: "bttn_back"), style: .plain, target: self, action: #selector(goBack))
+		navigationItem.setLeftBarButton(tp, animated: false)
 	}
+	
 	
 	
 
@@ -691,6 +694,10 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		collectionView?.scrollToLast(animated: true)
 	}
 	
+	
+	@objc private func goBack(){
+		self.navigationController?.popViewController(animated: true)
+	}
 	
 	
 	@objc public func onSendClick(){

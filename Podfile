@@ -13,5 +13,5 @@ target 'ChatApp' do
  pod 'Firebase/Storage'
  pod 'Firebase/Messaging'
  pod 'NPTableAnimator'
-
+ pod 'Kingfisher', '~> 4.9.0'
 end

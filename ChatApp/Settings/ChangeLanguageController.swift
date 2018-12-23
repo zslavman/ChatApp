@@ -41,9 +41,9 @@ class ChangeLanguageController: UITableViewController {
 
 	
 	
-	@objc private func goBack(){
-		self.navigationController?.popViewController(animated: true)
-	}
+//	@objc private func goBack(){
+//		self.navigationController?.popViewController(animated: true)
+//	}
 	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

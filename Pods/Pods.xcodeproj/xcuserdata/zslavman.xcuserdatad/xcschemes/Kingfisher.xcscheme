@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6918C05A60B2CA2EB0944235BA5299FE"
-               BuildableName = "Pods_ChatApp.framework"
-               BlueprintName = "Pods-ChatApp"
+               BlueprintIdentifier = "A15CD3220CB655EF65975142EDBD8C6E"
+               BuildableName = "Kingfisher.framework"
+               BlueprintName = "Kingfisher"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "6918C05A60B2CA2EB0944235BA5299FE"
-            BuildableName = "Pods_ChatApp.framework"
-            BlueprintName = "Pods-ChatApp"
+            BlueprintIdentifier = "A15CD3220CB655EF65975142EDBD8C6E"
+            BuildableName = "Kingfisher.framework"
+            BlueprintName = "Kingfisher"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

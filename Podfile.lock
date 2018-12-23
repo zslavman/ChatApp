@@ -78,6 +78,7 @@ PODS:
   - GoogleUtilities/UserDefaults (5.3.6):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.2.1)
+  - Kingfisher (4.9.0)
   - leveldb-library (1.20)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
@@ -93,6 +94,7 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Messaging
   - Firebase/Storage
+  - Kingfisher (~> 4.9.0)
   - NPTableAnimator
 
 SPEC REPOS:
@@ -110,6 +112,7 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleUtilities
     - GTMSessionFetcher
+    - Kingfisher
     - leveldb-library
     - nanopb
     - NPTableAnimator
@@ -129,11 +132,12 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
   GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
+  Kingfisher: 64539b51826b778206daa6ed815d12653caa69dd
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   NPTableAnimator: 5a3db5c852ad71d197739757a30eb0acf20b7161
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
 
-PODFILE CHECKSUM: 63e04c2e36f5b39ccc45fbd0e772840ffeabfc8b
+PODFILE CHECKSUM: 77efabb3726cc850c6d1d8750e8721cc16cf5c23
 
 COCOAPODS: 1.5.3

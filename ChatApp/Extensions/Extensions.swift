@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Kingfisher
+
 
 var imageCache = NSCache<NSString, UIImage>()
 
@@ -14,6 +16,11 @@ var imageCache = NSCache<NSString, UIImage>()
 
 
 extension UIImageView {
+	
+	//		let cache = ImageCache.default
+	//		cache.clearMemoryCache()
+	//		cache.clearDiskCache { print("Done") }
+	
     
     /// загрузчик картинок с внешних адресов (использует кэш)
     public func loadImageUsingCache(urlString: String, completionHandler: ((UIImage) -> ())? ){
@@ -31,32 +38,36 @@ extension UIImageView {
         }
         //*******************************
 
-        if urlString == "none"{ // если юзер не ставил фото на профиль, грузим дефолтную пикчу
-            let img = UIImage(named: default_profile_image)!
+		let img = UIImage(named: default_profile_image)!
+		
+		if urlString == "none"{ // если юзер не ставил фото на профиль, грузим дефолтную пикчу
             setImageForUIView(img)
             return
         }
-        
+		
+		let url = URL(string: urlString)
+		self.kf.setImage(with: url, placeholder: img)
+		
         // проверяем нет ли запрашиваемой картинки в кэше
-        if let cachedImage = imageCache.object(forKey: urlString as NSString) {
-            setImageForUIView(cachedImage)
-            return
-        }
-        let downloadTask = URLSession.shared.dataTask(with: URL(string: urlString)!) {
-            (data, response, error) in
-            if error != nil {
-                print(error!.localizedDescription)
-                return
-            }
-            DispatchQueue.main.async {
-                
-                if let downloadedImage = UIImage(data: data!){
-                    imageCache.setObject(downloadedImage, forKey: urlString as NSString)
-                    setImageForUIView(downloadedImage)
-                }
-            }
-        }
-        downloadTask.resume()
+//        if let cachedImage = imageCache.object(forKey: urlString as NSString) {
+//            setImageForUIView(cachedImage)
+//            return
+//        }
+//        let downloadTask = URLSession.shared.dataTask(with: URL(string: urlString)!) {
+//            (data, response, error) in
+//            if error != nil {
+//                print(error!.localizedDescription)
+//                return
+//            }
+//            DispatchQueue.main.async {
+//
+//                if let downloadedImage = UIImage(data: data!){
+//                    imageCache.setObject(downloadedImage, forKey: urlString as NSString)
+//                    setImageForUIView(downloadedImage)
+//                }
+//            }
+//        }
+//        downloadTask.resume()
     }
     
 }
