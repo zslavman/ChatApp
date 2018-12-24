@@ -71,10 +71,11 @@ class MessagesController: UITableViewController {
 		let url = Bundle.main.url(forResource: "pipk", withExtension: "mp3")!
 		do { audioPlayer = try AVAudioPlayer(contentsOf: url) }
 		catch { print("error loading file") }
-		
 	}
 	
 	
+	
+
 	
 	
 	/// убираем собеседника и само сообщение отовсюду

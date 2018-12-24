@@ -203,6 +203,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	// при окончании отправки
 	func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
 		print("dismiss for MFMailComposeViewController")
+		Calculations.lockOrientation(.portrait)
 		controller.dismiss(animated: true, completion: nil)
 	}
 	

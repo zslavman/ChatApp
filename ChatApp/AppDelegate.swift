@@ -208,12 +208,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 		// отправляем аналитику сообщений в FCM
 		Messaging.messaging().appDidReceiveMessage(userInfo)
 		
-		let state : UIApplicationState = application.applicationState
-		switch state {
-		case UIApplicationState.active:
-			print("If needed notify user about the message")
-		default:
-			print("Run code to download content")
+		if UIApplication.shared.applicationState == .active {
+			//TODO: Handle foreground notification
+		}
+		else {
+			//TODO: Handle background notification
 		}
 		
 		completionHandler(UIBackgroundFetchResult.newData)
