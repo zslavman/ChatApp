@@ -77,7 +77,7 @@ let dict:[Int:[String]] = [
 		"Bonjour, Viacheslav \n \n[~décrire le problème ici~]"],
 	48:["Редактировать профиль", "Edit profile", "Editer le profil"],
 	49:["Доступно в будущих обновлениях", "Available in the following updates", "Disponible dans les mises à jour suivantes"],
-	50:["", "", ""],
+	50:["[геокоординаты]", "[geo-coordinates]", "[géo-coordonnées]"],
 	51:["", "", ""],
 	52:["", "", ""],
 	53:["", "", ""],

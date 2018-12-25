@@ -188,7 +188,7 @@ class ChatMessageCell: UICollectionViewCell {
 			profileImageView.isHidden = false
 			
 			if let profileImageUrl = linkToParent.user?.profileImageUrl {
-				profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
+				profileImageView.loadImageUsingCache(urlString: profileImageUrl, isAva: true, completionHandler: nil)
 			}
 			bubbleRightAnchor?.isActive = false
 			bubbleLeftAnchor?.isActive = true

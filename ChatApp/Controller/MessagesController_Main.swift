@@ -30,13 +30,15 @@ extension MessagesController {
 		
 		// перезагружаем ячейку по которой кликнули для обнуления кол-ва непрочит. сообщ.
 		if let savedIndexPath = savedIndexPath {
-			messages[savedIndexPath.row].unreadCount = nil
+			if messages[savedIndexPath.row].unreadCount != nil {
+				// обновляем счетчик бейджа
+				addBageValue(val: -1)
+				messages[savedIndexPath.row].unreadCount = nil
+			}
 			currentList[0].cells[savedIndexPath.row].unreadCount = nil
 			tableView.reloadRows(at: [savedIndexPath], with: .none)
 			self.savedIndexPath = nil
 			
-			// обновляем счетчик бейджа
-			addBageValue(val: -1)
 		}
 	}
 	

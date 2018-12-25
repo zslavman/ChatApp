@@ -257,7 +257,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	
-	/// преобразовывает масив юзеров в 2-х мерного массив для секций таблицы
+	/// преобразовывает масив юзеров в 2-х мерный массив для секций таблицы
 	private func prepareData(source:[User]){
 		
 		var temp1D = [User]()
@@ -304,6 +304,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	
+
 	
 
 	
@@ -317,6 +318,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		prepareData(source: users)
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
+			Calculations.animateTableWithSections(tableView: self.tableView)
 		}
 	}
 	
@@ -365,7 +367,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 		if let profileImageUrl = user.profileImageUrl{
 			// качаем картинку
-			cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
+			cell.profileImageView.loadImageUsingCache(urlString: profileImageUrl, isAva: true){
 				(image) in
 				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
 				// и обновить ее в главном потоке

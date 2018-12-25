@@ -16,6 +16,7 @@ class MessagesController: UITableViewController {
 	
 	public var owner:User!
 	internal var uid:String!
+	public static var shared:MessagesController!
 	
 	internal let cell_id = "cell_id"
 	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
@@ -43,6 +44,7 @@ class MessagesController: UITableViewController {
 	// но, если время в ячейке не придет новое - то и никакиие другие параметры не обновятся!!
 	// т.е. для обновления статуса непрочтенности необходимо записать новый статус в оба массива
 	public var messages:[Message] = []
+	public var messages_copy:[Message] = [] 	 // массив для учёта кол-ва соообщений в фоне
 	internal var currentList: [MySection]! = nil // то что отображается после манипуляций с messages (для вьюшек)
 	
 	internal let animator = TableAnimator<MySection>()
@@ -58,6 +60,8 @@ class MessagesController: UITableViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		MessagesController.shared = self
 	
 		currentList = [MySection(cells: messages)]
 
@@ -356,11 +360,20 @@ class MessagesController: UITableViewController {
 		
 		let thisTabItem = tabBarController?.tabBar.items!.first
 		var currentCount:Int = 0
+//
+//		if thisTabItem?.badgeValue != nil{
+//			currentCount = Int(thisTabItem!.badgeValue!)!
+//		}
+//		currentCount += val
 		
-		if thisTabItem?.badgeValue != nil{
-			currentCount = Int(thisTabItem!.badgeValue!)!
+		for mes in messages {
+			if mes.unreadCount != nil && mes.unreadCount! > 0 {
+				currentCount += 1
+			}
 		}
-		currentCount += val
+		if val < 0 {
+			currentCount += val
+		}
 		
 		if currentCount <= 0 {
 			thisTabItem?.badgeValue = nil
@@ -372,6 +385,54 @@ class MessagesController: UITableViewController {
 		}
 	}
 	
+	
+	
+	
+	
+	public func countUnreadInBackground(from:String){
+		
+		let newMessage = Message(dictionary: [
+			"fromID"		: from,
+			"toID"			: owner.id!,
+			"timestamp"		: 123456,
+			"unreadCount"	: 1
+		])
+		var uniqueDialog:Bool = true
+		
+		if messages_copy.isEmpty {
+			messages_copy = messages
+		}
+		
+		for index in messages_copy.indices {
+			// если написавший юзер уже есть в диалогах
+			if messages_copy[index].chatPartnerID() == from {
+				if messages_copy[index].unreadCount != nil && messages_copy[index].unreadCount! > 0 {
+					messages_copy[index].unreadCount! += 1
+				}
+				else {
+					messages_copy[index].unreadCount = 1
+				}
+				uniqueDialog = false
+			}
+		}
+		if uniqueDialog {
+			messages_copy.append(newMessage)
+		}
+		
+		var count = 0
+		for mes in messages_copy {
+			if mes.unreadCount != nil && mes.unreadCount! > 0 {
+				count += 1
+			}
+		}
+		
+		if count > 0 {
+			UIApplication.shared.applicationIconBadgeNumber = count
+		}
+	}
+	
+	
+
 	
 	
 	
@@ -400,6 +461,8 @@ class MessagesController: UITableViewController {
 		
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
+//			Calculations.animateTable(tableView: self.tableView, duration: 0.5)
+			Calculations.animateTableWithSections(tableView: self.tableView)
 		}
 	}
 	
@@ -541,7 +604,7 @@ class MessagesController: UITableViewController {
 		profileImageView.clipsToBounds = true
 		
 		if let profileImageUrl = user.profileImageUrl {
-			profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
+			profileImageView.loadImageUsingCache(urlString: profileImageUrl, isAva: true, completionHandler: nil)
 		}
 		containerView.addSubview(profileImageView)
 		// добавим констраинты для фотки в контейнере
@@ -604,7 +667,7 @@ class MessagesController: UITableViewController {
 		profileImageView.image = UIImage(named: "default_profile_image")
 		
 		if let profileImageUrl = owner.profileImageUrl {
-			profileImageView.loadImageUsingCache(urlString: profileImageUrl, completionHandler: nil)
+			profileImageView.loadImageUsingCache(urlString: profileImageUrl, isAva: true, completionHandler: nil)
 		}
 		NSLayoutConstraint.activate([
 			profileImageView.widthAnchor.constraint(equalToConstant: 32),
@@ -654,6 +717,7 @@ class MessagesController: UITableViewController {
 		uid = nil
 		
 		messages.removeAll()
+		messages_copy.removeAll()
 		currentList[0].cells.removeAll()
 		hendlers.removeAll()
 		tableView.reloadData()
@@ -669,7 +733,9 @@ class MessagesController: UITableViewController {
 		tabBarController?.tabBar.items!.first?.badgeValue = nil
 		UIApplication.shared.applicationIconBadgeNumber = 0
 		
+		FCMService.removeToken()
 	}
+	
 	
 	
 	

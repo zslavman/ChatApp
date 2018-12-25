@@ -89,7 +89,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.autocapitalizationType = .none
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
-//		tf.text = "A24@gmail.com" // потом убрать!
+		tf.text = "A24@gmail.com" // потом убрать!
 		tf.layer.cornerRadius = 7
 		tf.layer.masksToBounds = true
 		return tf
@@ -104,7 +104,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.isSecureTextEntry = true
 		tf.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: tf.frame.height))
 		tf.leftViewMode = .always
-//		tf.text = "111111" // потом убрать!
+		tf.text = "111111" // потом убрать!
 		tf.layer.cornerRadius = 7
 		tf.layer.masksToBounds = true
 		return tf

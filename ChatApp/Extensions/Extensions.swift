@@ -23,7 +23,7 @@ extension UIImageView {
 	
     
     /// загрузчик картинок с внешних адресов (использует кэш)
-    public func loadImageUsingCache(urlString: String, completionHandler: ((UIImage) -> ())? ){
+	public func loadImageUsingCache(urlString: String, isAva:Bool = false, completionHandler: ((UIImage) -> ())? ){
         
         /// внутренняя подфункция проверяющая есть ли колбэк
         func setImageForUIView(_ gotImage:UIImage){
@@ -38,15 +38,19 @@ extension UIImageView {
         }
         //*******************************
 
-		let img = UIImage(named: default_profile_image)!
+		let placeholderAva = UIImage(named: default_profile_image)!
+		let placeholderNotAva = Calculations.getImageWithColor(color: #colorLiteral(red: 0.737254902, green: 0.768627451, blue: 0.8509803922, alpha: 1), size: CGSize(width: 20, height: 20))
 		
 		if urlString == "none"{ // если юзер не ставил фото на профиль, грузим дефолтную пикчу
-            setImageForUIView(img)
+            setImageForUIView(placeholderAva)
             return
         }
 		
 		let url = URL(string: urlString)
-		self.kf.setImage(with: url, placeholder: img)
+		
+		let placeholder = (isAva) ? placeholderAva : placeholderNotAva
+		
+		self.kf.setImage(with: url, placeholder: placeholder)
 		
         // проверяем нет ли запрашиваемой картинки в кэше
 //        if let cachedImage = imageCache.object(forKey: urlString as NSString) {

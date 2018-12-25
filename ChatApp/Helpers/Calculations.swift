@@ -216,9 +216,31 @@ struct Calculations {
 	
 	
 	
+	// анимированное появление таблицы
+	static func animateTable(tableView:UITableView, duration: Double){
+		
+		let cells = tableView.visibleCells
+		
+		for cell in cells {
+			cell.transform = CGAffineTransform(translationX: 0, y: tableView.bounds.size.height)
+		}
+		
+		for (i, cell) in cells.enumerated() {
+			let delay = Double(i) * 0.05
+			UIView.animate(withDuration: duration, delay: delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+				cell.transform = CGAffineTransform.identity
+			}, completion: nil)
+		}
+	}
 	
 	
 	
+	
+	static func animateTableWithSections(tableView:UITableView){
+		let range = NSMakeRange(0, tableView.numberOfSections)
+		let sections = NSIndexSet(indexesIn: range)
+		tableView.reloadSections(sections as IndexSet, with: .bottom)
+	}
 	
 	
 	

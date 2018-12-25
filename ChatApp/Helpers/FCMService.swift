@@ -42,16 +42,21 @@ struct FCMService {
 		let serverKey = "key=AAAAiICxJdI:APA91bFn2XAB9Abz_flynxGP_2OlZ45udFLsKESBOnJOQWl4eeHAWtYEtKRx_eJqj19e0AVsSemlW_5VoKTO0yFsqRV015VwJxna_JqoyX5CEX69-ptOuwacTuFQNZlJJ68HV_uiQp1z"
 		guard let url = URL(string:"https://fcm.googleapis.com/fcm/send") else { return }
 		
-		let bodyToSend:Dictionary = [
-			"priority"	: "high",
-			"to"		: taskDictionary["to"] as! String,
-			"notification": [
-				"title" :taskDictionary["title"] as! String,
-				"body"	:taskDictionary["body"] as! String,
-				"sound"	: "pipk.mp3",
-				"badge"	: "1"
+		
+		let bodyToSend:[String : Any] = [
+			"content_available"	: true,
+			"priority"			: "high",
+			"to"				: taskDictionary["to"] as! String,
+			"notification"	: [
+				"title" 	: taskDictionary["title"] as! String,
+				"body"		: taskDictionary["body"] as! String,
+				"sound"		: "pipk.mp3",
+				// "badge"	: "1"
+			],
+			"data":[
+				"fromID": taskDictionary["fromID"] as! String
 			]
-		] as [String : Any]
+		]
 		
 		
 		var request =  URLRequest(url:url)
@@ -72,18 +77,18 @@ struct FCMService {
 	
 	
 	// при логауте удаляем на сервере свой токен, чтоб не шли нотификейшны
-//	public static func removeToken(){
-//
-//		InstanceID.instanceID().deleteID {
-//			(error) in
-//			if let er = error {
-//				print(er.localizedDescription)
-//			}
-//			else {
-//				print("instanceID().deleteID")
-//			}
-//		}
-//	}
+	public static func removeToken(){
+
+		InstanceID.instanceID().deleteID {
+			(error) in
+			if let er = error {
+				print(er.localizedDescription)
+			}
+			else {
+				print("FCMtoken deleted")
+			}
+		}
+	}
 	
 	
 	

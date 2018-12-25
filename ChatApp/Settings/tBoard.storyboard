@@ -42,7 +42,7 @@
                                 <constraint firstItem="2xT-7v-t5s" firstAttribute="centerX" secondItem="evx-XL-l1N" secondAttribute="centerX" id="PeK-Y6-xw0"/>
                                 <constraint firstAttribute="trailing" secondItem="Gy5-bU-Nwj" secondAttribute="trailing" id="UZn-kF-fus"/>
                                 <constraint firstItem="Gy5-bU-Nwj" firstAttribute="leading" secondItem="evx-XL-l1N" secondAttribute="leading" id="ayN-iB-CK6"/>
-                                <constraint firstItem="2xT-7v-t5s" firstAttribute="centerY" secondItem="Gy5-bU-Nwj" secondAttribute="centerY" id="jsC-iz-EiR"/>
+                                <constraint firstItem="2xT-7v-t5s" firstAttribute="centerY" secondItem="evx-XL-l1N" secondAttribute="centerY" id="jsC-iz-EiR"/>
                             </constraints>
                         </view>
                         <sections>

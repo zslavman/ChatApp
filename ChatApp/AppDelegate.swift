@@ -91,6 +91,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		OnlineService.setUserStatus(true)
 		ConnectToFCM()
+		if MessagesController.shared != nil {
+			MessagesController.shared.messages_copy.removeAll()
+		}
 	}
 
 	
@@ -121,12 +124,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	
 	
 	
-	// ef423b66e7b036165112949b09f2bd4d9535a0bf60d0f6af5f97dc0ec08b110a     - мой
-	// fcmToken
-	// e4n8TH3GqnI:APA91bGE5MN_sJDZaDOjDA07vY31SXMEr6I4cWAo7AiC-QuPsglyiRdjvJbQrYaDo7KgJy7tqRpWlB40ezNWFceuflUpebNIHqmjlcg36PDsrARFrpsw5RJA9X02wbeoVwWSiXVPlnEt
-	// 7f3e270f445b1103646828452791fe8a05b317913a7142fa1616e7604505ca14     - ксю
-	// "condition":"'KxDQNTywa9ghlyBPvEmIa7oQZ0G3' in topics",
-	
 	
 	// при получении токена
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -144,7 +141,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 			print("fcmToken = \(fcmToken)")
 		}
 		
-		//Messaging.messaging().apnsToken = deviceToken
+		Messaging.messaging().apnsToken = deviceToken
 		//Messaging.messaging().setAPNSToken(deviceToken, type: MessagingAPNSTokenType.sandbox)
 		
 		InstanceID.instanceID().instanceID(handler: {
@@ -189,30 +186,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	// UNUserNotificationCenterDelegate *
 	//***********************************
 	
-	
 	func userNotificationCenter(_ center: UNUserNotificationCenter,
 								didReceive response: UNNotificationResponse,
 								withCompletionHandler completionHandler: @escaping () -> Void) {
-		
-		//let userInfo = response.notification.request.content.userInfo
-		//let aps = userInfo["aps"] as! [String: AnyObject]
 		
 		print("doesn't work")
 		completionHandler()
 	}
 	
 	
-	// сработает только если приложение не в фоне
+	// сработает только если "content_available" : true
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		
 		// отправляем аналитику сообщений в FCM
 		Messaging.messaging().appDidReceiveMessage(userInfo)
 		
-		if UIApplication.shared.applicationState == .active {
-			//TODO: Handle foreground notification
-		}
-		else {
-			//TODO: Handle background notification
+		if UIApplication.shared.applicationState == .background {
+			if MessagesController.shared != nil {
+				MessagesController.shared.countUnreadInBackground(from: userInfo["fromID"] as! String)
+			}
 		}
 		
 		completionHandler(UIBackgroundFetchResult.newData)
@@ -227,7 +219,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	
 	// при получении уведомления (если это "content-available": 1)
 	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-		print("222222222222222222 = \(userInfo)")
 		
 		if UIApplication.shared.applicationState == .active {
 			//TODO: Handle foreground notification

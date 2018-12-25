@@ -771,15 +771,32 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
 			let name = messagesController.owner.name
 			
+			var body:String = ""
+			if (properties["videoUrl"] as? String) != nil {
+				body = dict[29]![LANG] // [видео]
+			}
+			else if (properties["imageUrl"] as? String) != nil {
+				body = dict[30]![LANG] // [картинка]
+			}
+			else if (properties["geo_lat"] as? NSNumber) != nil {
+				body = dict[50]![LANG] // [геокоординаты]
+			}
+			else {
+				body = properties["text"] as! String
+			}
+			
+			let fromID = MessagesController.shared.owner.id!
+			
 			FCMService.sendNotification(taskDictionary: [
 				"to" 	: fcmToken,
 				"title"	: name!,
-				"body"	: values["text"] as! String
+				"body"	: body,
+				"fromID": fromID
 			])
 		}
-		
-		
 	}
+	
+	
 	
 	
 	

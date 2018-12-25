@@ -165,7 +165,7 @@ class UserCell: UITableViewCell {
 		
 		if let profileImageUrl = user.profileImageUrl{
 			// качаем картинку
-			self.profileImageView.loadImageUsingCache(urlString: profileImageUrl){
+			self.profileImageView.loadImageUsingCache(urlString: profileImageUrl, isAva: true){
 				(image) in
 				// перед тем как присвоить ячейке скачанную картинку, нужно убедиться, что она видима (в границах экрана)
 				// и обновить ее в главном потоке
@@ -183,8 +183,11 @@ class UserCell: UITableViewCell {
 		else if msg.videoUrl != nil {
 			str = dict[29]![LANG] // "[видео]"
 		}
-		else {
+		else if msg.imageUrl != nil{
 			str = dict[30]![LANG] // "[картинка]"
+		}
+		else {
+			str = dict[50]![LANG] // [гео]
 		}
 		
 		detailTextLabel?.text = str
