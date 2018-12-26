@@ -856,14 +856,13 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 	// создание кнопки админского меню
 	internal func createBarItem(){
 		
-		if (owner.id != "KxDQNTywa9ghlyBPvEmIa7oQZ0G3"){
-			return
-		}
+		guard owner.id! == "KxDQNTywa9ghlyBPvEmIa7oQZ0G3" else { return }
 		
 		let button = UIButton(type: .custom)
 		if let image = UIImage(named:"bttn_menu") {
 			button.setImage(image, for: .normal)
 		}
+		button.frame = CGRect(x: 0, y: 0, width: 30, height: 30) // без этого в iOS10 кнопка невидна
 		button.addTarget(self, action: #selector(onMenuClick), for: .touchUpInside)
 		let barButton = UIBarButtonItem(customView: button)
 		navigationItem.rightBarButtonItem = barButton
