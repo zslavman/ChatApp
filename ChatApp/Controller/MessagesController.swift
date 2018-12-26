@@ -11,6 +11,7 @@ import Firebase
 import AVFoundation
 import NPTableAnimator
 
+
 class MessagesController: UITableViewController {
 
 	
@@ -38,6 +39,7 @@ class MessagesController: UITableViewController {
 	internal var goToChatWithID:String?			// ID собеседника, с которым перешли в чат
 	public var savedIndexPath:IndexPath?		// тут будет путь к ячейке по которой кликнули
 	
+	public var isOnline:Bool = true
 	
 	// массив диалогов (здесь проходит вся математика манипуляций, во вьюшки он не идет)
 	// после завершения маневров с данными всегда необходимо вызвать reloadTable()
@@ -49,11 +51,7 @@ class MessagesController: UITableViewController {
 	
 	internal let animator = TableAnimator<MySection>()
 	
-//	internal let animator: TableAnimator<MySection> = {
-//		let config = TableAnimatorConfiguration<MySection>(cellMoveCalculatingStrategy: MoveCalculatingStrategy<Message>.top, sectionMoveCalculatingStrategy: MoveCalculatingStrategy<MySection>.bottom, isConsistencyValidationEnabled: true)
-//		let a = TableAnimator<MySection>.init(configuration: config)
-//		return a
-//	}()
+
 	
 
 	
@@ -62,7 +60,7 @@ class MessagesController: UITableViewController {
 		super.viewDidLoad()
 		
 		MessagesController.shared = self
-	
+		
 		currentList = [MySection(cells: messages)]
 
 		navigationController?.view.backgroundColor = UIConfig.mainThemeColor
@@ -78,8 +76,6 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-
 	
 	
 	/// убираем собеседника и само сообщение отовсюду
@@ -461,10 +457,14 @@ class MessagesController: UITableViewController {
 		
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
-//			Calculations.animateTable(tableView: self.tableView, duration: 0.5)
+			// Calculations.animateTable(tableView: self.tableView, duration: 0.5)
 			Calculations.animateTableWithSections(tableView: self.tableView)
 		}
+		
+		createBarItem()
 	}
+	
+	
 	
 	
 
@@ -795,6 +795,114 @@ class MessagesController: UITableViewController {
 		//			print("error loading file")
 		//		}
 	}
+}
+
+
+
+
+// менюшка по клику на rightBarButtonItem
+extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMunuClickedDelegate {
+	
+	@objc private func onMenuClick(){
+		
+		print("Меня кликнули")
+		
+		rotateRightBarButton()
+		
+		let menuVC = PopOverMenu()
+		menuVC.modalPresentationStyle = .popover
+		menuVC.popoverMunuClickedDelegate = self
+		
+		guard let popOverVC = menuVC.popoverPresentationController else { return }
+		popOverVC.delegate = self
+		popOverVC.barButtonItem = navigationItem.rightBarButtonItem
+		
+		// если цель не BarButtonItem
+		// popOverVC.sourceView = someBttn // для треугольного указателя
+		// popOverVC.sourceRect = CGRect(x: someBttn.bounds.midX, y: someBttn.bounds.maxY, width: 0, height: 0)
+		
+		present(menuVC, animated: true)
+	}
+	
+	// без этого метода на ифонах поповер откроется на весь экран (на айпадах будет норм и без этого)
+	func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+		return .none
+	}
+	
+	
+	// метод PopoverMunuClickedDelegate
+	func cellClicked(numberOfMenu: Int) {
+		
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+			switch numberOfMenu {
+			case 0:
+				Calculations.animateTableWithSections(tableView: self.tableView)
+			case 1:
+				self.isOnline = !self.isOnline
+				OnlineService.setUserStatus(self.isOnline)
+			case 2:
+				print("numberOfMenu = \(2)")
+			case 3:
+				print("numberOfMenu = \(3)")
+			default: fatalError()
+			}
+		}
+	}
+		
+	
+	
+	
+	
+	// создание кнопки админского меню
+	internal func createBarItem(){
+		
+		if (owner.id != "KxDQNTywa9ghlyBPvEmIa7oQZ0G3"){
+			return
+		}
+		
+		let button = UIButton(type: .custom)
+		if let image = UIImage(named:"bttn_menu") {
+			button.setImage(image, for: .normal)
+		}
+		button.addTarget(self, action: #selector(onMenuClick), for: .touchUpInside)
+		let barButton = UIBarButtonItem(customView: button)
+		navigationItem.rightBarButtonItem = barButton
+		
+		appearanceRightBarButton()
+	}
+	
+	
+	
+
+	// анимация появления кнопки админского меню
+	internal func appearanceRightBarButton(){
+		
+		navigationItem.rightBarButtonItem?.isEnabled = true
+		navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+		
+		// анимация появления
+		navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform(scaleX: 0, y: 0)
+		// при анимации кнопка перестает быть кнопкой, потому принудительно делаем ей allowUserInteraction
+		UIView.animate(
+			withDuration			: 1.0,
+			delay					: 0.3,
+			usingSpringWithDamping	: 0.5,
+			initialSpringVelocity	: 10,
+			options					: .curveLinear,
+			animations: {
+				self.navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform.identity
+			}
+		)
+	}
+	
+	
+	
+	internal func rotateRightBarButton(){
+		navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi * 6/5))
+		UIView.animate(withDuration: 0.3) {
+			self.navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform.identity
+		}
+	}
 	
 	
 }
@@ -807,7 +915,11 @@ class MessagesController: UITableViewController {
 
 
 
-/// в 11 иос не проходит тап по тайтлвью потому что нужно правильно размещать слои !!!!
+
+
+
+
+// смена аватарки
 extension MessagesController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	
@@ -890,36 +1002,4 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 		}
 	}
 	
-	
-	
-	
-	
-
-	
-	
-	
-	/// фикс бага, когда фото профиля неправильно загружается у пользователей (image flickering)
-	/// попытка перегрузить таблицу
-	/// [НЕ ИСПОЛЬЗУЕТСЯ, т.к. нашел более рациональное решение]
-//	private func attemptReloadofTable(){
-//		timer?.invalidate()
-//		timer = Timer.scheduledTimer(timeInterval: 0.3, target: self, selector: #selector(self.firstReloadTable), userInfo: nil, repeats: false)
-//	}
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

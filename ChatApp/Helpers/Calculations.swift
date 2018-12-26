@@ -216,8 +216,8 @@ struct Calculations {
 	
 	
 	
-	// анимированное появление таблицы
-	static func animateTable(tableView:UITableView, duration: Double){
+	// анимированное появление таблицы без секций (ячейки подтягиваются снизу)
+	static func animateTableWithRows(tableView:UITableView, duration: Double){
 		
 		let cells = tableView.visibleCells
 		
@@ -235,12 +235,28 @@ struct Calculations {
 	
 	
 	
-	
+	/// анимированное появление таблицы с секциями
 	static func animateTableWithSections(tableView:UITableView){
 		let range = NSMakeRange(0, tableView.numberOfSections)
 		let sections = NSIndexSet(indexesIn: range)
 		tableView.reloadSections(sections as IndexSet, with: .bottom)
 	}
+	
+	
+	
+	
+	static func timeMeasuringCodeRunning(title:String, operationBlock: () -> ()) {
+		let start = CFAbsoluteTimeGetCurrent()
+		operationBlock()
+		let finish = CFAbsoluteTimeGetCurrent()
+		let timeElapsed = finish - start
+		print ("Время выполнения \(title) = \(timeElapsed) секунд")
+	}
+	
+	
+	
+	
+	
 	
 	
 	

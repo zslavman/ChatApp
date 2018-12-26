@@ -26,7 +26,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 		let customViewController = tableViewStoryboard.instantiateViewController(withIdentifier: "myTable")
 		let tab3 = createTab(vc: customViewController, buttonImage_unselected: "bttn_settings")
 		
-		
 		viewControllers = [tab1, tab2, tab3]
 		
 		switchTabTitles(for: view.frame.size)
