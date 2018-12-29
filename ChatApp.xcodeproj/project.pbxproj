@@ -21,6 +21,7 @@
 		563991B421CA081D00884B75 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 563991B321CA081D00884B75 /* GoogleService-Info.plist */; };
 		5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */; };
 		563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */; };
+		563B1AA421D695770035D0BC /* MultiThreading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B1AA321D695770035D0BC /* MultiThreading.swift */; };
 		563B243B21AE1CE500EEB504 /* BlackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563B243A21AE1CE500EEB504 /* BlackView.swift */; };
 		563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */; };
 		563C467D21C15167002F59D8 /* ChangeLanguageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563C467C21C15167002F59D8 /* ChangeLanguageController.swift */; };
@@ -66,6 +67,7 @@
 		563991B321CA081D00884B75 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageVideoManaging.swift; sourceTree = "<group>"; };
 		563AC83021A0C5EA00741C2E /* SectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderView.swift; sourceTree = "<group>"; };
+		563B1AA321D695770035D0BC /* MultiThreading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiThreading.swift; sourceTree = "<group>"; };
 		563B243A21AE1CE500EEB504 /* BlackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackView.swift; sourceTree = "<group>"; };
 		563BE43B218A3DD300A3BF29 /* LoginController + procedure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LoginController + procedure.swift"; sourceTree = "<group>"; };
 		563C467C21C15167002F59D8 /* ChangeLanguageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeLanguageController.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 				5637FD1421B365620015CAAF /* Calculations.swift */,
 				564ECECC21BEF9C50011C04A /* WaitScreen.swift */,
 				5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */,
+				563B1AA321D695770035D0BC /* MultiThreading.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */,
 				5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */,
 				5639652A21924CA000691334 /* UserCell.swift in Sources */,
+				563B1AA421D695770035D0BC /* MultiThreading.swift in Sources */,
 				563D17882189E351000DFAD2 /* User.swift in Sources */,
 				563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */,
 				56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */,

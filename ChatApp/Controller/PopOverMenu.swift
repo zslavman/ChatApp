@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol PopoverMunuClickedDelegate {
+protocol PopoverMunuClickedDelegate:class { // class позволяет использовать слабую ссылку делегата
 	func cellClicked(numberOfMenu: Int)
 }
 
@@ -18,7 +18,7 @@ class PopOverMenu: UITableViewController {
 	
 	private var menuChapterNames = [String]()
 	private let cell_ID = "cell_ID"
-	public var popoverMunuClickedDelegate: PopoverMunuClickedDelegate?
+	weak open var popoverMunuClickedDelegate: PopoverMunuClickedDelegate?
 	
 	
 	

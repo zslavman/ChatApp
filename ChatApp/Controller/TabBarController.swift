@@ -31,7 +31,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 		switchTabTitles(for: view.frame.size)
 	}
 	
-	override func viewDidAppear(_ animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) { // прячем навбар от таббарконтроллера, т.к. у нас есть свой
 		navigationController?.setNavigationBarHidden(true, animated: false)
 	}
 	
@@ -44,8 +44,8 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 		guard let fromView = selectedViewController?.view, let toView = viewController.view else {
 			return false
 		}
-		if fromView != toView {
-			UIView.transition(from: fromView, to: toView, duration: 0.0, options: [.transitionCrossDissolve], completion: nil)
+		if fromView != toView { // анимация перехода между вкладками
+			// UIView.transition(from: fromView, to: toView, duration: 0.3, options: [.transitionCrossDissolve], completion: nil)
 		}
 		return true
 	}

@@ -66,6 +66,8 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	}
 	
 	
+	
+	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
@@ -83,9 +85,13 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 //				button.setTitle(dict[19]![LANG], for:.normal)
 //			}
 //		}
+		MultiThreading().opearationsQueue()
 	}
-
 	
+	
+	
+
+
 	
 	// не сработает, если не закончили поиск
 	override func viewDidDisappear(_ animated: Bool) {
@@ -94,6 +100,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		searchController.isActive = false
 		searchController.dismiss(animated: false, completion: nil)
 	}
+		
 
 	
 	
@@ -124,6 +131,11 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	}
 
 
+	
+	
+	
+
+	
 	
 	
 	
