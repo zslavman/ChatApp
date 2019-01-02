@@ -257,7 +257,60 @@ struct Calculations {
 	
 	
 	
+	// откроется в другом потоке т.к. URLSession
+	static func getJSON(link:String, completion: @escaping (Data) -> Void){
+		
+		var url:URL
+		// проверяем валидность урл
+		if let validLink = URL(string: link){
+			url = validLink
+		}
+		else {
+			print("Invalid link!")
+			return
+		}
+		
+		URLSession.shared.dataTask(with: url) {
+			(data, response, error) in
+			
+			if let error = error {
+				print(error.localizedDescription)
+			}
+			else if let data = data {
+				print("Got new JSON")
+				completion(data)
+			}
+		}.resume()
+	}
 	
+	
+	
+	/// Возвращает рандомный элемент массива
+	///
+	/// - Parameter arr: массив
+	public static func randArrElemen<T>(array arr:Array<T>) -> T{
+		
+		let randomIndex = Int(arc4random_uniform(UInt32(arr.count)))
+		return arr[randomIndex]
+	}
+	
+	/// Возвращает рандомное число между min и max
+	public static func random(_ min: Int, _ max: Int) -> Int {
+		guard min < max else {return min}
+		return Int(arc4random_uniform(UInt32(1 + max - min))) + min
+	}
+	
+	
+	// расстояние между дкумя точками
+	public func distanceCalc(a:CGPoint, b:CGPoint) -> CGFloat{
+		return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2))
+	}
+	
+	// пересчет времени передвижения при различных расстояниях
+	public func timeToTravelDistance(distance:CGFloat, speed:CGFloat) -> TimeInterval{
+		let time = distance / speed
+		return TimeInterval(time)
+	}
 	
 	
 }

@@ -18,6 +18,8 @@ extension MessagesController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
+		Calculations.lockOrientation(.portrait)
+		
 		goToChatWithID = nil
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
@@ -29,6 +31,8 @@ extension MessagesController {
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
+		
+		Calculations.lockOrientation(.all)
 		
 		// перезагружаем ячейку по которой кликнули для обнуления кол-ва непрочит. сообщ.
 		if let savedIndexPath = savedIndexPath {

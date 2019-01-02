@@ -85,7 +85,6 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 //				button.setTitle(dict[19]![LANG], for:.normal)
 //			}
 //		}
-		MultiThreading().opearationsQueue()
 	}
 	
 	

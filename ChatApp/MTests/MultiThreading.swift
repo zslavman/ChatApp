@@ -126,8 +126,6 @@ class MultiThreading {
 //		}
 //		queue.start()
 		
-		
-		
 		//******************
 		
 		let operationQueue = OperationQueue()
@@ -152,19 +150,15 @@ class MultiThreading {
 			print("Mark 4")
 		}
 		
-		
-		
-		
 	}
 		
-	
-	
-	
-	
-	
-	
-	
 }
+
+
+
+
+
+
 
 
 

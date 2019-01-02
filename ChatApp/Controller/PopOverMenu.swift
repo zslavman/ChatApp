@@ -26,7 +26,7 @@ class PopOverMenu: UITableViewController {
 		super.viewDidLoad()
 		
 		let str = MessagesController.shared.isOnline ? "Set offline" : "Set online"
-		menuChapterNames = ["Reload table", str, "Bot enable"]
+		menuChapterNames = ["Reload table", str, "JSONTable"]
 		
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cell_ID)
 		tableView.isScrollEnabled = false

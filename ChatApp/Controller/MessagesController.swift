@@ -804,9 +804,7 @@ class MessagesController: UITableViewController {
 extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMunuClickedDelegate {
 	
 	@objc private func onMenuClick(){
-		
-		print("Меня кликнули")
-		
+
 		rotateRightBarButton()
 		
 		let menuVC = PopOverMenu()
@@ -841,9 +839,9 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 				self.isOnline = !self.isOnline
 				OnlineService.setUserStatus(self.isOnline)
 			case 2:
-				print("numberOfMenu = \(2)")
-			case 3:
-				print("numberOfMenu = \(3)")
+				let vc = JSONTable()
+				let navContr = UINavigationController(rootViewController: vc)
+				self.present(navContr, animated: true, completion: nil)
 			default: fatalError()
 			}
 		}

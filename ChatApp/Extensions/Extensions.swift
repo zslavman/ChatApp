@@ -10,7 +10,7 @@ import UIKit
 import Kingfisher
 
 
-var imageCache = NSCache<NSString, UIImage>()
+// var imageCache = NSCache<NSString, UIImage>()
 
 
 

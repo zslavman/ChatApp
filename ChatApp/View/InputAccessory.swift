@@ -159,7 +159,6 @@ class InputAccessory: UIView, UITextViewDelegate {
 		}
 		UIView.animate(withDuration: 0.4) {
 			self.layoutIfNeeded()
-			
 		}
 	}
 	
