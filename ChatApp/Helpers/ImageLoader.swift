@@ -12,21 +12,16 @@ import UIKit
 class ImageLoader:Hashable {
 	
 	public static var imgCache = [String:UIImage]()
-	
-	
 	// для cancel-действия в родительском классе использовать Set
 	var hashValue: Int {
 		return (imageURLString).hashValue
 	}
-	
 	static func == (lhs: ImageLoader, rhs: ImageLoader) -> Bool {
 		return lhs.imageURLString == rhs.imageURLString
 	}
 	// **********************************
-	
 	public let imageURLString: String
 	private let completion:(UIImage?) -> ()
-	
 	private var isCancelled:Bool = false
 	
 	

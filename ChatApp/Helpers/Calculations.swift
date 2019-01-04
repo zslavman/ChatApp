@@ -13,7 +13,6 @@ import Firebase
 struct Calculations {
 	
 	
-	
 	/// выдирает ключи из снапшота в строковый массив
 	static func extractKeysToArray(snapshot:[DataSnapshot]) -> [String]{
 		
@@ -201,12 +200,12 @@ struct Calculations {
 	
 	
 	
-	static func alert(message: String, title: String = "", OK_action: (() -> ())?) -> UIAlertController {
+	static func alert(message: String, title: String = "", completion: (() -> ())?) -> UIAlertController {
 		let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
 		let OK_action = UIAlertAction(title: dict[38]![LANG], style: .default, handler: {
 			(action) in
-			if let OK_action = OK_action {
-				OK_action()
+			if let completion = completion {
+				completion()
 			}
 		})
 		
@@ -311,6 +310,17 @@ struct Calculations {
 		let time = distance / speed
 		return TimeInterval(time)
 	}
+	
+	
+	// получение текущего DateComponents
+	public static func getDateComponent(fromDate:Date = Date()) -> DateComponents{
+		let calendar = Calendar(identifier: .gregorian)
+		let components = calendar.dateComponents([.month, .day, .hour, .minute, .second], from: fromDate)
+		
+		return components
+	}
+	
+	
 	
 	
 }

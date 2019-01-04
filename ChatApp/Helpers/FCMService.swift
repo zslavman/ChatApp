@@ -44,7 +44,7 @@ struct FCMService {
 		
 		
 		let bodyToSend:[String : Any] = [
-			"content_available"	: true,
+			"content_available"	: true, // важный параметр, без которого не сработает didReceiveRemoteNotification в AppDelegate
 			"priority"			: "high",
 			"to"				: taskDictionary["to"] as! String,
 			"notification"	: [

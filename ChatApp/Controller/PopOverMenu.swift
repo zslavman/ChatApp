@@ -19,14 +19,29 @@ class PopOverMenu: UITableViewController {
 	private var menuChapterNames = [String]()
 	private let cell_ID = "cell_ID"
 	weak open var popoverMunuClickedDelegate: PopoverMunuClickedDelegate?
+	private var countDownTimer:Timer?
+	private let timeCellDefText = "Notify me"
+	private var sec:Double = 0 // заряд таймера
 	
+	private var timeTF:UILabel? { // текстовое поле пункта меню "Notify me"
+		didSet{
+			Notifications.shared.getLastNotifData {
+				(seconds:Double) in
+				self.timeTF?.text = "Notif (\(Calculations.convertTime(seconds: seconds)))"
+				self.sec = seconds
+				DispatchQueue.main.async {
+					self.countDownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerTick), userInfo: nil, repeats: true)
+				}
+			}
+		}
+	}
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		let str = MessagesController.shared.isOnline ? "Set offline" : "Set online"
-		menuChapterNames = ["Reload table", str, "JSONTable"]
+		menuChapterNames = ["Reload table", str, "JSONTable", timeCellDefText]
 		
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cell_ID)
 		tableView.isScrollEnabled = false
@@ -38,8 +53,26 @@ class PopOverMenu: UITableViewController {
 	
 	
 	
+	@objc private func timerTick(){
+		sec -= 1
+		if (sec <= 10){
+			timeTF?.textColor = .red
+		}
+		if sec == 0 {
+			countDownTimer?.invalidate()
+			timeTF?.text = self.timeCellDefText
+			timeTF?.textColor = .black
+			return
+		}
+		let time = "Notif (\(Calculations.convertTime(seconds: sec)))"
+		timeTF?.text = time
+	}
+	
+	
+	
+	
 	override func viewWillLayoutSubviews() {
-		preferredContentSize = CGSize(width: 130, height: tableView.contentSize.height)
+		preferredContentSize = CGSize(width: 150, height: tableView.contentSize.height)
 	}
 	
 	
@@ -51,12 +84,20 @@ class PopOverMenu: UITableViewController {
 		return menuChapterNames.count
 	}
 	
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return 60
+	}
+	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: cell_ID, for: indexPath)
 		cell.textLabel?.text = menuChapterNames[indexPath.row]
 		cell.textLabel?.textAlignment = .right
+		
+		if indexPath.row == 3 {
+			timeTF = cell.textLabel
+		}
 		
 		return cell
 	}
@@ -69,6 +110,14 @@ class PopOverMenu: UITableViewController {
 	}
 	
 	
+	override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+		
+		countDownTimer?.invalidate()
+	}
+	
+	
+
 	
 	
 }

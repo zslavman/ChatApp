@@ -143,7 +143,7 @@ class SettingsController: UITableViewController {
 		if indexPath.section == 2 {
 			// Edit profile
 			if indexPath.row == 0 {
-				let alertController = Calculations.alert(message: dict[49]![LANG], OK_action: {
+				let alertController = Calculations.alert(message: dict[49]![LANG], completion: {
 					tableView.deselectRow(at: indexPath, animated: true)
 				})
 				present(alertController, animated: true, completion: nil)

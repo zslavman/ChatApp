@@ -22,8 +22,6 @@ class WaitScreen: NSObject {
 	}
 	
 	
-	
-	
 	public func show(){
 		
 		guard let window = UIApplication.shared.keyWindow else { return }

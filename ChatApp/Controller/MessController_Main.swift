@@ -20,6 +20,8 @@ extension MessagesController {
 		
 		Calculations.lockOrientation(.portrait)
 		
+		navigationItem.titleView?.alpha = isOnline ? 1 : 0.35
+		
 		goToChatWithID = nil
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)

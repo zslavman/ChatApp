@@ -14,13 +14,12 @@ import FirebaseInstanceID
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	
-	var window: UIWindow?
 	public static var waitScreen:WaitScreen!
+	public var window: UIWindow?
 	public var orientationLock = UIInterfaceOrientationMask.all
-	
 	
 	
 	
@@ -32,37 +31,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
-		UNUserNotificationCenter.current().delegate = self
-		Messaging.messaging().delegate = self
-		
-		// нотификейшны
-		let center = UNUserNotificationCenter.current()
-		let options: UNAuthorizationOptions = [.alert, .badge, .sound]
-		center.requestAuthorization(options: options, completionHandler: {
-			authorized, error in
-			
-			#if targetEnvironment(simulator)
-				// code for simulator
-			#else
-			if authorized {
-				DispatchQueue.main.async {
-					application.registerForRemoteNotifications()
-					// UIApplication.shared.registerForRemoteNotifications()
-				}
-			}
-			#endif
-		})
+		Notifications.shared.requestAuthorisation()
 		
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false
 		
 		_ = UserDefFlags()
-		configureUI()
+		UIConfig.configureUI()
 		
 		// не будем использовать сторибоард
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
 		window?.rootViewController = UINavigationController(rootViewController: TabBarController())
+		
 		AppDelegate.waitScreen = WaitScreen()
 		
 		return true
@@ -70,60 +51,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
 	
 	
-	// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-	// Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+	// сейчас войдет в бэкграунд
 	func applicationWillResignActive(_ application: UIApplication) {
 		OnlineService.setUserStatus(false)
 	}
 	
-
+	// вошло в бэкграунд
 	func applicationDidEnterBackground(_ application: UIApplication) {
-		// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-		// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 		Messaging.messaging().shouldEstablishDirectChannel = false
 	}
 
+	// сейчас вернется в активный режим
 	func applicationWillEnterForeground(_ application: UIApplication) {
 		// Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 	}
 
-	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+	// вошло в активный режим
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		OnlineService.setUserStatus(true)
-		ConnectToFCM()
+		Notifications.shared.ConnectToFCM()
 		if MessagesController.shared != nil {
 			MessagesController.shared.messages_copy.removeAll()
 		}
 	}
 
 	
-	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+	// прерывание приложения
 	func applicationWillTerminate(_ application: UIApplication) {
 		OnlineService.setUserStatus(false)
 	}
 	
 	
-	
 
-	
-	private func configureUI() {
-		// UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
-		UINavigationBar.appearance().barTintColor = UIConfig.mainThemeColor
-		UINavigationBar.appearance().tintColor = UIColor.white
-		UINavigationBar.appearance().shadowImage = UIImage()
-		UINavigationBar.appearance().isTranslucent = false
-		UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
-		
-		UITabBarItem.appearance().titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -5)
-		
-		// UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.white], for: .selected)
-		// UITabBarItem.appearance().setTitleTextAttributes([NSAttributedStringKey.foregroundColor: UIColor.lightGray], for: .normal)
-		// UITabBar.appearance().barTintColor = UIConfig.mainThemeColor
-		UITabBar.appearance().tintColor = UIConfig.mainThemeColor // иконки при выделении
-	}
-	
-	
-	
 	
 	// при получении токена
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -152,16 +111,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 			else if let result = result {
 				print("instanceIdToken: \(result.token)")
 			}
-			
-			
-			// не работает т.к. пишет что нет токена
-//			// подписываемся на тему
-//			if let topic = Auth.auth().currentUser?.uid {
-//				print("topic = \(topic)")
-//				DispatchQueue.main.async {
-//					Messaging.messaging().subscribe(toTopic: "topics/\(topic)")
-//				}
-//			}
 		})
 	}
 	
@@ -172,77 +121,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	}
 	
 
-	
-	func ConnectToFCM() {
-		Messaging.messaging().shouldEstablishDirectChannel = true
-	}
-	
-	
-	
-	
-	
-	
-	//***********************************
-	// UNUserNotificationCenterDelegate *
-	//***********************************
-	
-	func userNotificationCenter(_ center: UNUserNotificationCenter,
-								didReceive response: UNNotificationResponse,
-								withCompletionHandler completionHandler: @escaping () -> Void) {
-		
-		print("doesn't work")
-		completionHandler()
-	}
-	
-	
-	// сработает только если "content_available" : true
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-		
-		// отправляем аналитику сообщений в FCM
-		Messaging.messaging().appDidReceiveMessage(userInfo)
-		
-		if UIApplication.shared.applicationState == .background {
-			if MessagesController.shared != nil {
-				MessagesController.shared.countUnreadInBackground(from: userInfo["fromID"] as! String)
-			}
-		}
-		
-		completionHandler(UIBackgroundFetchResult.newData)
-	}
-	
-	
-	
-	
-	//********************
-	// MessagingDelegate *
-	//********************
-	
-	// при получении уведомления (если это "content-available": 1)
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-		
-		if UIApplication.shared.applicationState == .active {
-			//TODO: Handle foreground notification
-		}
-		else {
-			//TODO: Handle background notification
-		}
-	}
-	
-	// doesn't work
-	func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
-		print("Refreshed Token: \(fcmToken)")
-	}
-	
-	
-	// doesn't work
-	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-		print("fcmToken = \(fcmToken)")
-		ConnectToFCM()
-	}
-	
-	
-	
-	
+
 	
 }
 

@@ -63,9 +63,8 @@ class JSONTable: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
+
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Закрыть", style: .plain, target: self, action: #selector(goBack))
-		
 		
 		tableView.register(UINib(nibName: "cell_xib", bundle: nil), forCellReuseIdentifier: cel_ID)
 		// чтоб не отображалась дефолтная таблица
