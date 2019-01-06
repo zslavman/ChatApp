@@ -88,8 +88,9 @@ struct Calculations {
 		// let hou = intValue / 3600
 		let min = intValue / 60
 		let sec = intValue % 60
-		let time = String(format: "%2i:%02i", min, sec)
+		var time = String(format:"%2i:%02i", min, sec)
 		
+		time.removeFirst()
 		return time
 	}
 	
@@ -243,7 +244,7 @@ struct Calculations {
 	
 	
 	
-	
+	// измерение скорости выполнения методов
 	static func timeMeasuringCodeRunning(title:String, operationBlock: () -> ()) {
 		let start = CFAbsoluteTimeGetCurrent()
 		operationBlock()
