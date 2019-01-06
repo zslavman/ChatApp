@@ -100,7 +100,7 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 		// наполняем контентом уведомление
 		let notifContent = UNMutableNotificationContent()
 		notifContent.title = "Сообщение из Прекрасного Далёка:"
-		notifContent.body = "Эники, левисы, гучи, три выпавшие плобмы??"
+		notifContent.body = "Эники, левисы, гучи, три выпавшие плобмы. Диагноз?"
 		notifContent.sound = UNNotificationSound(named: "pipk.mp3")
 		
 		// создаем триггер
@@ -116,12 +116,12 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 				print(error.localizedDescription)
 				return
 			}
-			print("Оповещение сработает через: \(delaySeconds)с")
+			print("Оповещение сработает через: \(Int(delaySeconds))с")
 		}
 		
 		// выходим из приложения через 0.5 с
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-			//UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
+			UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
 		}
 	}
 	

@@ -96,7 +96,6 @@ class JSONTable: UITableViewController {
 					DispatchQueue.main.async(execute: {
 						self.tableView.reloadData()
 						Calculations.animateTableWithSections(tableView: self.tableView)
-						//loadNext()
 					})
 				}
 			}
@@ -194,7 +193,7 @@ class JSONTable: UITableViewController {
 	
 	
 	
-	
+
 	
 	
 	// ТЕСТ загружаем картинки по ссылкам из JSON

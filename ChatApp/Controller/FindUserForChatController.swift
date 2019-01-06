@@ -30,7 +30,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	}
 	
 	private var labelNoResults:UILabel!
-	
+	public static let notificationID:String = "notificationID"
 
 	
 	
@@ -63,6 +63,9 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		setupSearchBar()
 		installNoResultsLabel()
+		
+		// слушатель на приход всех уведомлений (слушает уведомление с именем "notificationID"), который можно использовать глобально
+		NotificationCenter.default.addObserver(self, selector: #selector(notificationHandler), name: NSNotification.Name(rawValue: FindUserForChatController.notificationID), object: nil)
 	}
 	
 	
@@ -98,6 +101,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		
 		searchController.isActive = false
 		searchController.dismiss(animated: false, completion: nil)
+		NotificationCenter.default.removeObserver(self)
 	}
 		
 
@@ -133,7 +137,10 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	
-
+	@objc private func notificationHandler(){
+		print("All data received")
+		NotificationCenter.default.removeObserver(self)
+	}
 	
 	
 	
@@ -254,7 +261,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 				// крашанет если в классе не найдется переменных с именами ключей словаря
 				user.setValuesForKeys(dict)
 				
-				// ГЛЮК БАЗЫ - юзер у которого всё = nil!!!!! (c браузера его не видно!)
+				// ГЛЮК БАЗЫ - юзер у которого всё = nil!!!!! (c браузера его не видно)
 				if user.email != nil{
 					self.users.append(user)
 				}
@@ -330,6 +337,8 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
 			Calculations.animateTableWithSections(tableView: self.tableView)
+			// отправляем уведомление
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: FindUserForChatController.notificationID), object: nil)
 		}
 	}
 	

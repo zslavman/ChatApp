@@ -296,7 +296,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			onChatBackingClick()
 		}
 		
-		if UIScreen.main.bounds.width < UIScreen.main.bounds.height { // ДО поворота будут именно эти значения
+		if size.width > size.height {
 			print("Landscape")
 			baseHeightAnchor?.constant = 0
 			pHeightAnchor?.constant = 0
@@ -369,11 +369,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
-			nameTFHeightAnchor?.isActive = false
+			nameTFHeightAnchor?.constant = 0
 		}
 		// регистрация
 		else if loginSegmentedControl.selectedSegmentIndex == 1{
-			nameTFHeightAnchor?.isActive = true
+			nameTFHeightAnchor?.constant = 40
 		}
 	}
 	

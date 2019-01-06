@@ -165,7 +165,7 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		5649D9F421D8322300AA3BD8 /* MTests */ = {
+		5649D9F421D8322300AA3BD8 /* Hidden */ = {
 			isa = PBXGroup;
 			children = (
 				5649D9F521D832BB00AA3BD8 /* JSONTableController.swift */,
@@ -173,7 +173,7 @@
 				5649D9F721D8382800AA3BD8 /* WorkCell.swift */,
 				5649D9F921D838A500AA3BD8 /* cell_xib.xib */,
 			);
-			path = MTests;
+			path = Hidden;
 			sourceTree = "<group>";
 		};
 		566BED9C2186F8D50053F4A0 = {
@@ -197,7 +197,7 @@
 		566BEDA72186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
-				5649D9F421D8322300AA3BD8 /* MTests */,
+				5649D9F421D8322300AA3BD8 /* Hidden */,
 				5637D90A21A3606500BA9717 /* Extensions */,
 				5680E758218B52B500B9CC3B /* Helpers */,
 				5639652B21924D1F00691334 /* View */,
