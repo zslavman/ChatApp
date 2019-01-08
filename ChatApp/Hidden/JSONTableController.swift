@@ -55,7 +55,11 @@ class JSONTable: UITableViewController {
 	
 	private var dataForCells = [PhotoData]()
 	private let cel_ID = "cell_ID"
-	private let json_link:String = "http://zslavman.zzz.com.ua/imgdb/index.json"
+	//private let json_link:String = "http://zslavman.zzz.com.ua/imgdb/index.json"
+	// внутненняя ссылка на гуглдиск
+	//private let json_link2:String = "https://drive.google.com/file/d/15vtUxi965XwNL7WAcUEgY0deGUpCkHFH/view?usp=sharing"
+	// прямая ссылка на гуглдиск
+	private let json_link2:String = "https://drive.google.com/uc?export=download&id=15vtUxi965XwNL7WAcUEgY0deGUpCkHFH"
 	private let imgs_link:String = "http://zslavman.zzz.com.ua/imgdb/"
 	private var tasks = Set<ImageLoader>() // таски на скачивание, которые будем отменять при выходе
 	
@@ -87,7 +91,7 @@ class JSONTable: UITableViewController {
 	// GCD
 	private func downloadAndParseData(){
 		
-		Calculations.getJSON(link: json_link) {
+		Calculations.getJSON(link: json_link2) {
 			(data:Data) in
 			
 			do {
