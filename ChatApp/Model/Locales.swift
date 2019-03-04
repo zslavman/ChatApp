@@ -62,9 +62,9 @@ let dict:[Int:[String]] = [
 		"Pour utiliser cette fonctionnalité, vous devez activer la géolocalisation dans les paramètres"],
 	37:["Включите геолокацию", "Turn on geolocation", "Activer la géolocalisation"],
 	38:["OK", "OK", "OK"],
-	39:["© 2018 ChatApp все права защищены",
-		"© 2018 ChatApp All rights reserved",
-		"© 2018 ChatApp Tous les droits sont réservés"],
+	39:["© 2019 ChatApp все права защищены",
+		"© 2019 ChatApp All rights reserved",
+		"© 2019 ChatApp Tous les droits sont réservés"],
 	40:["Разработка и поддержка:\n", "Development and support:\n", "Développement et support:\n"],
 	41:["ChatApp"], 			// 1
 	42:[" v1.0"], 				// 1

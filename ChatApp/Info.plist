@@ -15,7 +15,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.0.2</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
@@ -30,11 +30,11 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string></string>
+	<string>If you want to share your location let the programm access to location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>If you want to share your location let the programm access to location</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string></string>
+	<string>If you want to share your photo let the programm access to media</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

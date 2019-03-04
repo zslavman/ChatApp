@@ -63,8 +63,8 @@ class JSONTable: UITableViewController {
 	private let imgs_link:String = "http://zslavman.zzz.com.ua/imgdb/"
 	private var tasks = Set<ImageLoader>() // таски на скачивание, которые будем отменять при выходе
 	
-	
-	
+	//https://drive.google.com/open?id=1Rbk49RDjWffwbs-nMA9WaMjsaOAKWg_r
+	//https://drive.google.com/uc?export=download&id=1Rbk49RDjWffwbs-nMA9WaMjsaOAKWg_r
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
