@@ -53,7 +53,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		label.isScrollEnabled = false
 		label.isEditable = false
 		label.delaysContentTouches = false
-		label.linkTextAttributes = ["yopta": UIColor.white]
+		label.linkTextAttributes = convertToOptionalNSAttributedStringKeyDictionary(["yopta": UIColor.white])
 		return label
 	}()
 	
@@ -142,8 +142,8 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		
 		
 		// ChatApp + v1.0
-		let attribetedTitle = NSMutableAttributedString(string: dict[41]![0], attributes: [NSAttributedStringKey.font : UIFont(name:"MarkerFelt-Wide", size: 30)!]) // ChatApp
-		let attribetedVer = NSMutableAttributedString(string: currentVersion, attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 18)]) // v1.0
+		let attribetedTitle = NSMutableAttributedString(string: dict[41]![0], attributes: [NSAttributedString.Key.font : UIFont(name:"MarkerFelt-Wide", size: 30)!]) // ChatApp
+		let attribetedVer = NSMutableAttributedString(string: currentVersion, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18)]) // v1.0
 		attribetedTitle.append(attribetedVer)
 		
 		titleApp.attributedText = attribetedTitle
@@ -156,7 +156,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		let style = NSMutableParagraphStyle()
 		style.alignment = NSTextAlignment.center
 		
-		let styleForSupport: [NSAttributedStringKey : Any] = [
+		let styleForSupport: [NSAttributedString.Key : Any] = [
 			.foregroundColor: #colorLiteral(red: 0.3529411765, green: 0.7960784314, blue: 0.9450980392, alpha: 1),
 			.paragraphStyle : style,
 			.font: UIFont.systemFont(ofSize: 16)
@@ -164,11 +164,11 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		let atrSupport = NSMutableAttributedString(string: dict[40]![LANG], attributes: styleForSupport)
 		
 		// колдовство с линкованным текстом
-		let styleForLink: [NSAttributedStringKey : Any] = [
+		let styleForLink: [NSAttributedString.Key : Any] = [
 			.foregroundColor: #colorLiteral(red: 0.3529411765, green: 0.7960784314, blue: 0.9450980392, alpha: 1),
 			.paragraphStyle : style,
 			.font: UIFont.systemFont(ofSize: 16),
-			.underlineStyle: NSUnderlineStyle.styleSingle.rawValue,
+			.underlineStyle: NSUnderlineStyle.single.rawValue,
 			.link: dict[44]![0]
 		]
 		let attrEmail = NSMutableAttributedString(string: dict[46]![LANG])
@@ -265,3 +265,9 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}

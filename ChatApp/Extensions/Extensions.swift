@@ -100,14 +100,14 @@ class UILabelWithEdges: UILabel {
     }
     
     override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
-        let insetRect = UIEdgeInsetsInsetRect(bounds, textInsets)
+        let insetRect = bounds.inset(by: textInsets)
         let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)
         let invertedInsets = UIEdgeInsets(top: -textInsets.top, left: -textInsets.left, bottom: -textInsets.bottom, right: -textInsets.right)
-        return UIEdgeInsetsInsetRect(textRect, invertedInsets)
+        return textRect.inset(by: invertedInsets)
     }
     
     override func drawText(in rect: CGRect) {
-        super.drawText(in: UIEdgeInsetsInsetRect(rect, textInsets))
+        super.drawText(in: rect.inset(by: textInsets))
     }
 }
 
@@ -161,7 +161,7 @@ extension UIView {
 // цвет клика по кнопке
 extension UIButton {
     
-    func setBackgroundColor(color: UIColor, forState: UIControlState) {
+    func setBackgroundColor(color: UIColor, forState: UIControl.State) {
         self.clipsToBounds = true
         UIGraphicsBeginImageContext(CGSize(width: 1, height: 1))
         UIGraphicsGetCurrentContext()!.setFillColor(color.cgColor)
@@ -230,7 +230,7 @@ class UnselectableTextView: UITextView {
 	
 	override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
 
-		guard let pos = closestPosition(to: point), let range = tokenizer.rangeEnclosingPosition(pos, with: .character, inDirection: UITextLayoutDirection.left.rawValue) else {
+		guard let pos = closestPosition(to: point), let range = tokenizer.rangeEnclosingPosition(pos, with: .character, inDirection: convertToUITextDirection(UITextLayoutDirection.left.rawValue)) else {
 			return false
 		}
 
@@ -368,3 +368,8 @@ extension Date {
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUITextDirection(_ input: Int) -> UITextDirection {
+	return UITextDirection(rawValue: input)
+}

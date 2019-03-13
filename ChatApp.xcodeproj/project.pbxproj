@@ -54,6 +54,8 @@
 		56BEAB132191BD960008AF6B /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatController.swift */; };
 		56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D03BEA21B2250600E1688F /* Image_Cell.swift */; };
 		56E5A50A21B2019C0076EB67 /* Map_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E5A50921B2019C0076EB67 /* Map_Cell.swift */; };
+		56FE75062239A8E900359066 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE75052239A8E900359066 /* NotificationService.swift */; };
+		56FE750A2239A8E900359066 /* NotificationMutater.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 56FE75032239A8E900359066 /* NotificationMutater.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */; };
 		56FEF3CB21A231C500717A48 /* OnlineService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3CA21A231C500717A48 /* OnlineService.swift */; };
 /* End PBXBuildFile section */
@@ -66,7 +68,28 @@
 			remoteGlobalIDString = 566BEDA42186F8D50053F4A0;
 			remoteInfo = ChatApp;
 		};
+		56FE75082239A8E900359066 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 566BED9D2186F8D50053F4A0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 56FE75022239A8E900359066;
+			remoteInfo = NotificationMutater;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		56FE750E2239A8E900359066 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				56FE750A2239A8E900359066 /* NotificationMutater.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -121,6 +144,9 @@
 		56BEAB122191BD960008AF6B /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		56D03BEA21B2250600E1688F /* Image_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_Cell.swift; sourceTree = "<group>"; };
 		56E5A50921B2019C0076EB67 /* Map_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map_Cell.swift; sourceTree = "<group>"; };
+		56FE75032239A8E900359066 /* NotificationMutater.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationMutater.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		56FE75052239A8E900359066 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		56FE75072239A8E900359066 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessory.swift; sourceTree = "<group>"; };
 		56FEF3CA21A231C500717A48 /* OnlineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineService.swift; sourceTree = "<group>"; };
 		A2E4397522028D0D9A51C49E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -137,6 +163,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		566F468A21E2480400993A92 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		56FE75002239A8E900359066 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -202,6 +235,7 @@
 			children = (
 				566BEDA72186F8D50053F4A0 /* ChatApp */,
 				566F468E21E2480400993A92 /* ChatAppTests */,
+				56FE75042239A8E900359066 /* NotificationMutater */,
 				566BEDA62186F8D50053F4A0 /* Products */,
 				539665654BCF2AC0DD19A1EA /* Pods */,
 				70DFE94CC7D7CBF2A1E2709F /* Frameworks */,
@@ -213,6 +247,7 @@
 			children = (
 				566BEDA52186F8D50053F4A0 /* ChatApp.app */,
 				566F468D21E2480400993A92 /* ChatAppTests.xctest */,
+				56FE75032239A8E900359066 /* NotificationMutater.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -312,6 +347,15 @@
 			path = ChatCells;
 			sourceTree = "<group>";
 		};
+		56FE75042239A8E900359066 /* NotificationMutater */ = {
+			isa = PBXGroup;
+			children = (
+				56FE75052239A8E900359066 /* NotificationService.swift */,
+				56FE75072239A8E900359066 /* Info.plist */,
+			);
+			path = NotificationMutater;
+			sourceTree = "<group>";
+		};
 		70DFE94CC7D7CBF2A1E2709F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -332,10 +376,12 @@
 				566BEDA22186F8D50053F4A0 /* Frameworks */,
 				566BEDA32186F8D50053F4A0 /* Resources */,
 				97F0E43CAC998EFFD91D3314 /* [CP] Embed Pods Frameworks */,
+				56FE750E2239A8E900359066 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				56FE75092239A8E900359066 /* PBXTargetDependency */,
 			);
 			name = ChatApp;
 			productName = ChatApp;
@@ -360,18 +406,36 @@
 			productReference = 566F468D21E2480400993A92 /* ChatAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		56FE75022239A8E900359066 /* NotificationMutater */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56FE750B2239A8E900359066 /* Build configuration list for PBXNativeTarget "NotificationMutater" */;
+			buildPhases = (
+				56FE74FF2239A8E900359066 /* Sources */,
+				56FE75002239A8E900359066 /* Frameworks */,
+				56FE75012239A8E900359066 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotificationMutater;
+			productName = NotificationMutater;
+			productReference = 56FE75032239A8E900359066 /* NotificationMutater.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		566BED9D2186F8D50053F4A0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0940;
+				LastSwiftUpdateCheck = 1010;
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Zinko Viacheslav";
 				TargetAttributes = {
 					566BEDA42186F8D50053F4A0 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1010;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -386,7 +450,11 @@
 					};
 					566F468C21E2480400993A92 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1010;
 						TestTargetID = 566BEDA42186F8D50053F4A0;
+					};
+					56FE75022239A8E900359066 = {
+						CreatedOnToolsVersion = 10.1;
 					};
 				};
 			};
@@ -405,6 +473,7 @@
 			targets = (
 				566BEDA42186F8D50053F4A0 /* ChatApp */,
 				566F468C21E2480400993A92 /* ChatAppTests */,
+				56FE75022239A8E900359066 /* NotificationMutater */,
 			);
 		};
 /* End PBXProject section */
@@ -424,6 +493,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		566F468B21E2480400993A92 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		56FE75012239A8E900359066 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -540,6 +616,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		56FE74FF2239A8E900359066 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56FE75062239A8E900359066 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -547,6 +631,11 @@
 			isa = PBXTargetDependency;
 			target = 566BEDA42186F8D50053F4A0 /* ChatApp */;
 			targetProxy = 566F469221E2480400993A92 /* PBXContainerItemProxy */;
+		};
+		56FE75092239A8E900359066 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 56FE75022239A8E900359066 /* NotificationMutater */;
+			targetProxy = 56FE75082239A8E900359066 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -682,6 +771,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A2E4397522028D0D9A51C49E /* Pods-ChatApp.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ChatApp/ChatApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -697,7 +787,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "db7060d7-dd50-412a-b985-13898e9a982a";
 				PROVISIONING_PROFILE_SPECIFIER = profile_for_chatApp;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -706,6 +796,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ChatApp/ChatApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
@@ -721,7 +812,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "07fe4beb-5a75-43d5-a856-d4425234e0d6";
 				PROVISIONING_PROFILE_SPECIFIER = AppStore_provission_chatApp;
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -770,6 +861,53 @@
 			};
 			name = Release;
 		};
+		56FE750C2239A8E900359066 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = NotificationMutater/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp.NotificationMutater;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		56FE750D2239A8E900359066 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = NotificationMutater/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp.NotificationMutater;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -796,6 +934,15 @@
 			buildConfigurations = (
 				566F469521E2480400993A92 /* Debug */,
 				566F469621E2480400993A92 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		56FE750B2239A8E900359066 /* Build configuration list for PBXNativeTarget "NotificationMutater" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56FE750C2239A8E900359066 /* Debug */,
+				56FE750D2239A8E900359066 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

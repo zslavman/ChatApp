@@ -81,7 +81,7 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 	
 	private func createTab(vc:UIViewController, buttonImage_unselected:String) -> UINavigationController {
 		let navController = UINavigationController(rootViewController: vc)
-		navController.tabBarItem.image = UIImage(named: buttonImage_unselected)?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+		navController.tabBarItem.image = UIImage(named: buttonImage_unselected)?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
 		// navController.tabBarItem.selectedImage = UIImage(named: buttonImage_selected)
 		// navController.tabBarItem.title = title
 		return navController

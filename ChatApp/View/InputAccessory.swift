@@ -14,7 +14,7 @@ class InputAccessory: UIView, UITextViewDelegate {
     public var chatController:ChatController? {
         didSet{
             // sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
-            sendButton.addTarget(self, action: #selector(onSend), for: UIControlEvents.touchUpInside)
+            sendButton.addTarget(self, action: #selector(onSend), for: UIControl.Event.touchUpInside)
             // uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
 			uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: chatController, action: #selector(ChatController.onUploadClick)))
             insertGeo.addGestureRecognizer(UITapGestureRecognizer(target: chatController, action: #selector(ChatController.checkLocationAuthorization)))

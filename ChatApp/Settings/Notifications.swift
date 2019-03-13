@@ -101,7 +101,7 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 		let notifContent = UNMutableNotificationContent()
 		notifContent.title = "Сообщение из Прекрасного Далёка:"
 		notifContent.body = "Эники, левисы, гучи, три выпавшие плобмы. Диагноз?"
-		notifContent.sound = UNNotificationSound(named: "pipk.mp3")
+		notifContent.sound = UNNotificationSound(named: convertToUNNotificationSoundName("pipk.mp3"))
 		
 		// создаем триггер
 		let dComponent = Calculations.getDateComponent(fromDate: thresholdDate)
@@ -266,3 +266,8 @@ extension AppDelegate {
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUNNotificationSoundName(_ input: String) -> UNNotificationSoundName {
+	return UNNotificationSoundName(rawValue: input)
+}

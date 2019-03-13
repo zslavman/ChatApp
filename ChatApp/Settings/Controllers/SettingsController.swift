@@ -174,10 +174,10 @@ class SettingsController: UITableViewController {
 	
 	private func logout(){
 		
-		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		messagesController.dispose()
 		
-		let findUsersController = tabBarController?.viewControllers![1].childViewControllers.first as! FindUserForChatController
+		let findUsersController = tabBarController?.viewControllers![1].children.first as! FindUserForChatController
 		findUsersController.dispose()
 		
 		do {

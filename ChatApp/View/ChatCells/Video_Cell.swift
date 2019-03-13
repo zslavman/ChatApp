@@ -15,7 +15,7 @@ class Video_Cell: ChatMessageCell {
 	
 	
 	private let activityIndicator:UIActivityIndicatorView = {
-		let ai = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
+		let ai = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.whiteLarge)
 		ai.translatesAutoresizingMaskIntoConstraints = false
 		ai.hidesWhenStopped = true
 		ai.isUserInteractionEnabled = false
@@ -51,7 +51,7 @@ class Video_Cell: ChatMessageCell {
 	}()
 	
 	private let progressBar:UIProgressView = {
-		let prog = UIProgressView(progressViewStyle: UIProgressViewStyle.bar)
+		let prog = UIProgressView(progressViewStyle: UIProgressView.Style.bar)
 		prog.translatesAutoresizingMaskIntoConstraints = false
 		prog.setProgress(0, animated: false)
 		prog.tintColor = UIColor(r: 0, g: 255, b: 0)
@@ -204,7 +204,7 @@ class Video_Cell: ChatMessageCell {
 				activityIndicator.startAnimating() // когда загрузится видео, оно его перекроет
 				
 				// перемещаем прогрессбар на верхний слой (иначе playerLayer его закроет)
-				bubbleView.bringSubview(toFront:progressBar)
+				bubbleView.bringSubviewToFront(progressBar)
 			}
 			
 			removePlayObserver()

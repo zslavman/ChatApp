@@ -39,20 +39,20 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return view_i
 	}()
 	
-	private let loginRegisterBttn :UIButton = {
+	private let loginRegisterBttn: UIButton = {
 		let button = UIButton(type: .system)
 		button.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 		button.layer.cornerRadius = 8
-		button.setTitle("Register", for: UIControlState.normal)
+		button.setTitle("Register", for: UIControl.State.normal)
 		button.setTitleColor(.white, for: .normal)
-		button.setBackgroundColor(color: #colorLiteral(red: 0.58682733, green: 0.90042532, blue: 1, alpha: 1), forState: UIControlState.highlighted)
+		button.setBackgroundColor(color: #colorLiteral(red: 0.58682733, green: 0.90042532, blue: 1, alpha: 1), forState: UIControl.State.highlighted)
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.layer.shadowOffset = CGSize(width: 0, height: 3)
 		button.layer.shadowRadius = 3
 		button.layer.shadowOpacity = 0.3
 //		button.layer.shouldRasterize = true
-		button.addTarget(self, action: #selector(onGoClick), for: UIControlEvents.touchUpInside)
+		button.addTarget(self, action: #selector(onGoClick), for: UIControl.Event.touchUpInside)
 		return button
 	}()
 	
@@ -117,7 +117,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		sc.translatesAutoresizingMaskIntoConstraints = false
 		sc.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
 		sc.selectedSegmentIndex = 1
-		sc.addTarget(self, action: #selector(onSegmentedClick), for: UIControlEvents.valueChanged)
+		sc.addTarget(self, action: #selector(onSegmentedClick), for: UIControl.Event.valueChanged)
 		return sc
 	}()
 	
@@ -190,8 +190,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
 		// прослушиватели клавы
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 	}
 	
 
@@ -258,7 +258,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		helperElement_bottom.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor).isActive = true
 		helperElement_bottom.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor, constant: -5).isActive = true
 		helperElement_bottom.widthAnchor.constraint(equalToConstant: 80).isActive = true
-		collectionView?.sendSubview(toBack: helperElement_bottom)
+		collectionView?.sendSubviewToBack(helperElement_bottom)
 		helperElement_bottom.isHidden = true
 
 		var hei:CGFloat = 0
@@ -419,11 +419,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			return
 		}
 		
-		if let keyboardSize = ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
+		if let keyboardSize = ((notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
 			let offset = keyboardSize.height - helperElement_bottom.bounds.height
 			
 			keyboardHeight = keyboardSize.height
-			 let keyboardDuration = notif.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
+			 let keyboardDuration = notif.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double ?? 0.3
 			
 			if UIScreen.main.bounds.width < UIScreen.main.bounds.height{
 				self.baseHeightAnchor?.constant -= offset
@@ -454,7 +454,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	/// клава заезжает
 	@objc private func keyboardWillHide(notif: Notification){
 		
-		if ((notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+		if ((notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
 			
 			if UIScreen.main.bounds.width < UIScreen.main.bounds.height{
 				baseHeightAnchor?.constant = defaultConstHeight

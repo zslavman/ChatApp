@@ -135,7 +135,7 @@ class Map_Cell: ChatMessageCell, MKMapViewDelegate {
 		
 		// центрируем карту на заданой точке
 		let coord2D = CLLocationCoordinate2D(latitude: message.geo_lat!.doubleValue, longitude: message.geo_lon!.doubleValue)
-		let viewRegion = MKCoordinateRegionMakeWithDistance(coord2D, ChatController.prefferedMapScale, ChatController.prefferedMapScale)
+		let viewRegion = MKCoordinateRegion.init(center: coord2D, latitudinalMeters: ChatController.prefferedMapScale, longitudinalMeters: ChatController.prefferedMapScale)
 		mapView.setRegion(viewRegion, animated: false)
 		
 		let annotation = MKPointAnnotation()

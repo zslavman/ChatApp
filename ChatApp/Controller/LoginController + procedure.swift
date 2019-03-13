@@ -53,14 +53,17 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	
 	/// сюда зайдет после выбора картинки
-	public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+	public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
 		
 		var selectedImage:UIImage?
 		
-		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
+		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
 			selectedImage = editedImage
 		}
-		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
+		else if let originalImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage{
 			selectedImage = originalImage
 		}
 		if selectedImage != nil {
@@ -142,7 +145,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			let uniqueImageName = UUID().uuidString // создает уникальное имя картинке
 			let storageRef = Storage.storage().reference().child("profile_images").child("\(uniqueImageName).jpg")
 			
-			if let uploadData = UIImageJPEGRepresentation(profileImage, 0.5){
+			if let uploadData = profileImage.jpegData(compressionQuality: 0.5){
 				storageRef.putData(uploadData, metadata: nil, completion: {
 					(metadata, error) in
 					if let error = error {
@@ -224,3 +227,13 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}

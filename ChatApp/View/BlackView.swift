@@ -54,7 +54,7 @@ class BlackView: UIView {
 		activityIndicator = UIActivityIndicatorView()
 		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 		activityIndicator.hidesWhenStopped = true
-		activityIndicator.activityIndicatorViewStyle = .whiteLarge
+		activityIndicator.style = .whiteLarge
 		activityIndicator.startAnimating()
 		activityIndicator.backgroundColor = UIColor.black.withAlphaComponent(0.75)
 		activityIndicator.layer.cornerRadius = 15

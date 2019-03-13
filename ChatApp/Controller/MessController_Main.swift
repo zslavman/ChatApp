@@ -68,7 +68,7 @@ extension MessagesController {
 	
 	
 	/// то, что будет выполнено при нажатии на "удалить"
-	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		
 		let message = currentList[0][indexPath.row]
 		if let partnerID = message.chatPartnerID(){

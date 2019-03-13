@@ -24,18 +24,6 @@ class PhotoData:Decodable {
 	var city		:String?
 	var geo			:[Geo]
 	var reserv		:String?
-	
-	//	"view": "sri_00.jpg",
-	//	"description": "Закат 1",
-	//	"album_name": "Шри-Ланка",
-	//	"order": 3,
-	//	"isActive": true,
-	//	"city": "Croom",
-	//	"geo": [{
-	//		"latitude": 29.315768,
-	//		"longitude": 42.8041
-	//	}]
-	
 }
 
 
@@ -45,13 +33,7 @@ struct Geo:Decodable {
 }
 
 
-
-
-
-
-
 class JSONTable: UITableViewController {
-	
 	
 	private var dataForCells = [PhotoData]()
 	private let cel_ID = "cell_ID"
@@ -108,10 +90,7 @@ class JSONTable: UITableViewController {
 	}
 	
 	
-	
 
-
-	
 	@objc private func goBack(){
 		
 		for item in tasks {
@@ -126,8 +105,6 @@ class JSONTable: UITableViewController {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return dataForCells.count
 	}
-	
-	
 	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -145,9 +122,7 @@ class JSONTable: UITableViewController {
 				cell.updateImageViewWithImage(image)
 			}
 		}
-		
 		tasks.insert(imageLoader)
-		
 		return cell
 	}
 	
@@ -181,14 +156,9 @@ class JSONTable: UITableViewController {
 		}
 	}
 	
-	
-	
-	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 85
 	}
-	
-	
 	
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

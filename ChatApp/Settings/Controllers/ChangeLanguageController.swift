@@ -87,7 +87,7 @@ class ChangeLanguageController: UITableViewController {
 			customTabBarController.switchTabTitles(for: UIScreen.main.bounds.size)
 		}
 		// язык дат в сообщениях
-		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		messagesController.tableView.reloadData()
 		
 	}
@@ -109,7 +109,7 @@ class LangCell: UITableViewCell {
 	}
 	
 	
-	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 	}
 	

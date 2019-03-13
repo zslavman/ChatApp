@@ -22,7 +22,7 @@ class UIConfig {
 		UINavigationBar.appearance().tintColor = UIColor.white
 		UINavigationBar.appearance().shadowImage = UIImage()
 		UINavigationBar.appearance().isTranslucent = false
-		UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+		UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
 		
 		UITabBarItem.appearance().titlePositionAdjustment = UIOffset(horizontal: 0, vertical: -5)
 		

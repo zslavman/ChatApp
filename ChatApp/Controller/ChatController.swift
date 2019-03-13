@@ -31,16 +31,16 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	}()
 	
 	private lazy var scrollingDownBttn:UIButton = {
-		let bttn = UIButton(type: UIButtonType.system)
+		let bttn = UIButton(type: UIButton.ButtonType.system)
 		bttn.translatesAutoresizingMaskIntoConstraints = false
 		let img = UIImage(named: "bttn_down")!.withRenderingMode(.alwaysOriginal)
-		bttn.setImage(img, for: UIControlState.normal)
+		bttn.setImage(img, for: UIControl.State.normal)
 		bttn.layer.shadowOffset = CGSize(width: 0, height: 3)
 		bttn.layer.shadowRadius = 3
 		bttn.layer.shadowOpacity = 0.3
 		bttn.alpha = 0
 		bttn.tintColor = UIConfig.mainThemeColor
-		bttn.addTarget(self, action: #selector(onScrollingDownClick), for: UIControlEvents.touchUpInside)
+		bttn.addTarget(self, action: #selector(onScrollingDownClick), for: UIControl.Event.touchUpInside)
 		return bttn
 	}()
 	
@@ -110,7 +110,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		collectionView?.register(Video_Cell.self, forCellWithReuseIdentifier: cID.cell_ID_video)
 		collectionView?.register(Map_Cell.self, forCellWithReuseIdentifier: cID.cell_ID_map)
 		collectionView?.register(Image_Cell.self, forCellWithReuseIdentifier: cID.cell_ID_image)
-		collectionView?.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: headerReusableView)
+		collectionView?.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerReusableView)
 		
 		// поведение клавиатуры при скроллинге
 		collectionView?.keyboardDismissMode = .interactive
@@ -120,7 +120,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		
 		// слушатель на тап по фону сообщений
 		collectionView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onChatBackingClick)))
-		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: Notification.Name.UIKeyboardDidShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
 		
 		view.addSubview(scrollingDownBttn)
 		NSLayoutConstraint.activate([
@@ -234,7 +234,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID_image, for: indexPath) as! Image_Cell
 		}
 		else {
-			cell = collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID, for: indexPath) as! ChatMessageCell
+			cell = (collectionView.dequeueReusableCell(withReuseIdentifier: cID.cell_ID, for: indexPath) as! ChatMessageCell)
 		}
 		
 		cell.tag = indexPath.item
@@ -303,7 +303,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	/// или определить верхнюю ф-цию
 	override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 		
-		if kind == UICollectionElementKindSectionHeader {
+		if kind == UICollectionView.elementKindSectionHeader {
 			let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerReusableView, for: indexPath) as! SectionHeaderView
 			
 			headerView.title.text = stringedTimes[indexPath.section]
@@ -633,7 +633,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		collectionView?.refreshControl = refreshControl
 		refreshControl.beginRefreshing()
 		collectionView!.setContentOffset(CGPoint(x: 0, y: collectionView!.contentOffset.y - (refreshControl.frame.size.height)), animated: false)
-		refreshControl.addTarget(self, action: #selector(loadOldMessages), for: UIControlEvents.valueChanged)
+		refreshControl.addTarget(self, action: #selector(loadOldMessages), for: UIControl.Event.valueChanged)
 	}
 	
 	
@@ -679,7 +679,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	@objc private func keyboardDidShow(notif: Notification){
 		
-		if let keyboardFrame = (notif.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{
+		if let keyboardFrame = (notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue{
 			// при повороте экрана происходит ложное срабатывание - клава не выезжает (но высота ее = 50), потому проверяем ее размер
 			if keyboardFrame.height > 100 {
 				collectionView?.scrollToLast(animated: true)
@@ -768,7 +768,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		
 		if let fcmToken = user?.fcmToken {
 			
-			let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+			let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 			let name = messagesController.owner.name
 			
 			var body:String = ""

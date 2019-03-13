@@ -40,7 +40,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		// section headers не будут прилипать сверху таблицы
 		// self.tableView = UITableView(frame: CGRect.zero, style: .grouped)
 		
-		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		owner = messagesController.owner
 		
 		// searchController = UISearchController(searchResultsController: nil)
@@ -174,7 +174,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		// UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = [NSAttributedStringKey.foregroundColor.rawValue: UIConfig.mainThemeColor]
 		
 		// цвет кнопки "Отмена" в поисковой строке, а точнее цвет надписи
-		UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedStringKey(rawValue: NSAttributedStringKey.foregroundColor.rawValue): UIColor.white], for: .normal)
+		UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue): UIColor.white], for: .normal)
 		
 		if let searchTextField = searchController.searchBar.value(forKey: "searchField") as? UITextField {
 			
@@ -432,7 +432,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 //		disposeVar.0.removeObserver(withHandle: disposeVar.1)
 		let user = twoD[indexPath.section][indexPath.row]
 		
-		let messagesController = tabBarController?.viewControllers![0].childViewControllers.first as! MessagesController
+		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		let mess = messagesController.messages
 	
 		// чиститим непрочит. сообщения от юзера(если таковой был ранее) с которым идем на диалог

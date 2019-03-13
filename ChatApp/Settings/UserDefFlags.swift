@@ -63,7 +63,7 @@ struct UserDefFlags {
 			}
 		}
 		else {
-			UserDefFlags.lang = lang_flag as! UInt
+			UserDefFlags.lang = (lang_flag as! UInt)
 		}
 	}
 	

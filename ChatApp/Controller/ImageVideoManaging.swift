@@ -37,13 +37,16 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 	
 	
 	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
 		
 		var permission:Bool = true
 		selectMediaContentOpened = false
 		
 		// если выбрали видеофайл
-		if let videoURL = info[UIImagePickerControllerMediaURL] as? URL{
+		if let videoURL = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.mediaURL)] as? URL{
 			if let bytes = NSData(contentsOf: videoURL)?.length{ // в обычной Data нет свойства length
 				let MB = (bytes / 1024) / 1000
 				print("Размер файла = \(MB) МБ")
@@ -73,10 +76,10 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 	
 	private func imageSelectedForInfo(info:[String: Any]){
 		var selectedImage:UIImage?
-		if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage{
+		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
 			selectedImage = editedImage
 		}
-		else if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage{
+		else if let originalImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage{
 			selectedImage = originalImage
 		}
 		
@@ -194,7 +197,7 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 		let uniqueImageName = UUID().uuidString
 		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
 		
-		if let uploadData = UIImageJPEGRepresentation(image, 0.5){
+		if let uploadData = image.jpegData(compressionQuality: 0.5){
 			ref.putData(uploadData, metadata: nil, completion: {
 				(metadata, error) in
 				if let error = error {
@@ -341,3 +344,13 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}
