@@ -147,6 +147,7 @@
 		56FE75032239A8E900359066 /* NotificationMutater.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationMutater.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FE75052239A8E900359066 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		56FE75072239A8E900359066 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56FE750F2239A9E700359066 /* NotificationMutater.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationMutater.entitlements; sourceTree = "<group>"; };
 		56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessory.swift; sourceTree = "<group>"; };
 		56FEF3CA21A231C500717A48 /* OnlineService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineService.swift; sourceTree = "<group>"; };
 		A2E4397522028D0D9A51C49E /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -233,9 +234,9 @@
 		566BED9C2186F8D50053F4A0 = {
 			isa = PBXGroup;
 			children = (
+				56FE750F2239A9E700359066 /* NotificationMutater.entitlements */,
 				566BEDA72186F8D50053F4A0 /* ChatApp */,
 				566F468E21E2480400993A92 /* ChatAppTests */,
-				56FE75042239A8E900359066 /* NotificationMutater */,
 				566BEDA62186F8D50053F4A0 /* Products */,
 				539665654BCF2AC0DD19A1EA /* Pods */,
 				70DFE94CC7D7CBF2A1E2709F /* Frameworks */,
@@ -255,6 +256,7 @@
 		566BEDA72186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				56FE75042239A8E900359066 /* NotificationMutater */,
 				5649D9F421D8322300AA3BD8 /* Hidden */,
 				5637D90A21A3606500BA9717 /* Extensions */,
 				5680E758218B52B500B9CC3B /* Helpers */,
@@ -437,6 +439,9 @@
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 1010;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
@@ -455,6 +460,11 @@
 					};
 					56FE75022239A8E900359066 = {
 						CreatedOnToolsVersion = 10.1;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -786,7 +796,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "db7060d7-dd50-412a-b985-13898e9a982a";
-				PROVISIONING_PROFILE_SPECIFIER = profile_for_chatApp;
+				PROVISIONING_PROFILE_SPECIFIER = "ChatApp-DevelopmentProfile";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -811,7 +821,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "07fe4beb-5a75-43d5-a856-d4425234e0d6";
-				PROVISIONING_PROFILE_SPECIFIER = AppStore_provission_chatApp;
+				PROVISIONING_PROFILE_SPECIFIER = "ChatApp-ProductionProfile";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -864,10 +874,11 @@
 		56FE750C2239A8E900359066 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NotificationMutater.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = NotificationMutater/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ChatApp/NotificationMutater/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -888,10 +899,11 @@
 		56FE750D2239A8E900359066 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NotificationMutater.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = NotificationMutater/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ChatApp/NotificationMutater/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -228,20 +228,20 @@ extension AppDelegate {
 	
 	// сработает только если "content_available" : true
 	// пересчитываем кол-во непрочтенных, обновляем бейдж
-	func application(_ application: UIApplication,
-					 didReceiveRemoteNotification userInfo: [AnyHashable : Any],
-					 fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-		
-		// отправляем аналитику сообщений в FCM
-		Messaging.messaging().appDidReceiveMessage(userInfo)
-		
-		if UIApplication.shared.applicationState == .background {
-			if MessagesController.shared != nil {
-				MessagesController.shared.countUnreadInBackground(from: userInfo["fromID"] as! String)
-			}
-		}
-		completionHandler(UIBackgroundFetchResult.newData)
-	}
+//	func application(_ application: UIApplication,
+//					 didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+//					 fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+//		
+//		// отправляем аналитику сообщений в FCM
+//		Messaging.messaging().appDidReceiveMessage(userInfo)
+//		
+//		if UIApplication.shared.applicationState == .background {
+//			if MessagesController.shared != nil {
+//				MessagesController.shared.countUnreadInBackground(from: userInfo["fromID"] as! String)
+//			}
+//		}
+//		completionHandler(UIBackgroundFetchResult.newData)
+//	}
 }
 
 

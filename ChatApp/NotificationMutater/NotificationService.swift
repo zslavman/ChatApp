@@ -13,14 +13,14 @@ class NotificationService: UNNotificationServiceExtension {
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
 
+	// breakpoints inside this method works only with "Debug" -> "Attach to Process"
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         
         if let bestAttemptContent = bestAttemptContent {
             // Modify the notification content here...
-            bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
-            
+            bestAttemptContent.title = "\(bestAttemptContent.title) This is additional string!"
             contentHandler(bestAttemptContent)
         }
     }
@@ -34,3 +34,13 @@ class NotificationService: UNNotificationServiceExtension {
     }
 
 }
+
+
+//{
+//	"aps": {
+//		"alert": "Testing.. (3)",
+//		"badge": 1,
+//		"sound": "default",
+//		"mutable-content": 1
+//	}
+//}
