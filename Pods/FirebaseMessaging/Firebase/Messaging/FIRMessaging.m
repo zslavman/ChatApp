@@ -43,11 +43,11 @@
 #import <FirebaseCore/FIRAppInternal.h>
 #import <FirebaseCore/FIRComponent.h>
 #import <FirebaseCore/FIRComponentContainer.h>
-#import <FirebaseCore/FIRComponentRegistrant.h>
-#import <FirebaseCore/FIRCoreConfigurable.h>
 #import <FirebaseCore/FIRDependency.h>
+#import <FirebaseCore/FIRLibrary.h>
 #import <FirebaseInstanceID/FirebaseInstanceID.h>
 #import <GoogleUtilities/GULReachabilityChecker.h>
+#import <GoogleUtilities/GULUserDefaults.h>
 
 #import "NSError+FIRMessaging.h"
 
@@ -142,7 +142,7 @@ NSString *const kFIRMessagingPlistAutoInitEnabled =
 @property(nonatomic, readwrite, strong) FIRMessagingRmqManager *rmq2Manager;
 @property(nonatomic, readwrite, strong) FIRMessagingReceiver *receiver;
 @property(nonatomic, readwrite, strong) FIRMessagingSyncMessageManager *syncMessageManager;
-@property(nonatomic, readwrite, strong) NSUserDefaults *messagingUserDefaults;
+@property(nonatomic, readwrite, strong) GULUserDefaults *messagingUserDefaults;
 
 /// Message ID's logged for analytics. This prevents us from logging the same message twice
 /// which can happen if the user inadvertently calls `appDidReceiveMessage` along with us
@@ -158,44 +158,29 @@ NSString *const kFIRMessagingPlistAutoInitEnabled =
 @protocol FIRMessagingInstanceProvider
 @end
 
-@interface FIRMessaging () <FIRMessagingInstanceProvider,
-                            FIRCoreConfigurable,
-                            FIRComponentRegistrant>
+@interface FIRMessaging () <FIRMessagingInstanceProvider, FIRLibrary>
 @end
 
 @implementation FIRMessaging
 
-// File static to support InstanceID tests that call [FIRMessaging messaging] after
-// [FIRMessaging messagingForTests].
-static FIRMessaging *sMessaging;
-
 + (FIRMessaging *)messaging {
-  if (sMessaging != nil) {
-    return sMessaging;
-  }
   FIRApp *defaultApp = [FIRApp defaultApp];  // Missing configure will be logged here.
-  id<FIRMessagingInstanceProvider> messaging =
+  id<FIRMessagingInstanceProvider> instance =
       FIR_COMPONENT(FIRMessagingInstanceProvider, defaultApp.container);
+
+  // We know the instance coming from the container is a FIRMessaging instance, cast it and move on.
+  FIRMessaging *messaging = (FIRMessaging *)instance;
 
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    [(FIRMessaging *)messaging start];
+    [messaging start];
   });
-  sMessaging = (FIRMessaging *)messaging;
-  return sMessaging;
-}
-
-+ (FIRMessaging *)messagingForTests {
-  sMessaging = [[FIRMessaging alloc] initWithAnalytics:nil
-                                        withInstanceID:[FIRInstanceID instanceID]
-                                      withUserDefaults:[NSUserDefaults standardUserDefaults]];
-  [sMessaging start];
-  return sMessaging;
+  return messaging;
 }
 
 - (instancetype)initWithAnalytics:(nullable id<FIRAnalyticsInterop>)analytics
                    withInstanceID:(FIRInstanceID *)instanceID
-                 withUserDefaults:(NSUserDefaults *)defaults {
+                 withUserDefaults:(GULUserDefaults *)defaults {
   self = [super init];
   if (self != nil) {
     _loggedMessageIDs = [NSMutableSet set];
@@ -215,8 +200,9 @@ static FIRMessaging *sMessaging;
 #pragma mark - Config
 
 + (void)load {
-  [FIRApp registerAsConfigurable:self];
-  [FIRComponentContainer registerAsComponentRegistrant:self];
+  [FIRApp registerInternalLibrary:(Class<FIRLibrary>)self
+                 withName:@"fire-fcm"
+              withVersion:FIRMessagingCurrentLibraryVersion()];
 }
 
 + (nonnull NSArray<FIRComponent *> *)componentsToRegister {
@@ -229,7 +215,7 @@ static FIRMessaging *sMessaging;
     id<FIRAnalyticsInterop> analytics = FIR_COMPONENT(FIRAnalyticsInterop, container);
         return [[FIRMessaging alloc] initWithAnalytics:analytics
                                         withInstanceID:[FIRInstanceID instanceID]
-                                      withUserDefaults:[NSUserDefaults standardUserDefaults]];
+                                      withUserDefaults:[GULUserDefaults standardUserDefaults]];
   };
   FIRComponent *messagingProvider =
       [FIRComponent componentWithProtocol:@protocol(FIRMessagingInstanceProvider)
@@ -324,7 +310,7 @@ static FIRMessaging *sMessaging;
 }
 
 - (void)setupReceiver {
-  self.receiver = [[FIRMessagingReceiver alloc] init];
+  self.receiver = [[FIRMessagingReceiver alloc] initWithUserDefaults:self.messagingUserDefaults];
   self.receiver.delegate = self;
 }
 
