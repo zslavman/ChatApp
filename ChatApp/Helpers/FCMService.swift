@@ -45,12 +45,12 @@ struct FCMService {
 			"content_available"	: true, // важный параметр, без которого не сработает didReceiveRemoteNotification в AppDelegate
 			"priority"			: "high",
 			"to"				: taskDictionary["to"] as! String,
-			"notification"	: [
-				"title" 	: taskDictionary["title"] as! String,
-				"body"		: taskDictionary["body"] as! String,
-				"sound"		: "pipk.mp3",
-				"mutable-content": "1"
-				//"badge"		: "1" // change notif before it will be presented
+			"notification"			: [
+				"title" 			: taskDictionary["title"] as! String,
+				"body"				: taskDictionary["body"] as! String,
+				"sound"				: "pipk.mp3",
+				"mutable-content"	: "1"
+				//"badge"			: "1" // change notif before it will be presented
 			],
 			"data":[
 				"fromID": taskDictionary["fromID"] as! String

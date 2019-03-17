@@ -118,11 +118,11 @@ struct Calculations {
 		if Calendar.current.isDateInToday(convertedDate){
 			return HH_mm
 		}
-			// вчера (вчера 18:36)
+		// вчера (вчера 18:36)
 		else if Calendar.current.isDateInYesterday(convertedDate){
 			return dict[22]![LANG] + caretSymbol + HH_mm // вчера
 		}
-			// на этой неделе (Fri, 20:54)
+		// на этой неделе (Fri, 20:54)
 		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
 			var weekDayNum = Calendar.current.component(.weekday, from: convertedDate) - 1 // возвращает дни, начиная с 1
 			if weekDayNum == 7 {

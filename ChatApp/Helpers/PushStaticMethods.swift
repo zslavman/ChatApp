@@ -10,12 +10,13 @@ import Foundation
 
 class PushStaticMethods {
 	
-	
 	public static func stringTime() -> String {
-		
-		return ""
+		let currentTime = Date()
+		let dateFormater = DateFormatter()
+		dateFormater.dateFormat = "HH:mm:ss"
+		let hh_mm = dateFormater.string(from: currentTime)
+		return hh_mm
 	}
-	
 	
 }
 
