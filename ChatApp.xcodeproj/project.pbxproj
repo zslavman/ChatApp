@@ -36,6 +36,7 @@
 		5649D9FA21D838A500AA3BD8 /* cell_xib.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5649D9F921D838A500AA3BD8 /* cell_xib.xib */; };
 		564ECEC921BEC03E0011C04A /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECEC821BEC03E0011C04A /* TabBarController.swift */; };
 		564ECECD21BEF9C50011C04A /* WaitScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 564ECECC21BEF9C50011C04A /* WaitScreen.swift */; };
+		56544A25223EB84E00806091 /* PushStaticMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56544A24223EB84E00806091 /* PushStaticMethods.swift */; };
 		565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565BEE8321B0A48A0028D474 /* Video_Cell.swift */; };
 		566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDA82186F8D50053F4A0 /* AppDelegate.swift */; };
 		566BEDAB2186F8D50053F4A0 /* MessController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDAA2186F8D50053F4A0 /* MessController.swift */; };
@@ -49,14 +50,10 @@
 		56852E4F21C063FC00E7A62F /* Locales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E4E21C063FC00E7A62F /* Locales.swift */; };
 		56852E5521C08CA600E7A62F /* tBoard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56852E5421C08CA600E7A62F /* tBoard.storyboard */; };
 		56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E5621C0962F00E7A62F /* SettingsController.swift */; };
-		569A4A0C223E606900B1644B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 569A4A0B223E606900B1644B /* NotificationService.swift */; };
-		569A4A10223E606900B1644B /* PushMutater.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 569A4A09223E606900B1644B /* PushMutater.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		569A4A15223E727E00B1644B /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
-		569A4A16223E735E00B1644B /* Locales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E4E21C063FC00E7A62F /* Locales.swift */; };
-		569A4A17223E745300B1644B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5680E759218B52D500B9CC3B /* Extensions.swift */; };
-		569A4A18223E748B00B1644B /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDBB2186FFF00053F4A0 /* LoginController.swift */; };
-		569A4A19223E74CA00B1644B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDA82186F8D50053F4A0 /* AppDelegate.swift */; };
-		569A4A1A223E780200B1644B /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
+		5689AE27223ECE2C0088BABA /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5689AE26223ECE2C0088BABA /* NotificationService.swift */; };
+		5689AE2B223ECE2C0088BABA /* PushMutater2.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5689AE24223ECE2C0088BABA /* PushMutater2.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5689AE30223ECFE80088BABA /* PushStaticMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56544A24223EB84E00806091 /* PushStaticMethods.swift */; };
+		5689AE31223ED41C0088BABA /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */; };
 		56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A044A021B025F70084D7FD /* LocationManaging.swift */; };
 		56B9072D21CB9DA1007B858C /* HeaderViewStretch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */; };
 		56BEAB132191BD960008AF6B /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatController.swift */; };
@@ -74,23 +71,23 @@
 			remoteGlobalIDString = 566BEDA42186F8D50053F4A0;
 			remoteInfo = ChatApp;
 		};
-		569A4A0E223E606900B1644B /* PBXContainerItemProxy */ = {
+		5689AE29223ECE2C0088BABA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 566BED9D2186F8D50053F4A0 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 569A4A08223E606900B1644B;
-			remoteInfo = PushMutater;
+			remoteGlobalIDString = 5689AE23223ECE2C0088BABA;
+			remoteInfo = PushMutater2;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		56FE750E2239A8E900359066 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				569A4A10223E606900B1644B /* PushMutater.appex in Embed App Extensions */,
+				5689AE2B223ECE2C0088BABA /* PushMutater2.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -128,6 +125,7 @@
 		5649D9F921D838A500AA3BD8 /* cell_xib.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = cell_xib.xib; sourceTree = "<group>"; };
 		564ECEC821BEC03E0011C04A /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		564ECECC21BEF9C50011C04A /* WaitScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitScreen.swift; sourceTree = "<group>"; };
+		56544A24223EB84E00806091 /* PushStaticMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushStaticMethods.swift; sourceTree = "<group>"; };
 		565BEE8321B0A48A0028D474 /* Video_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video_Cell.swift; sourceTree = "<group>"; };
 		566BEDA52186F8D50053F4A0 /* ChatApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		566BEDA82186F8D50053F4A0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -145,10 +143,10 @@
 		56852E4E21C063FC00E7A62F /* Locales.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locales.swift; sourceTree = "<group>"; };
 		56852E5421C08CA600E7A62F /* tBoard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = tBoard.storyboard; sourceTree = "<group>"; };
 		56852E5621C0962F00E7A62F /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
-		569A4A09223E606900B1644B /* PushMutater.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushMutater.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		569A4A0B223E606900B1644B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		569A4A0D223E606900B1644B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		569A4A14223E616300B1644B /* PushMutater.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushMutater.entitlements; sourceTree = "<group>"; };
+		5689AE24223ECE2C0088BABA /* PushMutater2.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushMutater2.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		5689AE26223ECE2C0088BABA /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		5689AE28223ECE2C0088BABA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5689AE2F223ECEA30088BABA /* PushMutater2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushMutater2.entitlements; sourceTree = "<group>"; };
 		56A044A021B025F70084D7FD /* LocationManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManaging.swift; sourceTree = "<group>"; };
 		56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewStretch.swift; sourceTree = "<group>"; };
 		56BEAB122191BD960008AF6B /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
@@ -176,11 +174,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		569A4A06223E606900B1644B /* Frameworks */ = {
+		5689AE21223ECE2C0088BABA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				569A4A1A223E780200B1644B /* Pods_ChatApp.framework in Frameworks */,
+				5689AE31223ED41C0088BABA /* Pods_ChatApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,7 +241,7 @@
 			children = (
 				566BEDA72186F8D50053F4A0 /* ChatApp */,
 				566F468E21E2480400993A92 /* ChatAppTests */,
-				569A4A0A223E606900B1644B /* PushMutater */,
+				5689AE25223ECE2C0088BABA /* PushMutater2 */,
 				566BEDA62186F8D50053F4A0 /* Products */,
 				539665654BCF2AC0DD19A1EA /* Pods */,
 				70DFE94CC7D7CBF2A1E2709F /* Frameworks */,
@@ -255,7 +253,7 @@
 			children = (
 				566BEDA52186F8D50053F4A0 /* ChatApp.app */,
 				566F468D21E2480400993A92 /* ChatAppTests.xctest */,
-				569A4A09223E606900B1644B /* PushMutater.appex */,
+				5689AE24223ECE2C0088BABA /* PushMutater2.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -324,6 +322,7 @@
 			isa = PBXGroup;
 			children = (
 				5637FD1421B365620015CAAF /* Calculations.swift */,
+				56544A24223EB84E00806091 /* PushStaticMethods.swift */,
 				56FEF3CA21A231C500717A48 /* OnlineService.swift */,
 				5636315821CC99ED00FDDA7D /* FCMService.swift */,
 				564ECECC21BEF9C50011C04A /* WaitScreen.swift */,
@@ -344,14 +343,14 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		569A4A0A223E606900B1644B /* PushMutater */ = {
+		5689AE25223ECE2C0088BABA /* PushMutater2 */ = {
 			isa = PBXGroup;
 			children = (
-				569A4A14223E616300B1644B /* PushMutater.entitlements */,
-				569A4A0B223E606900B1644B /* NotificationService.swift */,
-				569A4A0D223E606900B1644B /* Info.plist */,
+				5689AE2F223ECEA30088BABA /* PushMutater2.entitlements */,
+				5689AE26223ECE2C0088BABA /* NotificationService.swift */,
+				5689AE28223ECE2C0088BABA /* Info.plist */,
 			);
-			path = PushMutater;
+			path = PushMutater2;
 			sourceTree = "<group>";
 		};
 		56E5A50B21B202190076EB67 /* ChatCells */ = {
@@ -390,7 +389,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				569A4A0F223E606900B1644B /* PBXTargetDependency */,
+				5689AE2A223ECE2C0088BABA /* PBXTargetDependency */,
 			);
 			name = ChatApp;
 			productName = ChatApp;
@@ -415,21 +414,21 @@
 			productReference = 566F468D21E2480400993A92 /* ChatAppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		569A4A08223E606900B1644B /* PushMutater */ = {
+		5689AE23223ECE2C0088BABA /* PushMutater2 */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 569A4A11223E606900B1644B /* Build configuration list for PBXNativeTarget "PushMutater" */;
+			buildConfigurationList = 5689AE2E223ECE2C0088BABA /* Build configuration list for PBXNativeTarget "PushMutater2" */;
 			buildPhases = (
-				569A4A05223E606900B1644B /* Sources */,
-				569A4A06223E606900B1644B /* Frameworks */,
-				569A4A07223E606900B1644B /* Resources */,
+				5689AE20223ECE2C0088BABA /* Sources */,
+				5689AE21223ECE2C0088BABA /* Frameworks */,
+				5689AE22223ECE2C0088BABA /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = PushMutater;
-			productName = PushMutater;
-			productReference = 569A4A09223E606900B1644B /* PushMutater.appex */;
+			name = PushMutater2;
+			productName = PushMutater2;
+			productReference = 5689AE24223ECE2C0088BABA /* PushMutater2.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -465,9 +464,12 @@
 						LastSwiftMigration = 1010;
 						TestTargetID = 566BEDA42186F8D50053F4A0;
 					};
-					569A4A08223E606900B1644B = {
+					5689AE23223ECE2C0088BABA = {
 						CreatedOnToolsVersion = 10.1;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -490,7 +492,7 @@
 			targets = (
 				566BEDA42186F8D50053F4A0 /* ChatApp */,
 				566F468C21E2480400993A92 /* ChatAppTests */,
-				569A4A08223E606900B1644B /* PushMutater */,
+				5689AE23223ECE2C0088BABA /* PushMutater2 */,
 			);
 		};
 /* End PBXProject section */
@@ -516,7 +518,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		569A4A07223E606900B1644B /* Resources */ = {
+		5689AE22223ECE2C0088BABA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -589,6 +591,7 @@
 				563E30D321D3D92F0006899C /* PopOverMenu.swift in Sources */,
 				566BEDAB2186F8D50053F4A0 /* MessController.swift in Sources */,
 				5638D8E421923CA400EC2FE3 /* Message.swift in Sources */,
+				56544A25223EB84E00806091 /* PushStaticMethods.swift in Sources */,
 				565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */,
 				5679806C21DE8EAC006EA21B /* MessController_HiddenMenu.swift in Sources */,
 				566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */,
@@ -633,16 +636,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		569A4A05223E606900B1644B /* Sources */ = {
+		5689AE20223ECE2C0088BABA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				569A4A19223E74CA00B1644B /* AppDelegate.swift in Sources */,
-				569A4A0C223E606900B1644B /* NotificationService.swift in Sources */,
-				569A4A16223E735E00B1644B /* Locales.swift in Sources */,
-				569A4A15223E727E00B1644B /* Calculations.swift in Sources */,
-				569A4A17223E745300B1644B /* Extensions.swift in Sources */,
-				569A4A18223E748B00B1644B /* LoginController.swift in Sources */,
+				5689AE30223ECFE80088BABA /* PushStaticMethods.swift in Sources */,
+				5689AE27223ECE2C0088BABA /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -654,10 +653,10 @@
 			target = 566BEDA42186F8D50053F4A0 /* ChatApp */;
 			targetProxy = 56580917223DC39100B82C93 /* PBXContainerItemProxy */;
 		};
-		569A4A0F223E606900B1644B /* PBXTargetDependency */ = {
+		5689AE2A223ECE2C0088BABA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 569A4A08223E606900B1644B /* PushMutater */;
-			targetProxy = 569A4A0E223E606900B1644B /* PBXContainerItemProxy */;
+			target = 5689AE23223ECE2C0088BABA /* PushMutater2 */;
+			targetProxy = 5689AE29223ECE2C0088BABA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -883,16 +882,16 @@
 			};
 			name = Release;
 		};
-		569A4A12223E606900B1644B /* Debug */ = {
+		5689AE2C223ECE2C0088BABA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A2E4397522028D0D9A51C49E /* Pods-ChatApp.debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = NO;
-				CODE_SIGN_ENTITLEMENTS = PushMutater/PushMutater.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PushMutater2/PushMutater2.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = PushMutater/Info.plist;
+				INFOPLIST_FILE = PushMutater2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -901,7 +900,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp.PushMutater;
+				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp.PushMutater2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -909,16 +908,16 @@
 			};
 			name = Debug;
 		};
-		569A4A13223E606900B1644B /* Release */ = {
+		5689AE2D223ECE2C0088BABA /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 11EBCAFE104F4703C1C8AD21 /* Pods-ChatApp.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = NO;
-				CODE_SIGN_ENTITLEMENTS = PushMutater/PushMutater.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PushMutater2/PushMutater2.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = PushMutater/Info.plist;
+				INFOPLIST_FILE = PushMutater2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -926,7 +925,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp.PushMutater;
+				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatApp.PushMutater2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 4.2;
@@ -964,11 +963,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		569A4A11223E606900B1644B /* Build configuration list for PBXNativeTarget "PushMutater" */ = {
+		5689AE2E223ECE2C0088BABA /* Build configuration list for PBXNativeTarget "PushMutater2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				569A4A12223E606900B1644B /* Debug */,
-				569A4A13223E606900B1644B /* Release */,
+				5689AE2C223ECE2C0088BABA /* Debug */,
+				5689AE2D223ECE2C0088BABA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

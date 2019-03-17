@@ -1,13 +1,12 @@
 //
 //  NotificationService.swift
-//  PushMutater
+//  PushMutater2
 //
 //  Created by Zinko Viacheslav on 17.03.2019.
 //  Copyright © 2019 Zinko Viacheslav. All rights reserved.
 //
 
 import UserNotifications
-import ChatApp
 
 class NotificationService: UNNotificationServiceExtension {
 
@@ -19,7 +18,7 @@ class NotificationService: UNNotificationServiceExtension {
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         
         if let bestAttemptContent = bestAttemptContent {
-            let pp = Calculations.gatherDeviceInfo()
+            // Modify the notification content here...
             bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
             
             contentHandler(bestAttemptContent)
