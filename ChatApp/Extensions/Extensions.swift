@@ -246,7 +246,7 @@ class UnselectableTextView: UITextView {
 extension UIDevice {
 	
 	/// pares the deveice name as the standard name
-	var modelName: String {
+	public var modelName: String {
 		
 		#if targetEnvironment(simulator)
 		let identifier = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"]!

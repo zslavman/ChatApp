@@ -49,14 +49,12 @@ struct FCMService {
 				"title" 	: taskDictionary["title"] as! String,
 				"body"		: taskDictionary["body"] as! String,
 				"sound"		: "pipk.mp3",
-				//"badge"		: "1"
+				"mutable-content": "1"
+				//"badge"		: "1" // change notif before it will be presented
 			],
 			"data":[
 				"fromID": taskDictionary["fromID"] as! String
 			],
-//			"aps":  [
-//				"mutable-content": "1" // change notif before it will be presented
-//			]
 		]
 		
 		
@@ -97,7 +95,14 @@ struct FCMService {
 
 
 
-
+//{
+//	"aps": {
+//		"alert": "Testing.. (0)",
+//		"badge": 1,
+//		"sound": "default",
+//		"mutable-content": 1
+//	}
+//}
 
 
 

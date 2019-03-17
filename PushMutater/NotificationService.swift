@@ -1,26 +1,27 @@
 //
 //  NotificationService.swift
-//  NotificationMutater
+//  PushMutater
 //
-//  Created by Zinko Viacheslav on 13.03.2019.
+//  Created by Zinko Viacheslav on 17.03.2019.
 //  Copyright © 2019 Zinko Viacheslav. All rights reserved.
 //
 
 import UserNotifications
+import ChatApp
 
 class NotificationService: UNNotificationServiceExtension {
 
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
 
-	// breakpoints inside this method works only with "Debug" -> "Attach to Process"
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         
         if let bestAttemptContent = bestAttemptContent {
-            // Modify the notification content here...
-            bestAttemptContent.title = "\(bestAttemptContent.title) This is additional string!"
+            let pp = Calculations.gatherDeviceInfo()
+            bestAttemptContent.title = "\(bestAttemptContent.title) [modified]"
+            
             contentHandler(bestAttemptContent)
         }
     }
@@ -34,13 +35,3 @@ class NotificationService: UNNotificationServiceExtension {
     }
 
 }
-
-
-//{
-//	"aps": {
-//		"alert": "Testing.. (3)",
-//		"badge": 1,
-//		"sound": "default",
-//		"mutable-content": 1
-//	}
-//}

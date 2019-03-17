@@ -4,12 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>ChatApp.xcscheme</key>
+		<key>ChatApp.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>NotificationMutater.xcscheme_^#shared#^_</key>
+		<key>PushMutater.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>14</integer>
@@ -17,6 +17,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>562989C7223DCEB200160EB3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>566BEDA42186F8D50053F4A0</key>
 		<dict>
 			<key>primary</key>

@@ -168,7 +168,7 @@ struct Calculations {
 	
 	
 	
-	static func gatherDeviceInfo() -> [String]{
+	public static func gatherDeviceInfo() -> [String]{
 		
 		var returnedArr = [String]()
 		

@@ -10,12 +10,12 @@ import UIKit
 import Firebase
 
 
-let default_profile_image:String = "default_profile_image"
+let default_profile_image: String = "default_profile_image"
 
 
 class LoginController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextFieldDelegate {
 	
-	internal var messagesController:MessagesController?
+	internal var messagesController: MessagesController?
 
 	public lazy var profileImageView: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
 		let imageView = UIImageView()

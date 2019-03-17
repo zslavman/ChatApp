@@ -17,7 +17,7 @@ import FirebaseInstanceID
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	
-	public static var waitScreen:WaitScreen!
+	public static var waitScreen: WaitScreen!
 	public var window: UIWindow?
 	public var orientationLock = UIInterfaceOrientationMask.all
 	
