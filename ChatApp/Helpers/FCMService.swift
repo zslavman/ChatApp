@@ -42,23 +42,22 @@ struct FCMService {
 		guard let url = URL(string:"https://fcm.googleapis.com/fcm/send") else { return }
 		
 		let bodyToSend:[String : Any] = [
-			"content_available"	: true, // важный параметр, без которого не сработает didReceiveRemoteNotification в AppDelegate
+			"content_available"	: true, // important! didReceiveRemoteNotification (inside Appdelegate) couldn't call without this
+										// will be converted to: "content-available": 1
+			"mutable_content"	: true, // will be converted to: "mutable-content"	: 1
 			"priority"			: "high",
 			"to"				: taskDictionary["to"] as! String,
 			"notification"			: [
 				"title" 			: taskDictionary["title"] as! String,
 				"body"				: taskDictionary["body"] as! String,
 				"sound"				: "pipk.mp3",
-				"mutable-content"	: "1"
 				//"badge"			: "1" // change notif before it will be presented
 			],
 			"data":[
 				"fromID": taskDictionary["fromID"] as! String
 			],
 		]
-		
-		
-		var request =  URLRequest(url:url)
+		var request = URLRequest(url:url)
 		request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"\(serverKey)"]
 		request.httpMethod = "POST"
 		
