@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
-		Notifications.shared.requestAuthorisation()
+//		Notifications.shared.requestAuthorisation()
 		
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false

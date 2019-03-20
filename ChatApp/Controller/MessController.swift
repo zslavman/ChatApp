@@ -538,6 +538,7 @@ class MessagesController: UITableViewController {
 		}
 		// автологинка
 		else {
+			Notifications.shared.requestAuthorisation()
 			fetchUserAndSetupNavbarTitle()
 		}
 	}
@@ -734,6 +735,7 @@ class MessagesController: UITableViewController {
 		UIApplication.shared.applicationIconBadgeNumber = 0
 		
 		FCMService.removeToken()
+		UIApplication.shared.unregisterForRemoteNotifications()
 	}
 	
 	
