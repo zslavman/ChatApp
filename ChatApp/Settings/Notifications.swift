@@ -17,6 +17,7 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	public let notif_ID:String = "notif_ID"
 	private let NotifCenter = UNUserNotificationCenter.current()
 	
+	
 	// запрос на нотификейшны
 	public func requestAuthorisation(){
 		
@@ -84,10 +85,6 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 
 	
 	
-	
-	
-	
-	
 	// отправить локальное уведомление через Х секунд
 	public func sendLocalNotif(delaySeconds:TimeInterval){
 		
@@ -125,11 +122,7 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 		}
 	}
 	
-	
-	
-	
-	
-	
+
 	deinit {
 		print("deinit Notifications.class")
 		removeNotifications(identifiers: [notif_ID])
@@ -173,19 +166,10 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	}
 	
 	
-	
 	private func removeNotifications(identifiers:[String]){
 		getLastNotifData(callback: nil)
 		NotifCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
 	}
-	
-
-	
-	
-	
-	
-	
-	
 	
 
 	public func ConnectToFCM() {
@@ -196,17 +180,55 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	//***********************************
 	// UNUserNotificationCenterDelegate *
 	//***********************************
-	// тап по оповещению (созданному через Cloud Messaging или вручную, сообщением)
+	
+	/// show popup notification for foreground only
+	func userNotificationCenter(_ center: UNUserNotificationCenter,
+								willPresent notification: UNNotification,
+								withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)	{
+		var notifOptions: UNNotificationPresentationOptions = [.alert]
+		if UserDefFlags.sound_mess {
+			notifOptions.insert(.sound)
+		}
+		if let senderID = MessagesController.shared.goToChatWithID {
+			let payload = notification.request.content.userInfo
+			let senderFromNotif = payload["fromID"] as! String
+			if senderID == senderFromNotif {
+				notifOptions = []
+			}
+		}
+		completionHandler(notifOptions)
+	}
+	
+	/// tap on popup notification
 	func userNotificationCenter(_ center: UNUserNotificationCenter,
 								didReceive response: UNNotificationResponse,
 								withCompletionHandler completionHandler: @escaping () -> Void) {
+		let payload = response.notification.request.content.userInfo
+		let senderFromNotif = payload["fromID"] as! String
+		// close current dialog
+		guard let window = UIApplication.shared.keyWindow else { return }
+		//TODO: get workly navigationController
+		if MessagesController.shared.goToChatWithID != nil {
+			window.rootViewController?.navigationController?.popViewController(animated: true)
+		}
+		else {
+			window.rootViewController?.tabBarController?.selectedIndex = 0
+		}
+		// try to find out need sender
+		let findUser = MessagesController.shared.senders.filter{ $0.id == senderFromNotif }
+		if let needUser = findUser.first {
+			MessagesController.shared.goToChatWith(user: needUser)
+		}
 		completionHandler()
 	}
+	
+	
 	
 	
 	//********************
 	// MessagingDelegate *
 	//********************
+	
 	// внутренние сообщения FCM
 	func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
 		print("didReceive remoteMessage:")
@@ -226,13 +248,13 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 
 extension AppDelegate {
 	
-	// сработает только если "content_available" : true
-	// пересчитываем кол-во непрочтенных, обновляем бейдж
+	// threshold if "content_available" : true  only
+	/// receive silent push (recount unread, update bage number)
 	func application(_ application: UIApplication,
 					 didReceiveRemoteNotification userInfo: [AnyHashable : Any],
 					 fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		
-		// отправляем аналитику сообщений в FCM
+		// send analitic to FCM
 		Messaging.messaging().appDidReceiveMessage(userInfo)
 		
 		if UIApplication.shared.applicationState == .background {

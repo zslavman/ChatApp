@@ -436,7 +436,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		let mess = messagesController.messages
 	
 		// чиститим непрочит. сообщения от юзера(если таковой был ранее) с которым идем на диалог
-		var indexPath:IndexPath? = nil
+		var indexPath: IndexPath? = nil
 		for (index, value) in mess.enumerated(){
 			if value.chatPartnerID() == user.id {
 				indexPath = IndexPath(row: index, section: 0)

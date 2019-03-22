@@ -15,21 +15,21 @@ struct FCMService {
 	
 	
 	/// устанавливаем новый токен
-	static func setNewToken() {
+	static func setNewToken(callback: @escaping () -> Void) {
 		
-		if let uid = Auth.auth().currentUser?.uid {
-			let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
-			guard let newToken = Messaging.messaging().fcmToken else { return }
+		guard let uid = Auth.auth().currentUser?.uid else { return }
+		guard let newToken = Messaging.messaging().fcmToken else { return }
+		let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
+		
+		tokenRef.setValue(newToken) {
+			(error: Error?, ref: DatabaseReference) in
 			
-			tokenRef.setValue(newToken) {
-				(error:Error?, ref:DatabaseReference) in
-				
-				if let error = error {
-					assertionFailure(error.localizedDescription)
-				}
-				else {
-					print("fcmToken = \(newToken)")
-				}
+			if let error = error {
+				assertionFailure(error.localizedDescription)
+			}
+			else {
+				print("fcmToken = \(newToken)")
+				callback()
 			}
 		}
 	}

@@ -15,38 +15,38 @@ import NPTableAnimator
 class MessagesController: UITableViewController {
 
 	
-	public var owner:User!
-	internal var uid:String!
-	public static var shared:MessagesController!
+	public var owner: User!
+	internal var uid: String!
+	public static var shared: MessagesController!
 	
 	internal let cell_id = "cell_id"
-	private var timer:Timer? 							// таймер-задержка перезагрузки таблицы
+	private var timer: Timer? 							// таймер-задержка перезагрузки таблицы
 	
 	internal var refUsers 		= Database.database().reference().child("users")
 	private var refMessages 	= Database.database().reference().child("messages")
-	private var refUserMessages:DatabaseReference! 		// ссылка, у которой вконце будет приписан изменяющийся uid
+	private var refUserMessages: DatabaseReference! 		// ссылка, у которой вконце будет приписан изменяющийся uid
 	
 	
 	internal let refUserMessages_original = Database.database().reference().child("user-messages")// начало ссылки для refUserMessages
 	private var labelNoMessages:UILabel?
 	
-	private var hendlers = [UInt:DatabaseReference]() 	// для правильного диспоза слушателей базы
-	internal var profileImageView:UIImageView!
-	internal var senders = [User]() 					// данные юзеров с которым есть чаты
+	private var hendlers = [UInt: DatabaseReference]() 	// для правильного диспоза слушателей базы
+	internal var profileImageView: UIImageView!
+	public var senders = [User]() 					// данные юзеров с которым есть чаты
 	
 	private var audioPlayer = AVAudioPlayer()
-	private var allowIncomingSound:Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
-	internal var goToChatWithID:String?			// ID собеседника, с которым перешли в чат
-	public var savedIndexPath:IndexPath?		// тут будет путь к ячейке по которой кликнули
+	private var allowIncomingSound: Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
+	public var goToChatWithID: String?			// ID собеседника, с которым перешли в чат
+	public var savedIndexPath: IndexPath?		// тут будет путь к ячейке по которой кликнули
 	
-	public var isOnline:Bool = true
+	public var isOnline: Bool = true
 	
 	// массив диалогов (здесь проходит вся математика манипуляций, во вьюшки он не идет)
 	// после завершения маневров с данными всегда необходимо вызвать reloadTable()
 	// но, если время в ячейке не придет новое - то и никакиие другие параметры не обновятся!!
 	// т.е. для обновления статуса непрочтенности необходимо записать новый статус в оба массива
-	public var messages:[Message] = []
-	public var messages_copy:[Message] = [] 	 // массив для учёта кол-ва соообщений в фоне
+	public var messages: [Message] = []
+	public var messages_copy: [Message] = [] 	 // массив для учёта кол-ва соообщений в фоне
 	internal var currentList: [MySection]! = nil // то что отображается после манипуляций с messages (для вьюшек)
 	
 	internal let animator = TableAnimator<MySection>()
@@ -778,24 +778,11 @@ class MessagesController: UITableViewController {
 		if !allowIncomingSound { return }
 		if !UserDefFlags.sound_mess { return }
 		
-		audioPlayer.play()
+		//audioPlayer.play()
 		
 		if UserDefFlags.vibro_mess{
 			AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
 		}
-		
-		//		let url = Bundle.main.url(forResource: soundName, withExtension: "mp3")!
-		//
-		//		do {
-		//			let sound = try AVAudioPlayer(contentsOf: url)
-		//			audioPlayer = sound
-		//			sound.numberOfLoops = 0
-		//			sound.prepareToPlay()
-		//			sound.play()
-		//		}
-		//		catch {
-		//			print("error loading file")
-		//		}
 	}
 }
 

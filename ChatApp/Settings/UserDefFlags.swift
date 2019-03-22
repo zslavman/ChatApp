@@ -11,29 +11,29 @@ import Foundation
 
 struct UserDefFlags {
 	
-	private enum keys:String {
+	private enum keys: String {
 		case sound_mess = "sound_mess"
 		case vibro_mess = "vibro_mess"
 		case limit_mess = "limit_mess"
 		case lang 		= "lang"
 	}
 	
-	static var sound_mess:Bool! {
+	static var sound_mess: Bool! {
 		didSet{
 			save(value: sound_mess, key: .sound_mess)
 		}
 	}
-	static var vibro_mess:Bool! {
+	static var vibro_mess: Bool! {
 		didSet{
 			save(value: vibro_mess, key: .vibro_mess)
 		}
 	}
-	static var limit_mess:UInt! {
+	static var limit_mess: UInt! {
 		didSet{
 			save(value: limit_mess, key: .limit_mess)
 		}
 	}
-	static var lang:UInt! {
+	static var lang: UInt! {
 		didSet{
 			save(value: lang, key: .lang)
 			LANG = Int(lang)
@@ -72,7 +72,7 @@ struct UserDefFlags {
 	
 	
 	
-	private static func save(value:Any, key:keys){
+	private static func save(value: Any, key: keys){
 		//		print("key = \(key.rawValue) ---> value = \(value)")
 		UserDefaults.standard.set(value, forKey: key.rawValue)
 		UserDefaults.standard.synchronize()

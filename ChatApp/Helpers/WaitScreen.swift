@@ -12,15 +12,11 @@ import UIKit
 
 class WaitScreen: NSObject {
 	
-	
-	private var blackView:BlackView!
-	
-	
+	private var blackView: BlackView!
 	
 	override init() {
 		super.init()
 	}
-	
 	
 	public func show(){
 		
@@ -62,10 +58,6 @@ class WaitScreen: NSObject {
 		blackView.setInfo(str: str)
 		hide()
 	}
-	
-	
-	
-	
 	
 	
 }

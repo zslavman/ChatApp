@@ -90,8 +90,9 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 				return
 			}
 			
-			FCMService.setNewToken()
-			Notifications.shared.requestAuthorisation()
+			FCMService.setNewToken(callback: {
+				Notifications.shared.requestAuthorisation()
+			})
 			
 			// если всё ок - заходим в учётку
 			AppDelegate.waitScreen.hideNow()
@@ -190,8 +191,9 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
-			FCMService.setNewToken() //// проверить!
-			Notifications.shared.requestAuthorisation()
+			FCMService.setNewToken(callback: {
+				Notifications.shared.requestAuthorisation()
+			}) //// проверить!
 			AppDelegate.waitScreen.hideNow()
 			self.dismiss(animated: true, completion: nil)
 			print("Удачно сохранили юзера")

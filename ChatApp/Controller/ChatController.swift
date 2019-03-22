@@ -15,7 +15,7 @@ import AVKit
 
 class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 	
-	public var user:User? {
+	public var user: User? {
 		didSet{
 			navigationItem.title = user?.name
 			fetchMessages()
@@ -45,45 +45,45 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	}()
 	
 	struct cID {
-		static let cell_ID:String 			= "cell_ID"
-		static let cell_ID_video:String 	= "cell_ID_video"
-		static let cell_ID_map:String 		= "cell_ID_map"
-		static let cell_ID_image:String 	= "cell_ID_image"
+		static let cell_ID: String 			= "cell_ID"
+		static let cell_ID_video: String 	= "cell_ID_video"
+		static let cell_ID_map: String 		= "cell_ID_map"
+		static let cell_ID_image: String 	= "cell_ID_image"
 	}
 	private let headerReusableView:String 	= "sectionHeader"
 	
-	internal var startingFrame:CGRect?
-	internal var blackBackgroundView:UIView?
-	internal var originalImageView:UIView?
-	internal var orig:UIView?
+	internal var startingFrame: CGRect?
+	internal var blackBackgroundView: UIView?
+	internal var originalImageView: UIView?
+	internal var orig: UIView?
 	
-	private var messages:[Message] = []
-	private var containerViewBottomAnchor:NSLayoutConstraint?
-	private var disposeVar1:(DatabaseReference, UInt)!
-	private var disposeVar2:(DatabaseReference, UInt)!
-	internal var selectMediaContentOpened:Bool = false 	// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
+	private var messages: [Message] = []
+	private var containerViewBottomAnchor: NSLayoutConstraint?
+	private var disposeVar1: (DatabaseReference, UInt)!
+	private var disposeVar2: (DatabaseReference, UInt)!
+	internal var selectMediaContentOpened: Bool = false 	// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
 	private var dataArray = [[Message]]() 	// двумерный массив сообщений в секциях
 	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
 	
-	private var primaryDataloaded:Bool = false // первичная загрузка данных таблицы
+	private var primaryDataloaded: Bool = false // первичная загрузка данных таблицы
 	private var refreshControl: UIRefreshControl!
 	
-	internal var locationManager:CLLocationManager!
-	private let prefferedMapSize:CGSize	= CGSize(width: 400, height: 300) // желаемые размеры гео-сообщения (скорее пропорции)
-	static let prefferedMapScale:Double = 10000 // метров в одной клетке
-	internal var myCurrentPlace:CLLocation!
+	internal var locationManager: CLLocationManager!
+	private let prefferedMapSize: CGSize	= CGSize(width: 400, height: 300) // желаемые размеры гео-сообщения (скорее пропорции)
+	static let prefferedMapScale: Double = 10000 // метров в одной клетке
+	internal var myCurrentPlace: CLLocation!
 	
 	// оптимазация (подгрузка сообщений)
-	private let maxMesOnPrimaryLoad:UInt = UserDefFlags.limit_mess
-	private let maxMessagesPerUpdate:UInt = 25
-	private var lastKey:String!						// точка отсчета подгрузки более старых сообщений
-	private var globalPath:DatabaseReference! 		// ссылка на список сообщений
+	private let maxMesOnPrimaryLoad: UInt = UserDefFlags.limit_mess
+	private let maxMessagesPerUpdate: UInt = 25
+	private var lastKey: String!						// точка отсчета подгрузки более старых сообщений
+	private var globalPath: DatabaseReference! 		// ссылка на список сообщений
 	private var allMessagesKeyList = [String]()
-	private var allFetched:Bool = false 			// флаг, что все сообщения диалога получены
-	private lazy var trancheCount:UInt = maxMessagesPerUpdate // сколько сообщений ожидается получить при вторичной подгрузке
+	private var allFetched: Bool = false 			// флаг, что все сообщения диалога получены
+	private lazy var trancheCount: UInt = maxMessagesPerUpdate // сколько сообщений ожидается получить при вторичной подгрузке
 	
-	private var statusListeners = [UInt:DatabaseReference]() 	// для диспоза слушателей
-	private let delayBeforeReadUnreaded:Double = 1.2 // задержка перед тем как входящие непрочитанные станут прочитанными
+	private var statusListeners = [UInt: DatabaseReference]() 	// для диспоза слушателей
+	private let delayBeforeReadUnreaded: Double = 1.2 // задержка перед тем как входящие непрочитанные станут прочитанными
 	
 	
 	
