@@ -199,24 +199,31 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 		completionHandler(notifOptions)
 	}
 	
+	
 	/// tap on popup notification
 	func userNotificationCenter(_ center: UNUserNotificationCenter,
 								didReceive response: UNNotificationResponse,
 								withCompletionHandler completionHandler: @escaping () -> Void) {
 		let payload = response.notification.request.content.userInfo
 		let senderFromNotif = payload["fromID"] as! String
-		// close current dialog
+		
 		guard let window = UIApplication.shared.keyWindow else { return }
-		//TODO: get workly navigationController
-		if MessagesController.shared.goToChatWithID != nil {
-			window.rootViewController?.navigationController?.popViewController(animated: true)
+		
+		if let tabBarController = window.rootViewController?.children.first as? TabBarController {
+			// if user inside chatroom - close current dialog
+			if MessagesController.shared.goToChatWithID != nil {
+				MessagesController.shared.navigationController?.popViewController(animated: false)
+			}
+			else {
+				// switch tab to first
+				tabBarController.selectedIndex = 0
+			}
 		}
-		else {
-			window.rootViewController?.tabBarController?.selectedIndex = 0
-		}
-		// try to find out need sender
+		// try to find need sender
 		let findUser = MessagesController.shared.senders.filter{ $0.id == senderFromNotif }
 		if let needUser = findUser.first {
+			// for increment unread count fill savedIndexPath (it will be (0, 0) always bcs it sorting when got new message)
+			MessagesController.shared.savedIndexPath = IndexPath(row: 0, section: 0)
 			MessagesController.shared.goToChatWith(user: needUser)
 		}
 		completionHandler()

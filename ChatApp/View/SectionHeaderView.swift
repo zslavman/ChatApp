@@ -45,14 +45,12 @@ class SectionHeaderView: UICollectionReusableView {
 		addSubview(line)
 		addSubview(title)
 		
-		
 		title.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
 		title.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
 		
 		line.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
 		line.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
 		line.heightAnchor.constraint(equalToConstant: 1).isActive = true
-		
 	}
 }
 

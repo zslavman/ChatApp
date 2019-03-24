@@ -46,6 +46,11 @@ struct UserDefFlags {
 		let s_flag = UserDefaults.standard.object(forKey: keys.sound_mess.rawValue)
 		UserDefFlags.sound_mess = (s_flag == nil) ? true : s_flag as! Bool
 		
+		// inter app flag which allow PushMutater to know sound flag state
+		let globalDefaults = UserDefaults(suiteName: "group.com1")
+		globalDefaults!.set(UserDefFlags.sound_mess, forKey: keys.sound_mess.rawValue)
+		globalDefaults!.synchronize()
+		
 		let v_flag = UserDefaults.standard.object(forKey: keys.vibro_mess.rawValue)
 		UserDefFlags.vibro_mess = (v_flag == nil) ? false : v_flag as! Bool
 		
@@ -76,6 +81,12 @@ struct UserDefFlags {
 		//		print("key = \(key.rawValue) ---> value = \(value)")
 		UserDefaults.standard.set(value, forKey: key.rawValue)
 		UserDefaults.standard.synchronize()
+		
+		if key == .sound_mess {
+			let globalDefaults = UserDefaults(suiteName: "group.com1")
+			globalDefaults!.set(value, forKey: key.rawValue)
+			globalDefaults!.synchronize()
+		}
 	}
 }
 

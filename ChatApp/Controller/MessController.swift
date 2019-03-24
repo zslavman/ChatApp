@@ -398,7 +398,6 @@ class MessagesController: UITableViewController {
 		if messages_copy.isEmpty {
 			messages_copy = messages
 		}
-		
 		for index in messages_copy.indices {
 			// если написавший юзер уже есть в диалогах
 			if messages_copy[index].chatPartnerID() == from {
@@ -414,14 +413,12 @@ class MessagesController: UITableViewController {
 		if uniqueDialog {
 			messages_copy.append(newMessage)
 		}
-		
 		var count = 0
 		for mes in messages_copy {
 			if mes.unreadCount != nil && mes.unreadCount! > 0 {
 				count += 1
 			}
 		}
-		
 		if count > 0 {
 			UIApplication.shared.applicationIconBadgeNumber = count
 		}
@@ -429,9 +426,7 @@ class MessagesController: UITableViewController {
 	
 	
 
-	
-	
-	
+
 	
 	/// первая перезагрузка таблицы и данных
 	private func firstReloadTable(){
@@ -460,7 +455,6 @@ class MessagesController: UITableViewController {
 			// Calculations.animateTable(tableView: self.tableView, duration: 0.5)
 			Calculations.animateTableWithSections(tableView: self.tableView)
 		}
-		
 		createBarItem()
 	}
 	
@@ -470,7 +464,6 @@ class MessagesController: UITableViewController {
 
 	
 	internal func reloadTable(){
-		
 		messages.sort(by: {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
@@ -490,7 +483,6 @@ class MessagesController: UITableViewController {
 						rowAnimation	: .fade,
 						completion		: nil,
 						error			: nil)
-		
 		print("перезагружаем таблицу")
 	}
 	
@@ -517,7 +509,6 @@ class MessagesController: UITableViewController {
 			label.translatesAutoresizingMaskIntoConstraints = false
 			return label
 		}()
-		
 		guard let labelNoMessages = labelNoMessages else { return }
 		
 		view.addSubview(labelNoMessages)
@@ -761,8 +752,8 @@ class MessagesController: UITableViewController {
 	
 	
 	@objc public func goToChatWith(user: User){
-		
 		// запоминаем юзера, с которым перешли в чат (для блокировки проигрыв звуков при сообщениях от него)
+		// about sound - no longer need
 		goToChatWithID = user.id!
 		
 		let chatLogController = ChatController(collectionViewLayout: UICollectionViewFlowLayout())

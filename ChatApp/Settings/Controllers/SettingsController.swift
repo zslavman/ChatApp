@@ -23,7 +23,6 @@ class SettingsController: UITableViewController {
 	private var localSection:[Int:[String]] = [:]
 	
 	
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -32,19 +31,13 @@ class SettingsController: UITableViewController {
 	}
 	
 	
-	
-	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
 		configureLocales()
 	}
 
 	
-	
-	
 	private func configureLocales(){
-		
 		title =  dict[17]![LANG] // Настройки
 		
 		localRows = [
@@ -59,14 +52,11 @@ class SettingsController: UITableViewController {
 			2: [dict[9]![LANG], ""],
 			3: ["", dict[13]![LANG]]
 		]
-		
 		tableView.reloadData()
 	}
 	
 	
-	
 	private func configureUI(){
-		
 		sw_sound.isOn = UserDefFlags.sound_mess
 		sw_vibro.isOn = UserDefFlags.vibro_mess
 		
@@ -77,7 +67,6 @@ class SettingsController: UITableViewController {
 	
 	/// Свитчеры
 	@IBAction func onSwitcherChange(_ sender: UISwitch) {
-		
 		switch sender.tag {
 		case 1:
 			UserDefFlags.sound_mess = sender.isOn
@@ -87,16 +76,12 @@ class SettingsController: UITableViewController {
 		}
 	}
 	
-	
 
-	
-	// степпер
+	/// степпер
 	@IBAction func onStepperChange(_ sender: UIStepper) {
-		
 		UserDefFlags.limit_mess = UInt(sender.value)
 		mess_limit_label.text = String(Int(UserDefFlags.limit_mess))
 	}
-	
 	
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -114,7 +99,6 @@ class SettingsController: UITableViewController {
 
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
 		let cell = super.tableView(tableView, cellForRowAt: indexPath)
 		
 		if indexPath.section == 2 || indexPath.section == 3 {
@@ -124,7 +108,6 @@ class SettingsController: UITableViewController {
 			cell.selectedBackgroundView = selectionColor
 			cell.selectionStyle = .default
 		}
-		
 		// название внутри ячейки
 		for view in cell.contentView.subviews {
 			if let label = view as? UILabel {
@@ -135,7 +118,6 @@ class SettingsController: UITableViewController {
 		}
 		return cell
 	}
-
 	
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -161,15 +143,12 @@ class SettingsController: UITableViewController {
 				navigationController?.pushViewController(vc, animated: true)
 			}
 		}
-		
 		// Logout
 		if indexPath.section == 3 && indexPath.row == 0 {
 			logout()
 			tabBarController?.selectedIndex = 0
 		}
-		
 	}
-	
 	
 	
 	private func logout(){
@@ -187,14 +166,12 @@ class SettingsController: UITableViewController {
 			print(logoutError)
 			return
 		}
-		
 		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
 		// фикс бага когда выходишь и регишся а тайтл не меняется
 		loginController.messagesController = messagesController
 		
 		present(loginController, animated: true, completion: nil)
 	}
-		
 	
 	
 	

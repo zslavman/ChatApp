@@ -20,11 +20,18 @@ class NotificationService: UNNotificationServiceExtension {
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         let curTime = PushStaticMethods.stringTime()
         if let bestAttemptContent = bestAttemptContent {
-            // modification content place
+			
+			let globalDefaults = UserDefaults(suiteName: "group.com1")
+			let soundFlag = globalDefaults!.value(forKey: "sound_mess") as! Bool
+			
+			// modification content place
 			if trigger {
 				bestAttemptContent.title = "\(bestAttemptContent.title) (\(curTime)):"
 			}
 			else {
+				if !soundFlag {
+					bestAttemptContent.sound = nil
+				}
 				bestAttemptContent.title = "\(bestAttemptContent.title):"
 			}
             contentHandler(bestAttemptContent)
