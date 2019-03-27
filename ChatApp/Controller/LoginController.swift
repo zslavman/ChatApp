@@ -160,8 +160,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 
 	
 	
-	
-	
 	//*************************
 	//  К О Н С Т Р У К Т О Р *
 	//*************************
@@ -195,18 +193,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 
-
-	
 	/// меняем цвет статусбара на светлый
 	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
 	
 	
-	
-	
+
 	private func setup_UI(){
-		
 		// стейвью для полей ввода
 		let inputsStackView = UIStackView(arrangedSubviews: [nameTF, emailTF, passTF])
 		inputsStackView.axis 		 = .vertical
@@ -251,7 +245,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		baseHeightAnchor!.isActive = true
 		mainStackView.centerXAnchor.constraint(equalTo: collectionView!.centerXAnchor).isActive = true
 		mainStackView.widthAnchor.constraint(equalTo: collectionView!.widthAnchor, multiplier: 0.5, constant: 120).isActive = true
-		
 		// нижний вспомогательный элемент
 		collectionView?.addSubview(helperElement_bottom)
 		helperElement_bottom.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
@@ -282,20 +275,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 
-
-	
-
-	
-	
-	
-	
 	/// при повороте экрана
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-		
 		if keyboardHeight != 0 {
 			onChatBackingClick()
 		}
-		
 		if size.width > size.height {
 			print("Landscape")
 			baseHeightAnchor?.constant = 0
@@ -318,9 +302,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
-
-	
-
 	/// нажали на Register/Login
 	@objc private func onGoClick(){
 
@@ -333,7 +314,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		let n = nameTF.text!.filter{!" ".contains($0)}
 		
 //		let str = nameTF.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			if e.count == 0 || p.count == 0 {
 				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG]) // Обнаружены незаполненные поля, все поля обязательные!
@@ -356,8 +336,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
-	
-	
 	/// клик на segmentedControl
 	@objc private func onSegmentedClick(){
 		
@@ -378,9 +356,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
-	
-	
-
 	/// переключение
 	private func switch_AvaLogo(){
 		// логин
@@ -410,15 +385,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 
-	
-	
 	/// клава выезжает
 	@objc private func keyboardWillShow(notif: Notification){
-		
 		if keyboardHeight > 0 {
 			return
 		}
-		
 		if let keyboardSize = ((notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) {
 			let offset = keyboardSize.height - helperElement_bottom.bounds.height
 			
@@ -447,8 +418,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			// collectionView?.contentInset.bottom = 200 // вставка контента пораждает непонятные прыжки всей вьюшки при клике по текст. полям
 		}
 	}
-	
-	
 	
 	
 	/// клава заезжает
@@ -505,22 +474,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 //	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

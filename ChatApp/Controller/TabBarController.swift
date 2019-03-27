@@ -15,28 +15,21 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		delegate = self
-		
 		let tab1 = createTab(vc: MessagesController(), buttonImage_unselected: "bttn_menu")
 		let tab2 = createTab(vc: FindUserForChatController(), buttonImage_unselected: "bttn_find_user")
 //		let tab3 = createTab(vc: SettingsController(), buttonImage_unselected: "bttn_settings")
-		
 		let tableViewStoryboard = UIStoryboard(name: "tBoard", bundle: nil)
 		let customViewController = tableViewStoryboard.instantiateViewController(withIdentifier: "myTable")
 		let tab3 = createTab(vc: customViewController, buttonImage_unselected: "bttn_settings")
-		
 		viewControllers = [tab1, tab2, tab3]
-		
 		switchTabTitles(for: view.frame.size)
 	}
+	
 	
 	override func viewDidAppear(_ animated: Bool) { // прячем навбар от таббарконтроллера, т.к. у нас есть свой
 		navigationController?.setNavigationBarHidden(true, animated: false)
 	}
-	
-	
-
 	
 	
 	func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
@@ -50,16 +43,12 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 		return true
 	}
 	
-	
-	
-	
+
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		switchTabTitles(for: size)
 	}
 	
 
-	
-	
 	public func switchTabTitles(for size: CGSize){
 		
 		guard let items = tabBar.items else { return }
@@ -75,10 +64,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 	}
 	
 	
-	
-	
-	
-	
 	private func createTab(vc:UIViewController, buttonImage_unselected:String) -> UINavigationController {
 		let navController = UINavigationController(rootViewController: vc)
 		navController.tabBarItem.image = UIImage(named: buttonImage_unselected)?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
@@ -89,12 +74,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 	
 	
 }
-
-
-
-
-
-
 
 
 

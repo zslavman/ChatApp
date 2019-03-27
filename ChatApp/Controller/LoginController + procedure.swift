@@ -33,11 +33,9 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	// The password must be 6 characters long or more. })"
 	
 	@objc public func onProfileClick(){
-		
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			return
 		}
-		
 		let picker = UIImagePickerController()
 		
 		picker.delegate = self
@@ -54,10 +52,8 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	/// сюда зайдет после выбора картинки
 	public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-// Local variable inserted by Swift 4.2 migrator.
-let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
-
-		
+		// Local variable inserted by Swift 4.2 migrator.
+		let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		var selectedImage:UIImage?
 		
 		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
@@ -70,18 +66,14 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 			profileImageView.image = selectedImage
 			self.selectedImage = selectedImage
 		}
-		
 		dismiss(animated: true, completion: nil)
 	}
-	
-	
 	
 	
 	internal func onLogin(){
 		guard let email = emailTF.text, let pass = passTF.text else { // чисто анбиндинг
 			return
 		}
-		
 		Auth.auth().signIn(withEmail: email, password: pass) {
 			(authResult, error) in
 			if error != nil {
@@ -102,14 +94,10 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	}
 	
 	
-	
-	
 	public func onRegister(){
-		
 		guard let email = emailTF.text, let pass = passTF.text, let name = nameTF.text else {
 			return
 		}
-		
 		Auth.auth().createUser(withEmail: email, password: pass) {
 			(authResult, error) in
 			
@@ -119,11 +107,9 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 				print(strErr)
 				return
 			}
-			
 			//********************
 			// Successfully auth *
 			//********************
-			
 			// дефолтный словарь для сохранения в БД
 			var values:[String : Any] = [
 				"name"			 : name,
@@ -142,7 +128,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 				self.registerUserIntoDB(uid: user.uid, values: values as [String : AnyObject])
 				return
 			}
-			
 			// сохраняем картинку в хранилище
 			let uniqueImageName = UUID().uuidString // создает уникальное имя картинке
 			let storageRef = Storage.storage().reference().child("profile_images").child("\(uniqueImageName).jpg")
@@ -172,7 +157,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 			}
 		}
 	}
-	
 	
 	
 	// сохраняем пользователя в базу данных (строковые данные)
@@ -207,27 +191,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		dismiss(animated: true, completion: nil)
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
