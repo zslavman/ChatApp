@@ -54,6 +54,7 @@
 		568D68BD2242DA67006084A6 /* Pods_ChatApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 568D68BC2242DA67006084A6 /* Pods_ChatApp.framework */; };
 		568D68BE2242DDEC006084A6 /* PushMutater2.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5689AE24223ECE2C0088BABA /* PushMutater2.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A044A021B025F70084D7FD /* LocationManaging.swift */; };
+		56AE41D62259489D00055E3B /* like_animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 56AE41D52259489D00055E3B /* like_animation.json */; };
 		56B9072D21CB9DA1007B858C /* HeaderViewStretch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */; };
 		56BEAB132191BD960008AF6B /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatController.swift */; };
 		56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D03BEA21B2250600E1688F /* Image_Cell.swift */; };
@@ -148,6 +149,7 @@
 		5689AE2F223ECEA30088BABA /* PushMutater2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushMutater2.entitlements; sourceTree = "<group>"; };
 		568D68BC2242DA67006084A6 /* Pods_ChatApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Pods_ChatApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		56A044A021B025F70084D7FD /* LocationManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManaging.swift; sourceTree = "<group>"; };
+		56AE41D52259489D00055E3B /* like_animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = like_animation.json; sourceTree = "<group>"; };
 		56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewStretch.swift; sourceTree = "<group>"; };
 		56BEAB122191BD960008AF6B /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		56D03BEA21B2250600E1688F /* Image_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_Cell.swift; sourceTree = "<group>"; };
@@ -272,6 +274,7 @@
 				566BEDAF2186F8D70053F4A0 /* Assets.xcassets */,
 				5637D90D21A36C9D00BA9717 /* pipk.mp3 */,
 				563991B321CA081D00884B75 /* GoogleService-Info.plist */,
+				56AE41D52259489D00055E3B /* like_animation.json */,
 				566BEDB42186F8D70053F4A0 /* Info.plist */,
 				5636A1CE21C902E30065BFD5 /* ChatApp.entitlements */,
 			);
@@ -507,6 +510,7 @@
 				563991B421CA081D00884B75 /* GoogleService-Info.plist in Resources */,
 				566BEDB02186F8D70053F4A0 /* Assets.xcassets in Resources */,
 				56852E5521C08CA600E7A62F /* tBoard.storyboard in Resources */,
+				56AE41D62259489D00055E3B /* like_animation.json in Resources */,
 				5649D9FA21D838A500AA3BD8 /* cell_xib.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -541,6 +545,7 @@
 				"${BUILT_PRODUCTS_DIR}/NPTableAnimator/NPTableAnimator.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/lottie-ios/Lottie.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -551,6 +556,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NPTableAnimator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lottie.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -724,7 +730,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -779,7 +785,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -799,7 +805,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = ChatApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -824,7 +830,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = ChatApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -891,7 +897,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = PushMutater2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -917,7 +923,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = PushMutater2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

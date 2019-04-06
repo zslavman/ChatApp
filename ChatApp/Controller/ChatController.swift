@@ -749,7 +749,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				print(error?.localizedDescription ?? "*")
 				return
 			}
-			
 			let messRef = Database.database().reference().child("user-messages")
 			
 			// создаем структуру цепочки сообщений ДЛЯ определенного пользователя (тут будут лишь ID сообщений)
@@ -763,11 +762,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			// тоже самое записываем и в ветку с непрочтенными
 			let unreadRef = Database.database().reference().child("unread-messages-foreach").child(toID).child(fromID)
 			unreadRef.updateChildValues([messageID: 0])
-			
 		}
-		
 		if let fcmToken = user?.fcmToken {
-			
 			let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 			let name = messagesController.owner.name
 			
@@ -784,9 +780,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			else {
 				body = properties["text"] as! String
 			}
-			
 			let fromID = MessagesController.shared.owner.id!
-			
 			FCMService.sendNotification(taskDictionary: [
 				"to" 	: fcmToken,
 				"title"	: name!,
@@ -795,18 +789,12 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			])
 		}
 	}
-	
-	
-	
-	
-	
-
 
 	
 	/// воспроизведение видео на нативном плеере в фулскрине
 	public func runNativePlayer(videoUrl: URL, currentSeek:CMTime){
 		let player = AVPlayer(url: videoUrl)
-		player.currentItem?.seek(to: currentSeek) // устанавливаем время начала воспроизведения
+		player.currentItem?.seek(to: currentSeek, completionHandler: nil) // устанавливаем время начала воспроизведения
 		let vc = AVPlayerViewController()
 		vc.player = player
 		
@@ -814,9 +802,6 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			vc.player?.play()
 		}
 	}
-	
-	
-
 	
 	
 	

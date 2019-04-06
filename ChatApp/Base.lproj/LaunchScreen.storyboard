@@ -22,7 +22,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ChatApp" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q5d-g3-Ogh">
-                                <rect key="frame" x="115.5" y="263" width="144" height="51.5"/>
+                                <rect key="frame" x="115.5" y="274.5" width="144" height="51.5"/>
                                 <fontDescription key="fontDescription" name="MarkerFelt-Wide" family="Marker Felt" pointSize="38"/>
                                 <color key="textColor" red="0.95294117649999999" green="0.95294117649999999" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -34,7 +34,7 @@
                         <constraints>
                             <constraint firstAttribute="top" secondItem="HTJ-TE-Md2" secondAttribute="top" id="SGn-kd-VZN"/>
                             <constraint firstItem="q5d-g3-Ogh" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="SKA-R5-Qtw"/>
-                            <constraint firstItem="q5d-g3-Ogh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-45" id="hxI-dq-qe4"/>
+                            <constraint firstItem="q5d-g3-Ogh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="0.9" id="hxI-dq-qe4"/>
                             <constraint firstItem="HTJ-TE-Md2" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="l3P-CQ-d34"/>
                             <constraint firstAttribute="trailing" secondItem="HTJ-TE-Md2" secondAttribute="trailing" id="lPz-dO-rfP"/>
                             <constraint firstAttribute="bottom" secondItem="HTJ-TE-Md2" secondAttribute="bottom" id="th3-qb-TJI"/>

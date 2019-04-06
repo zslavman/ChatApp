@@ -14,4 +14,5 @@ target 'ChatApp' do
  pod 'Firebase/Messaging'
  pod 'NPTableAnimator'
  pod 'Kingfisher'
+ pod 'lottie-ios'
 end
