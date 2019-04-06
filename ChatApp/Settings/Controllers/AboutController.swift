@@ -72,7 +72,6 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	}()
 	
 	
-	
     override func viewDidLoad() {
         super.viewDidLoad()
 		Calculations.lockOrientation(.portrait)
@@ -115,14 +114,12 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 									attribute: .centerY,
 									multiplier: 0.6,
 									constant: 0)
-		
 		NSLayoutConstraint.activate([
 			backImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 			backImage.widthAnchor.constraint(equalTo: view.widthAnchor),
 			backImage.heightAnchor.constraint(equalTo: view.heightAnchor),
 			
 			logo.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
-//			logo.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -80),
 			logo.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5, constant: 0),
 			logo.widthAnchor.constraint(equalTo: logo.heightAnchor),
 			logoY,
@@ -139,7 +136,6 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 			bottomLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 			
 			animContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//			animContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 			animContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/10),
 			animContainer.widthAnchor.constraint(equalTo: animContainer.heightAnchor, multiplier: 2/1),
 			animContainerY,
@@ -236,9 +232,6 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 //	override var shouldAutorotate: Bool {
 //		return false
 //	}
-	
-	
-
 
 }
 
