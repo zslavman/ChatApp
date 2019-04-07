@@ -21,7 +21,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				drawCustomTitleView(name: userName)
 			}
 			fetchMessages()
-			addOnlineListener()
+			checkDialogerStatus()
 		}
 	}
 	internal lazy var growingInputView: InputAccessory = {
@@ -60,7 +60,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	private var containerViewBottomAnchor: NSLayoutConstraint?
 	private var disposeVar1: (DatabaseReference, UInt)!
 	private var disposeVar2: (DatabaseReference, UInt)!
-	internal var selectMediaContentOpened: Bool = false 	// флаг, что открыто окно выбора картинки (false - слушатель удаляется)
+	internal var selectMediaContentOpened: Bool = false // флаг, что открыто окно выбора картинки (false - слушатель удаляется)
 	private var dataArray = [[Message]]() 	// двумерный массив сообщений в секциях
 	private var stringedTimes = [String]()	// массив конвертированных в строку дат сообщений (для заглавьяь секций)
 	
@@ -132,9 +132,15 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		// скрываем родную навбаровскую кнопку назад ибо некрасиво
 		let tp = UIBarButtonItem(image: UIImage(named: "bttn_back"), style: .plain, target: self, action: #selector(goBack))
 		navigationItem.setLeftBarButton(tp, animated: false)
+		
+		NotificationCenter.default.addObserver(self,
+											   selector: #selector(dialogerDidChangeStatus(_:)),
+											   name: .dialogerDidChangeStatus,
+											   object: nil)
 	}
 	
 
+	
 	
 	/// цепляем "аксессуар" в виде вьюшки на клавиатуру
 	override var inputAccessoryView: UIView? {
@@ -149,15 +155,15 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-		// убиваем слушателя базы
-		if !selectMediaContentOpened{
-			NotificationCenter.default.removeObserver(self) // иначе при логауте будет ругатся, да и ни к чему хорошему это не приведет
+		// kill database listeners
+		if !selectMediaContentOpened {
+			NotificationCenter.default.removeObserver(self) // otherwise will have issue on logout
 			disposeVar1?.0.removeObserver(withHandle: disposeVar1.1)
 			disposeVar2?.0.removeObserver(withHandle: disposeVar2.1)
 			disposeVar1 = nil
 			disposeVar2 = nil
 		}
-		// перебираем все видимые ячейки, на предмет проигрывания вних видео
+		// collect all visible cells, stop video it if they have it
 		guard let cells = collectionView?.visibleCells as? [ChatMessageCell] else { return }
 		cells.forEach {
 			(cell) in
@@ -709,10 +715,8 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		nameLabel.adjustsFontSizeToFitWidth = true
 		nameLabel.minimumScaleFactor = 0.9
 		nameLabel.sizeToFit()
-		// nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		
 		lastVisitLable = UILabel()
-		lastVisitLable.text = dict[51]![LANG] // "был(а) в сети: 18.09"
 		lastVisitLable.textColor = UIColor.white.withAlphaComponent(0.7)
 		lastVisitLable.adjustsFontSizeToFitWidth = true
 		lastVisitLable.sizeToFit()
@@ -727,23 +731,19 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		stackView.alignment = .center
 		stackView.spacing = 1
 		stackView.backgroundColor = UIColor.orange
-		// stackView.frame.size = CGSize(width: nameLabel.frame.width, height: max(nameLabel.frame.height, profileImageView.frame.height))
 		navigationItem.titleView = stackView
 	}
 
 	
-	private func addOnlineListener() {
-		guard let user = self.user else { return }
-//		if user.isOnline {
-//			setLastVisit(dateInfo: "online")
-//		}
-		let lastVisitRef = Database.database().reference().child("users").child(user.id!).child("lastVisit")
-		lastVisitRef.observe(.value) {
-			(snapshot) in
-			guard let lastVisit = snapshot.value as? TimeInterval else { return }
-			let lastVisitDate = Calculations.convertTimeStamp(seconds: lastVisit, shouldReturn: false)
-			if lastVisit > 0 {
-				self.setLastVisit(dateInfo: lastVisitDate)
+
+	@objc private func dialogerDidChangeStatus(_ notification: NSNotification) {
+		if let dict = notification.userInfo as NSDictionary? {
+			guard let isDialogerOnline = dict["dStatus"] as? Bool else { return }
+			
+			if let user = self.user {
+				user.isOnline = isDialogerOnline
+				print("Call dialogerDidChangeStatus")
+				checkDialogerStatus()
 			}
 		}
 	}
@@ -754,15 +754,32 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			UIView.animate(withDuration: 0.3, animations: {
 				self.visitHeightAnchor.constant = 15
 				self.navigationItem.titleView!.layoutIfNeeded()
-				if self.user!.isOnline {
-					self.lastVisitLable.text = dict[51]![LANG] + dateInfo
-				}
-				else {
-					self.lastVisitLable.text = "online"
-				}
+				self.lastVisitLable.text = dateInfo
 			})
 		}
 	}
+	
+	
+	private func checkDialogerStatus() {
+		guard let user = self.user else { return }
+		if user.isOnline {
+			setLastVisit(dateInfo: dict[52]![LANG]) // online
+			return
+		}
+		let listenerRef = Database.database().reference().child("users").child(user.id!).child("lastVisit")
+		listenerRef.observeSingleEvent(of: .value) {
+			[weak self] (snapshot) in
+			guard let strongSelf = self else { return }
+			guard let lastVisit = snapshot.value as? TimeInterval else { return }
+			let lastVisitDate = Calculations.convertTimeStamp(seconds: lastVisit, shouldReturn: false)
+			let lastVisitString = dict[51]![LANG] + lastVisitDate // был(а) в сети:
+			strongSelf.setLastVisit(dateInfo: lastVisitString)
+			print("set LastVisit")
+		}
+	}
+	
+	
+	
 	
 	
 	/// воспроизведение видео на нативном плеере в фулскрине
@@ -782,7 +799,9 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 
 
 
-
+extension Notification.Name {
+	public static let dialogerDidChangeStatus = Notification.Name("dialogerDidChangeStatus")
+}
 
 
 

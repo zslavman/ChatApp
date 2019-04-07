@@ -18,36 +18,21 @@ struct OnlineService {
 	///   - status: true(online)/false(offline)
 	public static func setUserStatus(_ status: Bool) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
-		let onlinesRef = Database.database().reference().child("users").child(uid).child("isOnline")
-		onlinesRef.setValue(status) {
+		let onlinesRef = Database.database().reference().child("users").child(uid)
+		var updateDict: [String : Any] = [
+			"isOnline" : status
+		]
+		if !status {
+			updateDict["lastVisit"] = Int(Date().timeIntervalSince1970)
+		}
+		onlinesRef.updateChildValues(updateDict) {
 			(error: Error?, ref: DatabaseReference) in
-			
 			if let error = error {
 				assertionFailure(error.localizedDescription)
 			}
 			else {
 				let str = status ? "online" : "offline"
 				print("Юзер: \(str)")
-				if !status {
-					setUserLAstVisit()
-				}
-			}
-		}
-	}
-	
-	
-	private static func setUserLAstVisit() {
-		guard let uid = Auth.auth().currentUser?.uid else { return }
-		let currentTimeStamp: Int = Int(Date().timeIntervalSince1970)
-		
-		let lastVisitRef = Database.database().reference().child("users").child(uid).child("lastVisit")
-		lastVisitRef.setValue(currentTimeStamp) {
-			(error: Error?, _: DatabaseReference) in
-			if let error = error {
-				assertionFailure(error.localizedDescription)
-			}
-			else {
-				print("lastVisit = \(currentTimeStamp)")
 			}
 		}
 	}

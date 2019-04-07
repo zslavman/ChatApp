@@ -193,7 +193,7 @@ class MessagesController: UITableViewController {
 	
 	
 	/// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
-	private func addOnlineListener(ref:DatabaseReference){
+	private func addOnlineListener(ref: DatabaseReference) {
 		let listener = ref.observe(.value, with: {
 			(snapshot) in
 			guard self.allowIncomingSound else { return }
@@ -204,9 +204,15 @@ class MessagesController: UITableViewController {
 				let newStatus 			= dict["isOnline"] as! Bool
 				
 				for (_, value) in self.senders.enumerated() {
-					if id_WhoChangedStatus == value.id{
+					
+					if value.id! == self.goToChatWithID {
+						// send notification for ChatController "userChangeStatus"
+						let dataDict = ["dStatus" : newStatus]
+						NotificationCenter.default.post(name: .dialogerDidChangeStatus, object: nil, userInfo: dataDict)
+					}
+					
+					if id_WhoChangedStatus == value.id {
 						value.isOnline = newStatus
-						
 						// чтоб не перегружать всю таблицу
 						let visible = self.tableView.visibleCells as! [UserCell]
 						visible.forEach({

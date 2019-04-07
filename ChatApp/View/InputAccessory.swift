@@ -12,7 +12,7 @@ class InputAccessory: UIView, UITextViewDelegate {
 	
     private let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
     public var chatController: ChatController? {
-        didSet{
+        didSet {
             // sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
             sendButton.addTarget(self, action: #selector(onSend), for: UIControl.Event.touchUpInside)
             // uploadImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onUploadClick)))
@@ -31,12 +31,11 @@ class InputAccessory: UIView, UITextViewDelegate {
         tf.returnKeyType = .send // всего лишь вид кнопки "Enter"
         tf.delegate = self
         tf.isScrollEnabled = false
-//		tf.backgroundColor = UIColor.red.withAlphaComponent(0.2)
 		tf.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.3).cgColor
 		tf.layer.borderWidth = 1
 		tf.layer.cornerRadius = 20
 		tf.textContainer.lineFragmentPadding = 20
-//		tf.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 10)
+		//	tf.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 10)
         return tf
     }()
 	
@@ -186,11 +185,10 @@ class InputAccessory: UIView, UITextViewDelegate {
         }
         // textView самостоятельно увеличивает свой размер
         // по мере ввода текста
-        
         if textView.frame.height >= 90 { // 90 - это 3 строки текста
             textView.isScrollEnabled = true
         }
-        else{
+        else {
             textView.isScrollEnabled = false
             // пересчитываем высоту self под новую высоту textView
             self.invalidateIntrinsicContentSize()
@@ -210,7 +208,6 @@ class InputAccessory: UIView, UITextViewDelegate {
 
     /// пересчитываем собственный размер (высоту)
     override var intrinsicContentSize: CGSize {
-        
         // высчитываем новый размер высоты
 		let newSize = CGSize(width: inputTextField.bounds.width, height: .infinity)
         var estimatedSize = inputTextField.sizeThatFits(newSize)
