@@ -16,20 +16,38 @@ struct OnlineService {
 	///
 	/// - Parameters:
 	///   - status: true(online)/false(offline)
-	static func setUserStatus(_ status: Bool) {
+	public static func setUserStatus(_ status: Bool) {
+		guard let uid = Auth.auth().currentUser?.uid else { return }
+		let onlinesRef = Database.database().reference().child("users").child(uid).child("isOnline")
+		onlinesRef.setValue(status) {
+			(error: Error?, ref: DatabaseReference) in
+			
+			if let error = error {
+				assertionFailure(error.localizedDescription)
+			}
+			else {
+				let str = status ? "online" : "offline"
+				print("Юзер: \(str)")
+				if !status {
+					setUserLAstVisit()
+				}
+			}
+		}
+	}
+	
+	
+	private static func setUserLAstVisit() {
+		guard let uid = Auth.auth().currentUser?.uid else { return }
+		let currentTimeStamp: Int = Int(Date().timeIntervalSince1970)
 		
-		if let uid = Auth.auth().currentUser?.uid {
-			let onlinesRef = Database.database().reference().child("users").child(uid).child("isOnline")
-			onlinesRef.setValue(status) {
-				(error:Error?, ref:DatabaseReference) in
-				
-				if let error = error {
-					assertionFailure(error.localizedDescription)
-				}
-				else {
-					let str = status ? "online" : "offline"
-					print("Юзер: \(str)")
-				}
+		let lastVisitRef = Database.database().reference().child("users").child(uid).child("lastVisit")
+		lastVisitRef.setValue(currentTimeStamp) {
+			(error: Error?, _: DatabaseReference) in
+			if let error = error {
+				assertionFailure(error.localizedDescription)
+			}
+			else {
+				print("lastVisit = \(currentTimeStamp)")
 			}
 		}
 	}

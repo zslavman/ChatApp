@@ -17,11 +17,7 @@ class User: NSObject {
 	@objc public var id: String? // устанавливается вручную
 	@objc public var isOnline: Bool = false
 	@objc public var fcmToken: String?
+	@objc public var lastVisit: NSNumber?
 	
 
-	
-	
-	
-	
-	
 }

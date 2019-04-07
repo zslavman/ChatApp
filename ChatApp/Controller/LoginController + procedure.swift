@@ -117,8 +117,9 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				"id"			 : user.uid,
 				"isOnline"		 : true,
 				"profileImageUrl": "none",
-				"fcmToken"		 : ""
-				]
+				"fcmToken"		 : "",
+				"lastVisit"		 : 0
+			]
 			// safety unwrapping image
 			guard let profileImage = self.profileImageView.image else { return }
 			
@@ -160,7 +161,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	
 	// сохраняем пользователя в базу данных (строковые данные)
-	private func registerUserIntoDB(uid:String, values:[String:AnyObject]){
+	private func registerUserIntoDB(uid: String, values:[String:AnyObject]){
 		let ref = Database.database().reference()
 		let usersRef = ref.child("users").child(uid)
 		
@@ -170,7 +171,6 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				print(err?.localizedDescription as Any)
 				return
 			}
-			
 			let user = User()
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)

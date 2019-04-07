@@ -25,7 +25,6 @@ class SettingsController: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		configureLocales()
 		configureUI()
 	}
@@ -39,7 +38,6 @@ class SettingsController: UITableViewController {
 	
 	private func configureLocales(){
 		title =  dict[17]![LANG] // Настройки
-		
 		localRows = [
 			0: [dict[0]![LANG], dict[1]![LANG]],
 			1: [dict[2]![LANG]],
@@ -151,7 +149,7 @@ class SettingsController: UITableViewController {
 	}
 	
 	
-	private func logout(){
+	private func logout() {
 		
 		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		messagesController.dispose()

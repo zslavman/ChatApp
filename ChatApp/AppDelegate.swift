@@ -30,9 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		
-//		Notifications.shared.requestAuthorisation()
-		
+		//Notifications.shared.requestAuthorisation()
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false
 		
@@ -82,24 +80,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	
-
-	
 	// при получении токена
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-		
 		// собираем токен из битов
 		let tokenParts = deviceToken.map {
 			data -> String in
 			return String(format: "%02.2hhx", data)
 		}
-		
 		let token = tokenParts.joined()
 		print("Device Token (apnsToken): \(token)")
 		
 		if let fcmToken = Messaging.messaging().fcmToken {
 			print("fcmToken = \(fcmToken)")
 		}
-		
 		Messaging.messaging().apnsToken = deviceToken
 		//Messaging.messaging().setAPNSToken(deviceToken, type: MessagingAPNSTokenType.sandbox)
 		
@@ -119,7 +112,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
 		print("Failed to register: \(error)")
 	}
-	
 
 
 	

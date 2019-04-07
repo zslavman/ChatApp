@@ -11,7 +11,7 @@ import UIKit
 class InputAccessory: UIView, UITextViewDelegate {
 	
     private let sendButton = UIButton(type: .system) // .system - для того, чтоб у кнопки были состояния нажатая/отжатая
-    public var chatController:ChatController? {
+    public var chatController: ChatController? {
         didSet{
             // sendButton.addTarget(chatLogController, action: #selector(chatLogController!.onSendClick), for: UIControlEvents.touchUpInside)
             sendButton.addTarget(self, action: #selector(onSend), for: UIControl.Event.touchUpInside)
@@ -39,8 +39,7 @@ class InputAccessory: UIView, UITextViewDelegate {
 //		tf.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 10)
         return tf
     }()
-    
-    
+	
     private let uploadImageView: UIImageView = {
         let uv = UIImageView()
         uv.image = UIImage(named: "upload_image_icon")
@@ -59,23 +58,19 @@ class InputAccessory: UIView, UITextViewDelegate {
 		return ig
 	}()
    
-    
-    
-    
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
 	
-	
 	// adding the bottom constraint here to make sure we belong to window
 	override func didMoveToWindow() {
 		super.didMoveToWindow()
 		if #available(iOS 11.0, *) {
-//			if let window = window {
-//				bottomAnchor.constraintLessThanOrEqualToSystemSpacingBelow(window.safeAreaLayoutGuide.bottomAnchor, multiplier: 1.0).isActive = true
-//			}
+			//			if let window = window {
+			//				bottomAnchor.constraintLessThanOrEqualToSystemSpacingBelow(window.safeAreaLayoutGuide.bottomAnchor, multiplier: 1.0).isActive = true
+			//			}
 		}
 	}
 	
@@ -145,8 +140,6 @@ class InputAccessory: UIView, UITextViewDelegate {
 	}
 	
 	
-		
-	
 	private func switchConstraint(){
 		
 		if leftConstraint.isActive {
@@ -163,9 +156,6 @@ class InputAccessory: UIView, UITextViewDelegate {
 	}
 	
 	
-	
-    
-    
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.lightGray {
             textView.text = nil
@@ -187,9 +177,6 @@ class InputAccessory: UIView, UITextViewDelegate {
     }
     
 
-    
-    
-    
     public func textViewDidChange(_ textView: UITextView) {
         // отслеживаем "Enter" с клавиатуры
         if textView.text.last == "\n" {
@@ -197,7 +184,6 @@ class InputAccessory: UIView, UITextViewDelegate {
             onSend()
             return
         }
-        
         // textView самостоятельно увеличивает свой размер
         // по мере ввода текста
         
@@ -222,7 +208,6 @@ class InputAccessory: UIView, UITextViewDelegate {
 //    }
 	
 
-    
     /// пересчитываем собственный размер (высоту)
     override var intrinsicContentSize: CGSize {
         
@@ -234,17 +219,14 @@ class InputAccessory: UIView, UITextViewDelegate {
         return estimatedSize
     }
     
-    
-    
-    @objc private func onSend(){
-        if inputTextField.textColor == UIColor.lightGray{
+	
+    @objc private func onSend() {
+        if inputTextField.textColor == UIColor.lightGray {
             return
         }
-        
         if !inputTextField.isFocused {
             inputTextField.setContentOffset(.zero, animated: false)// фикс - плейсхолдер не сползает вниз
         }
-        
         chatController?.onSendClick() // здесь очищается текст
         self.invalidateIntrinsicContentSize()
         
@@ -257,9 +239,8 @@ class InputAccessory: UIView, UITextViewDelegate {
         checkOnEmpty()
     }
         
-    
-
-    private func checkOnEmpty(){
+	
+    private func checkOnEmpty() {
         if inputTextField.text.isEmpty {
             sendButton.tintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         }
@@ -273,8 +254,6 @@ class InputAccessory: UIView, UITextViewDelegate {
             }
         }
     }
-    
-    
      
     
 }

@@ -48,25 +48,16 @@ class MessagesController: UITableViewController {
 	public var messages: [Message] = []
 	public var messages_copy: [Message] = [] 	 // массив для учёта кол-ва соообщений в фоне
 	internal var currentList: [MySection]! = nil // то что отображается после манипуляций с messages (для вьюшек)
-	
 	internal let animator = TableAnimator<MySection>()
 	
 
-	
-
-	
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		MessagesController.shared = self
-		
 		currentList = [MySection(cells: messages)]
-
 		navigationController?.view.backgroundColor = UIConfig.mainThemeColor
-		
 		chekIfUserLoggedIn()
-		
 		tableView.register(UserCell.self, forCellReuseIdentifier: cell_id)
 		tableView.separatorColor = UIConfig.mainThemeColor.withAlphaComponent(0.5)
 		
@@ -76,11 +67,8 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-	
 	/// убираем собеседника и само сообщение отовсюду
 	internal func removeDialog(collocutorID: String, indexPath:IndexPath){
-
 		// находим собеседника в массиве senders и убираем из массива
 		senders = senders.filter({$0.id == collocutorID})
 		
@@ -94,7 +82,6 @@ class MessagesController: UITableViewController {
 				hendlers.removeValue(forKey: element.key)
 			}
 		}
-		
 		// удаляем из источника таблицы и самой таблицы
 		// один из методов обновления таблицы, но он не безопасный
 		messages.remove(at: indexPath.row)
@@ -107,23 +94,18 @@ class MessagesController: UITableViewController {
 	}
 		
 	
-	
-	
-	
+
 	// MARK: получение диалогов
 	/// получаем сообщения с сервера, добавляем слушатели на новые
-	private func fetchDialogs(){
-		
+	private func fetchDialogs() {
 		guard let uid = Auth.auth().currentUser?.uid else { return } // если взять uid из self то при регистрации тут выйдет
 		if self.uid == nil {
 			self.uid = uid
 		}
-		
-		var dialogsStartCount:UInt = 0 // общее кол-во диалогов
-		var dialogsLoadedCount:UInt = 0
+		var dialogsStartCount: UInt = 0 // общее кол-во диалогов
+		var dialogsLoadedCount: UInt = 0
 		refUserMessages = refUserMessages_original.child(uid)
-		
-		
+
 		// проверяем сколько (диалогов) имеет owner
 		refUserMessages.observeSingleEvent(of: .value, with: {
 			(snapshot) in
@@ -146,8 +128,8 @@ class MessagesController: UITableViewController {
 				//***********
 				// если это последний скачиваемый диалогер, смотрим сколько в диалоге сообщений
 				// и только после послднего полученного включаем звук на приход сообщ.
-				var maxCount:UInt = 0
-				var currentCount:UInt = 0
+				var maxCount: UInt = 0
+				var currentCount: UInt = 0
 				if dialogsLoadedCount == dialogsStartCount {
 					maxCount = min(1, snapshot.childrenCount)
 				}
@@ -198,7 +180,6 @@ class MessagesController: UITableViewController {
 						}
 					})
 				})
-				
 				// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
 				let ref_forOnlineListener = Database.database().reference().child("users").child(userID)
 				self.addOnlineListener(ref: ref_forOnlineListener)
@@ -211,18 +192,11 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-	
-	
-	
 	/// добавляем слушатель, на всех фигурантов переписки, на предмет онлайн/оффлайн
 	private func addOnlineListener(ref:DatabaseReference){
-		
 		let listener = ref.observe(.value, with: {
 			(snapshot) in
-			
 			guard self.allowIncomingSound else { return }
-			
 			// в массиве sender ищем юзера который пришел в snapshot'e
 			if let dict = snapshot.value as? [String:AnyObject] {
 				
@@ -252,19 +226,12 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
-	
-
-	
-	
 	// проверка кол-ва непрочтенных сообщений (вызывается при каждом приходе нового сообщ.)
 	private func checkUnread(msg:Message){
-		
 		if msg.fromID == uid {
 			moveDialogs(newMessage: msg)
 			return
 		}
-		
 		let unreadRef = Database.database().reference().child("unread-messages-foreach").child(uid).child(msg.fromID!)
 
 		unreadRef.observeSingleEvent(of: .value) {
@@ -293,11 +260,8 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-	
 	/// обновление порядка следования диалогов
 	private func moveDialogs(newMessage:Message){
-		
 		// если диалогер уже есть в списке - удаляем его
 		for index in messages.indices {
 			if messages[index].chatPartnerID()! == newMessage.chatPartnerID()!{
@@ -308,10 +272,8 @@ class MessagesController: UITableViewController {
 		}
 		// вставляем новое сообщ. в начало
 		messages.insert(newMessage, at: 0)
-		
 		reloadTable()
 	}
-	
 	
 	
 	/// калькуляция непрочитанных сообщений каждого диалогера (запускается 1 раз при загрузке, когда получили все диалоги)
@@ -346,14 +308,9 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-
-	
-	
 	// плюсуем счетчик ярлыка текущей вкладки
 	internal func addBageValue(val:Int){
-		
 		guard val != 0 else { return }
-		
 		let thisTabItem = tabBarController?.tabBar.items!.first
 		var currentCount:Int = 0
 //
@@ -361,7 +318,6 @@ class MessagesController: UITableViewController {
 //			currentCount = Int(thisTabItem!.badgeValue!)!
 //		}
 //		currentCount += val
-		
 		for mes in messages {
 			if mes.unreadCount != nil && mes.unreadCount! > 0 {
 				currentCount += 1
@@ -370,7 +326,6 @@ class MessagesController: UITableViewController {
 		if val < 0 {
 			currentCount += val
 		}
-		
 		if currentCount <= 0 {
 			thisTabItem?.badgeValue = nil
 			UIApplication.shared.applicationIconBadgeNumber = 0
@@ -382,11 +337,7 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-	
-	
 	public func countUnreadInBackground(from:String){
-		
 		let newMessage = Message(dictionary: [
 			"fromID"		: from,
 			"toID"			: owner.id!,
@@ -426,13 +377,9 @@ class MessagesController: UITableViewController {
 	
 	
 
-
-	
 	/// первая перезагрузка таблицы и данных
 	private func firstReloadTable(){
-
 		allowIncomingSound = true
-		
 		if messages.isEmpty{
 			labelNoMessages?.text = dict[32]![LANG]
 		}
@@ -440,7 +387,6 @@ class MessagesController: UITableViewController {
 			labelNoMessages?.removeFromSuperview()
 			labelNoMessages = nil
 		}
-		
 		currentList[0].cells.sort(by: {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
@@ -449,7 +395,6 @@ class MessagesController: UITableViewController {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
-		
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
 			// Calculations.animateTable(tableView: self.tableView, duration: 0.5)
@@ -459,16 +404,11 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-	
-
-	
-	internal func reloadTable(){
+	internal func reloadTable() {
 		messages.sort(by: {
 			(message1, message2) -> Bool in
 			return (message1.timestamp?.intValue)! > (message2.timestamp?.intValue)!
 		})
-		
 		// в этот момент, самые свежие изменения есть только в messages
 		// с свою очередь, currentList еще этих изменений не имеет
 		let toList:[MySection] = [MySection(cells: messages)]
@@ -487,15 +427,12 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-	
+
 	/// рисует лейблу с надписью Загрузка/Нет сообщений
 	private func drawLoading(text: String){
-		
 		if !messages.isEmpty {
 			return
 		}
-		
 		labelNoMessages?.removeFromSuperview()
 		labelNoMessages = nil
 		
@@ -510,14 +447,11 @@ class MessagesController: UITableViewController {
 			return label
 		}()
 		guard let labelNoMessages = labelNoMessages else { return }
-		
 		view.addSubview(labelNoMessages)
-		
 		labelNoMessages.topAnchor.constraint(equalTo: tableView.topAnchor, constant: -64).isActive = true
 		labelNoMessages.widthAnchor.constraint(equalTo: tableView.widthAnchor).isActive = true
 		labelNoMessages.heightAnchor.constraint(equalTo: tableView.heightAnchor).isActive = true
 	}
-	
 	
 	
 	private func chekIfUserLoggedIn(){
@@ -535,19 +469,14 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
-	
 	/// Проверка аутентиф. юзера и первое заполнение данных юзера
-	public func fetchUserAndSetupNavbarTitle(){
-		
+	public func fetchUserAndSetupNavbarTitle() {
 		guard let uid = Auth.auth().currentUser?.uid else {	return } // проверка если user = nil
 		self.uid = uid
 		
 		refUsers.child(uid).observeSingleEvent(of: .value) {
 			(snapshot) in
-			
 			if let dictionary = snapshot.value as? [String:AnyObject] {
-			
 				// для отрисовки навбара нужны данные по юзеру
 				let user = User()
 				user.setValuesForKeys(dictionary)
@@ -557,95 +486,17 @@ class MessagesController: UITableViewController {
 		}
 	}
 	
-	
-	
-	
-	/// Отрисовка навбара с картинкой (этот метод может дергаться при регистрации из LoginController)
-	public func setupNavbarWithUser_old(user: User){
-		
-		if owner == nil {
-			owner = user
-		}
-		
-		// устанавливаем индикацию онлайн
-		OnlineService.setUserStatus(true)
 
-		drawLoading(text: dict[31]![LANG])
-		fetchDialogs()
-		
-		// контейнер
-		let titleView = UIView()
-		titleView.frame = CGRect(x: 0, y: 0, width: 160, height: 40)
-		
-		// еще один контейнер (чтоб всё что внутри растягивалось на всё свободное место навбара)
-		let containerView = UIView()
-		containerView.translatesAutoresizingMaskIntoConstraints = false
-		self.navigationItem.titleView = titleView
-		titleView.addSubview(containerView)
-		
-		containerView.topAnchor.constraint(equalTo: titleView.topAnchor).isActive = true
-		containerView.bottomAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
-		containerView.leadingAnchor.constraint(equalTo: titleView.leadingAnchor).isActive = true
-		containerView.trailingAnchor.constraint(equalTo: titleView.trailingAnchor).isActive = true
-		
-		// фотка
-		profileImageView = UIImageView()
-		profileImageView.translatesAutoresizingMaskIntoConstraints = false
-		profileImageView.contentMode = .scaleAspectFill
-		profileImageView.layer.cornerRadius = 18
-		profileImageView.clipsToBounds = true
-		
-		if let profileImageUrl = user.profileImageUrl {
-			profileImageView.loadImageUsingCache(urlString: profileImageUrl, isAva: true, completionHandler: nil)
-		}
-		containerView.addSubview(profileImageView)
-		// добавим констраинты для фотки в контейнере
-		profileImageView.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 10).isActive = true
-		profileImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-		profileImageView.widthAnchor.constraint(equalToConstant: 36).isActive = true
-		profileImageView.heightAnchor.constraint(equalToConstant: 36).isActive = true
-		
-		// лейбла с именем
-		let nameLabel = UILabel()
-		nameLabel.text = user.name
-		nameLabel.translatesAutoresizingMaskIntoConstraints = false
-		containerView.addSubview(nameLabel)
-		
-		nameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8).isActive = true
-		nameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-		nameLabel.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-		nameLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		
-		
-		navigationItem.titleView = titleView
-		
-		// добавим клик к фотке для изменения ее
-		titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPhotoClick(sender:))))
-		titleView.isUserInteractionEnabled = true
-	}
-	
-	
-	
-	
-	
-	public func setupNavbarWithUser(user: User){
-		
+	public func setupNavbarWithUser(user: User) {
 		if owner == nil {
 			owner = user
 		}
 		// устанавливаем индикацию онлайн
 		OnlineService.setUserStatus(true)
-		
 		drawLoading(text: dict[31]![LANG])
 		fetchDialogs()
-		
-
 		drawAvaAndName()
 	}
-	
-	
-
-	
 	
 	
 	private func drawAvaAndName() {
@@ -688,24 +539,17 @@ class MessagesController: UITableViewController {
 	
 	
 
-	
-
-	
-	public func dispose(){
-		
+	public func dispose() {
 		// записуем на сервер состояние "offline"
 		if (uid != nil){
 			OnlineService.setUserStatus(false)
 		}
-		
 		// удаляем слушателя собственных сообщений
 		refUserMessages?.removeAllObservers()
-		
 		// удаляем слушателей сообщений каждого фигуранта диалога
 		for (key, ref) in hendlers {
 			ref.removeObserver(withHandle: key)
 		}
-
 		uid = nil
 		
 		messages.removeAll()
@@ -731,7 +575,6 @@ class MessagesController: UITableViewController {
 	
 	
 	
-	
 	@objc private func onLogout(){
 		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
 		// фикс бага когда выходишь и регишся а тайтл не меняется
@@ -739,7 +582,6 @@ class MessagesController: UITableViewController {
 		
 		present(loginController, animated: true, completion: nil)
 	}
-	
 	
 	
 	// NOT USED
@@ -755,7 +597,6 @@ class MessagesController: UITableViewController {
 		// запоминаем юзера, с которым перешли в чат (для блокировки проигрыв звуков при сообщениях от него)
 		// about sound - no longer need
 		goToChatWithID = user.id!
-		
 		let chatLogController = ChatController(collectionViewLayout: UICollectionViewFlowLayout())
 		chatLogController.user = user
 		chatLogController.hidesBottomBarWhenPushed = true
@@ -763,14 +604,10 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	
 	private func playSoundFile(_ soundName:String) {
-		
 		if !allowIncomingSound { return }
 		if !UserDefFlags.sound_mess { return }
-		
 		//audioPlayer.play()
-		
 		if UserDefFlags.vibro_mess{
 			AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
 		}
@@ -779,20 +616,13 @@ class MessagesController: UITableViewController {
 
 
 
-
-
-
 // смена аватарки
 extension MessagesController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
 	
-	@objc internal func onPhotoClick(sender: UITapGestureRecognizer){
-		
-
+	@objc internal func onPhotoClick(sender: UITapGestureRecognizer) {
 		AppDelegate.waitScreen.show()
-		
 		let picker = UIImagePickerController()
-		
 		picker.delegate = self
 		picker.allowsEditing = true
 		
@@ -802,11 +632,9 @@ extension MessagesController: UIImagePickerControllerDelegate, UINavigationContr
 	}
 	
 	
-	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-// Local variable inserted by Swift 4.2 migrator.
-let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
-
+		// Local variable inserted by Swift 4.2 migrator.
+		let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		var selectedImage:UIImage?
 		
 		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
@@ -815,7 +643,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		else if let originalImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage{
 			selectedImage = originalImage
 		}
-		
 		if let selectedImage = selectedImage {
 			profileImageView.image = selectedImage
 			saveProfileImage(imag: selectedImage)
@@ -824,14 +651,10 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	}
 	
 	
-	
-	
-	
+
 	/// сохраняем новую картику в БД, обновляем ссылку на нее в БД и здесь
 	internal func saveProfileImage(imag:UIImage){
-		
 		let oldLink = owner.profileImageUrl
-		
 		let uniqueImageName = UUID().uuidString // создает уникальное имя картинке
 		let storageRef = Storage.storage().reference().child("profile_images").child("\(uniqueImageName).jpg")
 		
@@ -853,10 +676,8 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 					}
 					// обновляем ссылку на скачивание здесь и в БД
 					self.owner.profileImageUrl = url!.absoluteString
-					
 					let ref = Database.database().reference(withPath: "users").child(self.uid).child("profileImageUrl")
 					ref.setValue(url!.absoluteString)
-					
 					// удаляем старую картинку
 					if oldLink != "none" {
 						let storageRef = Storage.storage().reference(forURL: oldLink!)
@@ -869,6 +690,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	}
 	
 }
+
 
 // Helper function inserted by Swift 4.2 migrator.
 fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {

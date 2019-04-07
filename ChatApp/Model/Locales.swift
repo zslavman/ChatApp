@@ -78,7 +78,7 @@ let dict:[Int:[String]] = [
 	48:["Редактировать профиль", "Edit profile", "Editer le profil"],
 	49:["Доступно в будущих обновлениях", "Available in the following updates", "Disponible dans les mises à jour suivantes"],
 	50:["[геокоординаты]", "[geo-coordinates]", "[géo-coordonnées]"],
-	51:["", "", ""],
+	51:["был(а) в сети: ", "last visit: ", "derniere visite: "],
 	52:["", "", ""],
 	53:["", "", ""],
 
