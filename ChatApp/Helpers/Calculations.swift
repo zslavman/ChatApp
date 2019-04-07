@@ -101,7 +101,7 @@ struct Calculations {
 	/// - Parameters:
 	///   - seconds: кол-во секунд прошедшее с 1970г
 	///   - shouldReturn: нужно ли делать перенос на след. строку
-	public static func convertTimeStamp(seconds:TimeInterval, shouldReturn:Bool) -> String{
+	public static func convertTimeStamp(seconds: TimeInterval, shouldReturn: Bool) -> String{
 		
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
@@ -143,6 +143,35 @@ struct Calculations {
 		}
 	}
 	
+	
+	public static func timesAgoDisplay(timeinterval: TimeInterval) -> String {
+		let date = Date(timeIntervalSince1970: timeinterval)
+		let secondsAgo = Int(Date().timeIntervalSince(date))
+		
+		let minute = 60
+		let hour = 60 * minute
+		let day = 24 * hour
+		
+		let quotient: Int
+		let unit: String
+		
+		if secondsAgo < minute {
+			quotient = max(1, secondsAgo)
+			unit = dict[53]![LANG] // c
+		}
+		else if secondsAgo < hour {
+			quotient = secondsAgo / minute
+			unit = dict[54]![LANG] // мин.
+		}
+		else if secondsAgo < day && secondsAgo <= 4 * hour {
+			quotient = secondsAgo / hour
+			unit = dict[55]![LANG] // час.
+		}
+		else {
+			return convertTimeStamp(seconds: timeinterval, shouldReturn: false)
+		}
+		return "\(quotient) \(unit) \(dict[56]![LANG])" // назад
+	}
 	
 	
 	

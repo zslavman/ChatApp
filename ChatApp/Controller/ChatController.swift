@@ -720,7 +720,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		lastVisitLable.textColor = UIColor.white.withAlphaComponent(0.7)
 		lastVisitLable.adjustsFontSizeToFitWidth = true
 		lastVisitLable.sizeToFit()
-		lastVisitLable.font = UIFont.systemFont(ofSize: 11)
+		lastVisitLable.font = UIFont.systemFont(ofSize: 12)
 		
 		visitHeightAnchor = lastVisitLable.heightAnchor.constraint(equalToConstant: 15)
 		visitHeightAnchor.isActive = true
@@ -729,7 +729,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		let stackView = UIStackView(arrangedSubviews: [nameLabel, lastVisitLable])
 		stackView.axis = .vertical
 		stackView.alignment = .center
-		stackView.spacing = 1
+		stackView.spacing = 0
 		stackView.backgroundColor = UIColor.orange
 		navigationItem.titleView = stackView
 	}
@@ -771,7 +771,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			[weak self] (snapshot) in
 			guard let strongSelf = self else { return }
 			guard let lastVisit = snapshot.value as? TimeInterval else { return }
-			let lastVisitDate = Calculations.convertTimeStamp(seconds: lastVisit, shouldReturn: false)
+			let lastVisitDate = Calculations.timesAgoDisplay(timeinterval: lastVisit)
 			let lastVisitString = dict[51]![LANG] + lastVisitDate // был(а) в сети:
 			strongSelf.setLastVisit(dateInfo: lastVisitString)
 			print("set LastVisit")
