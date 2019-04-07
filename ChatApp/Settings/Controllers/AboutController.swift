@@ -70,6 +70,13 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		cont.animationSpeed = 0.75
 		return cont
 	}()
+	private lazy var goBackBttn: UIButton = {
+		let bttn = UIButton()
+		bttn.setImage(UIImage(named: "bttn_back"), for: .normal)
+		bttn.translatesAutoresizingMaskIntoConstraints = false
+		bttn.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+		return bttn
+	}()
 	
 	
     override func viewDidLoad() {
@@ -79,7 +86,9 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		//shouldAutorotate = false
 		support.delegate = self
 		installScene()
-		drawNSAttrinuredTexts()
+		drawNSAttrbutedTexts()
+		navigationController?.setNavigationBarHidden(true, animated: true)
+		
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -89,8 +98,13 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		Calculations.lockOrientation(.all)
+		navigationController?.setNavigationBarHidden(false, animated: true)
 	}
 	
+	
+	@objc private func goBack() {
+		self.navigationController?.popViewController(animated: true)
+	}
 
 	private func installScene() {
 		view.addSubview(backImage)
@@ -99,6 +113,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		view.addSubview(support)
 		view.addSubview(titleApp)
 		view.addSubview(animContainer)
+		view.addSubview(goBackBttn)
 		
 		let animContainerY = NSLayoutConstraint(item: animContainer,
 									attribute: .centerY,
@@ -139,12 +154,17 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 			animContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/10),
 			animContainer.widthAnchor.constraint(equalTo: animContainer.heightAnchor, multiplier: 2/1),
 			animContainerY,
+			
+			goBackBttn.widthAnchor.constraint(equalToConstant: 75),
+			goBackBttn.heightAnchor.constraint(equalToConstant: 75),
+			goBackBttn.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+			goBackBttn.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5),
 		])
 
 	}
 	
 	
-	private func drawNSAttrinuredTexts() {
+	private func drawNSAttrbutedTexts() {
 		var currentVersion = dict[42]![0]
 		if let bundle = Bundle.main.infoDictionary, let version = bundle["CFBundleShortVersionString"] as? String{
 			currentVersion = " v" + version

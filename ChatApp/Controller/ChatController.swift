@@ -187,7 +187,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		collectionView?.collectionViewLayout.invalidateLayout()
 		// в режиме просмотра картинки прячем growingInputView, т.к. по непонятной причине оно появляется
-		if (startingFrame != nil){
+		if (startingFrame != nil) {
 			growingInputView.isHidden = true
 		}
 		else{

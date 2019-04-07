@@ -27,7 +27,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.layer.masksToBounds = true
 		return imageView
 	}()
-	
 	private let inputsContainerView: UIView = {
 		let view_i = UIView()
 		view_i.backgroundColor = .white
@@ -38,7 +37,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		view_i.layer.shadowOpacity = 0.3
 		return view_i
 	}()
-	
 	private let loginRegisterBttn: UIButton = {
 		let button = UIButton(type: .system)
 		button.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
@@ -55,8 +53,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		button.addTarget(self, action: #selector(onGoClick), for: UIControl.Event.touchUpInside)
 		return button
 	}()
-	
-	
 	internal let nameTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = dict[27]![LANG] // Имя
@@ -78,7 +74,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return separator
 	}()
 	//*********************
-	
 	internal let emailTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Email"
@@ -94,8 +89,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.layer.masksToBounds = true
 		return tf
 	}()
-	
-	
 	internal let passTF:UITextField = {
 		let tf = UITextField()
 		tf.placeholder = dict[26]![LANG] // Пароль
@@ -109,10 +102,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.layer.masksToBounds = true
 		return tf
 	}()
-
-	
-	
-	internal let loginSegmentedControl:UISegmentedControl = {
+	internal let loginSegmentedControl: UISegmentedControl = {
 		let sc = UISegmentedControl(items: [dict[11]![LANG], dict[25]![LANG]]) // Login, Register
 		sc.translatesAutoresizingMaskIntoConstraints = false
 		sc.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
@@ -120,14 +110,12 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		sc.addTarget(self, action: #selector(onSegmentedClick), for: UIControl.Event.valueChanged)
 		return sc
 	}()
-	
 	private let helperElement_bottom: UIView = {
 		let helper = UIView()
 		helper.backgroundColor = UIColor.yellow.withAlphaComponent(0.3)
 		helper.translatesAutoresizingMaskIntoConstraints = false
 		return helper
 	}()
-	
 	private var plus_label: UIImageView = {
 		let plus = UIImageView()
 		plus.image = UIImage(named: "bttn_plus_green")
@@ -140,24 +128,20 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		plus.layer.shadowOpacity = 0.3
 		return plus
 	}()
-	
-	internal var selectedImage:UIImage? {
+	internal var selectedImage: UIImage? {
 		didSet{
 			plus_label.isHidden = true
 		}
 	}
+	private var mainStackView: UIStackView!
+	private var nameTFHeightAnchor: NSLayoutConstraint?
 	
-	private var mainStackView:UIStackView!
-	private var nameTFHeightAnchor:NSLayoutConstraint?
-	
-	private var keyboardHeight:CGFloat = 0
-	private let defaultConstHeight:CGFloat = -35
-	private var baseHeightAnchor:NSLayoutConstraint? // смещение центра основного контейнера по Y
-	private var pHeightAnchor:NSLayoutConstraint? // высота фотки
-	private var pWidthAnchor:NSLayoutConstraint? // ширина фотки
-	
+	private var keyboardHeight: CGFloat = 0
+	private let defaultConstHeight: CGFloat = -35
+	private var baseHeightAnchor: NSLayoutConstraint? // смещение центра основного контейнера по Y
+	private var pHeightAnchor: NSLayoutConstraint? // высота фотки
+	private var pWidthAnchor: NSLayoutConstraint? // ширина фотки
 	private var screenSize = CGSize.zero
-
 	
 	
 	//*************************
@@ -166,13 +150,10 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-		
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.keyboardDismissMode = .interactive
 		// collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
-		
 		collectionView?.backgroundColor = UIConfig.mainThemeColor
-		
 		screenSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
 		
 		setup_UI()
@@ -191,13 +172,12 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 	}
-	
 
+	
 	/// меняем цвет статусбара на светлый
 	override var preferredStatusBarStyle: UIStatusBarStyle {
 		return .lightContent
 	}
-	
 	
 
 	private func setup_UI(){
@@ -304,7 +284,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	/// нажали на Register/Login
 	@objc private func onGoClick(){
-
 		onChatBackingClick()
 		AppDelegate.waitScreen.show()
 		
@@ -337,14 +316,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	/// клик на segmentedControl
-	@objc private func onSegmentedClick(){
-		
+	@objc private func onSegmentedClick() {
 		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
 		loginRegisterBttn.setTitle(str, for: .normal)
-		
 		// меняем иконку аватарки/приложения
 		switch_AvaLogo()
-		
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			nameTFHeightAnchor?.constant = 0
