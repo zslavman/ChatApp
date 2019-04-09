@@ -100,17 +100,20 @@ struct Calculations {
 	/// Возвращает время или кол-во прошедшено времени (в разных форматах) относительно текущего времени
 	/// - Parameters:
 	///   - seconds: кол-во секунд прошедшее с 1970г
+	///   - lessText: short text
 	///   - shouldReturn: нужно ли делать перенос на след. строку
-	public static func convertTimeStamp(seconds: TimeInterval, shouldReturn: Bool) -> String{
-		
+	public static func convertTimeStamp(seconds: TimeInterval, lessText: Bool, shouldReturn: Bool = true) -> String{
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
 		dateFormater.locale = Locale(identifier: dict[24]![LANG])
-		let caretSymbol:String = "\n"
+		var caretSymbol: String = "\n"
+		if !shouldReturn {
+			caretSymbol = " "
+		}
 		
 		dateFormater.dateFormat = "HH:mm"
 		let HH_mm = dateFormater.string(from: convertedDate)
-		if !shouldReturn{
+		if lessText {
 			return HH_mm
 		}
 		
@@ -168,7 +171,7 @@ struct Calculations {
 			unit = dict[55]![LANG] // час.
 		}
 		else {
-			return convertTimeStamp(seconds: timeinterval, shouldReturn: false)
+			return convertTimeStamp(seconds: timeinterval, lessText: false, shouldReturn: false)
 		}
 		return "\(quotient) \(unit) \(dict[56]![LANG])" // назад
 	}

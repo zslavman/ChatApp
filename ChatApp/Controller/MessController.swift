@@ -343,14 +343,14 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	public func countUnreadInBackground(from:String){
+	public func countUnreadInBackground(from: String) {
 		let newMessage = Message(dictionary: [
 			"fromID"		: from,
 			"toID"			: owner.id!,
 			"timestamp"		: 123456,
 			"unreadCount"	: 1
 		])
-		var uniqueDialog:Bool = true
+		var uniqueDialog: Bool = true // if this is new dialog
 		
 		if messages_copy.isEmpty {
 			messages_copy = messages
