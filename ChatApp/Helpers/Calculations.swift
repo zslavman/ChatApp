@@ -327,6 +327,11 @@ struct Calculations {
 	}
 	
 	
+	public static func printDictionary(dict:[String:Any]) {
+		dict.forEach { print("\($0.key) = \($0.value)")}
+	}
+	
+	
 	
 	/// Возвращает рандомный элемент массива
 	///

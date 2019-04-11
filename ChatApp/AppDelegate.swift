@@ -16,11 +16,9 @@ import FirebaseInstanceID
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-	
 	public static var waitScreen: WaitScreen!
 	public var window: UIWindow?
 	public var orientationLock = UIInterfaceOrientationMask.all
-	
 	
 	
 	
@@ -47,7 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return true
 	}
 
-	
 	
 	// сейчас войдет в бэкграунд
 	func applicationWillResignActive(_ application: UIApplication) {
@@ -131,13 +128,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
 		guard let url = userActivity.webpageURL else { return false }
 		let parsedLink = Calculations.linkParser(url: url)
-		parsedLink.forEach { print("\($0.key) = \($0.value)")}
+		Calculations.printDictionary(dict: parsedLink)
 		return true
 	}
-	
-	
-
-
 	
 }
 
