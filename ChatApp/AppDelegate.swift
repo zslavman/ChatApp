@@ -113,6 +113,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		print("Failed to register: \(error)")
 	}
 
+	
+	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+		print("url = \(url)")
+		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+		let host = urlComponents?.host ?? ""
+		print(host)
+		
+		if host == "secretPage" {
+			//			let sb = UIStoryboard(name: "Main", bundle: .main)
+			//			let secretVC = sb.instantiateViewController(withIdentifier: "SecretVC") as? SecretViewController
+			//			secretVC?.secretMessage = urlComponents?.queryItems?.first?.value
+			//			window?.rootViewController = secretVC
+		}
+		return true
+	}
 
 	
 }
