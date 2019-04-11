@@ -114,6 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	
+	// URL-shems handler
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
 		print("url = \(url)")
 		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
@@ -121,13 +122,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		print(host)
 		
 		if host == "secretPage" {
-			//			let sb = UIStoryboard(name: "Main", bundle: .main)
-			//			let secretVC = sb.instantiateViewController(withIdentifier: "SecretVC") as? SecretViewController
-			//			secretVC?.secretMessage = urlComponents?.queryItems?.first?.value
-			//			window?.rootViewController = secretVC
 		}
 		return true
 	}
+	
+	
+	// Universal link handler (Firebase Dynamic Link)
+	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+		guard let url = userActivity.webpageURL else { return false }
+		let parsedLink = Calculations.linkParser(url: url)
+		parsedLink.forEach { print("\($0.key) = \($0.value)")}
+		return true
+	}
+	
+	
+
 
 	
 }

@@ -290,9 +290,8 @@ struct Calculations {
 	
 	
 	// откроется в другом потоке т.к. URLSession
-	static func getJSON(link:String, completion: @escaping (Data) -> Void){
-		
-		var url:URL
+	static func getJSON(link: String, completion: @escaping (Data) -> Void){
+		var url: URL
 		// проверяем валидность урл
 		if let validLink = URL(string: link){
 			url = validLink
@@ -301,7 +300,6 @@ struct Calculations {
 			print("Invalid link!")
 			return
 		}
-		
 		URLSession.shared.dataTask(with: url) {
 			(data, response, error) in
 			
@@ -313,6 +311,19 @@ struct Calculations {
 				completion(data)
 			}
 		}.resume()
+	}
+	
+	
+	
+	public static func linkParser (url: URL) -> [String:String] {
+		var dict = [String:String]()
+		let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+		if let queryItems = components.queryItems {
+			for item in queryItems {
+				dict[item.name] = item.value!
+			}
+		}
+		return dict
 	}
 	
 	

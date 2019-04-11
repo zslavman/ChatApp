@@ -778,10 +778,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		}
 	}
 	
-	
-	
-	
-	
+
 	/// воспроизведение видео на нативном плеере в фулскрине
 	public func runNativePlayer(videoUrl: URL, currentSeek: CMTime) {
 		let player = AVPlayer(url: videoUrl)
@@ -794,19 +791,12 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		}
 	}
 	
-	
 }
-
 
 
 extension Notification.Name {
 	public static let dialogerDidChangeStatus = Notification.Name("dialogerDidChangeStatus")
 }
-
-
-
-
-
 
 
 
