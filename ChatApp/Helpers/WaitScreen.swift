@@ -23,7 +23,6 @@ class WaitScreen: NSObject {
 		blackView = BlackView()
 		window.addSubview(blackView)
 		blackView.alpha = 0
-		
 		UIView.animate(withDuration: 0.3) {
 			self.blackView.alpha = 1
 		}

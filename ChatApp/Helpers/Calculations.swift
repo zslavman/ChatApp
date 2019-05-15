@@ -12,40 +12,29 @@ import Firebase
 
 struct Calculations {
 	
-	
 	/// выдирает ключи из снапшота в строковый массив
 	static func extractKeysToArray(snapshot:[DataSnapshot]) -> [String]{
-		
 		var keyStrings = [String]()
-		
 		for child in snapshot {
 			let nam = child.key
 			keyStrings.append(nam)
 		}
 		keyStrings = snapshot.map({$0.key})
-		
 		return keyStrings
 	}
 	
 	
-	
 	/// получаем класс со строки
 	static func stringClassFromString(className: String) -> AnyClass! {
-		
 		/// get namespace
 		let namespace = Bundle.main.infoDictionary!["CFBundleExecutable"] as! String
-		
 		let cls: AnyClass = NSClassFromString("\(namespace).\(className)")!
-		
 		return cls
 	}
 	
 	
-	
-	
 	/// преобразования даты для секций колекшнвью
 	static func gatheringData(seconds:TimeInterval) -> String{
-		
 		let convertedDate = Date(timeIntervalSince1970: seconds)
 		let dateFormater = DateFormatter()
 		dateFormater.locale = Locale(identifier: dict[24]![LANG]) // локаль (ru_US)
@@ -54,11 +43,11 @@ struct Calculations {
 		if Calendar.current.isDateInToday(convertedDate){
 			return dict[23]![LANG] // сегодня
 		}
-			// вчера
+		// вчера
 		else if Calendar.current.isDateInYesterday(convertedDate){
 			return dict[22]![LANG] // вчера
 		}
-			// на этой неделе (пятница)
+		// на этой неделе (пятница)
 		else if seconds + Double(604800) >= NSDate().timeIntervalSince1970 {
 			var weekDayNum = Calendar.current.component(.weekday, from: convertedDate) - 1 // возвращает дни, начиная с 1
 			if weekDayNum == 7 {
@@ -67,7 +56,7 @@ struct Calculations {
 			let weekDay = dateFormater.weekdaySymbols[weekDayNum]
 			return weekDay
 		}
-			// более недели назад (03 Окт)
+		// более недели назад (03 Окт)
 		else {
 			dateFormater.dateFormat = "dd"
 			let numDay = dateFormater.string(from: convertedDate)
@@ -78,8 +67,6 @@ struct Calculations {
 			return numDay + " " + month
 		}
 	}
-	
-	
 	
 	
 	/// преобразует секунды в формат ММ:СС
@@ -110,13 +97,11 @@ struct Calculations {
 		if !shouldReturn {
 			caretSymbol = " "
 		}
-		
 		dateFormater.dateFormat = "HH:mm"
 		let HH_mm = dateFormater.string(from: convertedDate)
 		if lessText {
 			return HH_mm
 		}
-		
 		// сегодня (12:54)
 		if Calendar.current.isDateInToday(convertedDate){
 			return HH_mm
@@ -177,7 +162,6 @@ struct Calculations {
 	}
 	
 	
-	
 	/// подсчет ожидаемых размеров текстового поля
 	static func estimatedFrameForText(text: String) -> CGRect{
 		let siz = CGSize(width: UIScreen.main.bounds.width * 2/3, height: .infinity)
@@ -185,7 +169,6 @@ struct Calculations {
 		
 		return NSString(string: text).boundingRect(with: siz, options: opt, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16)], context: nil)
 	}
-	
 	
 	
 	static func getImageWithColor(color: UIColor, size: CGSize) -> UIImage {
@@ -199,7 +182,6 @@ struct Calculations {
 	}
 	
 	
-	
 	public static func gatherDeviceInfo() -> [String]{
 		
 		var returnedArr = [String]()
@@ -210,12 +192,10 @@ struct Calculations {
 		let fullVersion = dict[41]![0] + " v." + appVersion + " build " + build
 		
 		returnedArr.append(fullVersion)
-		
 		returnedArr.append(UIDevice.current.modelName)
 		returnedArr.append(UIDevice.current.systemName + " " + UIDevice.current.systemVersion)
 		return returnedArr
 	}
-	
 	
 	
 	static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
@@ -224,13 +204,12 @@ struct Calculations {
 		}
 	}
 	
+	
 	/// OPTIONAL Added method to adjust lock and rotate to the desired orientation
 	static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
 		Calculations.lockOrientation(orientation)
 		UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
 	}
-	
-	
 	
 	
 	static func alert(message: String, title: String = "", completion: (() -> ())?) -> UIAlertController {
@@ -241,7 +220,6 @@ struct Calculations {
 				completion()
 			}
 		})
-		
 		alertController.addAction(OK_action)
 		return alertController
 	}
@@ -250,13 +228,10 @@ struct Calculations {
 	
 	// анимированное появление таблицы без секций (ячейки подтягиваются снизу)
 	static func animateTableWithRows(tableView:UITableView, duration: Double){
-		
 		let cells = tableView.visibleCells
-		
 		for cell in cells {
 			cell.transform = CGAffineTransform(translationX: 0, y: tableView.bounds.size.height)
 		}
-		
 		for (i, cell) in cells.enumerated() {
 			let delay = Double(i) * 0.05
 			UIView.animate(withDuration: duration, delay: delay, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
@@ -264,7 +239,6 @@ struct Calculations {
 			}, completion: nil)
 		}
 	}
-	
 	
 	
 	/// анимированное появление таблицы с секциями
@@ -275,7 +249,6 @@ struct Calculations {
 	}
 	
 	
-	
 	// измерение скорости выполнения методов
 	static func timeMeasuringCodeRunning(title:String, operationBlock: () -> ()) {
 		let start = CFAbsoluteTimeGetCurrent()
@@ -284,9 +257,6 @@ struct Calculations {
 		let timeElapsed = finish - start
 		print ("Время выполнения \(title) = \(timeElapsed) секунд")
 	}
-	
-	
-	
 	
 	
 	// откроется в другом потоке т.к. URLSession
@@ -313,8 +283,7 @@ struct Calculations {
 		}.resume()
 	}
 	
-	
-	
+
 	public static func linkParser (url: URL) -> [String:String] {
 		var dict = [String:String]()
 		let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
@@ -332,7 +301,6 @@ struct Calculations {
 	}
 	
 	
-	
 	/// Возвращает рандомный элемент массива
 	///
 	/// - Parameter arr: массив
@@ -341,6 +309,7 @@ struct Calculations {
 		let randomIndex = Int(arc4random_uniform(UInt32(arr.count)))
 		return arr[randomIndex]
 	}
+	
 	
 	/// Возвращает рандомное число между min и max
 	public static func random(_ min: Int, _ max: Int) -> Int {
@@ -353,6 +322,7 @@ struct Calculations {
 	public func distanceCalc(a:CGPoint, b:CGPoint) -> CGFloat{
 		return sqrt(pow((b.x - a.x), 2) + pow((b.y - a.y), 2))
 	}
+	
 	
 	// пересчет времени передвижения при различных расстояниях
 	public func timeToTravelDistance(distance:CGFloat, speed:CGFloat) -> TimeInterval{
@@ -368,9 +338,6 @@ struct Calculations {
 		
 		return components
 	}
-	
-	
-	
 	
 }
 

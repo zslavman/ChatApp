@@ -17,17 +17,14 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	public let notif_ID:String = "notif_ID"
 	private let NotifCenter = UNUserNotificationCenter.current()
 	
-	
 	// запрос на нотификейшны
 	public func requestAuthorisation(){
-		
 		UNUserNotificationCenter.current().delegate = self
 		Messaging.messaging().delegate = self
 		
 		let options: UNAuthorizationOptions = [.alert, .badge, .sound]
 		NotifCenter.requestAuthorization(options: options, completionHandler: {
 			authorized, error in
-			
 			#if targetEnvironment(simulator)
 			// code for simulator
 			#else
@@ -42,10 +39,8 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	}
 	
 	
-	
 	// создаем алертконтроллер для запуска уведомления
 	public func createNotif() -> UIAlertController {
-		
 		let title = "Запуск уведомления"
 		let message = "Введите кол-во секунд, через которое сработает уведомление. После нажатия 'ОК' приложение' будет закрыто:"
 		
@@ -61,10 +56,8 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 			textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: textField.frame.height))
 			textField.leftViewMode = .always
 		}
-		
 		let OK_action = UIAlertAction(title: "OK", style: .default, handler: {
 			(action) in
-
 			let textField = alertController.textFields?[0]
 			let receivedStr = Double(textField!.text!)
 			
@@ -87,7 +80,6 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	
 	// отправить локальное уведомление через Х секунд
 	public func sendLocalNotif(delaySeconds:TimeInterval){
-		
 		// чистим предыдущие уведомления (если таковые будут)
 		removeNotifications(identifiers: [notif_ID])
 		
@@ -129,23 +121,19 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	}
 	
 	
-	
 	// читаем архив оповещений которые еще не произошли
 	// и находим там (если есть) время прошлого нотификейшна
 	public func getLastNotifData(callback: ((Double) -> ())?){
-		
 		var lastReceivedNotifTime:DateComponents?
 		
 		NotifCenter.getPendingNotificationRequests {
 			(launchedNotifSet:[UNNotificationRequest]) in
-			
 			for request in launchedNotifSet {
 				if request.identifier == self.notif_ID {
 					lastReceivedNotifTime = request.trigger?.value(forKey: "dateComponents") as? DateComponents
 					break
 				}
 			}
-			
 			if let lastReceivedNotifTime = lastReceivedNotifTime {
 				let estimateTime = Calendar.current.dateComponents([.minute, .second], from: Calculations.getDateComponent(), to: lastReceivedNotifTime)
 				print("estimateTime = \(estimateTime)")
@@ -228,7 +216,6 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 		}
 		completionHandler()
 	}
-	
 	
 	
 	

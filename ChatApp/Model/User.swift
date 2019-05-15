@@ -19,5 +19,4 @@ class User: NSObject {
 	@objc public var fcmToken: String?
 	@objc public var lastVisit: NSNumber?
 	
-
 }

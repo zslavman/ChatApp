@@ -13,10 +13,8 @@ import FirebaseMessaging
 
 struct FCMService {
 	
-	
 	/// устанавливаем новый токен
 	static func setNewToken(callback: @escaping () -> Void) {
-		
 		guard let uid = Auth.auth().currentUser?.uid else { return }
 		guard let newToken = Messaging.messaging().fcmToken else { return }
 		let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
@@ -33,7 +31,6 @@ struct FCMService {
 			}
 		}
 	}
-	
 	
 	
 	/// отсылаем оповещение собеседнику
@@ -72,11 +69,8 @@ struct FCMService {
 	}
 	
 	
-	
-	
 	// при логауте удаляем на сервере свой токен, чтоб не шли нотификейшны
 	public static func removeToken(){
-
 		InstanceID.instanceID().deleteID {
 			(error) in
 			if let er = error {
@@ -88,8 +82,7 @@ struct FCMService {
 		}
 	}
 	
-	
-	
+
 }
 
 
