@@ -41,16 +41,28 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		let button = UIButton(type: .system)
 		button.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 		button.layer.cornerRadius = 8
-		button.setTitle("Register", for: UIControl.State.normal)
+		button.setTitle("Register", for: .normal)
 		button.setTitleColor(.white, for: .normal)
-		button.setBackgroundColor(color: #colorLiteral(red: 0.58682733, green: 0.90042532, blue: 1, alpha: 1), forState: UIControl.State.highlighted)
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.layer.shadowOffset = CGSize(width: 0, height: 3)
 		button.layer.shadowRadius = 3
-		button.layer.shadowOpacity = 0.3
-//		button.layer.shouldRasterize = true
-		button.addTarget(self, action: #selector(onGoClick), for: UIControl.Event.touchUpInside)
+		button.layer.shadowOpacity = 0.15
+		button.addTarget(self, action: #selector(onGoClick), for: .touchUpInside)
+		return button
+	}()
+	private let loginViaFB_Bttn: UIButton = {
+		let button = UIButton(type: .system)
+		button.backgroundColor = #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.5450980392, alpha: 1)
+		button.layer.cornerRadius = 8
+		button.setTitle("Facebook", for: .normal)
+		button.setTitleColor(.white, for: .normal)
+		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.layer.shadowOffset = CGSize(width: 0, height: 3)
+		button.layer.shadowRadius = 3
+		button.layer.shadowOpacity = 0.15
+		button.addTarget(self, action: #selector(onLoginViaFB_Click), for: .touchUpInside)
 		return button
 	}()
 	internal let nameTF:UITextField = {
@@ -189,8 +201,16 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		inputsStackView.spacing 	 = 5
 		inputsStackView.translatesAutoresizingMaskIntoConstraints = false
 		
+		let uiArr = [
+			profileImageView,
+			loginSegmentedControl,
+			inputsStackView,
+			loginRegisterBttn,
+			loginViaFB_Bttn
+		]
+		
 		// главный стеквью
-		mainStackView = UIStackView(arrangedSubviews: [profileImageView, loginSegmentedControl, inputsStackView, loginRegisterBttn])
+		mainStackView = UIStackView(arrangedSubviews: uiArr)
 		mainStackView.axis 		 	= .vertical
 		mainStackView.alignment 	= .center
 		mainStackView.distribution 	= .fillProportionally
@@ -216,6 +236,10 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		loginRegisterBttn.widthAnchor.constraint(equalToConstant: 150).isActive = true
 		loginRegisterBttn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		
+		loginViaFB_Bttn.widthAnchor.constraint(equalToConstant: 150).isActive = true
+		loginViaFB_Bttn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		loginViaFB_Bttn.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor, constant: 8).isActive = true
 		
 		inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor).isActive 	= true
 		inputsStackView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor).isActive = true
@@ -313,6 +337,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			onRegister()
 		}
 	}
+	
+	
+	
+	@objc private func onLoginViaFB_Click() {
+		print("Try to login via Facebook")
+		
+	}
+	
 	
 	
 	/// клик на segmentedControl

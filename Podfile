@@ -1,18 +1,23 @@
-# Uncomment the next line to define a global platform for your project
- platform :ios, '10.3'
+platform :ios, '11.0'
+
+# ignore all warnings from all pods
+inhibit_all_warnings!
 
 target 'ChatApp' do
-  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for ChatApp
+ use_frameworks!
 
  pod 'Firebase/Core'
  pod 'Firebase/Auth'
  pod 'Firebase/Database'
  pod 'Firebase/Storage'
  pod 'Firebase/Messaging'
- pod 'NPTableAnimator'
- pod 'Kingfisher'
- pod 'lottie-ios'
+ pod 'NPTableAnimator', '~> 4.3.0'
+ pod 'Kingfisher', '~> 5.3.1'
+ pod 'lottie-ios', '~> 3.0.3'
+
+ #pod 'FacebookLogin', '0.4.0'
+ pod 'FacebookLogin', :git => 'https://github.com/facebook/facebook-swift-sdk.git', :branch => 'swift-4.1'
+
 end
+
+
