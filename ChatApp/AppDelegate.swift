@@ -127,8 +127,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Universal link handler (Firebase Dynamic Link)
 	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
 		guard let url = userActivity.webpageURL else { return false }
-		let parsedLink = Calculations.linkParser(url: url)
-		Calculations.printDictionary(dict: parsedLink)
+		let parsedLink = SUtils.linkParser(url: url)
+		SUtils.printDictionary(dict: parsedLink)
 		return true
 	}
 	

@@ -257,7 +257,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		
 		// получаем ожидаемую высоту
 		if let text = message.text {
-			hei = Calculations.estimatedFrameForText(text: text).height + 20 + 10 + 12 //(10 - для времени, 12 - для простора)
+			hei = SUtils.estimatedFrameForText(text: text).height + 20 + 10 + 12 //(10 - для времени, 12 - для простора)
 		}
 		else if let imageWidth = message.imageWidth?.floatValue, let imageHeight = message.imageHeight?.floatValue {
 			// h1/w1 = h2/w2  ->  h1 = h2/w2 * w1
@@ -320,7 +320,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			}
 			// преобразовываем список сообщений в массив и сохраняем для дальнейших подгрузок
 			if let allMessagesKeyList = snapshot.children.allObjects as? [DataSnapshot]{
-				self.allMessagesKeyList = Calculations.extractKeysToArray(snapshot: allMessagesKeyList)
+				self.allMessagesKeyList = SUtils.extractKeysToArray(snapshot: allMessagesKeyList)
 			}
 			// если нет сообщений или их немного
 			if allCount == 0 || allCount == self.allMessagesKeyList.count {
@@ -582,7 +582,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		
 		// создаем массив конвертированных дат (без повтора)
 		for value in dataList {
-			let dateString = Calculations.gatheringData(seconds: TimeInterval(truncating: value))
+			let dateString = SUtils.gatheringData(seconds: TimeInterval(truncating: value))
 			if !stringedTimes.contains(dateString){
 				stringedTimes.append(dateString)
 				dataArray.append([])
@@ -590,7 +590,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		}
 		// заполняем массив массивов юзеров, согласно алфавита
 		for element in messages {
-			let temp = Calculations.gatheringData(seconds: TimeInterval(truncating: element.timestamp!))
+			let temp = SUtils.gatheringData(seconds: TimeInterval(truncating: element.timestamp!))
 			let index = stringedTimes.index(of: temp)
 			dataArray[index!].append(element)
 		}
@@ -771,7 +771,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 			[weak self] (snapshot) in
 			guard let strongSelf = self else { return }
 			guard let lastVisit = snapshot.value as? TimeInterval else { return }
-			let lastVisitDate = Calculations.timesAgoDisplay(timeinterval: lastVisit)
+			let lastVisitDate = SUtils.timesAgoDisplay(timeinterval: lastVisit)
 			let lastVisitString = dict[51]![LANG] + lastVisitDate // был(а) в сети:
 			strongSelf.setLastVisit(dateInfo: lastVisitString)
 			print("set LastVisit")

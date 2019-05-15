@@ -11,7 +11,6 @@
 		5632FA7C21C8ED6000FBEE80 /* DeviceOrientationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */; };
 		5636315921CC99ED00FDDA7D /* FCMService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5636315821CC99ED00FDDA7D /* FCMService.swift */; };
 		5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5637D90D21A36C9D00BA9717 /* pipk.mp3 */; };
-		5637FD1521B365620015CAAF /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5637FD1421B365620015CAAF /* Calculations.swift */; };
 		5638D8E421923CA400EC2FE3 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5638D8E321923CA400EC2FE3 /* Message.swift */; };
 		56394A1621BD69E10026C7EF /* UIConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56394A1521BD69E10026C7EF /* UIConfig.swift */; };
 		563959D821C1F556005EA8AD /* AboutController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563959D721C1F556005EA8AD /* AboutController.swift */; };
@@ -47,6 +46,7 @@
 		5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5680E759218B52D500B9CC3B /* Extensions.swift */; };
 		5683257F228C977200B60361 /* PushStaticMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5683257E228C977200B60361 /* PushStaticMethods.swift */; };
 		56832580228C978800B60361 /* PushStaticMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5683257E228C977200B60361 /* PushStaticMethods.swift */; };
+		56832582228C984900B60361 /* SUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56832581228C984900B60361 /* SUtils.swift */; };
 		56852E4F21C063FC00E7A62F /* Locales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E4E21C063FC00E7A62F /* Locales.swift */; };
 		56852E5521C08CA600E7A62F /* tBoard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56852E5421C08CA600E7A62F /* tBoard.storyboard */; };
 		56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E5621C0962F00E7A62F /* SettingsController.swift */; };
@@ -101,7 +101,6 @@
 		5636315821CC99ED00FDDA7D /* FCMService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FCMService.swift; sourceTree = "<group>"; };
 		5636A1CE21C902E30065BFD5 /* ChatApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChatApp.entitlements; sourceTree = "<group>"; };
 		5637D90D21A36C9D00BA9717 /* pipk.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = pipk.mp3; sourceTree = "<group>"; };
-		5637FD1421B365620015CAAF /* Calculations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculations.swift; sourceTree = "<group>"; };
 		5638D8E321923CA400EC2FE3 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		56394A1521BD69E10026C7EF /* UIConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConfig.swift; sourceTree = "<group>"; };
 		563959D721C1F556005EA8AD /* AboutController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutController.swift; sourceTree = "<group>"; };
@@ -140,6 +139,7 @@
 		5679806B21DE8EAC006EA21B /* MessController_HiddenMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessController_HiddenMenu.swift; sourceTree = "<group>"; };
 		5680E759218B52D500B9CC3B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5683257E228C977200B60361 /* PushStaticMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushStaticMethods.swift; sourceTree = "<group>"; };
+		56832581228C984900B60361 /* SUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SUtils.swift; sourceTree = "<group>"; };
 		56852E4E21C063FC00E7A62F /* Locales.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locales.swift; sourceTree = "<group>"; };
 		56852E5421C08CA600E7A62F /* tBoard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = tBoard.storyboard; sourceTree = "<group>"; };
 		56852E5621C0962F00E7A62F /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
@@ -323,7 +323,7 @@
 		5680E758218B52B500B9CC3B /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				5637FD1421B365620015CAAF /* Calculations.swift */,
+				56832581228C984900B60361 /* SUtils.swift */,
 				56FEF3CA21A231C500717A48 /* OnlineService.swift */,
 				5636315821CC99ED00FDDA7D /* FCMService.swift */,
 				564ECECC21BEF9C50011C04A /* WaitScreen.swift */,
@@ -632,8 +632,8 @@
 				56B9072D21CB9DA1007B858C /* HeaderViewStretch.swift in Sources */,
 				564ECECD21BEF9C50011C04A /* WaitScreen.swift in Sources */,
 				563DCA0221BB2720007CD452 /* MySection.swift in Sources */,
-				5637FD1521B365620015CAAF /* Calculations.swift in Sources */,
 				5640ABBD21DCAC8000F016FE /* ImageLoader.swift in Sources */,
+				56832582228C984900B60361 /* SUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

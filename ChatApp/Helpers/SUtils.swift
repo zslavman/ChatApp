@@ -1,5 +1,5 @@
 //
-//  Calculations.swift
+//  SUtils.swift
 //  ChatApp
 //
 //  Created by Zinko Vyacheslav on 02.12.2018.
@@ -10,7 +10,7 @@ import Foundation
 import Firebase
 
 
-struct Calculations {
+struct SUtils {
 	
 	/// выдирает ключи из снапшота в строковый массив
 	static func extractKeysToArray(snapshot:[DataSnapshot]) -> [String]{
@@ -207,7 +207,7 @@ struct Calculations {
 	
 	/// OPTIONAL Added method to adjust lock and rotate to the desired orientation
 	static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
-		Calculations.lockOrientation(orientation)
+		SUtils.lockOrientation(orientation)
 		UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
 	}
 	
@@ -335,7 +335,6 @@ struct Calculations {
 	public static func getDateComponent(fromDate:Date = Date()) -> DateComponents{
 		let calendar = Calendar(identifier: .gregorian)
 		let components = calendar.dateComponents([.month, .day, .hour, .minute, .second], from: fromDate)
-		
 		return components
 	}
 	

@@ -404,7 +404,7 @@ class MessagesController: UITableViewController {
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
 			// Calculations.animateTable(tableView: self.tableView, duration: 0.5)
-			Calculations.animateTableWithSections(tableView: self.tableView)
+			SUtils.animateTableWithSections(tableView: self.tableView)
 		}
 		createBarItem()
 	}

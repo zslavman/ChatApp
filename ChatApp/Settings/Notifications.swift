@@ -93,7 +93,7 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 		notifContent.sound = UNNotificationSound(named: convertToUNNotificationSoundName("pipk.mp3"))
 		
 		// создаем триггер
-		let dComponent = Calculations.getDateComponent(fromDate: thresholdDate)
+		let dComponent = SUtils.getDateComponent(fromDate: thresholdDate)
 		let trigger = UNCalendarNotificationTrigger(dateMatching: dComponent, repeats: false)
 		
 		let request = UNNotificationRequest(identifier: notif_ID, content: notifContent, trigger: trigger)
@@ -135,13 +135,13 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 				}
 			}
 			if let lastReceivedNotifTime = lastReceivedNotifTime {
-				let estimateTime = Calendar.current.dateComponents([.minute, .second], from: Calculations.getDateComponent(), to: lastReceivedNotifTime)
+				let estimateTime = Calendar.current.dateComponents([.minute, .second], from: SUtils.getDateComponent(), to: lastReceivedNotifTime)
 				print("estimateTime = \(estimateTime)")
 				let minutes = estimateTime.minute!
 				let seconds = estimateTime.second!
 				
 				let summ = minutes*60 + seconds
-				let converted = Calculations.convertTime(seconds: Double(summ))
+				let converted = SUtils.convertTime(seconds: Double(summ))
 				
 				print("seconds = \(summ)")
 				print("converted = \(converted)")

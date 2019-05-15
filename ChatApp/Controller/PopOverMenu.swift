@@ -28,7 +28,7 @@ class PopOverMenu: UITableViewController {
 			Notifications.shared.getLastNotifData {
 				(seconds:Double) in
 				DispatchQueue.main.async {
-					self.timeTF?.text = "Notif (\(Calculations.convertTime(seconds: seconds)))"
+					self.timeTF?.text = "Notif (\(SUtils.convertTime(seconds: seconds)))"
 					self.sec = seconds
 					self.countDownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timerTick), userInfo: nil, repeats: true)
 				}
@@ -64,7 +64,7 @@ class PopOverMenu: UITableViewController {
 			timeTF?.textColor = .black
 			return
 		}
-		let time = "Notif (\(Calculations.convertTime(seconds: sec)))"
+		let time = "Notif (\(SUtils.convertTime(seconds: sec)))"
 		timeTF?.text = time
 	}
 	

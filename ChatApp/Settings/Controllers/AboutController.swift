@@ -81,7 +81,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		Calculations.lockOrientation(.portrait)
+		SUtils.lockOrientation(.portrait)
 		title = dict[4]![LANG] // О приложении
 		//shouldAutorotate = false
 		support.delegate = self
@@ -97,7 +97,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
-		Calculations.lockOrientation(.all)
+		SUtils.lockOrientation(.all)
 		navigationController?.setNavigationBarHidden(false, animated: true)
 	}
 	
@@ -212,7 +212,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 		mailComposerVC.setToRecipients([dict[44]![0]]) // email
 		mailComposerVC.setSubject(dict[43]![LANG]) 		// "ChatApp проблема"
 		// компонуем информацию тела письма
-		let info = Calculations.gatherDeviceInfo()
+		let info = SUtils.gatherDeviceInfo()
 		let str = "INFO: " + info.joined(separator: ", ") + "\n\n" + dict[47]![LANG] + "\n" // ... Hi Viacheslav, \n[describe problem here]
 		mailComposerVC.setMessageBody(str, isHTML: false)
 		mailComposerVC.navigationBar.tintColor = UIColor.white
@@ -230,7 +230,7 @@ class AboutController: UIViewController, MFMailComposeViewControllerDelegate, UI
 							   didFinishWith result: MFMailComposeResult,
 							   error: Error?) {
 		print("dismiss for MFMailComposeViewController")
-		Calculations.lockOrientation(.portrait)
+		SUtils.lockOrientation(.portrait)
 		controller.dismiss(animated: true, completion: nil)
 	}
 	

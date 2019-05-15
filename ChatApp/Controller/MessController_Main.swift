@@ -18,7 +18,7 @@ extension MessagesController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		Calculations.lockOrientation(.portrait)
+		SUtils.lockOrientation(.portrait)
 		
 		navigationItem.titleView?.alpha = isOnline ? 1 : 0.35
 		
@@ -34,7 +34,7 @@ extension MessagesController {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
-		Calculations.lockOrientation(.all)
+		SUtils.lockOrientation(.all)
 		
 		// перезагружаем ячейку по которой кликнули для обнуления кол-ва непрочит. сообщ.
 		if let savedIndexPath = savedIndexPath {

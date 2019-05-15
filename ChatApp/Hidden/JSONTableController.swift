@@ -73,7 +73,7 @@ class JSONTable: UITableViewController {
 	// GCD
 	private func downloadAndParseData(){
 		
-		Calculations.getJSON(link: json_link2) {
+		SUtils.getJSON(link: json_link2) {
 			(data:Data) in
 			
 			do {
@@ -81,7 +81,7 @@ class JSONTable: UITableViewController {
 				if !self.dataForCells.isEmpty {
 					DispatchQueue.main.async(execute: {
 						self.tableView.reloadData()
-						Calculations.animateTableWithSections(tableView: self.tableView)
+						SUtils.animateTableWithSections(tableView: self.tableView)
 					})
 				}
 			}

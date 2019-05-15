@@ -150,7 +150,7 @@ class ChatMessageCell: UICollectionViewCell {
 		self.message = message
 		
 		textView.text = message.text
-		sendTime_TF.text = Calculations.convertTimeStamp(seconds: message.timestamp as! TimeInterval, lessText: true)
+		sendTime_TF.text = SUtils.convertTimeStamp(seconds: message.timestamp as! TimeInterval, lessText: true)
 		// определяем какием цветом будет фон сообщения
 		// голубым (свои)
 		if message.fromID == Auth.auth().currentUser?.uid {
@@ -177,7 +177,7 @@ class ChatMessageCell: UICollectionViewCell {
 		
 		// изменим ширину фона сообщения (высота же определяется в ChatController sizeForItemAt)
 		if let str = message.text{
-			let estWidth = Calculations.estimatedFrameForText(text: str).width + 30
+			let estWidth = SUtils.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 80 ? 80 : estWidth
 		}
 		// если это исходящее сообщ. - показываем статус прочитанности

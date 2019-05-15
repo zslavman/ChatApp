@@ -39,7 +39,7 @@ extension UIImageView {
         //*******************************
 
 		let placeholderAva = UIImage(named: default_profile_image)!
-		let placeholderNotAva = Calculations.getImageWithColor(color: #colorLiteral(red: 0.737254902, green: 0.768627451, blue: 0.8509803922, alpha: 1), size: CGSize(width: 20, height: 20))
+		let placeholderNotAva = SUtils.getImageWithColor(color: #colorLiteral(red: 0.737254902, green: 0.768627451, blue: 0.8509803922, alpha: 1), size: CGSize(width: 20, height: 20))
 		
 		if urlString == "none"{ // если юзер не ставил фото на профиль, грузим дефолтную пикчу
             setImageForUIView(placeholderAva)

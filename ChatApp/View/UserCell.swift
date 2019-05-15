@@ -170,7 +170,7 @@ class UserCell: UITableViewCell {
 		detailTextLabel?.text = str
 		
 		if let seconds = msg.timestamp?.doubleValue{
-			timeLabel.text = Calculations.convertTimeStamp(seconds: seconds, lessText: false, shouldReturn: true)
+			timeLabel.text = SUtils.convertTimeStamp(seconds: seconds, lessText: false, shouldReturn: true)
 		}
 	}
 	

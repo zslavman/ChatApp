@@ -336,7 +336,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		prepareData(source: users)
 		DispatchQueue.main.async {
 			self.tableView.reloadData()
-			Calculations.animateTableWithSections(tableView: self.tableView)
+			SUtils.animateTableWithSections(tableView: self.tableView)
 			
 			// отправляем уведомление
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: FindUserForChatController.notificationID), object: nil)

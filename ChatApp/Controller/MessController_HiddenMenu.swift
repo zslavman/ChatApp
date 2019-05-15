@@ -42,7 +42,7 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
 			switch numberOfMenu {
 			case 0:
-				Calculations.animateTableWithSections(tableView: self.tableView)
+				SUtils.animateTableWithSections(tableView: self.tableView)
 			case 1:
 				self.isOnline = !self.isOnline
 				OnlineService.setUserStatus(self.isOnline)
