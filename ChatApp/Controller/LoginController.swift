@@ -27,7 +27,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
 		imageView.isUserInteractionEnabled = true
 		imageView.layer.masksToBounds = true
-		imageView.alpha = 0
+		imageView.alpha = 1
 		return imageView
 	}()
 	private let inputsContainerView: UIView = {
@@ -309,36 +309,38 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
-	/// нажали на Register/Login
-	@objc private func onGoClick(){
+	/// Register/Login clicked
+	@objc private func onGoClick() {
 		onChatBackingClick()
 		AppDelegate.waitScreen.show()
 		
-		// отсекаем возможность пустого поля
-		let e = emailTF.text!.filter{!" ".contains($0)}
-		let p = passTF.text!.filter{!" ".contains($0)}
-		let n = nameTF.text!.filter{!" ".contains($0)}
+		let ema = emailTF.text!.trimmingCharacters(in: CharacterSet.whitespaces)
+		let pas = passTF.text!.trimmingCharacters(in: CharacterSet.whitespaces)
+		let nam = nameTF.text!.trimmingCharacters(in: CharacterSet.whitespaces)
+		let forLogin: [String] = [ema, pas]
+		let forRegis: [String] = [ema, pas, nam]
 		
-//		let str = nameTF.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+		// on login
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
-			if e.count == 0 || p.count == 0 {
-				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG]) // Обнаружены незаполненные поля, все поля обязательные!
+			let temp1 = forLogin.compactMap{!$0.isEmpty ? $0 : nil}
+			guard temp1.count == forLogin.count else {
+				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG]) // Empty field(s) detected
 				return
 			}
 		}
+		// on register
 		else {
-			if e.count == 0 || p.count == 0 || n.count == 0 {
+			let temp2 = forRegis.compactMap{!$0.isEmpty ? $0 : nil}
+			if temp2.count != forRegis.count {
 				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG])
 				return
 			}
 		}
-		
-		if loginSegmentedControl.selectedSegmentIndex == 0 {
-			onLogin()
+		guard SUtils.isValidEmail(maybeEmail: ema) else {
+			AppDelegate.waitScreen?.setInfo(str: dict[57]![LANG]) // Not valid email
+			return
 		}
-		else if loginSegmentedControl.selectedSegmentIndex == 1 {
-			onRegister()
-		}
+		loginSegmentedControl.selectedSegmentIndex == 0 ? onLogin() : onRegister()
 	}
 	
 	
@@ -348,23 +350,23 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		// Exit
 		if FBSDKAccessToken.current() != nil {
-			//			let pp = FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "name, email"])
-			//			pp?.start(completionHandler: {
-			//				(connection, result, error) in
-			//				if (error == nil) {
-			//					let fbDetails = result as! NSDictionary
-			//					print(fbDetails)
-			//				}
-			//				else {
-			//					print(error?.localizedDescription ?? "Not found")
-			//				}
-			//			})
-			// **********
+//			let pp = FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "name, email, picture"])
+//			pp?.start(completionHandler: {
+//				(connection, result, error) in
+//				if (error == nil) {
+//					let fbDetails = result as! NSDictionary
+//					print(fbDetails)
+//				}
+//				else {
+//					print(error?.localizedDescription ?? "Not found")
+//				}
+//			})
 			
-			let deletepermission = FBSDKGraphRequest(graphPath: "me/permissions/", parameters: nil, httpMethod: "DELETE")
-			deletepermission?.start(completionHandler: {
+			//**********
+			let deletePermission = FBSDKGraphRequest(graphPath: "me/permissions/", parameters: nil, httpMethod: "DELETE")
+			deletePermission?.start(completionHandler: {
 				(connection, result, error) in
-				print("the delete permission is \(result ?? "")")
+				print("delete permission: \(result ?? "")")
 			})
 			loginManager.logOut()
 			print("Successfully logged out")

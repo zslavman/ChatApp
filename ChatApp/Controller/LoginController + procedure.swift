@@ -94,7 +94,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	}
 	
 	
-	public func onRegister(){
+	public func onRegister() {
 		guard let email = emailTF.text, let pass = passTF.text, let name = nameTF.text else {
 			return
 		}
