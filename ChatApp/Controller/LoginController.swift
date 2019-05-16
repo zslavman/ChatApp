@@ -345,11 +345,33 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	@objc private func onLoginViaFB_Click() {
 		let loginManager = LoginManager()
+		
+		// Exit
 		if FBSDKAccessToken.current() != nil {
+			//			let pp = FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "name, email"])
+			//			pp?.start(completionHandler: {
+			//				(connection, result, error) in
+			//				if (error == nil) {
+			//					let fbDetails = result as! NSDictionary
+			//					print(fbDetails)
+			//				}
+			//				else {
+			//					print(error?.localizedDescription ?? "Not found")
+			//				}
+			//			})
+			// **********
+			
+			let deletepermission = FBSDKGraphRequest(graphPath: "me/permissions/", parameters: nil, httpMethod: "DELETE")
+			deletepermission?.start(completionHandler: {
+				(connection, result, error) in
+				print("the delete permission is \(result ?? "")")
+			})
 			loginManager.logOut()
 			print("Successfully logged out")
 			return
 		}
+		
+		// login
 		loginManager.loginBehavior = .web
 		loginManager.logIn(readPermissions: [.publicProfile], viewController: self) {
 			loginResult in

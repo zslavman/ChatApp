@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChatApp/Controller/LoginController.swift"
-            timestampString = "579698285.533162"
+            timestampString = "579702078.413087"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "361"
-            endingLineNumber = "361"
+            startingLineNumber = "381"
+            endingLineNumber = "381"
             landmarkName = "onLoginViaFB_Click()"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChatApp/Controller/LoginController.swift"
-            timestampString = "579698285.533711"
+            timestampString = "579702078.413586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "347"
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ChatApp/Controller/LoginController.swift"
-            timestampString = "579698285.534102"
+            timestampString = "579702078.413937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "364"
-            endingLineNumber = "364"
+            startingLineNumber = "384"
+            endingLineNumber = "384"
             landmarkName = "onLoginViaFB_Click()"
             landmarkType = "7">
          </BreakpointContent>
