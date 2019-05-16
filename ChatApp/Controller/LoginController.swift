@@ -8,6 +8,8 @@
 
 import UIKit
 import Firebase
+import FacebookLogin
+import FBSDKCoreKit
 
 
 let default_profile_image: String = "default_profile_image"
@@ -25,6 +27,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
 		imageView.isUserInteractionEnabled = true
 		imageView.layer.masksToBounds = true
+		imageView.alpha = 0
 		return imageView
 	}()
 	private let inputsContainerView: UIView = {
@@ -341,8 +344,26 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	@objc private func onLoginViaFB_Click() {
-		print("Try to login via Facebook")
-		
+		let loginManager = LoginManager()
+		if FBSDKAccessToken.current() != nil {
+			loginManager.logOut()
+			print("Successfully logged out")
+			return
+		}
+		loginManager.loginBehavior = .web
+		loginManager.logIn(readPermissions: [.publicProfile], viewController: self) {
+			loginResult in
+			switch loginResult {
+			case .failed(let error):
+				print(error)
+			case .cancelled:
+				print("User cancelled login.")
+			case .success(let grantedPermissions, let declinedPermissions, let accessToken):
+				print("Logged in! AccessToken: ", accessToken)
+				print("Logged in! grantedPermissions: ", grantedPermissions)
+				print("Logged in! declinedPermissions: ", declinedPermissions)
+			}
+		}
 	}
 	
 	

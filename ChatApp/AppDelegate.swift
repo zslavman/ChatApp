@@ -11,6 +11,7 @@ import Firebase
 import UserNotifications
 import FirebaseMessaging
 import FirebaseInstanceID
+import FacebookCore
 
 
 @UIApplicationMain
@@ -29,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		//Notifications.shared.requestAuthorisation()
+		SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false
 		
@@ -68,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		if MessagesController.shared != nil {
 			MessagesController.shared.messages_copy.removeAll()
 		}
+		AppEventsLogger.activate(application)
 	}
 
 	
@@ -117,10 +120,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
 		let host = urlComponents?.host ?? ""
 		print(host)
+		if host == "secretPage" { }
 		
-		if host == "secretPage" {
-		}
-		return true
+		let facebook = SDKApplicationDelegate.shared.application(app, open: url, options: options)
+		
+		return facebook
 	}
 	
 	
