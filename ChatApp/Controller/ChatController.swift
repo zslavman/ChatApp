@@ -15,7 +15,7 @@ import AVKit
 
 class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 	
-	public var user: User? {
+	public var user: ChatUser? {
 		didSet {
 			if let userName = user?.name {
 				drawCustomTitleView(name: userName)
@@ -698,7 +698,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				body = properties["text"] as! String
 			}
 			let fromID = MessagesController.shared.owner.id!
-			FCMService.sendNotification(taskDictionary: [
+			APIServices.sendNotification(taskDictionary: [
 				"to" 	: fcmToken,
 				"title"	: name!,
 				"body"	: body,

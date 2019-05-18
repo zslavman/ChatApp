@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// сейчас войдет в бэкграунд
 	func applicationWillResignActive(_ application: UIApplication) {
-		OnlineService.setUserStatus(false)
+		APIServices.setUserStatus(false)
 	}
 	
 	// вошло в бэкграунд
@@ -65,7 +65,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	// вошло в активный режим
 	func applicationDidBecomeActive(_ application: UIApplication) {
-		OnlineService.setUserStatus(true)
+		APIServices.setUserStatus(true)
 		Notifications.shared.ConnectToFCM()
 		if MessagesController.shared != nil {
 			MessagesController.shared.messages_copy.removeAll()
@@ -76,7 +76,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// прерывание приложения
 	func applicationWillTerminate(_ application: UIApplication) {
-		OnlineService.setUserStatus(false)
+		APIServices.setUserStatus(false)
 	}
 	
 	

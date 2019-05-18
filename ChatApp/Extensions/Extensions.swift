@@ -12,19 +12,14 @@ import Kingfisher
 
 // var imageCache = NSCache<NSString, UIImage>()
 
-
-
-
 extension UIImageView {
 	
 	//		let cache = ImageCache.default
 	//		cache.clearMemoryCache()
 	//		cache.clearDiskCache { print("Done") }
-	
-    
+
     /// загрузчик картинок с внешних адресов (использует кэш)
 	public func loadImageUsingCache(urlString: String, isAva:Bool = false, completionHandler: ((UIImage) -> ())? ){
-        
         /// внутренняя подфункция проверяющая есть ли колбэк
         func setImageForUIView(_ gotImage:UIImage){
             if let completionHandler = completionHandler { // если есть колбэк - вызываем его
@@ -47,9 +42,7 @@ extension UIImageView {
         }
 		
 		let url = URL(string: urlString)
-		
 		let placeholder = (isAva) ? placeholderAva : placeholderNotAva
-		
 		self.kf.setImage(with: url, placeholder: placeholder)
 		
         // проверяем нет ли запрашиваемой картинки в кэше
@@ -64,7 +57,6 @@ extension UIImageView {
 //                return
 //            }
 //            DispatchQueue.main.async {
-//
 //                if let downloadedImage = UIImage(data: data!){
 //                    imageCache.setObject(downloadedImage, forKey: urlString as NSString)
 //                    setImageForUIView(downloadedImage)
@@ -118,11 +110,8 @@ extension UICollectionView {
     
     func scrollToLast(animated:Bool) {
         guard numberOfSections > 0 else { return }
-        
         let lastSection = numberOfSections - 1
-        
         guard numberOfItems(inSection: lastSection) > 0 else { return }
-        
         let lastItemIndexPath = IndexPath(item: numberOfItems(inSection: lastSection) - 1, section: lastSection)
         scrollToItem(at: lastItemIndexPath, at: .bottom, animated: animated)
     }
@@ -188,14 +177,14 @@ extension UIView {
 	var safeLeftAnchor: NSLayoutXAxisAnchor {
 		if #available(iOS 11.0, *){
 			return self.safeAreaLayoutGuide.leftAnchor
-		}else {
+		} else {
 			return self.leftAnchor
 		}
 	}
 	var safeRightAnchor: NSLayoutXAxisAnchor {
 		if #available(iOS 11.0, *){
 			return self.safeAreaLayoutGuide.rightAnchor
-		}else {
+		} else {
 			return self.rightAnchor
 		}
 	}
@@ -233,9 +222,7 @@ class UnselectableTextView: UITextView {
 		guard let pos = closestPosition(to: point), let range = tokenizer.rangeEnclosingPosition(pos, with: .character, inDirection: convertToUITextDirection(UITextLayoutDirection.left.rawValue)) else {
 			return false
 		}
-
 		let startIndex = offset(from: beginningOfDocument, to: range.start)
-
 		return attributedText.attribute(.link, at: startIndex, effectiveRange: nil) != nil
 	}
 }
@@ -348,25 +335,55 @@ extension Date {
 		}
 		return "\(quotient) \(unit)\(quotient == 1 ? "": "s") ago"
 	}
-	
-	
-	
-	
 }
 
 
+extension UIImage {
+	
+	func imageWithColor(color1: UIColor) -> UIImage {
+		UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+		color1.setFill()
+		let context = UIGraphicsGetCurrentContext()
+		context?.translateBy(x: 0, y: self.size.height)
+		context?.scaleBy(x: 1.0, y: -1.0)
+		context?.setBlendMode(CGBlendMode.normal)
+		let rect = CGRect(origin: .zero, size: CGSize(width: self.size.width, height: self.size.height))
+		context?.clip(to: rect, mask: self.cgImage!)
+		context?.fill(rect)
+		let newImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		return newImage!
+	}
+	
+	func tint(with color: UIColor) -> UIImage {
+		var image = withRenderingMode(.alwaysTemplate)
+		UIGraphicsBeginImageContextWithOptions(size, false, scale)
+		color.set()
+		
+		image.draw(in: CGRect(origin: .zero, size: size))
+		image = UIGraphicsGetImageFromCurrentImageContext()!
+		UIGraphicsEndImageContext()
+		return image
+	}
+}
 
 
-
-
-
-
-
-
-
-
-
-
+extension UIButton {
+	
+	func setIconAndTitle(title: String, icon: UIImage, widthConstraints: NSLayoutConstraint) {
+		self.setTitle(title, for: .normal)
+		self.setTitle(title, for: .highlighted)
+		self.setTitleColor(UIColor.white, for: .normal)
+		self.setTitleColor(UIColor.white, for: .highlighted)
+		self.setImage(icon, for: .normal)
+		self.setImage(icon, for: .highlighted)
+		let imageWidth = self.imageView!.frame.width
+		let textWidth = (title as NSString).size(withAttributes:[NSAttributedString.Key.font: self.titleLabel!.font!]).width
+		let width = textWidth + imageWidth + 24 //24 - the sum of your insets from left and right
+		widthConstraints.constant = width
+		self.layoutIfNeeded()
+	}
+}
 
 
 // Helper function inserted by Swift 4.2 migrator.

@@ -54,11 +54,20 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		button.addTarget(self, action: #selector(onGoClick), for: .touchUpInside)
 		return button
 	}()
-	private let loginViaFB_Bttn: UIButton = {
-		let button = UIButton(type: .system)
+	private lazy var loginViaFB_Bttn: UIButton = {
+		let button = UIButton()
 		button.backgroundColor = #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.5450980392, alpha: 1)
 		button.layer.cornerRadius = 8
-		button.setTitle("Facebook", for: .normal)
+		
+		let spacing: CGFloat = 10
+		button.setTitle(dict[58]![LANG], for: .normal) // Вход
+		button.titleEdgeInsets.left = spacing
+		let img = #imageLiteral(resourceName: "facebook_logo_small").tint(with: .white)
+		button.setImage(img, for: .normal)
+		button.imageView?.contentMode = .scaleAspectFit
+		button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: spacing)
+		//button.contentHorizontalAlignment = .left
+		//button.semanticContentAttribute = .forceLeftToRight
 		button.setTitleColor(.white, for: .normal)
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		button.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +77,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		button.addTarget(self, action: #selector(onLoginViaFB_Click), for: .touchUpInside)
 		return button
 	}()
-	internal let nameTF:UITextField = {
+	internal let nameTF: UITextField = {
 		let tf = UITextField()
 		tf.placeholder = dict[27]![LANG] // Имя
 		tf.backgroundColor = .white
@@ -81,7 +90,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.layer.masksToBounds = true
 		return tf
 	}()
-	private let nameSeparator:UIView = {
+	private let nameSeparator: UIView = {
 
 		let separator = UIView()
 		separator.backgroundColor = UIColor.lightGray
@@ -89,7 +98,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return separator
 	}()
 	//*********************
-	internal let emailTF:UITextField = {
+	internal let emailTF: UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Email"
 		tf.backgroundColor = .white
@@ -104,7 +113,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.layer.masksToBounds = true
 		return tf
 	}()
-	internal let passTF:UITextField = {
+	internal let passTF: UITextField = {
 		let tf = UITextField()
 		tf.placeholder = dict[26]![LANG] // Пароль
 		tf.backgroundColor = .white
@@ -157,6 +166,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	private var pHeightAnchor: NSLayoutConstraint? // высота фотки
 	private var pWidthAnchor: NSLayoutConstraint? // ширина фотки
 	private var screenSize = CGSize.zero
+	private var startingLoginToFB: Bool = false { // flag for switch StatusBarAppearance
+		didSet {
+			setNeedsStatusBarAppearanceUpdate()
+		}
+	}
 	
 	
 	//*************************
@@ -191,7 +205,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	/// меняем цвет статусбара на светлый
 	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
+		return (startingLoginToFB) ? .default : .lightContent
 	}
 	
 
@@ -346,37 +360,13 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	@objc private func onLoginViaFB_Click() {
+		onChatBackingClick()
+		startingLoginToFB = true
 		let loginManager = LoginManager()
-		
-		// Exit
-		if FBSDKAccessToken.current() != nil {
-//			let pp = FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "name, email, picture"])
-//			pp?.start(completionHandler: {
-//				(connection, result, error) in
-//				if (error == nil) {
-//					let fbDetails = result as! NSDictionary
-//					print(fbDetails)
-//				}
-//				else {
-//					print(error?.localizedDescription ?? "Not found")
-//				}
-//			})
-			
-			//**********
-			let deletePermission = FBSDKGraphRequest(graphPath: "me/permissions/", parameters: nil, httpMethod: "DELETE")
-			deletePermission?.start(completionHandler: {
-				(connection, result, error) in
-				print("delete permission: \(result ?? "")")
-			})
-			loginManager.logOut()
-			print("Successfully logged out")
-			return
-		}
-		
-		// login
 		loginManager.loginBehavior = .web
 		loginManager.logIn(readPermissions: [.publicProfile], viewController: self) {
-			loginResult in
+			(loginResult) in
+			self.startingLoginToFB = false
 			switch loginResult {
 			case .failed(let error):
 				print(error.localizedDescription)
@@ -386,6 +376,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 				let authToken = accessToken.authenticationToken
 				let credential = FacebookAuthProvider.credential(withAccessToken: authToken)
 				// Perform login by calling Firebase APIs
+				AppDelegate.waitScreen.show()
 				Auth.auth().signInAndRetrieveData(with: credential, completion: {
 					(receivedData, error) in
 					if let error = error {
@@ -394,17 +385,34 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 					}
 					print("Logining...")
 					guard let fireUser = receivedData?.user else { return }
-					self.messagesController?.fetchUserAndSetupNavbarTitle()
-					self.dismiss(animated: true, completion: nil)
-					//let fireUser: UserInfo = (receivedUser?.user.providerData.first!)!
-					guard let uid = Auth.auth().currentUser?.uid else {	return }
-					let u2 = Auth.auth().currentUser
-					print("userFireBase = \(u2 ?? User())")
+					DispatchQueue.main.async {
+						self.analizeReceivedUser(user: fireUser)
+					}
 				})
-				
 			}
 		}
 	}
+	
+	
+	private func analizeReceivedUser(user: User) {
+		let maybeEmail = user.email ?? user.providerData.first?.providerID ?? "Facebook"
+		
+		let userValues:[String : Any] = [
+			"name"			 : user.displayName ?? "noname",
+			"email"			 : maybeEmail,
+			"id"			 : user.uid,
+			"isOnline"		 : true,
+			"profileImageUrl": user.photoURL?.absoluteString ?? "none",
+			"fcmToken"		 : "",
+			"lastVisit"		 : String(Int(Date().timeIntervalSince1970))
+		]
+		if user.email == nil { // if FB didn't give email
+			
+		}
+		// update user in FireBaseDB, goto main screen
+		registerUserIntoDB(uid: user.uid, values: userValues as [String : AnyObject])
+	}
+	
 	
 	
 	

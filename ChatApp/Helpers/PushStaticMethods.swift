@@ -7,7 +7,7 @@
 //
 import Foundation
 
-// This is a separate class just only for widget!!
+// This is a separate class just only for widget "PushMutater"!!
 
 class PushStaticMethods {
 	

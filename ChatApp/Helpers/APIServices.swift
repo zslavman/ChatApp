@@ -9,9 +9,12 @@
 import UIKit
 import Firebase
 import FirebaseMessaging
+//import FBSDKLoginKit
+import FBSDKCoreKit
+import FacebookLogin
 
 
-struct FCMService {
+struct APIServices {
 	
 	/// устанавливаем новый токен
 	static func setNewToken(callback: @escaping () -> Void) {
@@ -82,6 +85,59 @@ struct FCMService {
 		}
 	}
 	
+	
+	/// Set online/offline status for owner
+	///
+	/// - Parameters:
+	///   - status: true(online)/false(offline)
+	public static func setUserStatus(_ status: Bool) {
+		guard let uid = Auth.auth().currentUser?.uid else { return }
+		let onlinesRef = Database.database().reference().child("users").child(uid)
+		var updateDict: [String : Any] = [
+			"isOnline" : status
+		]
+		if !status {
+			updateDict["lastVisit"] = Int(Date().timeIntervalSince1970)
+		}
+		onlinesRef.updateChildValues(updateDict) {
+			(error: Error?, ref: DatabaseReference) in
+			if let error = error {
+				assertionFailure(error.localizedDescription)
+			}
+			else {
+				let str = status ? "online" : "offline"
+				print("Юзер: \(str)")
+			}
+		}
+	}
+	
+	
+	public static func facebookLogout() {
+		guard FBSDKAccessToken.current() != nil else { return }
+		let deletePermission = FBSDKGraphRequest(graphPath: "me/permissions/", parameters: nil, httpMethod: "DELETE")
+		deletePermission?.start(completionHandler: {
+			(connection, result, error) in
+			print("delete permission: \(result ?? "")")
+		})
+		LoginManager().logOut()
+		print("Successfully logged out")
+	}
+	
+	
+	public static func fetchFacebookUserInfo() {
+		guard FBSDKAccessToken.current() != nil else { return }
+		let request = FBSDKGraphRequest(graphPath: "me", parameters: ["fields": "name, email, picture"])
+		request?.start(completionHandler: {
+			(connection, result, error) in
+			if let error = error {
+				print(error.localizedDescription)
+				return
+			}
+			let fbDetails = result as! NSDictionary
+			print(fbDetails)
+		})
+	}
+		
 
 }
 

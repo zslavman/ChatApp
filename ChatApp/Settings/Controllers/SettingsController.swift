@@ -151,6 +151,8 @@ class SettingsController: UITableViewController {
 	
 	private func logout() {
 		
+		APIServices.facebookLogout()
+		
 		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		messagesController.dispose()
 		

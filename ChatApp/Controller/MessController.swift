@@ -15,7 +15,7 @@ import NPTableAnimator
 class MessagesController: UITableViewController {
 
 	
-	public var owner: User!
+	public var owner: ChatUser!
 	internal var uid: String!
 	public static var shared: MessagesController!
 	
@@ -32,7 +32,7 @@ class MessagesController: UITableViewController {
 	
 	private var hendlers = [UInt: DatabaseReference]() 	// для правильного диспоза слушателей базы
 	internal var profileImageView: UIImageView!
-	public var senders = [User]() 					// данные юзеров с которым есть чаты
+	public var senders = [ChatUser]() 					// данные юзеров с которым есть чаты
 	
 	private var audioPlayer = AVAudioPlayer()
 	private var allowIncomingSound: Bool = false // флаг, разрешающий восп. звук когда приходит сообщение
@@ -65,6 +65,7 @@ class MessagesController: UITableViewController {
 		do { audioPlayer = try AVAudioPlayer(contentsOf: url) }
 		catch { print("error loading file") }
 	}
+	
 	
 	
 	/// убираем собеседника и само сообщение отовсюду
@@ -484,7 +485,7 @@ class MessagesController: UITableViewController {
 			(snapshot) in
 			if let dictionary = snapshot.value as? [String:AnyObject] {
 				// для отрисовки навбара нужны данные по юзеру
-				let user = User()
+				let user = ChatUser()
 				user.setValuesForKeys(dictionary)
 				self.owner = user
 				self.setupNavbarWithUser(user: user)
@@ -493,12 +494,12 @@ class MessagesController: UITableViewController {
 	}
 	
 
-	public func setupNavbarWithUser(user: User) {
+	public func setupNavbarWithUser(user: ChatUser) {
 		if owner == nil {
 			owner = user
 		}
 		// устанавливаем индикацию онлайн
-		OnlineService.setUserStatus(true)
+		APIServices.setUserStatus(true)
 		drawLoading(text: dict[31]![LANG])
 		fetchDialogs()
 		drawAvaAndName()
@@ -548,7 +549,7 @@ class MessagesController: UITableViewController {
 	public func dispose() {
 		// записуем на сервер состояние "offline"
 		if (uid != nil){
-			OnlineService.setUserStatus(false)
+			APIServices.setUserStatus(false)
 		}
 		// удаляем слушателя собственных сообщений
 		refUserMessages?.removeAllObservers()
@@ -575,7 +576,7 @@ class MessagesController: UITableViewController {
 		tabBarController?.tabBar.items!.first?.badgeValue = nil
 		UIApplication.shared.applicationIconBadgeNumber = 0
 		
-		FCMService.removeToken()
+		APIServices.removeToken()
 		UIApplication.shared.unregisterForRemoteNotifications()
 	}
 	
@@ -599,7 +600,7 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-	@objc public func goToChatWith(user: User){
+	@objc public func goToChatWith(user: ChatUser){
 		// запоминаем юзера, с которым перешли в чат (для блокировки проигрыв звуков при сообщениях от него)
 		// about sound - no longer need
 		goToChatWithID = user.id!

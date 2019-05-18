@@ -8,7 +8,7 @@
 
 import UIKit
 
-class User: NSObject {
+class ChatUser: NSObject {
 
 	// @objc - для того чтоб воспользоваться методом setValuesForKeys, который заполнит эти значения
 	@objc public var name: String?

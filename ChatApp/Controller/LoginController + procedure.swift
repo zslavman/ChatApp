@@ -82,7 +82,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				return
 			}
 			
-			FCMService.setNewToken(callback: {
+			APIServices.setNewToken(callback: {
 				Notifications.shared.requestAuthorisation()
 			})
 			
@@ -120,11 +120,10 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				"fcmToken"		 : "",
 				"lastVisit"		 : 0
 			]
-			// safety unwrapping image
 			guard let profileImage = self.profileImageView.image else { return }
 			
 			// проверяем, если картинка профиля стоит дефолтная (не менялась)
-			let isThatDefaultImage:Bool = profileImage.isEqual(UIImage(named: default_profile_image))
+			let isThatDefaultImage: Bool = profileImage.isEqual(UIImage(named: default_profile_image))
 			if isThatDefaultImage {
 				self.registerUserIntoDB(uid: user.uid, values: values as [String : AnyObject])
 				return
@@ -161,7 +160,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	
 	// сохраняем пользователя в базу данных (строковые данные)
-	private func registerUserIntoDB(uid: String, values:[String:AnyObject]) {
+	internal func registerUserIntoDB(uid: String, values:[String:AnyObject]) {
 		let ref = Database.database().reference()
 		let usersRef = ref.child("users").child(uid)
 		
@@ -171,11 +170,11 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				print(err?.localizedDescription as Any)
 				return
 			}
-			let user = User()
+			let user = ChatUser()
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
-			FCMService.setNewToken(callback: {
+			APIServices.setNewToken(callback: {
 				Notifications.shared.requestAuthorisation()
 			}) //// проверить!
 			AppDelegate.waitScreen.hideNow()

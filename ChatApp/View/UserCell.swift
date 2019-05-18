@@ -123,7 +123,7 @@ class UserCell: UITableViewCell {
 	
 	
 	/// настройка ячейки для MessagesController
-	public func setupCell(msg:Message, indexPath:IndexPath, user:User){ // user - не владелец
+	public func setupCell(msg:Message, indexPath:IndexPath, user:ChatUser){ // user - не владелец
 		userID = user.id
 		textLabel?.text = user.name
 		

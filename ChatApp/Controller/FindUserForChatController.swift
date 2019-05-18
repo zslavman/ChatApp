@@ -13,16 +13,16 @@ import Firebase
 class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 
 	private var cellID = "cellID"
-	private var users = [User]()
+	private var users = [ChatUser]()
 	private var timer:Timer? // таймер-задержка перезагрузки таблицы
-	private var owner:User?
+	private var owner:ChatUser?
 	
-	private var twoD = [[User]]()
+	private var twoD = [[ChatUser]]()
 	private var letter = [String]() // массив первых букв юзеров
 	private var disposeVar:(DatabaseReference, UInt)!
 	
 	private var searchController:UISearchController!
-	private var filteredResultArray = [[User]]()
+	private var filteredResultArray = [[ChatUser]]()
 	
 	private var isSearchingNow: Bool {
 		// return searchController.isActive && !searchController.searchBar.text!.isEmpty
@@ -215,7 +215,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 //		})
 		if !searchText.isEmpty{
 			let filtered = users.filter {
-				(user:User) -> Bool in
+				(user:ChatUser) -> Bool in
 				return user.email!.lowercased().contains(searchText.lowercased()) || user.name!.lowercased().contains(searchText.lowercased())
 			}
 			prepareData(source: filtered)
@@ -257,7 +257,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 			(snapshot) in
 			
 			if let dict = snapshot.value as? [String:AnyObject]{
-				let user = User()
+				let user = ChatUser()
 				// крашанет если в классе не найдется переменных с именами ключей словаря
 				user.setValuesForKeys(dict)
 				
@@ -276,10 +276,10 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 	
 	
 	/// преобразовывает масив юзеров в 2-х мерный массив для секций таблицы
-	private func prepareData(source:[User]){
+	private func prepareData(source:[ChatUser]){
 		
-		var temp1D = [User]()
-		var temp2D = [[User]]()
+		var temp1D = [ChatUser]()
+		var temp2D = [[ChatUser]]()
 		letter.removeAll()
 		
 		// убираем себя из массива
@@ -306,7 +306,7 @@ class FindUserForChatController: UITableViewController, UISearchBarDelegate {
 		}
 		
 		// сортируем элементы каждого внутреннего массива
-		var newArr = [[User]]()
+		var newArr = [[ChatUser]]()
 		for var value in temp2D {
 			// value.sort{$0.lowercased() < $1.lowercased()}
 			value.sort{($0.name)!.localizedCaseInsensitiveCompare($1.name!) == .orderedAscending}
