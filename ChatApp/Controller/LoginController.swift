@@ -195,7 +195,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 
-	private func setup_UI(){
+	private func setup_UI() {
 		// стейвью для полей ввода
 		let inputsStackView = UIStackView(arrangedSubviews: [nameTF, emailTF, passTF])
 		inputsStackView.axis 		 = .vertical
@@ -379,13 +379,29 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			loginResult in
 			switch loginResult {
 			case .failed(let error):
-				print(error)
+				print(error.localizedDescription)
 			case .cancelled:
-				print("User cancelled login.")
-			case .success(let grantedPermissions, let declinedPermissions, let accessToken):
-				print("Logged in! AccessToken: ", accessToken)
-				print("Logged in! grantedPermissions: ", grantedPermissions)
-				print("Logged in! declinedPermissions: ", declinedPermissions)
+				print("User cancelled login")
+			case .success(_, _, let accessToken):
+				let authToken = accessToken.authenticationToken
+				let credential = FacebookAuthProvider.credential(withAccessToken: authToken)
+				// Perform login by calling Firebase APIs
+				Auth.auth().signInAndRetrieveData(with: credential, completion: {
+					(receivedData, error) in
+					if let error = error {
+						print(error.localizedDescription)
+						return
+					}
+					print("Logining...")
+					guard let fireUser = receivedData?.user else { return }
+					self.messagesController?.fetchUserAndSetupNavbarTitle()
+					self.dismiss(animated: true, completion: nil)
+					//let fireUser: UserInfo = (receivedUser?.user.providerData.first!)!
+					guard let uid = Auth.auth().currentUser?.uid else {	return }
+					let u2 = Auth.auth().currentUser
+					print("userFireBase = \(u2 ?? User())")
+				})
+				
 			}
 		}
 	}
@@ -410,7 +426,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	/// переключение
-	private func switch_AvaLogo(){
+	private func switch_AvaLogo() {
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			profileImageView.image = UIImage(named: "chatApp_logo")
@@ -420,7 +436,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			}
 			plus_label.isHidden = true
 		}
-		else{
+		else {
 			if let selectedImage = selectedImage {
 				profileImageView.image = selectedImage
 				plus_label.isHidden = true
@@ -439,7 +455,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 
 	/// клава выезжает
-	@objc private func keyboardWillShow(notif: Notification){
+	@objc private func keyboardWillShow(notif: Notification) {
 		if keyboardHeight > 0 {
 			return
 		}
@@ -458,11 +474,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			}
 			else { // в горизонт. режиме прокручиваем до нижнего поля
 				let pointToscroll = passTF.frame.origin
-
-				// if let firstResponder = collectionView?.currentFirstResponder {
-				// 	 pointToscroll = CGPoint(x: firstResponder.frame.origin.x, y: firstResponder.frame.origin.y + 0)
-				// }
-				
 				// нужно именно в основном потоке, т.к. на emailTF не срабатывало (скорее всего потому что отключил autocorrectionType)
 				DispatchQueue.main.async {
 					self.collectionView?.setContentOffset(pointToscroll, animated: true)
@@ -475,18 +486,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	/// клава заезжает
 	@objc private func keyboardWillHide(notif: Notification){
-		
 		if ((notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
-			
 			if UIScreen.main.bounds.width < UIScreen.main.bounds.height{
 				baseHeightAnchor?.constant = defaultConstHeight
 			}
 			else {
 				baseHeightAnchor?.constant = 0
 			}
-			
 			keyboardHeight = 0
-			
 			UIView.animate(withDuration: 0.3) {
 				self.view.layoutIfNeeded()
 			}
@@ -504,27 +511,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		collectionView?.endEditing(true)
 	}
 	
-	
-	
-	
-//	private var point = CGPoint.zero
-//
-//	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//		if let touch = touches.first {
-//			let position = touch.location(in: self.view)
-//			point = position
-//			print(position)
-//		}
-//	}
-//	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//		if let touch = touches.first {
-//			let position = touch.location(in: self.view)
-//			if position == point {
-//				view.endEditing(true)
-//				point = .zero
-//			}
-//		}
-//	}
+
 
 }
 

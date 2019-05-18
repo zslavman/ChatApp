@@ -32,7 +32,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	// Code=17026
 	// The password must be 6 characters long or more. })"
 	
-	@objc public func onProfileClick(){
+	@objc public func onProfileClick() {
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			return
 		}
@@ -70,7 +70,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	}
 	
 	
-	internal func onLogin(){
+	internal func onLogin() {
 		guard let email = emailTF.text, let pass = passTF.text else { // чисто анбиндинг
 			return
 		}
@@ -161,7 +161,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	
 	// сохраняем пользователя в базу данных (строковые данные)
-	private func registerUserIntoDB(uid: String, values:[String:AnyObject]){
+	private func registerUserIntoDB(uid: String, values:[String:AnyObject]) {
 		let ref = Database.database().reference()
 		let usersRef = ref.child("users").child(uid)
 		
@@ -183,7 +183,6 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			print("Удачно сохранили юзера")
 		})
 	}
-	
 	
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
