@@ -176,7 +176,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			
 			APIServices.setNewToken(callback: {
 				Notifications.shared.requestAuthorisation()
-			}) //// проверить!
+			})
 			AppDelegate.waitScreen.hideNow()
 			self.dismiss(animated: true, completion: nil)
 			print("Удачно сохранили юзера")

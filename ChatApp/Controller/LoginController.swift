@@ -171,7 +171,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	private var screenSize = CGSize.zero
 	private var startingLoginToFB: Bool = false { // flag for switch StatusBarAppearance
 		didSet {
-			setNeedsStatusBarAppearanceUpdate()
+			let style: UIStatusBarStyle = (startingLoginToFB) ? .default : .lightContent
+			setStatusBarStyle(style)
 		}
 	}
 	
@@ -207,9 +208,9 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 
 	
 	/// меняем цвет статусбара на светлый
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return (startingLoginToFB) ? .default : .lightContent
-	}
+//	override var preferredStatusBarStyle: UIStatusBarStyle {
+//		return (startingLoginToFB) ? .default : .lightContent
+//	}
 	
 
 	private func setup_UI() {
@@ -382,10 +383,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 				AppDelegate.waitScreen.show()
 				Auth.auth().signInAndRetrieveData(with: credential, completion: {
 					(receivedData, error) in
-					
-					APIServices.setNewToken(callback: {
-						Notifications.shared.requestAuthorisation()
-					})
 					
 					if let error = error {
 						print(error.localizedDescription)

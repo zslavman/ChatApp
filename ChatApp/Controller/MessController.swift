@@ -14,7 +14,6 @@ import NPTableAnimator
 
 class MessagesController: UITableViewController {
 
-	
 	public var owner: ChatUser!
 	internal var uid: String!
 	public static var shared: MessagesController!
@@ -67,6 +66,10 @@ class MessagesController: UITableViewController {
 	}
 	
 	
+//	override var preferredStatusBarStyle: UIStatusBarStyle {
+//		return .lightContent
+//	}
+
 	
 	/// убираем собеседника и само сообщение отовсюду
 	internal func removeDialog(collocutorID: String, indexPath:IndexPath){

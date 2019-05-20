@@ -368,7 +368,7 @@ extension UIImage {
 }
 
 
-extension UIButton {
+extension UIButton { // not used
 	
 	func setIconAndTitle(title: String, icon: UIImage, widthConstraints: NSLayoutConstraint) {
 		self.setTitle(title, for: .normal)
@@ -384,6 +384,16 @@ extension UIButton {
 		self.layoutIfNeeded()
 	}
 }
+
+extension UIViewController {
+	func setStatusBarStyle(_ style: UIStatusBarStyle) {
+		if let statusBar = UIApplication.shared.value(forKey: "statusBar") as? UIView {
+			//statusBar.backgroundColor = style == .lightContent ? UIColor.black : .white
+			statusBar.setValue(style == .lightContent ? UIColor.white : .black, forKey: "foregroundColor")
+		}
+	}
+}
+
 
 
 // Helper function inserted by Swift 4.2 migrator.

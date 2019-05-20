@@ -26,6 +26,8 @@ extension MessagesController {
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
+		
+		setStatusBarStyle(.lightContent)
 	}
 	
 	
