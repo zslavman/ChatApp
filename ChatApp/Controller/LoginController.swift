@@ -19,6 +19,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	internal var messagesController: MessagesController?
 
+	private let BUTTON_HEIGHT: CGFloat = 40
+	private let BUTTON_WIDTH: CGFloat = 180
 	public lazy var profileImageView: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: default_profile_image)
@@ -61,11 +63,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		
 		let spacing: CGFloat = 10
 		button.setTitle(dict[58]![LANG], for: .normal) // Вход
-		button.titleEdgeInsets.left = spacing
+		button.titleEdgeInsets.right = spacing
 		let img = #imageLiteral(resourceName: "facebook_logo_small").tint(with: .white)
 		button.setImage(img, for: .normal)
 		button.imageView?.contentMode = .scaleAspectFit
-		button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: spacing)
+		button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: BUTTON_WIDTH - img.size.width - 60)
 		//button.contentHorizontalAlignment = .left
 		//button.semanticContentAttribute = .forceLeftToRight
 		button.setTitleColor(.white, for: .normal)
@@ -75,6 +77,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		button.layer.shadowRadius = 3
 		button.layer.shadowOpacity = 0.15
 		button.addTarget(self, action: #selector(onLoginViaFB_Click), for: .touchUpInside)
+		button.adjustsImageWhenHighlighted = false
 		return button
 	}()
 	internal let nameTF: UITextField = {
@@ -248,14 +251,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		passTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
 		passTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
-		loginSegmentedControl.widthAnchor.constraint(equalToConstant: 150).isActive = true
+		loginSegmentedControl.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
 		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
 		
-		loginRegisterBttn.widthAnchor.constraint(equalToConstant: 150).isActive = true
-		loginRegisterBttn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		loginRegisterBttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
+		loginRegisterBttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT).isActive = true
 		
-		loginViaFB_Bttn.widthAnchor.constraint(equalToConstant: 150).isActive = true
-		loginViaFB_Bttn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		loginViaFB_Bttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
+		loginViaFB_Bttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT).isActive = true
 		loginViaFB_Bttn.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor, constant: 8).isActive = true
 		
 		inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor).isActive 	= true
@@ -379,6 +382,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 				AppDelegate.waitScreen.show()
 				Auth.auth().signInAndRetrieveData(with: credential, completion: {
 					(receivedData, error) in
+					
+					APIServices.setNewToken(callback: {
+						Notifications.shared.requestAuthorisation()
+					})
+					
 					if let error = error {
 						print(error.localizedDescription)
 						return
