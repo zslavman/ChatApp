@@ -1,0 +1,70 @@
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+	before_all do
+		ensure_git_status_clean
+	end
+
+	def build_notes(environment)
+    	# Build the notes
+		commit = last_git_commit
+    	notes = "#{environment} at #{Time.now.strftime('%d/%m/%Y')}."
+    	notes.concat("\n")
+    	notes.concat("\n")
+    	notes.concat("SHA: #{commit[:commit_hash]}")
+    	return notes
+	end
+
+
+	desc "Deploy a new build to TestFlight"
+	lane :release do
+		app_id = "organic.ChatApp"
+    	scheme = "ChatApp"
+    	branch = 'master'
+
+    	ensure_git_branch(branch: branch)
+
+    	increment_build_number
+
+    	match(
+    		type: "appstore", 
+    		app_identifier: ["organic.ChatApp"]
+    	)
+
+		gym(
+    		scheme: scheme,
+    		verbose: true
+    	)
+
+		xcodeproj = "ChatApp.xcodeproj"
+
+		build_number = get_build_number_repository
+
+		commit_version_bump(
+    		message: "[ci skip] Version Bump to #{build_number}",
+    		xcodeproj: xcodeproj
+    	)
+
+    	add_git_tag
+
+    	push_to_git_remote(
+    		local_branch: "HEAD",
+    		remote_branch: branch,
+    	)
+
+    	pilot(
+    		app_identifier: app_id,
+    		distribute_external: false,
+    		skip_waiting_for_build_processing: true,
+    		skip_submission: true
+    	)
+
+    	version = get_version_number(xcodeproj: xcodeproj, target: "ChatApp")
+    	build = get_build_number(xcodeproj: xcodeproj)
+    
+	end
+end

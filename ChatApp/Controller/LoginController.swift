@@ -8,6 +8,8 @@
 
 import UIKit
 import Firebase
+import FacebookLogin
+import FBSDKCoreKit
 
 
 let default_profile_image: String = "default_profile_image"
@@ -17,6 +19,8 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	internal var messagesController: MessagesController?
 
+	private let BUTTON_HEIGHT: CGFloat = 40
+	private let BUTTON_WIDTH: CGFloat = 180
 	public lazy var profileImageView: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: default_profile_image)
@@ -25,9 +29,9 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onProfileClick)))
 		imageView.isUserInteractionEnabled = true
 		imageView.layer.masksToBounds = true
+		imageView.alpha = 1
 		return imageView
 	}()
-	
 	private let inputsContainerView: UIView = {
 		let view_i = UIView()
 		view_i.backgroundColor = .white
@@ -38,26 +42,45 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		view_i.layer.shadowOpacity = 0.3
 		return view_i
 	}()
-	
 	private let loginRegisterBttn: UIButton = {
 		let button = UIButton(type: .system)
 		button.backgroundColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
 		button.layer.cornerRadius = 8
-		button.setTitle("Register", for: UIControl.State.normal)
+		button.setTitle("Register", for: .normal)
 		button.setTitleColor(.white, for: .normal)
-		button.setBackgroundColor(color: #colorLiteral(red: 0.58682733, green: 0.90042532, blue: 1, alpha: 1), forState: UIControl.State.highlighted)
 		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.layer.shadowOffset = CGSize(width: 0, height: 3)
 		button.layer.shadowRadius = 3
-		button.layer.shadowOpacity = 0.3
-//		button.layer.shouldRasterize = true
-		button.addTarget(self, action: #selector(onGoClick), for: UIControl.Event.touchUpInside)
+		button.layer.shadowOpacity = 0.15
+		button.addTarget(self, action: #selector(onGoClick), for: .touchUpInside)
 		return button
 	}()
-	
-	
-	internal let nameTF:UITextField = {
+	private lazy var loginViaFB_Bttn: UIButton = {
+		let button = UIButton()
+		button.backgroundColor = #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.5450980392, alpha: 1)
+		button.layer.cornerRadius = 8
+		
+		let spacing: CGFloat = 10
+		button.setTitle(dict[58]![LANG], for: .normal) // Вход
+		button.titleEdgeInsets.right = spacing
+		let img = #imageLiteral(resourceName: "facebook_logo_small").tint(with: .white)
+		button.setImage(img, for: .normal)
+		button.imageView?.contentMode = .scaleAspectFit
+		button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: BUTTON_WIDTH - img.size.width - 60)
+		//button.contentHorizontalAlignment = .left
+		//button.semanticContentAttribute = .forceLeftToRight
+		button.setTitleColor(.white, for: .normal)
+		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+		button.translatesAutoresizingMaskIntoConstraints = false
+		button.layer.shadowOffset = CGSize(width: 0, height: 3)
+		button.layer.shadowRadius = 3
+		button.layer.shadowOpacity = 0.15
+		button.addTarget(self, action: #selector(onLoginViaFB_Click), for: .touchUpInside)
+		button.adjustsImageWhenHighlighted = false
+		return button
+	}()
+	internal let nameTF: UITextField = {
 		let tf = UITextField()
 		tf.placeholder = dict[27]![LANG] // Имя
 		tf.backgroundColor = .white
@@ -70,7 +93,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.layer.masksToBounds = true
 		return tf
 	}()
-	private let nameSeparator:UIView = {
+	private let nameSeparator: UIView = {
 
 		let separator = UIView()
 		separator.backgroundColor = UIColor.lightGray
@@ -78,8 +101,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return separator
 	}()
 	//*********************
-	
-	internal let emailTF:UITextField = {
+	internal let emailTF: UITextField = {
 		let tf = UITextField()
 		tf.placeholder = "Email"
 		tf.backgroundColor = .white
@@ -94,9 +116,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.layer.masksToBounds = true
 		return tf
 	}()
-	
-	
-	internal let passTF:UITextField = {
+	internal let passTF: UITextField = {
 		let tf = UITextField()
 		tf.placeholder = dict[26]![LANG] // Пароль
 		tf.backgroundColor = .white
@@ -109,10 +129,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		tf.layer.masksToBounds = true
 		return tf
 	}()
-
-	
-	
-	internal let loginSegmentedControl:UISegmentedControl = {
+	internal let loginSegmentedControl: UISegmentedControl = {
 		let sc = UISegmentedControl(items: [dict[11]![LANG], dict[25]![LANG]]) // Login, Register
 		sc.translatesAutoresizingMaskIntoConstraints = false
 		sc.tintColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
@@ -120,14 +137,12 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		sc.addTarget(self, action: #selector(onSegmentedClick), for: UIControl.Event.valueChanged)
 		return sc
 	}()
-	
 	private let helperElement_bottom: UIView = {
 		let helper = UIView()
 		helper.backgroundColor = UIColor.yellow.withAlphaComponent(0.3)
 		helper.translatesAutoresizingMaskIntoConstraints = false
 		return helper
 	}()
-	
 	private var plus_label: UIImageView = {
 		let plus = UIImageView()
 		plus.image = UIImage(named: "bttn_plus_green")
@@ -140,24 +155,26 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		plus.layer.shadowOpacity = 0.3
 		return plus
 	}()
-	
-	internal var selectedImage:UIImage? {
+	internal var selectedImage: UIImage? {
 		didSet{
 			plus_label.isHidden = true
 		}
 	}
+	private var mainStackView: UIStackView!
+	private var nameTFHeightAnchor: NSLayoutConstraint?
 	
-	private var mainStackView:UIStackView!
-	private var nameTFHeightAnchor:NSLayoutConstraint?
-	
-	private var keyboardHeight:CGFloat = 0
-	private let defaultConstHeight:CGFloat = -35
-	private var baseHeightAnchor:NSLayoutConstraint? // смещение центра основного контейнера по Y
-	private var pHeightAnchor:NSLayoutConstraint? // высота фотки
-	private var pWidthAnchor:NSLayoutConstraint? // ширина фотки
-	
+	private var keyboardHeight: CGFloat = 0
+	private let defaultConstHeight: CGFloat = -35
+	private var baseHeightAnchor: NSLayoutConstraint? // смещение центра основного контейнера по Y
+	private var pHeightAnchor: NSLayoutConstraint? // высота фотки
+	private var pWidthAnchor: NSLayoutConstraint? // ширина фотки
 	private var screenSize = CGSize.zero
-
+	private var startingLoginToFB: Bool = false { // flag for switch StatusBarAppearance
+		didSet {
+			let style: UIStatusBarStyle = (startingLoginToFB) ? .default : .lightContent
+			setStatusBarStyle(style)
+		}
+	}
 	
 	
 	//*************************
@@ -166,13 +183,10 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-		
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.keyboardDismissMode = .interactive
 		// collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
-		
 		collectionView?.backgroundColor = UIConfig.mainThemeColor
-		
 		screenSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
 		
 		setup_UI()
@@ -191,16 +205,15 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 	}
-	
 
+	
 	/// меняем цвет статусбара на светлый
-	override var preferredStatusBarStyle: UIStatusBarStyle {
-		return .lightContent
-	}
-	
+//	override var preferredStatusBarStyle: UIStatusBarStyle {
+//		return (startingLoginToFB) ? .default : .lightContent
+//	}
 	
 
-	private func setup_UI(){
+	private func setup_UI() {
 		// стейвью для полей ввода
 		let inputsStackView = UIStackView(arrangedSubviews: [nameTF, emailTF, passTF])
 		inputsStackView.axis 		 = .vertical
@@ -209,8 +222,16 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		inputsStackView.spacing 	 = 5
 		inputsStackView.translatesAutoresizingMaskIntoConstraints = false
 		
+		let uiArr = [
+			profileImageView,
+			loginSegmentedControl,
+			inputsStackView,
+			loginRegisterBttn,
+			loginViaFB_Bttn
+		]
+		
 		// главный стеквью
-		mainStackView = UIStackView(arrangedSubviews: [profileImageView, loginSegmentedControl, inputsStackView, loginRegisterBttn])
+		mainStackView = UIStackView(arrangedSubviews: uiArr)
 		mainStackView.axis 		 	= .vertical
 		mainStackView.alignment 	= .center
 		mainStackView.distribution 	= .fillProportionally
@@ -231,11 +252,15 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		passTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
 		passTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
 		
-		loginSegmentedControl.widthAnchor.constraint(equalToConstant: 150).isActive = true
+		loginSegmentedControl.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
 		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
 		
-		loginRegisterBttn.widthAnchor.constraint(equalToConstant: 150).isActive = true
-		loginRegisterBttn.heightAnchor.constraint(equalToConstant: 40).isActive = true
+		loginRegisterBttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
+		loginRegisterBttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT).isActive = true
+		
+		loginViaFB_Bttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
+		loginViaFB_Bttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT).isActive = true
+		loginViaFB_Bttn.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor, constant: 8).isActive = true
 		
 		inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor).isActive 	= true
 		inputsStackView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor).isActive = true
@@ -302,49 +327,106 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
-	/// нажали на Register/Login
-	@objc private func onGoClick(){
-
+	/// Register/Login clicked
+	@objc private func onGoClick() {
 		onChatBackingClick()
 		AppDelegate.waitScreen.show()
 		
-		// отсекаем возможность пустого поля
-		let e = emailTF.text!.filter{!" ".contains($0)}
-		let p = passTF.text!.filter{!" ".contains($0)}
-		let n = nameTF.text!.filter{!" ".contains($0)}
+		let ema = emailTF.text!.trimmingCharacters(in: CharacterSet.whitespaces)
+		let pas = passTF.text!.trimmingCharacters(in: CharacterSet.whitespaces)
+		let nam = nameTF.text!.trimmingCharacters(in: CharacterSet.whitespaces)
+		let forLogin: [String] = [ema, pas]
+		let forRegis: [String] = [ema, pas, nam]
 		
-//		let str = nameTF.text!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+		// on login
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
-			if e.count == 0 || p.count == 0 {
-				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG]) // Обнаружены незаполненные поля, все поля обязательные!
+			let temp1 = forLogin.compactMap{!$0.isEmpty ? $0 : nil}
+			guard temp1.count == forLogin.count else {
+				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG]) // Empty field(s) detected
 				return
 			}
 		}
+		// on register
 		else {
-			if e.count == 0 || p.count == 0 || n.count == 0 {
+			let temp2 = forRegis.compactMap{!$0.isEmpty ? $0 : nil}
+			if temp2.count != forRegis.count {
 				AppDelegate.waitScreen?.setInfo(str: dict[28]![LANG])
 				return
 			}
 		}
-		
-		if loginSegmentedControl.selectedSegmentIndex == 0 {
-			onLogin()
+		guard SUtils.isValidEmail(maybeEmail: ema) else {
+			AppDelegate.waitScreen?.setInfo(str: dict[57]![LANG]) // Not valid email
+			return
 		}
-		else if loginSegmentedControl.selectedSegmentIndex == 1 {
-			onRegister()
+		loginSegmentedControl.selectedSegmentIndex == 0 ? onLogin() : onRegister()
+	}
+	
+	
+	
+	@objc private func onLoginViaFB_Click() {
+		onChatBackingClick()
+		startingLoginToFB = true
+		let loginManager = LoginManager()
+		loginManager.loginBehavior = .web
+		loginManager.logIn(readPermissions: [.publicProfile], viewController: self) {
+			(loginResult) in
+			self.startingLoginToFB = false
+			switch loginResult {
+			case .failed(let error):
+				print(error.localizedDescription)
+			case .cancelled:
+				print("User cancelled login")
+			case .success(_, _, let accessToken):
+				let authToken = accessToken.authenticationToken
+				let credential = FacebookAuthProvider.credential(withAccessToken: authToken)
+				// Perform login by calling Firebase APIs
+				AppDelegate.waitScreen.show()
+				Auth.auth().signInAndRetrieveData(with: credential, completion: {
+					(receivedData, error) in
+					
+					if let error = error {
+						print(error.localizedDescription)
+						return
+					}
+					print("Logining...")
+					guard let fireUser = receivedData?.user else { return }
+					DispatchQueue.main.async {
+						self.analizeReceivedUser(user: fireUser)
+					}
+				})
+			}
 		}
 	}
 	
 	
-	/// клик на segmentedControl
-	@objc private func onSegmentedClick(){
+	private func analizeReceivedUser(user: User) {
+		let maybeEmail = user.email ?? user.providerData.first?.providerID ?? "Facebook"
 		
+		let userValues:[String : Any] = [
+			"name"			 : user.displayName ?? "noname",
+			"email"			 : maybeEmail,
+			"id"			 : user.uid,
+			"isOnline"		 : true,
+			"profileImageUrl": user.photoURL?.absoluteString ?? "none",
+			"fcmToken"		 : "",
+			"lastVisit"		 : String(Int(Date().timeIntervalSince1970))
+		]
+		if user.email == nil { // if FB didn't give email
+			
+		}
+		// update user in FireBaseDB, goto main screen
+		registerUserIntoDB(uid: user.uid, values: userValues as [String : AnyObject])
+	}
+	
+	
+	
+	
+	/// клик на segmentedControl
+	@objc private func onSegmentedClick() {
 		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
 		loginRegisterBttn.setTitle(str, for: .normal)
-		
 		// меняем иконку аватарки/приложения
 		switch_AvaLogo()
-		
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			nameTFHeightAnchor?.constant = 0
@@ -357,7 +439,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	/// переключение
-	private func switch_AvaLogo(){
+	private func switch_AvaLogo() {
 		// логин
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			profileImageView.image = UIImage(named: "chatApp_logo")
@@ -367,7 +449,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			}
 			plus_label.isHidden = true
 		}
-		else{
+		else {
 			if let selectedImage = selectedImage {
 				profileImageView.image = selectedImage
 				plus_label.isHidden = true
@@ -386,7 +468,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 
 	/// клава выезжает
-	@objc private func keyboardWillShow(notif: Notification){
+	@objc private func keyboardWillShow(notif: Notification) {
 		if keyboardHeight > 0 {
 			return
 		}
@@ -405,11 +487,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			}
 			else { // в горизонт. режиме прокручиваем до нижнего поля
 				let pointToscroll = passTF.frame.origin
-
-				// if let firstResponder = collectionView?.currentFirstResponder {
-				// 	 pointToscroll = CGPoint(x: firstResponder.frame.origin.x, y: firstResponder.frame.origin.y + 0)
-				// }
-				
 				// нужно именно в основном потоке, т.к. на emailTF не срабатывало (скорее всего потому что отключил autocorrectionType)
 				DispatchQueue.main.async {
 					self.collectionView?.setContentOffset(pointToscroll, animated: true)
@@ -422,18 +499,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	/// клава заезжает
 	@objc private func keyboardWillHide(notif: Notification){
-		
 		if ((notif.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue) != nil {
-			
 			if UIScreen.main.bounds.width < UIScreen.main.bounds.height{
 				baseHeightAnchor?.constant = defaultConstHeight
 			}
 			else {
 				baseHeightAnchor?.constant = 0
 			}
-			
 			keyboardHeight = 0
-			
 			UIView.animate(withDuration: 0.3) {
 				self.view.layoutIfNeeded()
 			}
@@ -451,27 +524,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		collectionView?.endEditing(true)
 	}
 	
-	
-	
-	
-//	private var point = CGPoint.zero
-//
-//	override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//		if let touch = touches.first {
-//			let position = touch.location(in: self.view)
-//			point = position
-//			print(position)
-//		}
-//	}
-//	override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//		if let touch = touches.first {
-//			let position = touch.location(in: self.view)
-//			if position == point {
-//				view.endEditing(true)
-//				point = .zero
-//			}
-//		}
-//	}
+
 
 }
 

@@ -10,14 +10,11 @@ import UIKit
 import Firebase
 
 
-
 // кастомизация стандартной ячейки таблицы (для того, чтоб иметь доступ к текстовому полю detailTextLabel)
 class UserCell: UITableViewCell {
 	
-
 	public static let onLineColor = UIColor(r: 0, g: 255, b: 0)
 	public static let offLineColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-	
 	// фотка
 	public let profileImageView:UIImageView = {
 		let imageView = UIImageView()
@@ -30,7 +27,6 @@ class UserCell: UITableViewCell {
 		imageView.layer.masksToBounds = true
 		return imageView
 	}()
-	
 	public let onlinePoint:NeverClearView = {
 		let point = NeverClearView()
 		point.backgroundColor = offLineColor
@@ -41,7 +37,6 @@ class UserCell: UITableViewCell {
 		point.translatesAutoresizingMaskIntoConstraints = false
 		return point
 	}()
-	
 	// тайм-лейбл
 	private let timeLabel:UILabel = {
 		let label = UILabel()
@@ -52,7 +47,6 @@ class UserCell: UITableViewCell {
 		label.numberOfLines = 0
 		return label
 	}()
-	
 	public let newMessBack:NeverClearView = {
 		let point = NeverClearView()
 		point.backgroundColor = .red
@@ -64,7 +58,6 @@ class UserCell: UITableViewCell {
 		point.isHidden = true
 		return point
 	}()
-	
 	public let newMessCount:UILabel = {
 		let label = UILabel()
 		label.text = "0"
@@ -75,11 +68,8 @@ class UserCell: UITableViewCell {
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
-	
-	
 	public var iTag:String!
 	public var userID:String? // для идентификации, кто сейчас в ячейке
-	
 	
 	
 	
@@ -122,13 +112,9 @@ class UserCell: UITableViewCell {
 	}
 	
 	
-	
-
-	
 	// фикс заeзжания текста под фотку профиля
 	override func layoutSubviews() {
 		super.layoutSubviews()
-	
 		// подвигаем тайтл
 		textLabel?.frame = CGRect(x: 72, y: textLabel!.frame.origin.y + 2, width: self.frame.width - 150, height: textLabel!.frame.height)
 		// подвигаем емайл
@@ -136,12 +122,8 @@ class UserCell: UITableViewCell {
 	}
 	
 	
-	
-	
-	
 	/// настройка ячейки для MessagesController
-	public func setupCell(msg:Message, indexPath:IndexPath, user:User){ // user - не владелец
-		
+	public func setupCell(msg:Message, indexPath:IndexPath, user:ChatUser){ // user - не владелец
 		userID = user.id
 		textLabel?.text = user.name
 		
@@ -152,17 +134,13 @@ class UserCell: UITableViewCell {
 		else {
 			newMessBack.isHidden = true
 		}
-		
 		if user.isOnline {
 			onlinePoint.backgroundColor = UserCell.onLineColor
 		}
 		else {
 			onlinePoint.backgroundColor = UserCell.offLineColor
 		}
-		
-		
 		let basePath = (indexPath.section).description + (indexPath.row).description // для идентификации ячейки в кложере
-		
 		if let profileImageUrl = user.profileImageUrl{
 			// качаем картинку
 			self.profileImageView.loadImageUsingCache(urlString: profileImageUrl, isAva: true){
@@ -176,7 +154,7 @@ class UserCell: UITableViewCell {
 				}
 			}
 		}
-		let str:String?
+		let str: String?
 		if msg.text != nil {
 			str = msg.text
 		}
@@ -189,22 +167,18 @@ class UserCell: UITableViewCell {
 		else {
 			str = dict[50]![LANG] // [гео]
 		}
-		
 		detailTextLabel?.text = str
 		
 		if let seconds = msg.timestamp?.doubleValue{
-			
-			timeLabel.text = Calculations.convertTimeStamp(seconds: seconds, shouldReturn: true)
+			timeLabel.text = SUtils.convertTimeStamp(seconds: seconds, lessText: false, shouldReturn: true)
 		}
-
 	}
 	
 
-	
-	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
+	
 	
 	override func prepareForReuse() {
 		super.prepareForReuse()
@@ -213,8 +187,6 @@ class UserCell: UITableViewCell {
 		profileImageView.image = UIImage(named: "default_profile_image")
 		newMessBack.isHidden = true
 	}
-	
-	
 
 	
 }

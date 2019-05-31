@@ -10,13 +10,10 @@ import UIKit
 
 class BlackView: UIView {
 
-	
 	private var blackView: UIView!
-	private var activityIndicator:UIActivityIndicatorView!
-	private var textBacking:UIView!
-	private var textView:UITextView!
-	
-	
+	private var activityIndicator: UIActivityIndicatorView!
+	private var textBacking: UIView!
+	private var textView: UITextView!
 	
 	
 	override init(frame: CGRect) {
@@ -29,18 +26,14 @@ class BlackView: UIView {
 	}
 	
 	
-	
-	
-	public func setup(){
-		
+
+	public func setup() {
 		self.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-		
 		// фон
 		blackView = UIView()
 		blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
 		blackView.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(blackView)
-
 		
 		NSLayoutConstraint.activate([
 			blackView.topAnchor.constraint(equalTo: self.topAnchor),
@@ -87,7 +80,6 @@ class BlackView: UIView {
 			textBacking.widthAnchor.constraint(equalToConstant: 300),
 			textBacking.heightAnchor.constraint(equalToConstant: 160)
 		])
-		
 		//******************************
 		
 		// текст ошибки
@@ -107,15 +99,10 @@ class BlackView: UIView {
 			textView.centerYAnchor.constraint(equalTo: textBacking.centerYAnchor),
 			textView.widthAnchor.constraint(equalTo: textBacking.widthAnchor, multiplier: 0.9)
 		])
-		
 	}
 	
-	
-	
-	
-	
+
 	public func setInfo(str:String){
-		
 		activityIndicator.stopAnimating()
 		textBacking.isHidden = false
 		textView.text = str

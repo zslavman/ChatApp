@@ -14,7 +14,6 @@ import NPTableAnimator
 //public class Message: NSObject, TableAnimatorCell {
 public class Message: TableAnimatorCell {
 	
-	
 	public var hashValue: Int{
 		return timestamp!.hashValue
 	}
@@ -58,7 +57,6 @@ public class Message: TableAnimatorCell {
 	
 	init(dictionary: [String:Any]){
 		// super.init()
-		
 		self_ID			= dictionary["self_ID"] as? String
 		fromID 			= dictionary["fromID"] as? String
 		toID 			= dictionary["toID"] as? String

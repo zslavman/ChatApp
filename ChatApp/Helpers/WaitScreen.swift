@@ -19,13 +19,10 @@ class WaitScreen: NSObject {
 	}
 	
 	public func show(){
-		
 		guard let window = UIApplication.shared.keyWindow else { return }
-		
 		blackView = BlackView()
 		window.addSubview(blackView)
 		blackView.alpha = 0
-		
 		UIView.animate(withDuration: 0.3) {
 			self.blackView.alpha = 1
 		}
@@ -34,7 +31,6 @@ class WaitScreen: NSObject {
 	
 	public func hide(){
 		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-			
 			UIView.animate(withDuration: 1, animations: {
 				self.blackView.alpha = 0
 				self.blackView.transform = CGAffineTransform(scaleX: 2, y: 2)

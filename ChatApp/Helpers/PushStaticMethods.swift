@@ -5,8 +5,9 @@
 //  Created by Zinko Viacheslav on 17.03.2019.
 //  Copyright © 2019 Zinko Viacheslav. All rights reserved.
 //
-
 import Foundation
+
+// This is a separate class just only for widget "PushMutater"!!
 
 class PushStaticMethods {
 	
@@ -19,5 +20,3 @@ class PushStaticMethods {
 	}
 	
 }
-
-

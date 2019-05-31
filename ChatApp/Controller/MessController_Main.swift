@@ -18,7 +18,7 @@ extension MessagesController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		Calculations.lockOrientation(.portrait)
+		SUtils.lockOrientation(.portrait)
 		
 		navigationItem.titleView?.alpha = isOnline ? 1 : 0.35
 		
@@ -26,6 +26,8 @@ extension MessagesController {
 		// чтоб до viewDidLoad не отображалась дефолтная таблица
 		tableView.tableFooterView = UIView(frame: CGRect.zero)
 		tableView.backgroundColor = UIColor.white
+		
+		setStatusBarStyle(.lightContent)
 	}
 	
 	
@@ -34,7 +36,7 @@ extension MessagesController {
 	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		
-		Calculations.lockOrientation(.all)
+		SUtils.lockOrientation(.all)
 		
 		// перезагружаем ячейку по которой кликнули для обнуления кол-ва непрочит. сообщ.
 		if let savedIndexPath = savedIndexPath {
@@ -97,7 +99,7 @@ extension MessagesController {
 			cell.iTag = (indexPath.section).description + (indexPath.row).description
 			let basePath = cell.iTag
 			let _id = msg.chatPartnerID()!
-			var _user:User?
+			var _user:ChatUser?
 			
 			// если юзер с _id есть в массиве senders, передаем его в setupCell
 			for value in senders {
@@ -118,7 +120,7 @@ extension MessagesController {
 					
 					if let dictionary = snapshot.value as? [String:AnyObject]{
 						
-						let user = User()
+						let user = ChatUser()
 						user.setValuesForKeys(dictionary)
 						self.senders.append(user)
 						
@@ -162,7 +164,7 @@ extension MessagesController {
 			
 			guard let dict = snapshot.value as? [String: AnyObject] else { return }
 			
-			let user = User()
+			let user = ChatUser()
 			user.setValuesForKeys(dict)
 			
 			self.goToChatWith(user: user)

@@ -32,7 +32,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	// Code=17026
 	// The password must be 6 characters long or more. })"
 	
-	@objc public func onProfileClick(){
+	@objc public func onProfileClick() {
 		if loginSegmentedControl.selectedSegmentIndex == 0 {
 			return
 		}
@@ -70,7 +70,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	}
 	
 	
-	internal func onLogin(){
+	internal func onLogin() {
 		guard let email = emailTF.text, let pass = passTF.text else { // чисто анбиндинг
 			return
 		}
@@ -82,7 +82,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				return
 			}
 			
-			FCMService.setNewToken(callback: {
+			APIServices.setNewToken(callback: {
 				Notifications.shared.requestAuthorisation()
 			})
 			
@@ -94,7 +94,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	}
 	
 	
-	public func onRegister(){
+	public func onRegister() {
 		guard let email = emailTF.text, let pass = passTF.text, let name = nameTF.text else {
 			return
 		}
@@ -117,13 +117,13 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				"id"			 : user.uid,
 				"isOnline"		 : true,
 				"profileImageUrl": "none",
-				"fcmToken"		 : ""
-				]
-			// safety unwrapping image
+				"fcmToken"		 : "",
+				"lastVisit"		 : 0
+			]
 			guard let profileImage = self.profileImageView.image else { return }
 			
 			// проверяем, если картинка профиля стоит дефолтная (не менялась)
-			let isThatDefaultImage:Bool = profileImage.isEqual(UIImage(named: default_profile_image))
+			let isThatDefaultImage: Bool = profileImage.isEqual(UIImage(named: default_profile_image))
 			if isThatDefaultImage {
 				self.registerUserIntoDB(uid: user.uid, values: values as [String : AnyObject])
 				return
@@ -160,7 +160,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	
 	// сохраняем пользователя в базу данных (строковые данные)
-	private func registerUserIntoDB(uid:String, values:[String:AnyObject]){
+	internal func registerUserIntoDB(uid: String, values:[String:AnyObject]) {
 		let ref = Database.database().reference()
 		let usersRef = ref.child("users").child(uid)
 		
@@ -170,20 +170,18 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 				print(err?.localizedDescription as Any)
 				return
 			}
-			
-			let user = User()
+			let user = ChatUser()
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
-			FCMService.setNewToken(callback: {
+			APIServices.setNewToken(callback: {
 				Notifications.shared.requestAuthorisation()
-			}) //// проверить!
+			})
 			AppDelegate.waitScreen.hideNow()
 			self.dismiss(animated: true, completion: nil)
 			print("Удачно сохранили юзера")
 		})
 	}
-	
 	
 	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
