@@ -42,10 +42,10 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
 			switch numberOfMenu {
 			case 0:
-				Calculations.animateTableWithSections(tableView: self.tableView)
+				SUtils.animateTableWithSections(tableView: self.tableView)
 			case 1:
 				self.isOnline = !self.isOnline
-				OnlineService.setUserStatus(self.isOnline)
+				APIServices.setUserStatus(self.isOnline)
 				self.navigationItem.titleView?.alpha = self.isOnline ? 1 : 0.35
 			case 2:
 				let vc = JSONTable()

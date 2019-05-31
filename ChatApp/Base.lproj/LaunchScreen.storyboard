@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -22,7 +22,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ChatApp" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q5d-g3-Ogh">
-                                <rect key="frame" x="115.5" y="263" width="144" height="51.5"/>
+                                <rect key="frame" x="115.5" y="274.5" width="144" height="51.5"/>
                                 <fontDescription key="fontDescription" name="MarkerFelt-Wide" family="Marker Felt" pointSize="38"/>
                                 <color key="textColor" red="0.95294117649999999" green="0.95294117649999999" blue="0.95294117649999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -32,12 +32,12 @@
                         </subviews>
                         <color key="backgroundColor" red="0.13333333333333333" green="0.32549019607843138" blue="0.5490196078431373" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="HTJ-TE-Md2" secondAttribute="top" constant="20" id="SGn-kd-VZN"/>
+                            <constraint firstAttribute="top" secondItem="HTJ-TE-Md2" secondAttribute="top" id="SGn-kd-VZN"/>
                             <constraint firstItem="q5d-g3-Ogh" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="SKA-R5-Qtw"/>
-                            <constraint firstItem="q5d-g3-Ogh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-45" id="hxI-dq-qe4"/>
-                            <constraint firstItem="HTJ-TE-Md2" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="l3P-CQ-d34"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HTJ-TE-Md2" secondAttribute="trailing" id="lPz-dO-rfP"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HTJ-TE-Md2" secondAttribute="bottom" id="th3-qb-TJI"/>
+                            <constraint firstItem="q5d-g3-Ogh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="0.9" id="hxI-dq-qe4"/>
+                            <constraint firstItem="HTJ-TE-Md2" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="l3P-CQ-d34"/>
+                            <constraint firstAttribute="trailing" secondItem="HTJ-TE-Md2" secondAttribute="trailing" id="lPz-dO-rfP"/>
+                            <constraint firstAttribute="bottom" secondItem="HTJ-TE-Md2" secondAttribute="bottom" id="th3-qb-TJI"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>

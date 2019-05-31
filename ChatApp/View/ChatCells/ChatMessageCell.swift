@@ -13,21 +13,17 @@ import Firebase
 class ChatMessageCell: UICollectionViewCell {
 	
 	public var chatlogController:ChatController?
-	public var message:Message?
-	
+	public var message: Message?
 	public static let blueColor = UIColor(r: 215, g: 235, b: 255)
 	public static let grayColor = UIColor(r: 239, g: 239, b: 238)
 	public static let grayTextColor = UIColor(r: 127, g: 138, b: 150)
 	public static let paddingTop:CGFloat = 7 // расстояние контента до верха ячейки
-	
-	
 	public var bubbleWidthAnchor: NSLayoutConstraint?
 	public var bubbleRightAnchor: NSLayoutConstraint?
 	public var bubbleLeftAnchor: NSLayoutConstraint?
-	private var checkMarkWidth:NSLayoutConstraint?
+	private var checkMarkWidth: NSLayoutConstraint?
+	public static let cornRadius: CGFloat = 12
 	
-	public static let cornRadius:CGFloat = 12
-
 	public let textView: UITextView = {
 		let label = UITextView()
 		label.text = "Опять три рубляя!!"
@@ -38,7 +34,6 @@ class ChatMessageCell: UICollectionViewCell {
 		label.isScrollEnabled = false
 		return label
 	}()
-	
 	public let bubbleView: UIView = {
 		let bubble = UIView()
 		bubble.translatesAutoresizingMaskIntoConstraints = false
@@ -62,7 +57,6 @@ class ChatMessageCell: UICollectionViewCell {
 //		bubble.layer.insertSublayer(shadowLayer, at: 0)
 		return bubble
 	}()
-
 	public let profileImageView: UIImageView = {
 		let iView = UIImageView()
 		iView.image = UIImage(named: "default_profile_image")
@@ -72,7 +66,6 @@ class ChatMessageCell: UICollectionViewCell {
 		iView.clipsToBounds = true
 		return iView
 	}()
-	
 	public let sendTime_TF:UILabel = {
 		let label = UILabel()
 		label.textAlignment = .right
@@ -82,7 +75,6 @@ class ChatMessageCell: UICollectionViewCell {
 		label.textColor = grayTextColor
 		return label
 	}()
-	
 	public let checkMark:UILabel = {
 		let label = UILabel()
 		label.text = "\u{2713}"
@@ -96,9 +88,6 @@ class ChatMessageCell: UICollectionViewCell {
 	}()
 	
 
-
-
-	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 
@@ -114,29 +103,23 @@ class ChatMessageCell: UICollectionViewCell {
 			profileImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10),
 			profileImageView.widthAnchor.constraint(equalToConstant: 32),
 			profileImageView.heightAnchor.constraint(equalToConstant: 32),
-			
 			// для времени отправки
 			sendTime_TF.rightAnchor.constraint(equalTo: checkMark.leftAnchor),
 			sendTime_TF.bottomAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: -8),
-			
 			// зеленая галочка
 			checkMark.rightAnchor.constraint(equalTo: bubbleView.rightAnchor, constant: -15),
 			checkMark.topAnchor.constraint(equalTo: sendTime_TF.topAnchor, constant: -9),
-			
 			// для текста сообщения
 			textView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8),
 			textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor),
 			textView.topAnchor.constraint(equalTo: bubbleView.topAnchor),
 			textView.heightAnchor.constraint(equalTo: heightAnchor),
-			
 			// для фона сообщения
 			bubbleView.heightAnchor.constraint(equalTo: self.heightAnchor, constant: -ChatMessageCell.paddingTop * 2),
 			bubbleView.centerYAnchor.constraint(equalTo: centerYAnchor)
 		])
-		
 		checkMarkWidth = checkMark.widthAnchor.constraint(equalToConstant: 23)
 		checkMarkWidth?.isActive = true
-		
 		//  для фона сообщения
 		bubbleLeftAnchor = bubbleView.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 8)
 		bubbleRightAnchor = bubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10)
@@ -147,7 +130,6 @@ class ChatMessageCell: UICollectionViewCell {
 	}
 	
 
-
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
@@ -155,7 +137,6 @@ class ChatMessageCell: UICollectionViewCell {
 		backgroundColor = nil
 		checkMark.isHidden = true
 	}
-
 	
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -163,16 +144,13 @@ class ChatMessageCell: UICollectionViewCell {
 	}
 	
 	
-	
 	/// вызывается только из ChatLogController
 	public func setupCell(linkToParent:ChatController, message:Message, indexPath:IndexPath){
-		
 		chatlogController = linkToParent
 		self.message = message
 		
 		textView.text = message.text
-		sendTime_TF.text = Calculations.convertTimeStamp(seconds: message.timestamp as! TimeInterval, shouldReturn: false)
-		
+		sendTime_TF.text = SUtils.convertTimeStamp(seconds: message.timestamp as! TimeInterval, lessText: true)
 		// определяем какием цветом будет фон сообщения
 		// голубым (свои)
 		if message.fromID == Auth.auth().currentUser?.uid {
@@ -194,16 +172,14 @@ class ChatMessageCell: UICollectionViewCell {
 			bubbleLeftAnchor?.isActive = true
 			checkMarkWidth?.constant = 0
 		}
-		
 		sendTime_TF.layer.shadowOpacity = 0
 		sendTime_TF.textColor = ChatMessageCell.grayTextColor
 		
 		// изменим ширину фона сообщения (высота же определяется в ChatController sizeForItemAt)
 		if let str = message.text{
-			let estWidth = Calculations.estimatedFrameForText(text: str).width + 30
+			let estWidth = SUtils.estimatedFrameForText(text: str).width + 30
 			bubbleWidthAnchor?.constant = estWidth < 80 ? 80 : estWidth
 		}
-		
 		// если это исходящее сообщ. - показываем статус прочитанности
 		if message.fromID == Auth.auth().currentUser?.uid {
 			checkMark.isHidden = false
@@ -221,10 +197,6 @@ class ChatMessageCell: UICollectionViewCell {
 			}
 		}
 	}
-		
-	
-	
-	
 	
 
 	public func setToGreen(){

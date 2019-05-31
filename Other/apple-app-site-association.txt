@@ -1,0 +1,11 @@
+{
+	"applinks": {
+		"apps": [],
+		"details": [{
+			"appID": "LC7P3687MC.organic.ChatApp",
+			"paths": ["NOT /_/*", "/*"]
+		}]
+	}
+}
+
+// https://zslavman.page.link/apple-app-site-association

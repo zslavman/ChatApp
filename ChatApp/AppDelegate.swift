@@ -11,16 +11,15 @@ import Firebase
 import UserNotifications
 import FirebaseMessaging
 import FirebaseInstanceID
+import FacebookCore
 
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-	
 	public static var waitScreen: WaitScreen!
 	public var window: UIWindow?
 	public var orientationLock = UIInterfaceOrientationMask.all
-	
 	
 	
 	
@@ -30,9 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		
-//		Notifications.shared.requestAuthorisation()
-		
+		//Notifications.shared.requestAuthorisation()
+		SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false
 		
@@ -50,10 +48,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 
 	
-	
 	// сейчас войдет в бэкграунд
 	func applicationWillResignActive(_ application: UIApplication) {
-		OnlineService.setUserStatus(false)
+		APIServices.setUserStatus(false)
 	}
 	
 	// вошло в бэкграунд
@@ -68,38 +65,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	// вошло в активный режим
 	func applicationDidBecomeActive(_ application: UIApplication) {
-		OnlineService.setUserStatus(true)
+		APIServices.setUserStatus(true)
 		Notifications.shared.ConnectToFCM()
 		if MessagesController.shared != nil {
 			MessagesController.shared.messages_copy.removeAll()
 		}
+		AppEventsLogger.activate(application)
 	}
 
 	
 	// прерывание приложения
 	func applicationWillTerminate(_ application: UIApplication) {
-		OnlineService.setUserStatus(false)
+		APIServices.setUserStatus(false)
 	}
 	
 	
-
-	
 	// при получении токена
 	func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-		
 		// собираем токен из битов
 		let tokenParts = deviceToken.map {
 			data -> String in
 			return String(format: "%02.2hhx", data)
 		}
-		
 		let token = tokenParts.joined()
 		print("Device Token (apnsToken): \(token)")
 		
 		if let fcmToken = Messaging.messaging().fcmToken {
 			print("fcmToken = \(fcmToken)")
 		}
-		
 		Messaging.messaging().apnsToken = deviceToken
 		//Messaging.messaging().setAPNSToken(deviceToken, type: MessagingAPNSTokenType.sandbox)
 		
@@ -119,9 +112,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
 		print("Failed to register: \(error)")
 	}
+
 	
-
-
+	// URL-shems handler
+	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+		print("url = \(url)")
+		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+		let host = urlComponents?.host ?? ""
+		print(host)
+		if host == "secretPage" { }
+		
+		let facebook = SDKApplicationDelegate.shared.application(app, open: url, options: options)
+		
+		return facebook
+	}
+	
+	
+	// Universal link handler (Firebase Dynamic Link)
+	func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+		guard let url = userActivity.webpageURL else { return false }
+		let parsedLink = SUtils.linkParser(url: url)
+		SUtils.printDictionary(dict: parsedLink)
+		return true
+	}
 	
 }
 

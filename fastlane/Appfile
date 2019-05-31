@@ -1,0 +1,9 @@
+# For install all provisions you have to run fast lane 3 times:
+# 1) fastlane match appstore --readonly  	| with bundle name "com.teamy.chat"
+# 2) fastlane match development --readonly  | with bundle name "com.teamy.chat-debug"
+# 3) fastlane match adhoc --readonly  		| with bundle name "com.teamy.chat-beta"
+
+# app_identifier("[[APP_IDENTIFIER]]") # The bundle identifier of your app
+
+apple_id("zslavman@gmail.com") #Apple ID
+# app_identifier("[organic.ChatApp,organic.ChatApp.PushMutater2]")

@@ -25,7 +25,6 @@ class SettingsController: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		configureLocales()
 		configureUI()
 	}
@@ -39,7 +38,6 @@ class SettingsController: UITableViewController {
 	
 	private func configureLocales(){
 		title =  dict[17]![LANG] // Настройки
-		
 		localRows = [
 			0: [dict[0]![LANG], dict[1]![LANG]],
 			1: [dict[2]![LANG]],
@@ -125,7 +123,7 @@ class SettingsController: UITableViewController {
 		if indexPath.section == 2 {
 			// Edit profile
 			if indexPath.row == 0 {
-				let alertController = Calculations.alert(message: dict[49]![LANG], completion: {
+				let alertController = SUtils.alert(message: dict[49]![LANG], completion: {
 					tableView.deselectRow(at: indexPath, animated: true)
 				})
 				present(alertController, animated: true, completion: nil)
@@ -151,7 +149,9 @@ class SettingsController: UITableViewController {
 	}
 	
 	
-	private func logout(){
+	private func logout() {
+		
+		APIServices.facebookLogout()
 		
 		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		messagesController.dispose()

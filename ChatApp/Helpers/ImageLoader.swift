@@ -28,17 +28,14 @@ class ImageLoader:Hashable {
 	
 	
 	init(imageURLString: String, completion: @escaping (UIImage?) -> ()) {
-		
 		self.imageURLString = imageURLString
 		self.completion = completion
-		
 		runBlock()
 	}
 	
 	
 	
 	func runBlock() {
-		
 		if let cachedImg = ImageLoader.imgCache[imageURLString]{
 			completion(cachedImg)
 		}
@@ -59,7 +56,6 @@ class ImageLoader:Hashable {
 			}.resume()
 		}
 	}
-	
 	
 	
 	public func cancel(){
