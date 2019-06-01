@@ -158,6 +158,9 @@ struct SUtils {
 		else {
 			return convertTimeStamp(seconds: timeinterval, lessText: false, shouldReturn: false)
 		}
+		if quotient < 10 && unit == dict[53]![LANG] {
+			return dict[59]![LANG] // только что
+		}
 		return "\(quotient) \(unit) \(dict[56]![LANG])" // назад
 	}
 	

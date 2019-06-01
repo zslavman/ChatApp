@@ -86,8 +86,11 @@ let dict:[Int:[String]] = [
 	56:["назад", "ago", "Il y a"],
 	57:["Неверный адрес электронной почты", "Not valid email", "Email non valide"],
 	58:["Вход", "Sign In", "Se connecter"],
-	59:["", "", ""],
+	59:["только что", "just a moment ago", "il y a juste un instant"],
 	60:["", "", ""],
+	61:["", "", ""],
+	62:["", "", ""],
+	63:["", "", ""],
 
 ]
 
