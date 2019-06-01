@@ -808,7 +808,7 @@
 			baseConfigurationReference = 0EB6B3218B0B51DE0BA9135A /* Pods-ChatApp.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
-				APP_NAME_PREFIX = DEBUG;
+				APP_NAME_PREFIX = "-DEBUG";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ChatApp/ChatApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
