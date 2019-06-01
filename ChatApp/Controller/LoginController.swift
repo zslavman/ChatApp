@@ -20,7 +20,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	internal var messagesController: MessagesController?
 
 	private let BUTTON_HEIGHT: CGFloat = 40
-	private let BUTTON_WIDTH: CGFloat = 180
+	private let BUTTON_WIDTH: CGFloat = 210
 	public lazy var profileImageView: UIImageView = { // если не объявить как lazy то не будет работать UITapGestureRecognizer
 		let imageView = UIImageView()
 		imageView.image = UIImage(named: default_profile_image)
@@ -48,7 +48,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		button.layer.cornerRadius = 8
 		button.setTitle("Register", for: .normal)
 		button.setTitleColor(.white, for: .normal)
-		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
 		button.translatesAutoresizingMaskIntoConstraints = false
 		button.layer.shadowOffset = CGSize(width: 0, height: 3)
 		button.layer.shadowRadius = 3
@@ -60,11 +60,21 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		let button = UIButton(type: .system)
 		button.customizeSignInButton(btnWidth: BUTTON_WIDTH,
 										backColor: #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.5450980392, alpha: 1),
-										title: dict[58]![LANG],
+										title: dict[60]![LANG], // Sign in with Facebook
 										titleColor: .white,
 										imageIcon: #imageLiteral(resourceName: "facebook_logo_small"))
 		button.tintColor = .white
 		button.addTarget(self, action: #selector(onLoginViaFB_Click), for: .touchUpInside)
+		return button
+	}()
+	private lazy var loginViaGoogle_Bttn: UIButton = {
+		let button = UIButton(type: .system)
+		button.customizeSignInButton(btnWidth: BUTTON_WIDTH,
+									 backColor: #colorLiteral(red: 0.9725490196, green: 0.9725490196, blue: 0.9725490196, alpha: 1),
+									 title: dict[61]![LANG], // Sign in with Google
+									 titleColor: #colorLiteral(red: 0.4274509804, green: 0.4274509804, blue: 0.4274509804, alpha: 1),
+									 imageIcon: #imageLiteral(resourceName: "google_logo_small").withRenderingMode(.alwaysOriginal))
+		button.addTarget(self, action: #selector(onLoginViaGoole_Click), for: .touchUpInside)
 		return button
 	}()
 	internal let nameTF: UITextField = {
@@ -81,7 +91,6 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return tf
 	}()
 	private let nameSeparator: UIView = {
-
 		let separator = UIView()
 		separator.backgroundColor = UIColor.lightGray
 		separator.translatesAutoresizingMaskIntoConstraints = false
@@ -209,14 +218,19 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		inputsStackView.spacing 	 = 5
 		inputsStackView.translatesAutoresizingMaskIntoConstraints = false
 		
+		let buttonsStackView = UIStackView(arrangedSubviews: [loginRegisterBttn, loginViaFB_Bttn, loginViaGoogle_Bttn])
+		buttonsStackView.axis 		 = .vertical
+		buttonsStackView.alignment 	 = .center
+		buttonsStackView.distribution = .fill
+		buttonsStackView.spacing 	 = 8
+		buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
+		
 		let uiArr = [
 			profileImageView,
 			loginSegmentedControl,
 			inputsStackView,
-			loginRegisterBttn,
-			loginViaFB_Bttn
+			buttonsStackView
 		]
-		
 		// главный стеквью
 		mainStackView = UIStackView(arrangedSubviews: uiArr)
 		mainStackView.axis 		 	= .vertical
@@ -228,45 +242,51 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		mainStackView.addSubview(inputsStackView)
 		collectionView?.addSubview(mainStackView)
 		
-		nameTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive 	= true
-		nameTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
+		NSLayoutConstraint.activate([
+			nameTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor),
+			nameTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor),
+			emailTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor),
+			emailTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor),
+			emailTF.heightAnchor.constraint(equalToConstant: 40),
+			passTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor),
+			passTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor),
+			passTF.heightAnchor.constraint(equalToConstant: 40),
+			
+			loginSegmentedControl.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH),
+			loginSegmentedControl.heightAnchor.constraint(equalToConstant: 30),
+			
+			loginRegisterBttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH),
+			loginRegisterBttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT),
+			loginViaFB_Bttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH),
+			loginViaFB_Bttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT),
+			loginViaGoogle_Bttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH),
+			loginViaGoogle_Bttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT),
+			
+			buttonsStackView.centerXAnchor.constraint(equalTo: mainStackView.centerXAnchor),
+			
+			inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor),
+			inputsStackView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor),
+		])
 		nameTFHeightAnchor = nameTF.heightAnchor.constraint(equalToConstant: 40)
-		nameTFHeightAnchor?.isActive = true
-		emailTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive = true
-		emailTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
-		emailTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		passTF.leftAnchor.constraint(equalTo: inputsStackView.leftAnchor).isActive = true
-		passTF.rightAnchor.constraint(equalTo: inputsStackView.rightAnchor).isActive = true
-		passTF.heightAnchor.constraint(equalToConstant: 40).isActive = true
-		
-		loginSegmentedControl.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
-		loginSegmentedControl.heightAnchor.constraint(equalToConstant: 30).isActive = true
-		
-		loginRegisterBttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
-		loginRegisterBttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT).isActive = true
-		
-		loginViaFB_Bttn.widthAnchor.constraint(equalToConstant: BUTTON_WIDTH).isActive = true
-		loginViaFB_Bttn.heightAnchor.constraint(equalToConstant: BUTTON_HEIGHT).isActive = true
-		loginViaFB_Bttn.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor, constant: 8).isActive = true
-		
-		inputsStackView.leftAnchor.constraint(equalTo: mainStackView.leftAnchor).isActive 	= true
-		inputsStackView.rightAnchor.constraint(equalTo: mainStackView.rightAnchor).isActive = true
-		
 		let const = (UIScreen.main.bounds.width < UIScreen.main.bounds.height) ? defaultConstHeight : 0
 		baseHeightAnchor = mainStackView.centerYAnchor.constraint(equalTo: collectionView!.centerYAnchor, constant: const)
-		baseHeightAnchor!.isActive = true
-		mainStackView.centerXAnchor.constraint(equalTo: collectionView!.centerXAnchor).isActive = true
-		mainStackView.widthAnchor.constraint(equalTo: collectionView!.widthAnchor, multiplier: 0.5, constant: 120).isActive = true
 		// нижний вспомогательный элемент
 		collectionView?.addSubview(helperElement_bottom)
-		helperElement_bottom.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!).isActive = true
-		helperElement_bottom.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor).isActive = true
-		helperElement_bottom.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor, constant: -5).isActive = true
-		helperElement_bottom.widthAnchor.constraint(equalToConstant: 80).isActive = true
-		collectionView?.sendSubviewToBack(helperElement_bottom)
+		
+		NSLayoutConstraint.activate([
+			nameTFHeightAnchor!,
+			baseHeightAnchor!,
+			mainStackView.centerXAnchor.constraint(equalTo: collectionView!.centerXAnchor),
+			mainStackView.widthAnchor.constraint(equalTo: collectionView!.widthAnchor, multiplier: 0.5, constant: 120),
+			helperElement_bottom.centerXAnchor.constraint(equalTo: (collectionView?.centerXAnchor)!),
+			helperElement_bottom.topAnchor.constraint(equalTo: loginRegisterBttn.bottomAnchor),
+			helperElement_bottom.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor, constant: -5),
+			helperElement_bottom.widthAnchor.constraint(equalToConstant: 80),
+		])
 		helperElement_bottom.isHidden = true
+		collectionView?.sendSubviewToBack(helperElement_bottom)
 
-		var hei:CGFloat = 0
+		var hei: CGFloat = 0
 		if UIScreen.main.bounds.width < UIScreen.main.bounds.height {
 			hei = screenSize.width / 2
 		}
@@ -386,6 +406,12 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	}
 	
 	
+	@objc private func onLoginViaGoole_Click() {
+		
+		
+	}
+	
+	
 	private func analizeReceivedUser(user: User) {
 		let maybeEmail = user.email ?? user.providerData.first?.providerID ?? "Facebook"
 		
@@ -410,7 +436,15 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	/// клик на segmentedControl
 	@objc private func onSegmentedClick() {
-		let str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
+		var str = loginSegmentedControl.titleForSegment(at: loginSegmentedControl.selectedSegmentIndex)
+		
+		if loginSegmentedControl.selectedSegmentIndex == 0 {
+			str = dict[62]![LANG]
+		}
+		else {
+			str = dict[25]![LANG]
+		}
+		
 		loginRegisterBttn.setTitle(str, for: .normal)
 		// меняем иконку аватарки/приложения
 		switch_AvaLogo()

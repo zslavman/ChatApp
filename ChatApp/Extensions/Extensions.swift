@@ -153,7 +153,7 @@ extension UIButton {
 	public func customizeSignInButton(btnWidth: CGFloat, backColor: UIColor, title: String, titleColor: UIColor, imageIcon: UIImage) {
 		backgroundColor = backColor
 		setTitle(title, for: .normal)
-		titleEdgeInsets.right = 10
+		titleEdgeInsets.right = 5
 		setImage(imageIcon, for: .normal)
 		imageView?.contentMode = .scaleAspectFit
 		let titleWidth = titleLabel?.sizeThatFits(CGSize(width: 0, height: 20)).width ?? 0
@@ -161,7 +161,7 @@ extension UIButton {
 		//contentHorizontalAlignment = .left
 		//semanticContentAttribute = .forceLeftToRight
 		setTitleColor(titleColor, for: .normal)
-		titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+		titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
 		translatesAutoresizingMaskIntoConstraints = false
 		
 		layer.cornerRadius = 8
