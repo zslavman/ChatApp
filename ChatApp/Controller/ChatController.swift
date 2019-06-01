@@ -190,7 +190,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		if (startingFrame != nil) {
 			growingInputView.isHidden = true
 		}
-		else{
+		else {
 			collectionView?.reloadData()
 		}
 	}
