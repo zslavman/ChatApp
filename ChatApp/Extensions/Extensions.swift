@@ -149,6 +149,27 @@ extension UIView {
 
 // цвет клика по кнопке
 extension UIButton {
+	
+	public func customizeSignInButton(btnWidth: CGFloat, backColor: UIColor, title: String, titleColor: UIColor, imageIcon: UIImage) {
+		backgroundColor = backColor
+		setTitle(title, for: .normal)
+		titleEdgeInsets.right = 10
+		setImage(imageIcon, for: .normal)
+		imageView?.contentMode = .scaleAspectFit
+		let titleWidth = titleLabel?.sizeThatFits(CGSize(width: 0, height: 20)).width ?? 0
+		imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: btnWidth - 42 - titleWidth)
+		//contentHorizontalAlignment = .left
+		//semanticContentAttribute = .forceLeftToRight
+		setTitleColor(titleColor, for: .normal)
+		titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+		translatesAutoresizingMaskIntoConstraints = false
+		
+		layer.cornerRadius = 8
+		layer.shadowOffset = CGSize(width: 0, height: 3)
+		layer.shadowRadius = 3
+		layer.shadowOpacity = 0.15
+		adjustsImageWhenHighlighted = false
+	}
     
     func setBackgroundColor(color: UIColor, forState: UIControl.State) {
         self.clipsToBounds = true
@@ -160,6 +181,21 @@ extension UIButton {
         
         self.setBackgroundImage(colorImage, for: forState)
     }
+	
+	func setIconAndTitle(title: String, icon: UIImage, widthConstraints: NSLayoutConstraint) {
+		self.setTitle(title, for: .normal)
+		self.setTitle(title, for: .highlighted)
+		self.setTitleColor(UIColor.white, for: .normal)
+		self.setTitleColor(UIColor.white, for: .highlighted)
+		self.setImage(icon, for: .normal)
+		self.setImage(icon, for: .highlighted)
+		let imageWidth = self.imageView!.frame.width
+		let textWidth = (title as NSString).size(withAttributes:[NSAttributedString.Key.font: self.titleLabel!.font!]).width
+		let width = textWidth + imageWidth + 24 //24 - the sum of your insets from left and right
+		widthConstraints.constant = width
+		self.layoutIfNeeded()
+	}
+
 }
 
 
@@ -367,23 +403,6 @@ extension UIImage {
 	}
 }
 
-
-extension UIButton { // not used
-	
-	func setIconAndTitle(title: String, icon: UIImage, widthConstraints: NSLayoutConstraint) {
-		self.setTitle(title, for: .normal)
-		self.setTitle(title, for: .highlighted)
-		self.setTitleColor(UIColor.white, for: .normal)
-		self.setTitleColor(UIColor.white, for: .highlighted)
-		self.setImage(icon, for: .normal)
-		self.setImage(icon, for: .highlighted)
-		let imageWidth = self.imageView!.frame.width
-		let textWidth = (title as NSString).size(withAttributes:[NSAttributedString.Key.font: self.titleLabel!.font!]).width
-		let width = textWidth + imageWidth + 24 //24 - the sum of your insets from left and right
-		widthConstraints.constant = width
-		self.layoutIfNeeded()
-	}
-}
 
 extension UIViewController {
 	func setStatusBarStyle(_ style: UIStatusBarStyle) {

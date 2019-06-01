@@ -57,27 +57,14 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		return button
 	}()
 	private lazy var loginViaFB_Bttn: UIButton = {
-		let button = UIButton()
-		button.backgroundColor = #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.5450980392, alpha: 1)
-		button.layer.cornerRadius = 8
-		
-		let spacing: CGFloat = 10
-		button.setTitle(dict[58]![LANG], for: .normal) // Вход
-		button.titleEdgeInsets.right = spacing
-		let img = #imageLiteral(resourceName: "facebook_logo_small").tint(with: .white)
-		button.setImage(img, for: .normal)
-		button.imageView?.contentMode = .scaleAspectFit
-		button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: BUTTON_WIDTH - img.size.width - 60)
-		//button.contentHorizontalAlignment = .left
-		//button.semanticContentAttribute = .forceLeftToRight
-		button.setTitleColor(.white, for: .normal)
-		button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-		button.translatesAutoresizingMaskIntoConstraints = false
-		button.layer.shadowOffset = CGSize(width: 0, height: 3)
-		button.layer.shadowRadius = 3
-		button.layer.shadowOpacity = 0.15
+		let button = UIButton(type: .system)
+		button.customizeSignInButton(btnWidth: BUTTON_WIDTH,
+										backColor: #colorLiteral(red: 0.1960784314, green: 0.3058823529, blue: 0.5450980392, alpha: 1),
+										title: dict[58]![LANG],
+										titleColor: .white,
+										imageIcon: #imageLiteral(resourceName: "facebook_logo_small"))
+		button.tintColor = .white
 		button.addTarget(self, action: #selector(onLoginViaFB_Click), for: .touchUpInside)
-		button.adjustsImageWhenHighlighted = false
 		return button
 	}()
 	internal let nameTF: UITextField = {
