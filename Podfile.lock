@@ -1,6 +1,4 @@
 PODS:
-<<<<<<< HEAD
-=======
   - Bolts (1.9.0):
     - Bolts/AppLinks (= 1.9.0)
     - Bolts/Tasks (= 1.9.0)
@@ -19,7 +17,6 @@ PODS:
     - Bolts (~> 1.9)
   - FBSDKLoginKit (4.44.1):
     - FBSDKCoreKit
->>>>>>> master_copy
   - Firebase/Auth (5.20.1):
     - Firebase/CoreOnly
     - FirebaseAuth (= 5.4.2)
@@ -119,15 +116,9 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Messaging
   - Firebase/Storage
-<<<<<<< HEAD
-  - Kingfisher
-  - lottie-ios
-  - NPTableAnimator
-=======
   - Kingfisher (~> 5.3.1)
   - lottie-ios (~> 3.0.3)
   - NPTableAnimator (~> 4.3.0)
->>>>>>> master_copy
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -166,14 +157,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/facebook/facebook-swift-sdk.git
 
 SPEC CHECKSUMS:
-<<<<<<< HEAD
-=======
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   FacebookCore: 9ecbe48cfd37c91a93add7f8cec2b4a2c50a1eec
   FacebookLogin: bdaea5789e9b364fa8a1990ba3bbba4fd2197415
   FBSDKCoreKit: a823ae35bdb60ebb8d7a7e51abe7c5d87d2bfced
   FBSDKLoginKit: 54ae59987f2a8703021557c90a9aebb9e5c2bef6
->>>>>>> master_copy
   Firebase: 2f5235e62f141cb86181c3af0dfe4509706351ac
   FirebaseAnalytics: fd72a26bf8dac84cefba2f0864366f718555a5b0
   FirebaseAnalyticsInterop: efbe45c8385ec626e29f9525e5ebd38520dfb6c1
@@ -194,10 +182,6 @@ SPEC CHECKSUMS:
   NPTableAnimator: 853bf034b6d2bb5309ff1902e2e5f5ffde78c6c2
   Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
 
-<<<<<<< HEAD
-PODFILE CHECKSUM: 513185bd2e7a031cc7b0696f1c6fa4001a3270a1
-=======
 PODFILE CHECKSUM: 4e779cc32c4b5a91874ea4a9add3dace039462d2
->>>>>>> master_copy
 
 COCOAPODS: 1.5.3

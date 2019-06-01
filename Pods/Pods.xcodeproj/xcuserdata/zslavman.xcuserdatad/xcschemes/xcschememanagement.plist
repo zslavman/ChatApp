@@ -107,33 +107,21 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-<<<<<<< HEAD
-			<integer>13</integer>
-=======
 			<integer>18</integer>
->>>>>>> master_copy
 		</dict>
 		<key>Pods-ChatApp.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-<<<<<<< HEAD
-			<integer>14</integer>
-=======
 			<integer>19</integer>
->>>>>>> master_copy
 		</dict>
 		<key>Protobuf.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-<<<<<<< HEAD
-			<integer>15</integer>
-=======
 			<integer>20</integer>
->>>>>>> master_copy
 		</dict>
 		<key>leveldb-library.xcscheme</key>
 		<dict>
@@ -149,19 +137,12 @@
 			<key>orderHint</key>
 			<integer>16</integer>
 		</dict>
-		<key>lottie-ios.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>17</integer>
-		</dict>
 		<key>nanopb.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>12</integer>
+			<integer>17</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
