@@ -179,7 +179,7 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			})
 			AppDelegate.waitScreen.hideNow()
 			self.dismiss(animated: true, completion: nil)
-			print("Удачно сохранили юзера")
+			print("Succesfully saved user!")
 		})
 	}
 	

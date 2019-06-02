@@ -12,6 +12,7 @@ import UserNotifications
 import FirebaseMessaging
 import FirebaseInstanceID
 import FacebookCore
+import GoogleSignIn
 
 
 @UIApplicationMain
@@ -28,15 +29,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		//Notifications.shared.requestAuthorisation()
+		
+		// Google sign-in
+		GIDSignIn.sharedInstance().clientID = "586274645458-5uli8n92a2lck0bo4hlknv5hiq2l85p6.apps.googleusercontent.com"
+		GIDSignIn.sharedInstance().delegate = self
+		
+		// Facebook sign-in
 		SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+		
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false
 		
 		_ = UserDefFlags()
 		UIConfig.configureUI()
 		
-		// не будем использовать сторибоард
+		// don't want to use storyboard
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
 		window?.rootViewController = UINavigationController(rootViewController: TabBarController())
@@ -115,15 +122,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// URL-shems handler
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-		print("url = \(url)")
-		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-		let host = urlComponents?.host ?? ""
-		print(host)
-		if host == "secretPage" { }
+//		print("url = \(url)")
+//		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+//		let host = urlComponents?.host ?? ""
+//		print(host)
+//		if host == "secretPage" { }
+		let canOpenFacebookUrl = SDKApplicationDelegate.shared.application(app, open: url, options: options)
+		let canOpenGoogleUrl = GIDSignIn.sharedInstance().handle(
+			url,
+			sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+			annotation: options[UIApplication.OpenURLOptionsKey.annotation]
+		)
+		let totalCan = canOpenFacebookUrl ? canOpenFacebookUrl : canOpenGoogleUrl
 		
-		let facebook = SDKApplicationDelegate.shared.application(app, open: url, options: options)
-		
-		return facebook
+		return totalCan
 	}
 	
 	
@@ -135,6 +147,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return true
 	}
 	
+}
+
+
+extension AppDelegate: GIDSignInDelegate {
+	
+	func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+		if let error = error {
+			print("\(error.localizedDescription)")
+		}
+		else {
+			guard let loginVC = GIDSignIn.sharedInstance()?.uiDelegate as? LoginController else { return }
+			loginVC.onLoginViaGoogleResponce(user: user)
+		}
+	}
+
 }
 
 

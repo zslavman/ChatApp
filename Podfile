@@ -17,6 +17,8 @@ target 'ChatApp' do
 	
 	#pod 'FacebookLogin', '0.4.0'
 	pod 'FacebookLogin', :git => 'https://github.com/facebook/facebook-swift-sdk.git', :branch => 'swift-4.1'
+	pod 'GoogleSignIn', '4.1.1'
+
 	
 	#avoid apple warning about "Too many symbol files..."
 	post_install do |installer|

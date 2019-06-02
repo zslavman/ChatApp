@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-
+import GoogleSignIn
 
 class SettingsController: UITableViewController {
 	
@@ -150,15 +150,14 @@ class SettingsController: UITableViewController {
 	
 	
 	private func logout() {
-		
 		APIServices.facebookLogout()
-		
+		GIDSignIn.sharedInstance()?.signOut()
+		GIDSignIn.sharedInstance()?.disconnect()
 		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		messagesController.dispose()
 		
 		let findUsersController = tabBarController?.viewControllers![1].children.first as! FindUserForChatController
 		findUsersController.dispose()
-		
 		do {
 			try Auth.auth().signOut()
 		}

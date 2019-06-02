@@ -45,7 +45,7 @@ let dict:[Int:[String]] = [
 	25:["Регистр.", "Register", "Enregistrement"],
 	26:["Пароль", "Password", "Mot de passe"],
 	27:["Имя", "Name", "Prénom"],
-	28:["Обнаружены незаполненные поля, все поля обязательные для регистрации!",
+	28:["Обнаружены незаполненные поля, все поля обязательные!",
 		"Empty field(s) detected. All fields are required!",
 		"Champs vides détectés. Tous les champs sont requis!"],
 	29:["[видео]", "[video]", "[vidéo]"],

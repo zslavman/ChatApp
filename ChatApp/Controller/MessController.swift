@@ -76,7 +76,7 @@ class MessagesController: UITableViewController {
 		let onlineListener = refUsers.child(collocutorID)
 		let removeMessListener = refUserMessages_original.child(uid).child(collocutorID)
 		
-		for (element) in hendlers{
+		for (element) in hendlers {
 			if element.value.description() == onlineListener.description() || element.value.description() == removeMessListener.description(){
 				element.value.removeObserver(withHandle: element.key)
 				hendlers.removeValue(forKey: element.key)
@@ -85,7 +85,9 @@ class MessagesController: UITableViewController {
 		// удаляем из источника таблицы и самой таблицы
 		// один из методов обновления таблицы, но он не безопасный
 		messages.remove(at: indexPath.row)
-		
+		if messages.isEmpty {
+			labelNoMessages?.text = dict[32]![LANG]
+		}
 		//tableView.deleteRows(at: [indexPath], with: .right)
 		reloadTable()
 	}
@@ -131,7 +133,6 @@ class MessagesController: UITableViewController {
 					maxCount = min(1, snapshot.childrenCount)
 				}
 				//***********
-
 
 				// получаем ID сообщения внутри диалога (цикл из сообщений)
 				let listener1 = ref_DialogforEachOtherUser.queryLimited(toLast: 1).observe(.childAdded, with: {
@@ -230,7 +231,7 @@ class MessagesController: UITableViewController {
 	
 	
 	// проверка кол-ва непрочтенных сообщений (вызывается при каждом приходе нового сообщ.)
-	private func checkUnread(msg:Message){
+	private func checkUnread(msg:Message) {
 		if msg.fromID == uid {
 			moveDialogs(newMessage: msg)
 			return
@@ -280,7 +281,7 @@ class MessagesController: UITableViewController {
 	
 	
 	/// калькуляция непрочитанных сообщений каждого диалогера (запускается 1 раз при загрузке, когда получили все диалоги)
-	private func countUnreadMessages(){
+	private func countUnreadMessages() {
 		// получаем весь словарь непрочтенных
 		let unreadRef = Database.database().reference().child("unread-messages-foreach").child(uid)
 		var count:Int = 0
@@ -312,7 +313,7 @@ class MessagesController: UITableViewController {
 	
 	
 	// плюсуем счетчик ярлыка текущей вкладки
-	internal func addBageValue(val:Int){
+	internal func addBageValue(val: Int){
 		guard val != 0 else { return }
 		let thisTabItem = tabBarController?.tabBar.items!.first
 		var currentCount:Int = 0
@@ -377,9 +378,9 @@ class MessagesController: UITableViewController {
 	
 
 	/// первая перезагрузка таблицы и данных
-	private func firstReloadTable(){
+	private func firstReloadTable() {
 		allowIncomingSound = true
-		if messages.isEmpty{
+		if messages.isEmpty {
 			labelNoMessages?.text = dict[32]![LANG] // Нет сообщений
 		}
 		currentList[0].cells.sort(by: {
@@ -507,7 +508,7 @@ class MessagesController: UITableViewController {
 
 	public func dispose() {
 		// записуем на сервер состояние "offline"
-		if (uid != nil){
+		if (uid != nil) {
 			APIServices.setUserStatus(false)
 		}
 		// удаляем слушателя собственных сообщений

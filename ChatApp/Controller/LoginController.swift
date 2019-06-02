@@ -10,12 +10,13 @@ import UIKit
 import Firebase
 import FacebookLogin
 import FBSDKCoreKit
+import GoogleSignIn
 
 
 let default_profile_image: String = "default_profile_image"
 
 
-class LoginController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextFieldDelegate {
+class LoginController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextFieldDelegate, GIDSignInUIDelegate {
 	
 	internal var messagesController: MessagesController?
 
@@ -179,6 +180,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
+		GIDSignIn.sharedInstance()?.uiDelegate = self
 		collectionView?.alwaysBounceVertical = true
 		collectionView?.keyboardDismissMode = .interactive
 		// collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: "reuseIdentifier")
@@ -213,15 +215,15 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		// стейвью для полей ввода
 		let inputsStackView = UIStackView(arrangedSubviews: [nameTF, emailTF, passTF])
 		inputsStackView.axis 		 = .vertical
-		inputsStackView.alignment 	 = .center
-		inputsStackView.distribution = .fill
+//		inputsStackView.alignment 	 = .center
+//		inputsStackView.distribution = .fill
 		inputsStackView.spacing 	 = 5
 		inputsStackView.translatesAutoresizingMaskIntoConstraints = false
 		
 		let buttonsStackView = UIStackView(arrangedSubviews: [loginRegisterBttn, loginViaFB_Bttn, loginViaGoogle_Bttn])
 		buttonsStackView.axis 		 = .vertical
-		buttonsStackView.alignment 	 = .center
-		buttonsStackView.distribution = .fill
+//		buttonsStackView.alignment 	 = .center
+//		buttonsStackView.distribution = .fill
 		buttonsStackView.spacing 	 = 8
 		buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
 		
@@ -395,7 +397,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 						print(error.localizedDescription)
 						return
 					}
-					print("Logining...")
+					print("Logining via Facebook...")
 					guard let fireUser = receivedData?.user else { return }
 					DispatchQueue.main.async {
 						self.analizeReceivedUser(user: fireUser)
@@ -407,10 +409,31 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 	
 	
 	@objc private func onLoginViaGoole_Click() {
-		
-		
+		GIDSignIn.sharedInstance()?.signIn()
 	}
 	
+	/// this method will call from AppDelegate after onLoginViaGoole_Click()
+	public func onLoginViaGoogleResponce(user: GIDGoogleUser) {
+		guard let idToken = user.authentication.idToken else { return }
+		guard let accessToken = user.authentication.accessToken else { return }
+		let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+		
+		// Perform login by calling Firebase APIs
+		AppDelegate.waitScreen.show()
+		Auth.auth().signInAndRetrieveData(with: credential) {
+			(receivedData, error) in
+			
+			if let error = error {
+				print(error.localizedDescription)
+				return
+			}
+			print("Logining via Google...")
+			guard let fireUser = receivedData?.user else { return }
+			DispatchQueue.main.async {
+				self.analizeReceivedUser(user: fireUser)
+			}
+		}
+	}
 	
 	private func analizeReceivedUser(user: User) {
 		let maybeEmail = user.email ?? user.providerData.first?.providerID ?? "Facebook"
@@ -453,7 +476,7 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 			nameTFHeightAnchor?.constant = 0
 		}
 		// регистрация
-		else if loginSegmentedControl.selectedSegmentIndex == 1{
+		else if loginSegmentedControl.selectedSegmentIndex == 1 {
 			nameTFHeightAnchor?.constant = 40
 		}
 	}

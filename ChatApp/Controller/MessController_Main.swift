@@ -142,14 +142,19 @@ extension MessagesController {
 	
 	
 	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let label = UILabel()
-		label.text = dict[31]![LANG] // Загрузка...
-		label.backgroundColor = .clear
-		label.textColor = .lightGray
-		label.font = UIFont.boldSystemFont(ofSize: 25)
-		label.textAlignment = .center
-		labelNoMessages = label
-		return label
+		if let label = labelNoMessages {
+			return label
+		}
+		else {
+			let label = UILabel()
+			label.text = dict[31]![LANG] // Загрузка...
+			label.backgroundColor = .clear
+			label.textColor = .lightGray
+			label.font = UIFont.boldSystemFont(ofSize: 25)
+			label.textAlignment = .center
+			labelNoMessages = label
+			return label
+		}
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
