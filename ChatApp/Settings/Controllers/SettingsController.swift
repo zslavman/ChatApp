@@ -158,13 +158,7 @@ class SettingsController: UITableViewController {
 		
 		let findUsersController = tabBarController?.viewControllers![1].children.first as! FindUserForChatController
 		findUsersController.dispose()
-		do {
-			try Auth.auth().signOut()
-		}
-		catch let logoutError{
-			print(logoutError)
-			return
-		}
+		
 		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
 		// фикс бага когда выходишь и регишся а тайтл не меняется
 		loginController.messagesController = messagesController

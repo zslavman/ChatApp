@@ -18,18 +18,26 @@ struct APIServices {
 	/// устанавливаем новый токен
 	static func setNewToken(callback: @escaping () -> Void) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
-		guard let newToken = Messaging.messaging().fcmToken else { return }
 		let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
 		
-		tokenRef.setValue(newToken) {
-			(error: Error?, ref: DatabaseReference) in
-			
+		InstanceID.instanceID().instanceID {
+			(result, error) in
 			if let error = error {
-				assertionFailure(error.localizedDescription)
+				print(error.localizedDescription)
+				return
 			}
-			else {
-				print("fcmToken = \(newToken)")
-				callback()
+			guard let result = result else { return }
+			let newToken = result.token
+			print("fcmToken = \(newToken)")
+			tokenRef.setValue(newToken) {
+				(error: Error?, ref: DatabaseReference) in
+
+				if let error = error {
+					assertionFailure(error.localizedDescription)
+				}
+				else {
+					callback()
+				}
 			}
 		}
 	}
@@ -64,7 +72,7 @@ struct APIServices {
 		
 		URLSession.shared.dataTask(with: request, completionHandler: {
 			(data, urlresponse, error) in
-			if error != nil{
+			if error != nil {
 				print(error!)
 			}
 		}).resume()
@@ -72,7 +80,7 @@ struct APIServices {
 	
 	
 	// при логауте удаляем на сервере свой токен, чтоб не шли нотификейшны
-	public static func removeToken(){
+	public static func removeToken() {
 		InstanceID.instanceID().deleteID {
 			(error) in
 			if let er = error {
@@ -80,6 +88,13 @@ struct APIServices {
 			}
 			else {
 				print("FCMtoken deleted")
+				do {
+					try Auth.auth().signOut()
+				}
+				catch let logoutError {
+					print(logoutError.localizedDescription)
+					return
+				}
 			}
 		}
 	}

@@ -18,7 +18,7 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	private let NotifCenter = UNUserNotificationCenter.current()
 	
 	// запрос на нотификейшны
-	public func requestAuthorisation(){
+	public func requestAuthorisation() {
 		UNUserNotificationCenter.current().delegate = self
 		Messaging.messaging().delegate = self
 		
