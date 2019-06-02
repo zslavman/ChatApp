@@ -15,7 +15,7 @@ import FacebookLogin
 
 struct APIServices {
 	
-	/// устанавливаем новый токен
+	/// setting new fcmToken
 	static func setNewToken(callback: @escaping () -> Void) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
 		let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
@@ -68,7 +68,6 @@ struct APIServices {
 		var request = URLRequest(url:url)
 		request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"\(serverKey)"]
 		request.httpMethod = "POST"
-		
 		request.httpBody = try? JSONSerialization.data(withJSONObject: bodyToSend, options: [])
 		
 		URLSession.shared.dataTask(with: request, completionHandler: {
