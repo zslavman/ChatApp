@@ -215,15 +215,11 @@ class LoginController: UICollectionViewController, UICollectionViewDelegateFlowL
 		// стейвью для полей ввода
 		let inputsStackView = UIStackView(arrangedSubviews: [nameTF, emailTF, passTF])
 		inputsStackView.axis 		 = .vertical
-//		inputsStackView.alignment 	 = .center
-//		inputsStackView.distribution = .fill
 		inputsStackView.spacing 	 = 5
 		inputsStackView.translatesAutoresizingMaskIntoConstraints = false
 		
 		let buttonsStackView = UIStackView(arrangedSubviews: [loginRegisterBttn, loginViaFB_Bttn, loginViaGoogle_Bttn])
 		buttonsStackView.axis 		 = .vertical
-//		buttonsStackView.alignment 	 = .center
-//		buttonsStackView.distribution = .fill
 		buttonsStackView.spacing 	 = 8
 		buttonsStackView.translatesAutoresizingMaskIntoConstraints = false
 		

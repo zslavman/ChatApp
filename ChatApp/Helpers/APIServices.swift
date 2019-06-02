@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 import FirebaseMessaging
-//import FBSDKLoginKit
 import FBSDKCoreKit
 import FacebookLogin
 
