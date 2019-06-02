@@ -22,6 +22,7 @@ struct APIServices {
 		
 		InstanceID.instanceID().instanceID {
 			(result, error) in
+			
 			if let error = error {
 				print(error.localizedDescription)
 				return
