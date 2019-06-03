@@ -13,31 +13,44 @@ import FBSDKCoreKit
 import FacebookLogin
 
 
-struct APIServices {
+class APIServices {
+	
+	private static var timer: Timer?
 	
 	/// setting new fcmToken
 	static func setNewToken(callback: @escaping () -> Void) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
 		let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
-		
-		InstanceID.instanceID().instanceID {
-			(result, error) in
-			
-			if let error = error {
-				print(error.localizedDescription)
-				return
-			}
-			guard let result = result else { return }
-			let newToken = result.token
-			print("fcmToken = \(newToken)")
-			tokenRef.setValue(newToken) {
-				(error: Error?, ref: DatabaseReference) in
 
+		
+		timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true, block: {
+			(_) in
+			sendRequestToGetToken()
+			print("Retry to get token")
+		})
+		
+		func sendRequestToGetToken() {
+			InstanceID.instanceID().instanceID {
+				(result, error) in
+				
+				timer?.invalidate()
+				
 				if let error = error {
-					assertionFailure(error.localizedDescription)
+					print(error.localizedDescription)
+					return
 				}
-				else {
-					callback()
+				guard let result = result else { return }
+				let newToken = result.token
+				print("fcmToken = \(newToken)")
+				tokenRef.setValue(newToken) {
+					(error: Error?, ref: DatabaseReference) in
+					
+					if let error = error {
+						assertionFailure(error.localizedDescription)
+					}
+					else {
+						callback()
+					}
 				}
 			}
 		}
@@ -79,8 +92,27 @@ struct APIServices {
 	}
 	
 	
-	// при логауте удаляем на сервере свой токен, чтоб не шли нотификейшны
+	// при логауте удаляем на сервере свой токен
 	public static func removeToken() {
+		timer?.invalidate()
+		
+//		guard let uid = Auth.auth().currentUser?.uid else { return }
+//		Messaging.messaging().deleteFCMToken(forSenderID: uid) {
+//			(error) in
+//			if let er = error {
+//				print(er.localizedDescription)
+//			}
+//			else {
+//				print("FCMtoken deleted")
+//				do {
+//					try Auth.auth().signOut()
+//				}
+//				catch let logoutError {
+//					print(logoutError.localizedDescription)
+//					return
+//				}
+//			}
+//		}
 		InstanceID.instanceID().deleteID {
 			(error) in
 			if let er = error {

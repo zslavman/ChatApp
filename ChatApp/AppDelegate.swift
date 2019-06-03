@@ -61,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// вошло в бэкграунд
 	func applicationDidEnterBackground(_ application: UIApplication) {
-		Messaging.messaging().shouldEstablishDirectChannel = false
+		//Messaging.messaging().shouldEstablishDirectChannel = false
 	}
 
 	// сейчас вернется в активный режим

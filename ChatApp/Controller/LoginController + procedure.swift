@@ -84,11 +84,11 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			
 			APIServices.setNewToken(callback: {
 				Notifications.shared.requestAuthorisation()
-				// если всё ок - заходим в учётку
-				AppDelegate.waitScreen.hideNow()
-				self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
-				self.dismiss(animated: true, completion: nil)
 			})
+			// если всё ок - заходим в учётку
+			AppDelegate.waitScreen.hideNow()
+			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
+			self.dismiss(animated: true, completion: nil)
 			
 		}
 	}
@@ -174,12 +174,14 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
-			APIServices.setNewToken(callback: {
-				Notifications.shared.requestAuthorisation()
-				AppDelegate.waitScreen.hideNow()
-				self.dismiss(animated: true, completion: nil)
-				print("Succesfully saved user!")
-			})
+			DispatchQueue.main.async {
+				APIServices.setNewToken(callback: {
+					Notifications.shared.requestAuthorisation()
+				})
+			}
+			AppDelegate.waitScreen.hideNow()
+			self.dismiss(animated: true, completion: nil)
+			print("Succesfully saved user!")
 		})
 	}
 	

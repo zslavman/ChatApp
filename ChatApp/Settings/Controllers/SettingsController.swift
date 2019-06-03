@@ -162,6 +162,14 @@ class SettingsController: UITableViewController {
 		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
 		// фикс бага когда выходишь и регишся а тайтл не меняется
 		loginController.messagesController = messagesController
+
+//		do {
+//			try Auth.auth().signOut()
+//		}
+//		catch let logoutError {
+//			print(logoutError.localizedDescription)
+//			return
+//		}
 		
 		present(loginController, animated: true, completion: nil)
 	}
