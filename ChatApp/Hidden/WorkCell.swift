@@ -23,8 +23,6 @@ class WorkCell: UITableViewCell {
 		}
 	}
 	
-	
-	
 	public func updateImageViewWithImage(_ image: UIImage?) {
 		
 		if let image = image {
@@ -47,10 +45,6 @@ class WorkCell: UITableViewCell {
 			spinner.startAnimating()
 		}
 	}
-	
-	
-	
-	
 
 }
 

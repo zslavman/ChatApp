@@ -17,6 +17,18 @@ import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+	
+	enum ShortcutIdentifier: String {
+		case OpenSecret
+		case OpenUsers
+		
+		init?(fullIdentifier: String) {
+			guard let shortIdentifier = fullIdentifier.components(separatedBy: ".").last else {
+				return nil
+			}
+			self.init(rawValue: shortIdentifier)
+		}
+	}
 
 	public static var waitScreen: WaitScreen!
 	public var window: UIWindow?
@@ -29,7 +41,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		
 		// Google sign-in
 		GIDSignIn.sharedInstance().clientID = "586274645458-5uli8n92a2lck0bo4hlknv5hiq2l85p6.apps.googleusercontent.com"
 		GIDSignIn.sharedInstance().delegate = self
@@ -49,7 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window?.rootViewController = UINavigationController(rootViewController: TabBarController())
 		
 		AppDelegate.waitScreen = WaitScreen()
-		
 		return true
 	}
 
@@ -145,6 +155,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let parsedLink = SUtils.linkParser(url: url)
 		SUtils.printDictionary(dict: parsedLink)
 		return true
+	}
+	
+	
+	/// 3d touch on icon -> menu
+	func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+		// open VC from menu
+		completionHandler(handleShortcut(shortcutItem))
+	}
+	@discardableResult fileprivate func handleShortcut(_ shortcutItem: UIApplicationShortcutItem) -> Bool {
+		if Auth.auth().currentUser?.uid == nil { return false }
+		let shortcutType = shortcutItem.type
+		guard let shortcutIdentifier = ShortcutIdentifier(fullIdentifier: shortcutType) else { return false	}
+		guard let window = UIApplication.shared.keyWindow else { return false }
+		guard let tabBarController = window.rootViewController?.children.first as? TabBarController else { return false	}
+		switch shortcutIdentifier {
+		case .OpenSecret:
+			if MessagesController.shared.goToChatWithID != nil {
+				MessagesController.shared.navigationController?.popViewController(animated: false)
+			}
+			else {
+				tabBarController.selectedIndex = 0
+			}
+			MessagesController.shared.createBarItem(skipChecking: true)
+			MessagesController.shared.onMenuClick()
+			return true
+			
+		case .OpenUsers:
+			tabBarController.selectedIndex = 1
+			return true
+		}
 	}
 	
 }

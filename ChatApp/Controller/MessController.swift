@@ -528,6 +528,8 @@ class MessagesController: UITableViewController {
 		
 		senders.removeAll()
 		
+		navigationItem.rightBarButtonItem = nil
+		
 		owner = nil
 		labelNoMessages?.removeFromSuperview()
 		labelNoMessages = nil

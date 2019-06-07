@@ -11,8 +11,6 @@ import UIKit
 
 class MultiThreading {
 	
-	
-	
 	// выполнение задачи в другом потоке (serial/concurrent)
 	public func setTaskInGlobalQueue(){
 		let queue = DispatchQueue.global(qos: .userInitiated)
@@ -30,9 +28,6 @@ class MultiThreading {
 		queue.async(execute: closure)
 	}
 	
-	
-	
-
 	
 	// семафор в действии
 	public func semaphoreRun(){
@@ -95,11 +90,9 @@ class MultiThreading {
 //				 print("Thread = \(Thread.current)")
 			}
 		}
-		
 		DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
 			print("tempArray = \(tempArray.sorted()) count = \(tempArray.count)")
 		}
-		
 		// выполнится только после асинхронных, т.е. в конце (но это тормозит основной интерфейс)
 		//		queue.sync {
 		//			print("tempArray = \(tempArray.sorted()) count = \(tempArray.count)")
@@ -107,11 +100,8 @@ class MultiThreading {
 		
 	}
 	
-	
-	
-	
+
 	public func opearationsQueue(){
-		
 //		let queue = BlockOperation()
 //		queue.addExecutionBlock { // выполняется в неосновной очереди
 //			print("Mark 1")
@@ -139,7 +129,6 @@ class MultiThreading {
 			print("Mark 2")
 			print("Thread = \(Thread.current)")
 		}
-		
 		// барьер
 		operationQueue.waitUntilAllOperationsAreFinished()
 		

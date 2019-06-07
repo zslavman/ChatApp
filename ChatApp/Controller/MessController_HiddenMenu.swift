@@ -11,10 +11,8 @@ import UIKit
 // менюшка по клику на rightBarButtonItem
 extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMunuClickedDelegate {
 	
-	@objc private func onMenuClick(){
-		
+	@objc public func onMenuClick() {
 		rotateRightBarButton()
-		
 		let menuVC = PopOverMenu()
 		menuVC.modalPresentationStyle = .popover
 		menuVC.popoverMunuClickedDelegate = self
@@ -26,7 +24,6 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 		// если цель не BarButtonItem
 		// popOverVC.sourceView = someBttn // для треугольного указателя
 		// popOverVC.sourceRect = CGRect(x: someBttn.bounds.midX, y: someBttn.bounds.maxY, width: 0, height: 0)
-		
 		present(menuVC, animated: true)
 	}
 	
@@ -38,7 +35,6 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 	
 	// метод PopoverMunuClickedDelegate
 	func cellClicked(numberOfMenu: Int) {
-		
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
 			switch numberOfMenu {
 			case 0:
@@ -60,14 +56,11 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 	}
 	
 	
-	
-	
-	
 	// создание кнопки админского меню
-	internal func createBarItem(){
-		
-		guard owner.id! == "KxDQNTywa9ghlyBPvEmIa7oQZ0G3" else { return }
-		
+	public func createBarItem(skipChecking: Bool = false) {
+		if !skipChecking {
+			guard owner.id! == "KxDQNTywa9ghlyBPvEmIa7oQZ0G3" else { return }
+		}
 		let button = UIButton(type: .custom)
 		if let image = UIImage(named:"bttn_menu") {
 			button.setImage(image, for: .normal)
@@ -76,19 +69,14 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 		button.addTarget(self, action: #selector(onMenuClick), for: .touchUpInside)
 		let barButton = UIBarButtonItem(customView: button)
 		navigationItem.rightBarButtonItem = barButton
-		
 		appearanceRightBarButton()
 	}
 	
 	
-	
-	
 	// анимация появления кнопки админского меню
-	internal func appearanceRightBarButton(){
-		
+	internal func appearanceRightBarButton() {
 		navigationItem.rightBarButtonItem?.isEnabled = true
 		navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-		
 		// анимация появления
 		navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform(scaleX: 0, y: 0)
 		// при анимации кнопка перестает быть кнопкой, потому принудительно делаем ей allowUserInteraction
@@ -100,13 +88,12 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 			options					: .curveLinear,
 			animations: {
 				self.navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform.identity
-		}
-		)
+		})
 	}
 	
 	
 	
-	internal func rotateRightBarButton(){
+	internal func rotateRightBarButton() {
 		navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi * 6/5))
 		UIView.animate(withDuration: 0.3) {
 			self.navigationItem.rightBarButtonItem?.customView!.transform = CGAffineTransform.identity
