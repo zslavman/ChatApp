@@ -22,7 +22,6 @@ class APIServices {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
 		let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
 
-		
 		timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true, block: {
 			(_) in
 			sendRequestToGetToken()
@@ -54,6 +53,7 @@ class APIServices {
 				}
 			}
 		}
+		sendRequestToGetToken()
 	}
 	
 	
