@@ -348,6 +348,13 @@ struct SUtils {
 		return emailTest.evaluate(with: maybeEmail)
 	}
 	
+	/// play taptic feedback
+	public static func tapticFeedback() {
+		let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .heavy)
+		impactFeedbackgenerator.prepare()
+		impactFeedbackgenerator.impactOccurred()
+	}
+	
 }
 
 
