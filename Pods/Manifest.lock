@@ -127,6 +127,7 @@ PODS:
   - nanopb/encode (0.3.901)
   - NPTableAnimator (4.3.0)
   - Protobuf (3.7.0)
+  - ReachabilitySwift (4.3.0)
 
 DEPENDENCIES:
   - FacebookLogin (from `https://github.com/facebook/facebook-swift-sdk.git`, branch `swift-4.1`)
@@ -139,6 +140,7 @@ DEPENDENCIES:
   - Kingfisher (~> 5.3.1)
   - lottie-ios (~> 3.0.3)
   - NPTableAnimator (~> 4.3.0)
+  - ReachabilitySwift (= 4.3.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -168,6 +170,7 @@ SPEC REPOS:
     - nanopb
     - NPTableAnimator
     - Protobuf
+    - ReachabilitySwift
 
 EXTERNAL SOURCES:
   FacebookLogin:
@@ -207,7 +210,8 @@ SPEC CHECKSUMS:
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   NPTableAnimator: 853bf034b6d2bb5309ff1902e2e5f5ffde78c6c2
   Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
 
-PODFILE CHECKSUM: 7bc66370be5b65a79bfe9b337c1f371429a8d486
+PODFILE CHECKSUM: be40f2da47ab3d247762ff3df2632f14550410ce
 
 COCOAPODS: 1.5.3

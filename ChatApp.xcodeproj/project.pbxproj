@@ -25,6 +25,9 @@
 		563C467D21C15167002F59D8 /* ChangeLanguageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563C467C21C15167002F59D8 /* ChangeLanguageController.swift */; };
 		563D17882189E351000DFAD2 /* ChatUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D17872189E351000DFAD2 /* ChatUser.swift */; };
 		563D73AF2194682C0098300C /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D73AE2194682C0098300C /* ChatMessageCell.swift */; };
+		563D8AA922DE5DF000C2F085 /* SettingsBundleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8AA822DE5DF000C2F085 /* SettingsBundleHelper.swift */; };
+		563D8AAD22DE5EE100C2F085 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 563D8AAC22DE5EE100C2F085 /* Settings.bundle */; };
+		563D8AAF22DE612900C2F085 /* ReachabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8AAE22DE612900C2F085 /* ReachabilityService.swift */; };
 		563DCA0221BB2720007CD452 /* MySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DCA0121BB2720007CD452 /* MySection.swift */; };
 		563E30D321D3D92F0006899C /* PopOverMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E30D221D3D92F0006899C /* PopOverMenu.swift */; };
 		563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */; };
@@ -114,6 +117,9 @@
 		563C467C21C15167002F59D8 /* ChangeLanguageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeLanguageController.swift; sourceTree = "<group>"; };
 		563D17872189E351000DFAD2 /* ChatUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 		563D73AE2194682C0098300C /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
+		563D8AA822DE5DF000C2F085 /* SettingsBundleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBundleHelper.swift; sourceTree = "<group>"; };
+		563D8AAC22DE5EE100C2F085 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		563D8AAE22DE612900C2F085 /* ReachabilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityService.swift; sourceTree = "<group>"; };
 		563DCA0121BB2720007CD452 /* MySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySection.swift; sourceTree = "<group>"; };
 		563E30D221D3D92F0006899C /* PopOverMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverMenu.swift; sourceTree = "<group>"; };
 		563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserForChatController.swift; sourceTree = "<group>"; };
@@ -275,6 +281,7 @@
 				56AE41D52259489D00055E3B /* like_animation.json */,
 				566BEDB42186F8D70053F4A0 /* Info.plist */,
 				5636A1CE21C902E30065BFD5 /* ChatApp.entitlements */,
+				563D8AAC22DE5EE100C2F085 /* Settings.bundle */,
 			);
 			path = ChatApp;
 			sourceTree = "<group>";
@@ -327,6 +334,8 @@
 				5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */,
 				5640ABBC21DCAC8000F016FE /* ImageLoader.swift */,
 				5683257E228C977200B60361 /* PushStaticMethods.swift */,
+				563D8AA822DE5DF000C2F085 /* SettingsBundleHelper.swift */,
+				563D8AAE22DE612900C2F085 /* ReachabilityService.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -506,6 +515,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				563D8AAD22DE5EE100C2F085 /* Settings.bundle in Resources */,
 				566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */,
 				5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */,
 				563991B421CA081D00884B75 /* GoogleService-Info.plist in Resources */,
@@ -552,6 +562,7 @@
 				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/NPTableAnimator/NPTableAnimator.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/lottie-ios/Lottie.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
@@ -570,6 +581,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NPTableAnimator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lottie.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
@@ -646,6 +658,7 @@
 				5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */,
 				5639652A21924CA000691334 /* UserCell.swift in Sources */,
 				563B1AA421D695770035D0BC /* MultiThreading.swift in Sources */,
+				563D8AAF22DE612900C2F085 /* ReachabilityService.swift in Sources */,
 				563D17882189E351000DFAD2 /* ChatUser.swift in Sources */,
 				563AC83121A0C5EA00741C2E /* SectionHeaderView.swift in Sources */,
 				5639A6B721B683930002E1F5 /* ImageVideoManaging.swift in Sources */,
@@ -654,6 +667,7 @@
 				5632FA7C21C8ED6000FBEE80 /* DeviceOrientationHelper.swift in Sources */,
 				5649D9F821D8382800AA3BD8 /* WorkCell.swift in Sources */,
 				563BE43C218A3DD300A3BF29 /* LoginController + procedure.swift in Sources */,
+				563D8AA922DE5DF000C2F085 /* SettingsBundleHelper.swift in Sources */,
 				56A044A121B025F70084D7FD /* LocationManaging.swift in Sources */,
 				563B243B21AE1CE500EEB504 /* BlackView.swift in Sources */,
 				5649D9F621D832BB00AA3BD8 /* JSONTableController.swift in Sources */,

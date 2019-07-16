@@ -33,6 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	public static var waitScreen: WaitScreen!
 	public var window: UIWindow?
 	public var orientationLock = UIInterfaceOrientationMask.all
+	var reachabilityService: ReachabilityService! // this instance must exist with application (not in closure)
 	
 	
 	func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
@@ -52,6 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		Database.database().isPersistenceEnabled = false
 		
 		_ = UserDefFlags()
+		reachabilityService = ReachabilityService()
 		UIConfig.configureUI()
 		
 		// don't want to use storyboard
@@ -87,6 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			MessagesController.shared.messages_copy.removeAll()
 		}
 		AppEventsLogger.activate(application)
+		SettingsBundleHelper.setVersionAndBuildNumber()
 	}
 
 	

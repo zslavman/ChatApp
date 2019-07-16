@@ -14,6 +14,7 @@ target 'ChatApp' do
 	pod 'NPTableAnimator', '~> 4.3.0'
 	pod 'Kingfisher', '~> 5.3.1'
 	pod 'lottie-ios', '~> 3.0.3'
+	pod 'ReachabilitySwift', '4.3.0'
 	
 	#pod 'FacebookLogin', '0.4.0'
 	pod 'FacebookLogin', :git => 'https://github.com/facebook/facebook-swift-sdk.git', :branch => 'swift-4.1'
