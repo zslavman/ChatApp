@@ -854,7 +854,7 @@
 				CODE_SIGN_ENTITLEMENTS = ChatApp/ChatApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = ChatApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -882,7 +882,7 @@
 				CODE_SIGN_ENTITLEMENTS = ChatApp/ChatApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = ChatApp/Info.plist;
@@ -952,7 +952,7 @@
 				CODE_SIGN_ENTITLEMENTS = PushMutater2/PushMutater2.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = PushMutater2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -981,7 +981,7 @@
 				CODE_SIGN_ENTITLEMENTS = PushMutater2/PushMutater2.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = PushMutater2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
