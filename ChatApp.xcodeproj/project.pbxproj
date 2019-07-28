@@ -30,6 +30,7 @@
 		563D8AAF22DE612900C2F085 /* ReachabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8AAE22DE612900C2F085 /* ReachabilityService.swift */; };
 		563DCA0221BB2720007CD452 /* MySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DCA0121BB2720007CD452 /* MySection.swift */; };
 		563E30D321D3D92F0006899C /* PopOverMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E30D221D3D92F0006899C /* PopOverMenu.swift */; };
+		563EA6AE22EDAAEA00806311 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 563EA6AD22EDAAEA00806311 /* StoreKit.framework */; };
 		563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */; };
 		5640ABBD21DCAC8000F016FE /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640ABBC21DCAC8000F016FE /* ImageLoader.swift */; };
 		5649D9F621D832BB00AA3BD8 /* JSONTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5649D9F521D832BB00AA3BD8 /* JSONTableController.swift */; };
@@ -122,6 +123,7 @@
 		563D8AAE22DE612900C2F085 /* ReachabilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityService.swift; sourceTree = "<group>"; };
 		563DCA0121BB2720007CD452 /* MySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySection.swift; sourceTree = "<group>"; };
 		563E30D221D3D92F0006899C /* PopOverMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverMenu.swift; sourceTree = "<group>"; };
+		563EA6AD22EDAAEA00806311 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserForChatController.swift; sourceTree = "<group>"; };
 		5640ABBC21DCAC8000F016FE /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		5649D9F521D832BB00AA3BD8 /* JSONTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTableController.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				568D68BD2242DA67006084A6 /* Pods_ChatApp.framework in Frameworks */,
+				563EA6AE22EDAAEA00806311 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -375,6 +378,7 @@
 		70DFE94CC7D7CBF2A1E2709F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				563EA6AD22EDAAEA00806311 /* StoreKit.framework */,
 				568D68BC2242DA67006084A6 /* Pods_ChatApp.framework */,
 				E22CA811EAF95E7361413CF3 /* Pods_ChatApp.framework */,
 			);
@@ -463,6 +467,9 @@
 							};
 							com.apple.ClassKit = {
 								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
 							};
 							com.apple.Push = {
 								enabled = 1;
@@ -917,7 +924,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatApp.app/ChatApp";
 			};
@@ -939,7 +946,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = organic.ChatAppTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChatApp.app/ChatApp";
 			};
