@@ -37,9 +37,8 @@ class PopOverMenu: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		let str = MessagesController.shared.isOnline ? "Set offline" : "Set online"
-		menuChapterNames = ["Reload table", str, "JSONTable", timeCellDefText]
+		menuChapterNames = ["Reload table", str, "JSONTable", timeCellDefText, "Purchases"]
 		
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cell_ID)
 		tableView.isScrollEnabled = false

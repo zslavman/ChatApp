@@ -13,11 +13,8 @@ import Firebase
 
 extension ChatController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 	
-	
-	
 	/// клик на картинку (переслать фотку)
-	@objc public func onUploadClick(){
-		
+	@objc public func onUploadClick() {
 		AppDelegate.waitScreen.show()
 		
 		let imagePickerController = UIImagePickerController()
@@ -32,21 +29,18 @@ extension ChatController: UIImagePickerControllerDelegate, UINavigationControlle
 			AppDelegate.waitScreen.hideNow()
 		})
 	}
-	
-	
-	
-	
+
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-// Local variable inserted by Swift 4.2 migrator.
-let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+		// Local variable inserted by Swift 4.2 migrator.
+		//let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 
-		
-		var permission:Bool = true
+		var permission = true
 		selectMediaContentOpened = false
 		
 		// если выбрали видеофайл
-		if let videoURL = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.mediaURL)] as? URL{
+		//if let videoURL = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.mediaURL)] as? URL{
+		if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
 			if let bytes = NSData(contentsOf: videoURL)?.length{ // в обычной Data нет свойства length
 				let MB = (bytes / 1024) / 1000
 				print("Размер файла = \(MB) МБ")
@@ -61,11 +55,10 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		else { // если выбрали фото
 			imageSelectedForInfo(info: info)
 		}
-		
 		dismiss(animated: true, completion: {
 			if !permission{
 				let message = dict[34]![LANG] // "Выберите другое видео (не более 10 МБ), или сократите его длительность"
-				let alertController = SUtils.alert(message: message, title: dict[35]![LANG], completion: nil) //  // "Слишком большой файл"
+				let alertController = SUtils.alert(message: message, title: dict[35]![LANG], completion: nil)// "Слишком большой файл"
 				self.present(alertController, animated: true, completion: nil)
 				return
 			}
@@ -74,12 +67,12 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	
 	
 	
-	private func imageSelectedForInfo(info:[String: Any]){
-		var selectedImage:UIImage?
-		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
+	private func imageSelectedForInfo(info:[UIImagePickerController.InfoKey: Any]){
+		var selectedImage: UIImage?
+		if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage{
 			selectedImage = editedImage
 		}
-		else if let originalImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage{
+		else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
 			selectedImage = originalImage
 		}
 		
@@ -90,8 +83,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 			})
 		}
 	}
-	
-	
 	
 	
 	/// сохранение сообщения с картинкой в БД
@@ -105,14 +96,11 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	}
 	
 	
-	
-	
 	/// Когда выбрали видеофайл для выгрузки
 	///
 	/// - Parameter videoURL: внутренняя ссылка на видео (ссылка ведущя в альбом с видеофайлом)
 	/// - 	restriction: разрешение загружать, если false - не загружаем
 	private func videoSelectedForInfo(videoFilePath:URL){
-		
 		let uniqueImageName = UUID().uuidString
 		let ref = Storage.storage().reference().child("message_videos").child("\(uniqueImageName).mov")
 		
@@ -179,12 +167,8 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		catch let err{
 			print(err.localizedDescription)
 		}
-		
 		return nil
 	}
-	
-	
-	
 	
 	
 	/// Загрузка картинки в хранилище
@@ -193,7 +177,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	///   - image: сама картинка
 	///   - completion: фукнция которая дернется когда будет загружена картинка и получен на нее URL
 	private func uploadingImageToStorage(image:UIImage, completion: @escaping (_ imageUrl:String) -> Void){
-		
 		let uniqueImageName = UUID().uuidString
 		let ref = Storage.storage().reference().child("message_images").child("\(uniqueImageName).jpg")
 		
@@ -224,10 +207,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	
 	
 	
-	
-	
-	
-	
 	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
 		selectMediaContentOpened = true
 		dismiss(animated: true, completion: nil)
@@ -235,11 +214,8 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	
 	
 	
-
-	
 	/// кастомный зум при клике на отосланную картинку в чате
 	public func performZoomForImageView(imageView: UIImageView){
-		
 		// прячем оригинальное изображение при клике на него
 		originalImageView = imageView
 		originalImageView?.isHidden = true
@@ -282,7 +258,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 			zoomingImageView.leftAnchor.constraint(equalTo: keyWindow.leftAnchor).isActive 		= true
 			zoomingImageView.rightAnchor.constraint(equalTo: keyWindow.rightAnchor).isActive 	= true
 			
-			
 			// *****************
 			// * Блок анимации *
 			// *****************
@@ -301,13 +276,9 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 	
 	
 	
-	
 	@objc private func onZoomedImageClick(tapGesture: UITapGestureRecognizer){
-		
-		if let tapedImageView = tapGesture.view{
-			
+		if let tapedImageView = tapGesture.view {
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-				
 				tapedImageView.frame = self.startingFrame!
 				self.startingFrame = nil
 				self.blackBackgroundView?.alpha = 0
@@ -325,32 +296,4 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		}
 	}
 	
-	
-	
-	
-	
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
-	return input.rawValue
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5616DA9322EE0A3F0004A042 /* PurchasesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5616DA9222EE0A3F0004A042 /* PurchasesController.swift */; };
 		5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */; };
 		5632FA7C21C8ED6000FBEE80 /* DeviceOrientationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */; };
 		5636315921CC99ED00FDDA7D /* APIServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5636315821CC99ED00FDDA7D /* APIServices.swift */; };
@@ -101,6 +102,7 @@
 
 /* Begin PBXFileReference section */
 		0EB6B3218B0B51DE0BA9135A /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
+		5616DA9222EE0A3F0004A042 /* PurchasesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesController.swift; sourceTree = "<group>"; };
 		5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefFlags.swift; sourceTree = "<group>"; };
 		5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOrientationHelper.swift; sourceTree = "<group>"; };
 		5636315821CC99ED00FDDA7D /* APIServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServices.swift; sourceTree = "<group>"; };
@@ -252,6 +254,8 @@
 		5649D9F421D8322300AA3BD8 /* Hidden */ = {
 			isa = PBXGroup;
 			children = (
+				5679806B21DE8EAC006EA21B /* MessController_HiddenMenu.swift */,
+				5616DA9222EE0A3F0004A042 /* PurchasesController.swift */,
 				5649D9F521D832BB00AA3BD8 /* JSONTableController.swift */,
 				563B1AA321D695770035D0BC /* MultiThreading.swift */,
 				5649D9F721D8382800AA3BD8 /* WorkCell.swift */,
@@ -264,9 +268,9 @@
 			isa = PBXGroup;
 			children = (
 				566BEDA72186F8D50053F4A0 /* ChatApp */,
-				566F468E21E2480400993A92 /* ChatAppTests */,
 				5689AE25223ECE2C0088BABA /* PushMutater2 */,
 				563EA6B222EDAB5C00806311 /* FirstTestPurchase */,
+				566F468E21E2480400993A92 /* ChatAppTests */,
 				566BEDA62186F8D50053F4A0 /* Products */,
 				539665654BCF2AC0DD19A1EA /* Pods */,
 				70DFE94CC7D7CBF2A1E2709F /* Frameworks */,
@@ -315,7 +319,6 @@
 				564ECEC821BEC03E0011C04A /* TabBarController.swift */,
 				566BEDAA2186F8D50053F4A0 /* MessController.swift */,
 				56397AF621BA9BEA00372B61 /* MessController_Main.swift */,
-				5679806B21DE8EAC006EA21B /* MessController_HiddenMenu.swift */,
 				563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */,
 				56BEAB122191BD960008AF6B /* ChatController.swift */,
 				5639A6B621B683930002E1F5 /* ImageVideoManaging.swift */,
@@ -705,6 +708,7 @@
 				566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */,
 				56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */,
 				56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */,
+				5616DA9322EE0A3F0004A042 /* PurchasesController.swift in Sources */,
 				563C467D21C15167002F59D8 /* ChangeLanguageController.swift in Sources */,
 				563959D821C1F556005EA8AD /* AboutController.swift in Sources */,
 				56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */,

@@ -50,6 +50,10 @@ extension MessagesController: UIPopoverPresentationControllerDelegate, PopoverMu
 			case 3:
 				let alertController = Notifications.shared.createNotif()
 				self.present(alertController, animated: true, completion: nil)
+			case 4:
+				let purchaseVC = PurchasesController()
+				purchaseVC.hidesBottomBarWhenPushed = true
+				self.navigationController?.pushViewController(purchaseVC, animated: true)
 			default: fatalError()
 			}
 		}

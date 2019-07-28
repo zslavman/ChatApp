@@ -24,7 +24,6 @@ class WorkCell: UITableViewCell {
 	}
 	
 	public func updateImageViewWithImage(_ image: UIImage?) {
-		
 		if let image = image {
 			photoImage.image = image
 			photoImage.alpha = 0.35

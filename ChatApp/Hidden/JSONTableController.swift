@@ -13,7 +13,7 @@ import UIKit
 import MapKit
 
 
-class PhotoData:Decodable {
+class PhotoData: Decodable {
 	var index		:Int?
 	var view		:String?
 	var description	:String?
@@ -26,7 +26,7 @@ class PhotoData:Decodable {
 }
 
 
-struct Geo:Decodable {
+struct Geo: Decodable {
 	var latitude:Double?
 	var longitude:Double?
 }
@@ -40,8 +40,8 @@ class JSONTable: UITableViewController {
 	// внутненняя ссылка на гуглдиск
 	//private let json_link2:String = "https://drive.google.com/file/d/15vtUxi965XwNL7WAcUEgY0deGUpCkHFH/view?usp=sharing"
 	// прямая ссылка на гуглдиск
-	private let json_link2:String = "https://drive.google.com/uc?export=download&id=15vtUxi965XwNL7WAcUEgY0deGUpCkHFH"
-	private let imgs_link:String = "http://zslavman.zzz.com.ua/imgdb/"
+	private let json_link2: String = "https://drive.google.com/uc?export=download&id=15vtUxi965XwNL7WAcUEgY0deGUpCkHFH"
+	private let imgs_link: String = "http://zslavman.zzz.com.ua/imgdb/"
 	private var tasks = Set<ImageLoader>() // таски на скачивание, которые будем отменять при выходе
 	
 	//drive.google.com/open?id=1Rbk49RDjWffwbs-nMA9WaMjsaOAKWg_r
