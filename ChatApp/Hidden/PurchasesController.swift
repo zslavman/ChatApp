@@ -8,18 +8,33 @@
 
 import Foundation
 import UIKit
+import StoreKit
 
 class PurchasesController: UIViewController {
 	
 	private var tableView: UITableView!
 	private let cellID = "id"
+	private var purchases: [SKProduct] = IAPManager.shared.receivedProducts {
+		didSet {
+			tableView.reloadData()
+		}
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveProducts(notif:)), name: .didReceiveProducts, object: nil)
 		view.backgroundColor = .white
 		navigationItem.title = "Purchases"
 		installTable()
+		
+		navigationController?.navigationBar.prefersLargeTitles = true
+		navigationController?.navigationBar.largeTitleTextAttributes = [
+			.foregroundColor:  	UIColor.white,
+			.font:  			UIFont.boldSystemFont(ofSize: 30)]
+		
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Restore", style: .plain, target: self, action: #selector(onRestoreClick))
 	}
+	
 	
 	private func installTable() {
 		tableView = UITableView(frame: .zero, style: .plain)
@@ -39,21 +54,47 @@ class PurchasesController: UIViewController {
 	}
 	
 	
+	@objc private func didReceiveProducts(notif: Notification) {
+		guard let products = notif.object as? [SKProduct] else { return }
+		self.purchases = products
+	}
+	
+	
+	@objc private func onRestoreClick() {
+		
+	}
+	
+	deinit {
+		NotificationCenter.default.removeObserver(self)
+	}
+	
+	
 }
 
 extension PurchasesController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return 6
+		return purchases.count
+	}
+	
+	func numberOfSections(in tableView: UITableView) -> Int {
+		return 1
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 50
 	}
 	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
+		IAPManager.shared.purchase(product: purchases[indexPath.row])
+	}
+	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-		cell.textLabel?.text = "Cool Bivis!"
+		let content = purchases[indexPath.row]
+		let str = content.localizedTitle + " - " + IAPManager.shared.getLocalPriceForProduct(content)
+		cell.textLabel?.text = str
 		return cell
 	}
 	

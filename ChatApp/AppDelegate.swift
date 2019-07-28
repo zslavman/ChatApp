@@ -36,12 +36,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var reachabilityService: ReachabilityService! // this instance must exist with application (not in closure)
 	
 	
-	func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+	func application(_ application: UIApplication, supportedInterfaceOrientationsFor
+								window: UIWindow?) -> UIInterfaceOrientationMask {
 		return self.orientationLock
 	}
 
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions
+						launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+		// in-app purchase
+		IAPManager.shared.initPurchases {
+			(success) in
+			if success {
+				print("Can make payments!")
+				IAPManager.shared.getProductsByIDs()
+			}
+		}
 		// Google sign-in
 		GIDSignIn.sharedInstance().clientID = "586274645458-5uli8n92a2lck0bo4hlknv5hiq2l85p6.apps.googleusercontent.com"
 		GIDSignIn.sharedInstance().delegate = self
@@ -60,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
 		window?.rootViewController = UINavigationController(rootViewController: TabBarController())
+		//window?.rootViewController = UINavigationController(rootViewController: PurchasesController())
 		
 		AppDelegate.waitScreen = WaitScreen()
 		return true

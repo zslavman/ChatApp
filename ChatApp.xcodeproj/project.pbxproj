@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5616DA9322EE0A3F0004A042 /* PurchasesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5616DA9222EE0A3F0004A042 /* PurchasesController.swift */; };
+		5616DA9522EE3F450004A042 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5616DA9422EE3F450004A042 /* IAPManager.swift */; };
 		5625D77321C1FEEF00CE69FF /* UserDefFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */; };
 		5632FA7C21C8ED6000FBEE80 /* DeviceOrientationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */; };
 		5636315921CC99ED00FDDA7D /* APIServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5636315821CC99ED00FDDA7D /* APIServices.swift */; };
@@ -103,6 +104,7 @@
 /* Begin PBXFileReference section */
 		0EB6B3218B0B51DE0BA9135A /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
 		5616DA9222EE0A3F0004A042 /* PurchasesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesController.swift; sourceTree = "<group>"; };
+		5616DA9422EE3F450004A042 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		5625D77221C1FEEF00CE69FF /* UserDefFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefFlags.swift; sourceTree = "<group>"; };
 		5632FA7B21C8ED6000FBEE80 /* DeviceOrientationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceOrientationHelper.swift; sourceTree = "<group>"; };
 		5636315821CC99ED00FDDA7D /* APIServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServices.swift; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 				5683257E228C977200B60361 /* PushStaticMethods.swift */,
 				563D8AA822DE5DF000C2F085 /* SettingsBundleHelper.swift */,
 				563D8AAE22DE612900C2F085 /* ReachabilityService.swift */,
+				5616DA9422EE3F450004A042 /* IAPManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -730,6 +733,7 @@
 				5649D9F621D832BB00AA3BD8 /* JSONTableController.swift in Sources */,
 				564ECEC921BEC03E0011C04A /* TabBarController.swift in Sources */,
 				56397AF721BA9BEA00372B61 /* MessController_Main.swift in Sources */,
+				5616DA9522EE3F450004A042 /* IAPManager.swift in Sources */,
 				566BEDA92186F8D50053F4A0 /* AppDelegate.swift in Sources */,
 				5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */,
 				56394A1621BD69E10026C7EF /* UIConfig.swift in Sources */,
