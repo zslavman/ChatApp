@@ -69,14 +69,38 @@ extension IAPManager: SKPaymentTransactionObserver {
 			switch transaction.transactionState {
 			case .deferred: break // suspended state
 			case .purchasing: break
-			case .failed: print("purchase failed!")
-			case .purchased: print ("succesfully purchased!")
-			case .restored: print("restored")
+			case .failed:
+				transactionDidFail(transaction: transaction)
+			case .purchased:
+				transactionDidComplete(transaction: transaction)
+			case .restored:
+				transactionDidRestore(transaction: transaction)
 			}
 		}
 	}
 	
+	private func transactionDidFail(transaction: SKPaymentTransaction) {
+		guard let transactionError = transaction.error as NSError? else { return }
+		if transactionError.code != SKError.paymentCancelled.rawValue {
+			print("Transaction error: \(transaction.error!.localizedDescription)")
+		}
+		paymentQue.finishTransaction(transaction)
+	}
+	
+	private func transactionDidComplete(transaction: SKPaymentTransaction) {
+		paymentQue.finishTransaction(transaction)
+	}
+	
+	private func transactionDidRestore(transaction: SKPaymentTransaction) {
+		paymentQue.finishTransaction(transaction)
+	}
+	
+	public func restoreCompletedTransaction() {
+		paymentQue.restoreCompletedTransactions()
+	}
+	
 }
+
 
 extension IAPManager: SKProductsRequestDelegate {
 	func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
@@ -85,6 +109,7 @@ extension IAPManager: SKProductsRequestDelegate {
 		NotificationCenter.default.post(name: .didReceiveProducts, object: receivedProducts)
 	}
 }
+
 
 extension NSNotification.Name {
 	public static let didReceiveProducts = Notification.Name("didReceiveProducts")

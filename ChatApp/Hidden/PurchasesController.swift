@@ -53,6 +53,10 @@ class PurchasesController: UIViewController {
 		])
 	}
 	
+	override func viewWillDisappear(_ animated: Bool) {
+		navigationController?.navigationBar.prefersLargeTitles = false
+	}
+	
 	
 	@objc private func didReceiveProducts(notif: Notification) {
 		guard let products = notif.object as? [SKProduct] else { return }
@@ -61,7 +65,7 @@ class PurchasesController: UIViewController {
 	
 	
 	@objc private func onRestoreClick() {
-		
+		IAPManager.shared.restoreCompletedTransaction()
 	}
 	
 	deinit {
