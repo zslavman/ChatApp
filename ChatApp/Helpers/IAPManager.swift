@@ -10,10 +10,13 @@ import Foundation
 import StoreKit
 
 
-struct IAPProducts {
-	static let nonConsumable1 = "organic.ChatApp.FirstTestPurchase"
-	static let nonConsumable2 = "organic.ChatApp.SecondTestPurchase"
+// this enum need to be received from third party server!
+enum IAPProducts: String {
+	case nonConsumable1 = "organic.ChatApp.FirstTestPurchase"
+	case nonConsumable2 = "organic.ChatApp.SecondTestPurchase"
 }
+
+
 
 class IAPManager: NSObject {
 	public static let shared = IAPManager()
@@ -35,8 +38,8 @@ class IAPManager: NSObject {
 	
 	public func getProductsByIDs() {
 		let identifiers: Set = [
-			IAPProducts.nonConsumable1,
-			IAPProducts.nonConsumable2,
+			IAPProducts.nonConsumable1.rawValue,
+			IAPProducts.nonConsumable2.rawValue,
 		]
 		let productRequest = SKProductsRequest(productIdentifiers: identifiers)
 		productRequest.delegate = self
@@ -89,6 +92,8 @@ extension IAPManager: SKPaymentTransactionObserver {
 	
 	private func transactionDidComplete(transaction: SKPaymentTransaction) {
 		paymentQue.finishTransaction(transaction)
+		let productID = transaction.payment.productIdentifier
+		NotificationCenter.default.post(name: .didPurchaseCompleted, object: productID)
 	}
 	
 	private func transactionDidRestore(transaction: SKPaymentTransaction) {
@@ -113,4 +118,5 @@ extension IAPManager: SKProductsRequestDelegate {
 
 extension NSNotification.Name {
 	public static let didReceiveProducts = Notification.Name("didReceiveProducts")
+	public static let didPurchaseCompleted = Notification.Name("didPurchaseCompleted")
 }

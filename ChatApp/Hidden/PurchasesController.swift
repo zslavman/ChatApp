@@ -23,6 +23,7 @@ class PurchasesController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveProducts(notif:)), name: .didReceiveProducts, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(didPurchaseCompleted(notif:)), name: .didPurchaseCompleted, object: nil)
 		view.backgroundColor = .white
 		navigationItem.title = "Purchases"
 		installTable()
@@ -61,6 +62,18 @@ class PurchasesController: UIViewController {
 	@objc private func didReceiveProducts(notif: Notification) {
 		guard let products = notif.object as? [SKProduct] else { return }
 		self.purchases = products
+	}
+	
+	@objc private func didPurchaseCompleted(notif: Notification) {
+		guard let puchaseKind = notif.object as? String else { return }
+		switch puchaseKind {
+		case IAPProducts.nonConsumable1.rawValue:
+			print("You got a \(puchaseKind)")
+		case IAPProducts.nonConsumable2.rawValue:
+			print("You got a \(puchaseKind)")
+		default:
+			print("Error: wrong product identifier!")
+		}
 	}
 	
 	

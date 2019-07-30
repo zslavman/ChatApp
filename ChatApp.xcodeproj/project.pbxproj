@@ -49,6 +49,7 @@
 		566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 566BEDB12186F8D70053F4A0 /* LaunchScreen.storyboard */; };
 		566BEDBC2186FFF00053F4A0 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566BEDBB2186FFF00053F4A0 /* LoginController.swift */; };
 		566F469021E2480400993A92 /* ChatAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566F468F21E2480400993A92 /* ChatAppTests.swift */; };
+		56744D0222F0EAB8006C7E6B /* AppleIncRootCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 56744D0122F0EAB8006C7E6B /* AppleIncRootCertificate.cer */; };
 		5679806921DE6426006EA21B /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5679806821DE6426006EA21B /* Notifications.swift */; };
 		5679806C21DE8EAC006EA21B /* MessController_HiddenMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5679806B21DE8EAC006EA21B /* MessController_HiddenMenu.swift */; };
 		5680E75A218B52D500B9CC3B /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5680E759218B52D500B9CC3B /* Extensions.swift */; };
@@ -152,6 +153,7 @@
 		566F468D21E2480400993A92 /* ChatAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		566F468F21E2480400993A92 /* ChatAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppTests.swift; sourceTree = "<group>"; };
 		566F469121E2480400993A92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		56744D0122F0EAB8006C7E6B /* AppleIncRootCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = AppleIncRootCertificate.cer; sourceTree = "<group>"; };
 		5679806821DE6426006EA21B /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		5679806B21DE8EAC006EA21B /* MessController_HiddenMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessController_HiddenMenu.swift; sourceTree = "<group>"; };
 		5680E759218B52D500B9CC3B /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 		566BEDA72186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXGroup;
 			children = (
+				56744D0022F0EA7E006C7E6B /* Purchases validation */,
 				5649D9F421D8322300AA3BD8 /* Hidden */,
 				5637D90A21A3606500BA9717 /* Extensions */,
 				5680E758218B52B500B9CC3B /* Helpers */,
@@ -337,6 +340,14 @@
 				566F469121E2480400993A92 /* Info.plist */,
 			);
 			path = ChatAppTests;
+			sourceTree = "<group>";
+		};
+		56744D0022F0EA7E006C7E6B /* Purchases validation */ = {
+			isa = PBXGroup;
+			children = (
+				56744D0122F0EAB8006C7E6B /* AppleIncRootCertificate.cer */,
+			);
+			path = "Purchases validation";
 			sourceTree = "<group>";
 		};
 		5679806A21DE65E7006EA21B /* Controllers */ = {
@@ -575,6 +586,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				563D8AAD22DE5EE100C2F085 /* Settings.bundle in Resources */,
+				56744D0222F0EAB8006C7E6B /* AppleIncRootCertificate.cer in Resources */,
 				566BEDB32186F8D70053F4A0 /* LaunchScreen.storyboard in Resources */,
 				5637D90E21A36C9D00BA9717 /* pipk.mp3 in Resources */,
 				563991B421CA081D00884B75 /* GoogleService-Info.plist in Resources */,
