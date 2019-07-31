@@ -185,16 +185,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		guard let tabBarController = window.rootViewController?.children.first as? TabBarController else { return false	}
 		switch shortcutIdentifier {
 		case .OpenSecret:
-			if MessagesController.shared.goToChatWithID != nil {
+			guard let messagesControllerShared = MessagesController.shared else { return false }
+			if messagesControllerShared.goToChatWithID != nil {
 				MessagesController.shared.navigationController?.popViewController(animated: false)
 			}
 			else {
 				tabBarController.selectedIndex = 0
 			}
-			MessagesController.shared.createBarItem(skipChecking: true)
-			MessagesController.shared.onMenuClick()
+			messagesControllerShared.createBarItem(skipChecking: true)
+			messagesControllerShared.onMenuClick()
 			return true
-			
 		case .OpenUsers:
 			tabBarController.selectedIndex = 1
 			return true
