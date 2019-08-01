@@ -14,6 +14,7 @@ import StoreKit
 enum IAPProducts: String {
 	case nonConsumable1 = "organic.ChatApp.FirstTestPurchase"
 	case nonConsumable2 = "organic.ChatApp.SecondTestPurchase"
+	case autoRenewable = "organic.ChatApp.Renewable"
 }
 
 
@@ -82,6 +83,7 @@ extension IAPManager: SKPaymentTransactionObserver {
 		}
 	}
 	
+	
 	private func transactionDidFail(transaction: SKPaymentTransaction) {
 		guard let transactionError = transaction.error as NSError? else { return }
 		if transactionError.code != SKError.paymentCancelled.rawValue {
@@ -90,15 +92,42 @@ extension IAPManager: SKPaymentTransactionObserver {
 		paymentQue.finishTransaction(transaction)
 	}
 	
+	
 	private func transactionDidComplete(transaction: SKPaymentTransaction) {
+		let receiptValidator = ReceiptValidator()
+		let result = receiptValidator.validateReceipt()
+		
+		switch result {
+		case .error(let error):
+			print(error.localizedDescription)
+		case .success(let receipt):
+			let productID = transaction.payment.productIdentifier
+			// if it's non autorenewable
+			guard let purchase = receipt.inAppPurchaseReceipts?.filter({$0.productIdentifier == IAPProducts.autoRenewable.rawValue}).first
+				else {
+				NotificationCenter.default.post(name: .didPurchaseCompleted, object: productID)
+				paymentQue.finishTransaction(transaction)
+				return
+			}
+			// For autorenewable purchases (subscriptions)
+			// if subscription doesn't expired
+			if purchase.subscriptionExpirationDate?.compare(Date()) == .orderedDescending {
+				UserDefaults.standard.set(true, forKey: IAPProducts.autoRenewable.rawValue)
+			}
+			else {
+				print("Subscription has ended")
+				UserDefaults.standard.set(false, forKey: IAPProducts.autoRenewable.rawValue)
+			}
+			NotificationCenter.default.post(name: .didPurchaseCompleted, object: productID)
+		}
 		paymentQue.finishTransaction(transaction)
-		let productID = transaction.payment.productIdentifier
-		NotificationCenter.default.post(name: .didPurchaseCompleted, object: productID)
 	}
+	
 	
 	private func transactionDidRestore(transaction: SKPaymentTransaction) {
 		paymentQue.finishTransaction(transaction)
 	}
+	
 	
 	public func restoreCompletedTransaction() {
 		paymentQue.restoreCompletedTransactions()

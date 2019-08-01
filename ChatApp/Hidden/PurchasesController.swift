@@ -71,6 +71,13 @@ class PurchasesController: UIViewController {
 			print("You got a \(puchaseKind)")
 		case IAPProducts.nonConsumable2.rawValue:
 			print("You got a \(puchaseKind)")
+		case IAPProducts.autoRenewable.rawValue:
+			if UserDefaults.standard.bool(forKey: IAPProducts.autoRenewable.rawValue) {
+				print("Subscription enabled")
+			}
+			else {
+				print("Subscription disabled")
+			}
 		default:
 			print("Error: wrong product identifier!")
 		}
