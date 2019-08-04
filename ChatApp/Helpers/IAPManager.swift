@@ -72,7 +72,8 @@ extension IAPManager: SKPaymentTransactionObserver {
 		for transaction in transactions {
 			switch transaction.transactionState {
 			case .deferred: break // suspended state
-			case .purchasing: break
+			case .purchasing:
+				print("Purchasing")
 			case .failed:
 				transactionDidFail(transaction: transaction)
 			case .purchased:
@@ -104,10 +105,15 @@ extension IAPManager: SKPaymentTransactionObserver {
 			let productID = transaction.payment.productIdentifier
 			// if it's non autorenewable
 			guard let purchase = receipt.inAppPurchaseReceipts?.filter({$0.productIdentifier == IAPProducts.autoRenewable.rawValue}).first
-				else {
+			else {
 				NotificationCenter.default.post(name: .didPurchaseCompleted, object: productID)
-				paymentQue.finishTransaction(transaction)
-				return
+				if !transaction.downloads.isEmpty {
+					paymentQue.start(transaction.downloads)
+				}
+				else {
+					paymentQue.finishTransaction(transaction)
+				}
+			return
 			}
 			// For autorenewable purchases (subscriptions)
 			// if subscription doesn't expired
@@ -125,12 +131,50 @@ extension IAPManager: SKPaymentTransactionObserver {
 	
 	
 	private func transactionDidRestore(transaction: SKPaymentTransaction) {
-		paymentQue.finishTransaction(transaction)
+		print("Restoring purchases has started!")
+		if !transaction.downloads.isEmpty {
+			paymentQue.start(transaction.downloads)
+		}
+		else {
+			paymentQue.finishTransaction(transaction)
+		}
 	}
 	
 	
+	// user clicked "Restore" button
 	public func restoreCompletedTransaction() {
 		paymentQue.restoreCompletedTransactions()
+	}
+	func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
+		print("You successfully restored purchases!")
+	}
+	
+	
+	//MARK:- Hosted purchases (downloads)
+	
+	// will fire after paymentQue.start(transaction.downloads)
+	func paymentQueue(_ queue: SKPaymentQueue, updatedDownloads downloads: [SKDownload]) {
+		for item in downloads {
+			let download = item.downloadState
+			switch download {
+			case .waiting:
+				NotificationCenter.default.post(name: .downloadWaiting, object: download)
+			case .active:
+				NotificationCenter.default.post(name: .downloadActive, object: download)
+			case .finished:
+				//moveDownloadedFiles(download) // move downloades files from Caches directory to Documents dir
+				NotificationCenter.default.post(name: .downloadFinished, object: download)
+				paymentQue.finishTransaction(item.transaction)
+			case .failed:
+				NotificationCenter.default.post(name: .downloadFailed, object: download)
+				paymentQue.finishTransaction(item.transaction)
+			case .cancelled:
+				NotificationCenter.default.post(name: .downloadCancelled, object: download)
+				paymentQue.finishTransaction(item.transaction)
+			case .paused:
+				NotificationCenter.default.post(name: .downloadPaused, object: download)
+			}
+		}
 	}
 	
 }
@@ -148,4 +192,10 @@ extension IAPManager: SKProductsRequestDelegate {
 extension NSNotification.Name {
 	public static let didReceiveProducts = Notification.Name("didReceiveProducts")
 	public static let didPurchaseCompleted = Notification.Name("didPurchaseCompleted")
+	public static let downloadWaiting 	= Notification.Name("download_Waiting")
+	public static let downloadActive 	= Notification.Name("download_Active")
+	public static let downloadFinished 	= Notification.Name("download_Finished")
+	public static let downloadFailed 	= Notification.Name("download_Failed")
+	public static let downloadCancelled = Notification.Name("download_Cancelled")
+	public static let downloadPaused 	= Notification.Name("download_Paused")
 }

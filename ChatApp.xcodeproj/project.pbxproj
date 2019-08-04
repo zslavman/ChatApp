@@ -68,6 +68,10 @@
 		56AE41D62259489D00055E3B /* like_animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 56AE41D52259489D00055E3B /* like_animation.json */; };
 		56B9072D21CB9DA1007B858C /* HeaderViewStretch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */; };
 		56BEAB132191BD960008AF6B /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatController.swift */; };
+		56CD775722F78EF9007B3A5C /* t03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56CD775322F78EF8007B3A5C /* t03.jpg */; };
+		56CD775822F78EF9007B3A5C /* t02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56CD775422F78EF8007B3A5C /* t02.jpg */; };
+		56CD775922F78EF9007B3A5C /* t01.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56CD775522F78EF8007B3A5C /* t01.jpg */; };
+		56CD775A22F78EF9007B3A5C /* улица мечты.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56CD775622F78EF9007B3A5C /* улица мечты.jpg */; };
 		56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D03BEA21B2250600E1688F /* Image_Cell.swift */; };
 		56E5A50A21B2019C0076EB67 /* Map_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E5A50921B2019C0076EB67 /* Map_Cell.swift */; };
 		56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */; };
@@ -177,6 +181,12 @@
 		56AE41D52259489D00055E3B /* like_animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = like_animation.json; sourceTree = "<group>"; };
 		56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewStretch.swift; sourceTree = "<group>"; };
 		56BEAB122191BD960008AF6B /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
+		56CD774D22F78EC9007B3A5C /* SecondTestPurchase */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = SecondTestPurchase; sourceTree = BUILT_PRODUCTS_DIR; };
+		56CD774F22F78EC9007B3A5C /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
+		56CD775322F78EF8007B3A5C /* t03.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t03.jpg; sourceTree = "<group>"; };
+		56CD775422F78EF8007B3A5C /* t02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t02.jpg; sourceTree = "<group>"; };
+		56CD775522F78EF8007B3A5C /* t01.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t01.jpg; sourceTree = "<group>"; };
+		56CD775622F78EF9007B3A5C /* улица мечты.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "улица мечты.jpg"; sourceTree = "<group>"; };
 		56D03BEA21B2250600E1688F /* Image_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_Cell.swift; sourceTree = "<group>"; };
 		56E5A50921B2019C0076EB67 /* Map_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map_Cell.swift; sourceTree = "<group>"; };
 		56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessory.swift; sourceTree = "<group>"; };
@@ -278,6 +288,7 @@
 				566BEDA72186F8D50053F4A0 /* ChatApp */,
 				5689AE25223ECE2C0088BABA /* PushMutater2 */,
 				563EA6B222EDAB5C00806311 /* FirstTestPurchase */,
+				56CD774E22F78EC9007B3A5C /* SecondTestPurchase */,
 				566F468E21E2480400993A92 /* ChatAppTests */,
 				566BEDA62186F8D50053F4A0 /* Products */,
 				70DFE94CC7D7CBF2A1E2709F /* Frameworks */,
@@ -292,6 +303,7 @@
 				566F468D21E2480400993A92 /* ChatAppTests.xctest */,
 				5689AE24223ECE2C0088BABA /* PushMutater2.appex */,
 				563EA6B122EDAB5C00806311 /* FirstTestPurchase */,
+				56CD774D22F78EC9007B3A5C /* SecondTestPurchase */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -408,6 +420,18 @@
 			path = PushMutater2;
 			sourceTree = "<group>";
 		};
+		56CD774E22F78EC9007B3A5C /* SecondTestPurchase */ = {
+			isa = PBXGroup;
+			children = (
+				56CD774F22F78EC9007B3A5C /* ContentInfo.plist */,
+				56CD775622F78EF9007B3A5C /* улица мечты.jpg */,
+				56CD775522F78EF8007B3A5C /* t01.jpg */,
+				56CD775422F78EF8007B3A5C /* t02.jpg */,
+				56CD775322F78EF8007B3A5C /* t03.jpg */,
+			);
+			path = SecondTestPurchase;
+			sourceTree = "<group>";
+		};
 		56E5A50B21B202190076EB67 /* ChatCells */ = {
 			isa = PBXGroup;
 			children = (
@@ -513,6 +537,21 @@
 			productReference = 5689AE24223ECE2C0088BABA /* PushMutater2.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		56CD774C22F78EC9007B3A5C /* SecondTestPurchase */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56CD775222F78EC9007B3A5C /* Build configuration list for PBXNativeTarget "SecondTestPurchase" */;
+			buildPhases = (
+				56CD774B22F78EC9007B3A5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SecondTestPurchase;
+			productName = SecondTestPurchase;
+			productReference = 56CD774D22F78EC9007B3A5C /* SecondTestPurchase */;
+			productType = "com.apple.product-type.in-app-purchase-content";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -566,6 +605,9 @@
 							};
 						};
 					};
+					56CD774C22F78EC9007B3A5C = {
+						CreatedOnToolsVersion = 10.1;
+					};
 				};
 			};
 			buildConfigurationList = 566BEDA02186F8D50053F4A0 /* Build configuration list for PBXProject "ChatApp" */;
@@ -585,6 +627,7 @@
 				566F468C21E2480400993A92 /* ChatAppTests */,
 				5689AE23223ECE2C0088BABA /* PushMutater2 */,
 				563EA6B022EDAB5C00806311 /* FirstTestPurchase */,
+				56CD774C22F78EC9007B3A5C /* SecondTestPurchase */,
 			);
 		};
 /* End PBXProject section */
@@ -626,6 +669,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		56CD774B22F78EC9007B3A5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56CD775922F78EF9007B3A5C /* t01.jpg in Resources */,
+				56CD775822F78EF9007B3A5C /* t02.jpg in Resources */,
+				56CD775722F78EF9007B3A5C /* t03.jpg in Resources */,
+				56CD775A22F78EF9007B3A5C /* улица мечты.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1135,6 +1189,33 @@
 			};
 			name = Release;
 		};
+		56CD775022F78EC9007B3A5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = SecondTestPurchase/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Debug;
+		};
+		56CD775122F78EC9007B3A5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = SecondTestPurchase/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1179,6 +1260,15 @@
 			buildConfigurations = (
 				5689AE2C223ECE2C0088BABA /* Debug */,
 				5689AE2D223ECE2C0088BABA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		56CD775222F78EC9007B3A5C /* Build configuration list for PBXNativeTarget "SecondTestPurchase" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56CD775022F78EC9007B3A5C /* Debug */,
+				56CD775122F78EC9007B3A5C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
