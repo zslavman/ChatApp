@@ -61,6 +61,7 @@
 		56852E5521C08CA600E7A62F /* tBoard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56852E5421C08CA600E7A62F /* tBoard.storyboard */; };
 		56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E5621C0962F00E7A62F /* SettingsController.swift */; };
 		5689AE27223ECE2C0088BABA /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5689AE26223ECE2C0088BABA /* NotificationService.swift */; };
+		568AC1FF22FA136600AA546F /* PurchasesController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568AC1FE22FA136600AA546F /* PurchasesController2.swift */; };
 		568D68BE2242DDEC006084A6 /* PushMutater2.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5689AE24223ECE2C0088BABA /* PushMutater2.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5693C8B222F23A3600B06910 /* ReceiptValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5693C8AE22F23A3500B06910 /* ReceiptValidator.swift */; };
 		5693C8B322F23A3600B06910 /* pkcs7_union_accessors.c in Sources */ = {isa = PBXBuildFile; fileRef = 5693C8AF22F23A3500B06910 /* pkcs7_union_accessors.c */; };
@@ -172,6 +173,7 @@
 		5689AE26223ECE2C0088BABA /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		5689AE28223ECE2C0088BABA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5689AE2F223ECEA30088BABA /* PushMutater2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushMutater2.entitlements; sourceTree = "<group>"; };
+		568AC1FE22FA136600AA546F /* PurchasesController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesController2.swift; sourceTree = "<group>"; };
 		5693C8AB22F2388300B06910 /* ChatApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ChatApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		5693C8AE22F23A3500B06910 /* ReceiptValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptValidator.swift; sourceTree = "<group>"; };
 		5693C8AF22F23A3500B06910 /* pkcs7_union_accessors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pkcs7_union_accessors.c; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			children = (
 				5679806B21DE8EAC006EA21B /* MessController_HiddenMenu.swift */,
 				5616DA9222EE0A3F0004A042 /* PurchasesController.swift */,
+				568AC1FE22FA136600AA546F /* PurchasesController2.swift */,
 				5649D9F521D832BB00AA3BD8 /* JSONTableController.swift */,
 				563B1AA321D695770035D0BC /* MultiThreading.swift */,
 				5649D9F721D8382800AA3BD8 /* WorkCell.swift */,
@@ -816,6 +819,7 @@
 				563E30D321D3D92F0006899C /* PopOverMenu.swift in Sources */,
 				566BEDAB2186F8D50053F4A0 /* MessController.swift in Sources */,
 				5638D8E421923CA400EC2FE3 /* Message.swift in Sources */,
+				568AC1FF22FA136600AA546F /* PurchasesController2.swift in Sources */,
 				5683257F228C977200B60361 /* PushStaticMethods.swift in Sources */,
 				565BEE8421B0A48A0028D474 /* Video_Cell.swift in Sources */,
 				5679806C21DE8EAC006EA21B /* MessController_HiddenMenu.swift in Sources */,

@@ -1,5 +1,5 @@
 //
-//  PurchasesController.swift
+//  PurchasesController2.swift
 //  ChatApp
 //
 //  Created by Zinko Viacheslav on 28.07.2019.
@@ -9,32 +9,20 @@
 import Foundation
 import UIKit
 import StoreKit
+import SwiftyStoreKit
 
-class PurchasesController: UIViewController {
+class PurchasesController2: UIViewController {
 	
 	private var tableView: UITableView!
 	private let cellID = "id"
-	private var purchases: [SKProduct] = IAPManager.shared.receivedProducts {
-		didSet {
-			tableView.reloadData()
-		}
-	}
+	private var purchases = [SKProduct]()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveProducts(notif:)),
-											   name: .didReceiveProducts, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(didPurchaseCompleted(notif:)),
-											   name: .didPurchaseCompleted, object: nil)
 		view.backgroundColor = .white
 		navigationItem.title = "Purchases"
 		installTable()
-		
-//		navigationController?.navigationBar.prefersLargeTitles = true
-//		navigationController?.navigationBar.largeTitleTextAttributes = [
-//			.foregroundColor:  	UIColor.white,
-//			.font:  			UIFont.boldSystemFont(ofSize: 30)]
-		
+		getAvailablePurchases()
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Restore", style: .plain, target: self,
 															action: #selector(onRestoreClick))
 	}
@@ -57,39 +45,31 @@ class PurchasesController: UIViewController {
 		])
 	}
 	
-	override func viewWillDisappear(_ animated: Bool) {
-		navigationController?.navigationBar.prefersLargeTitles = false
-	}
 	
-	
-	@objc private func didReceiveProducts(notif: Notification) {
-		guard let products = notif.object as? [SKProduct] else { return }
-		self.purchases = products
-	}
-	
-	@objc private func didPurchaseCompleted(notif: Notification) {
-		guard let puchaseKind = notif.object as? String else { return }
-		switch puchaseKind {
-		case IAPProducts.nonConsumable1.rawValue:
-			print("You got a \(puchaseKind)")
-		case IAPProducts.nonConsumable2.rawValue:
-			print("You got a \(puchaseKind)")
-		case IAPProducts.autoRenewable.rawValue:
-			if UserDefaults.standard.bool(forKey: IAPProducts.autoRenewable.rawValue) {
-				print("Subscription enabled")
+	private func getAvailablePurchases() {
+		let purchaseIDs = Set(IAPProducts.allCases.compactMap{$0.rawValue})
+		
+		SwiftyStoreKit.retrieveProductsInfo(purchaseIDs) {
+			result in
+			if let error = result.error {
+				print("Error: \(error.localizedDescription)")
+				return
 			}
-			else {
-				print("Subscription disabled")
+			if !result.invalidProductIDs.isEmpty {
+				print("Invalid products: \(result.invalidProductIDs)")
 			}
-		default:
-			print("Error: wrong product identifier!")
+			for product in result.retrievedProducts {
+				self.purchases.append(product)
+			}
+			DispatchQueue.main.async {
+				self.tableView.reloadData()
+			}
 		}
 	}
 	
 	
-	
 	@objc private func onRestoreClick() {
-		IAPManager.shared.restoreCompletedTransaction()
+		
 	}
 	
 	deinit {
@@ -98,7 +78,10 @@ class PurchasesController: UIViewController {
 	
 }
 
-extension PurchasesController: UITableViewDelegate, UITableViewDataSource {
+
+
+
+extension PurchasesController2: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return purchases.count
@@ -114,13 +97,13 @@ extension PurchasesController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
-		IAPManager.shared.purchase(product: purchases[indexPath.row])
+		
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
 		let content = purchases[indexPath.row]
-		let str = content.localizedTitle + " - " + IAPManager.shared.getLocalPriceForProduct(content)
+		let str = content.localizedTitle + " - " + content.localizedPrice!
 		cell.textLabel?.text = str
 		return cell
 	}

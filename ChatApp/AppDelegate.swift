@@ -13,6 +13,7 @@ import FirebaseMessaging
 import FirebaseInstanceID
 import FacebookCore
 import GoogleSignIn
+import SwiftyStoreKit
 
 
 @UIApplicationMain
@@ -45,14 +46,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions
 						launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		// in-app purchase
-		IAPManager.shared.initPurchases {
-			(success) in
-			if success {
-				print("Can make payments!")
-				IAPManager.shared.getProductsByIDs()
+//		IAPManager.shared.initPurchases {
+//			(success) in
+//			if success {
+//				print("Can make payments!")
+//				IAPManager.shared.getProductsByIDs()
+//			}
+//		}
+		SwiftyStoreKit.completeTransactions(atomically: false) {
+			purchases in
+			for purchase in purchases {
+				switch purchase.transaction.transactionState {
+				case .purchased, .restored:
+					if purchase.needsFinishTransaction {
+						// Deliver content from server, then:
+						SwiftyStoreKit.finishTransaction(purchase.transaction)
+					}
+				// Unlock content
+				case .failed, .purchasing, .deferred:
+					break // do nothing
+				}
 			}
 		}
-		
 		// Google sign-in
 		GIDSignIn.sharedInstance().clientID = "586274645458-5uli8n92a2lck0bo4hlknv5hiq2l85p6.apps.googleusercontent.com"
 		GIDSignIn.sharedInstance().delegate = self

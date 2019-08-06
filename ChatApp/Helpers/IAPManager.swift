@@ -11,10 +11,12 @@ import StoreKit
 
 
 // this enum need to be received from third party server!
-enum IAPProducts: String {
+enum IAPProducts: String, CaseIterable {
 	case nonConsumable1 = "organic.ChatApp.FirstTestPurchase"
 	case nonConsumable2 = "organic.ChatApp.SecondTestPurchase"
 	case autoRenewable = "organic.ChatApp.Renewable"
+	
+	// call "IAPProducts.allCases" to get an array of all cases
 }
 
 
