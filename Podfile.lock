@@ -129,6 +129,7 @@ PODS:
   - OpenSSL (1.0.210)
   - Protobuf (3.7.0)
   - ReachabilitySwift (4.3.0)
+  - SwiftyStoreKit (0.14.2)
 
 DEPENDENCIES:
   - FacebookLogin (from `https://github.com/facebook/facebook-swift-sdk.git`, branch `swift-4.1`)
@@ -143,6 +144,7 @@ DEPENDENCIES:
   - NPTableAnimator (~> 4.3.0)
   - OpenSSL (~> 1.0)
   - ReachabilitySwift (= 4.3.0)
+  - SwiftyStoreKit (~> 0.14.2)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -174,6 +176,7 @@ SPEC REPOS:
     - OpenSSL
     - Protobuf
     - ReachabilitySwift
+    - SwiftyStoreKit
 
 EXTERNAL SOURCES:
   FacebookLogin:
@@ -215,7 +218,8 @@ SPEC CHECKSUMS:
   OpenSSL: 246ffb948e9d56466727fd318134af35f5aa764e
   Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
+  SwiftyStoreKit: cc399645796b094022fb650c148a0aed25995873
 
-PODFILE CHECKSUM: db8db6f2018890585e2908d5105499492ae3704c
+PODFILE CHECKSUM: ca2d972f0e1a5a18fb29b0a167a0a034eaea0e46
 
 COCOAPODS: 1.5.3

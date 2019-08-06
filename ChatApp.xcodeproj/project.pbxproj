@@ -225,6 +225,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B4DBA7A45F3D205E59653297 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -287,8 +294,7 @@
 			children = (
 				566BEDA72186F8D50053F4A0 /* ChatApp */,
 				5689AE25223ECE2C0088BABA /* PushMutater2 */,
-				563EA6B222EDAB5C00806311 /* FirstTestPurchase */,
-				56CD774E22F78EC9007B3A5C /* SecondTestPurchase */,
+				568AC1FD22FA0F2B00AA546F /* Purchases */,
 				566F468E21E2480400993A92 /* ChatAppTests */,
 				566BEDA62186F8D50053F4A0 /* Products */,
 				70DFE94CC7D7CBF2A1E2709F /* Frameworks */,
@@ -420,6 +426,15 @@
 			path = PushMutater2;
 			sourceTree = "<group>";
 		};
+		568AC1FD22FA0F2B00AA546F /* Purchases */ = {
+			isa = PBXGroup;
+			children = (
+				563EA6B222EDAB5C00806311 /* FirstTestPurchase */,
+				56CD774E22F78EC9007B3A5C /* SecondTestPurchase */,
+			);
+			path = Purchases;
+			sourceTree = "<group>";
+		};
 		56CD774E22F78EC9007B3A5C /* SecondTestPurchase */ = {
 			isa = PBXGroup;
 			children = (
@@ -542,6 +557,7 @@
 			buildConfigurationList = 56CD775222F78EC9007B3A5C /* Build configuration list for PBXNativeTarget "SecondTestPurchase" */;
 			buildPhases = (
 				56CD774B22F78EC9007B3A5C /* Resources */,
+				B4DBA7A45F3D205E59653297 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -708,6 +724,7 @@
 				"${BUILT_PRODUCTS_DIR}/NPTableAnimator/NPTableAnimator.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyStoreKit/SwiftyStoreKit.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/lottie-ios/Lottie.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
@@ -729,6 +746,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NPTableAnimator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyStoreKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lottie.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",

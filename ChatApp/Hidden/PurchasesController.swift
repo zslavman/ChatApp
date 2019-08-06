@@ -22,18 +22,21 @@ class PurchasesController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveProducts(notif:)), name: .didReceiveProducts, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(didPurchaseCompleted(notif:)), name: .didPurchaseCompleted, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveProducts(notif:)),
+											   name: .didReceiveProducts, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(didPurchaseCompleted(notif:)),
+											   name: .didPurchaseCompleted, object: nil)
 		view.backgroundColor = .white
 		navigationItem.title = "Purchases"
 		installTable()
 		
-		navigationController?.navigationBar.prefersLargeTitles = true
-		navigationController?.navigationBar.largeTitleTextAttributes = [
-			.foregroundColor:  	UIColor.white,
-			.font:  			UIFont.boldSystemFont(ofSize: 30)]
+//		navigationController?.navigationBar.prefersLargeTitles = true
+//		navigationController?.navigationBar.largeTitleTextAttributes = [
+//			.foregroundColor:  	UIColor.white,
+//			.font:  			UIFont.boldSystemFont(ofSize: 30)]
 		
-		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Restore", style: .plain, target: self, action: #selector(onRestoreClick))
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Restore", style: .plain, target: self,
+															action: #selector(onRestoreClick))
 	}
 	
 	

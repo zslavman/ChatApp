@@ -52,6 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				IAPManager.shared.getProductsByIDs()
 			}
 		}
+		
 		// Google sign-in
 		GIDSignIn.sharedInstance().clientID = "586274645458-5uli8n92a2lck0bo4hlknv5hiq2l85p6.apps.googleusercontent.com"
 		GIDSignIn.sharedInstance().delegate = self
