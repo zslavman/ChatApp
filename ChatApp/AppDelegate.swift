@@ -53,6 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //				IAPManager.shared.getProductsByIDs()
 //			}
 //		}
+		PurchasesController2.updateDownloads()
 		SwiftyStoreKit.completeTransactions(atomically: false) {
 			purchases in
 			for purchase in purchases {

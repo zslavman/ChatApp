@@ -68,6 +68,51 @@ class PurchasesController2: UIViewController {
 	}
 	
 	
+	internal func purchaseProduct(productID: String) {
+		SwiftyStoreKit.purchaseProduct(productID, quantity: 1, atomically: false) { result in
+			switch result {
+			case .success(let product):
+//				//fetch content from your server, then:
+//				if product.needsFinishTransaction {
+//					SwiftyStoreKit.finishTransaction(product.transaction)
+//				}
+//				print("Purchase Success: \(product.productId)")
+				let downloads = product.transaction.downloads
+				if !downloads.isEmpty {
+					SwiftyStoreKit.start(downloads)
+				}
+			case .error(let error):
+				switch error.code {
+				case .unknown: print("Unknown error. Please contact support")
+				case .clientInvalid: print("Not allowed to make the payment")
+				case .paymentCancelled: break
+				case .paymentInvalid: print("The purchase identifier was invalid")
+				case .paymentNotAllowed: print("The device is not allowed to make the payment")
+				case .storeProductNotAvailable: print("The product is not available in the current storefront")
+				case .cloudServicePermissionDenied: print("Access to cloud service information is not allowed")
+				case .cloudServiceNetworkConnectionFailed: print("Could not connect to the network")
+				case .cloudServiceRevoked: print("User has revoked permission to use this cloud service")
+				default: print((error as NSError).localizedDescription)
+				}
+			}
+		}
+	}
+	
+	
+	// neeed to reloacate in AppDelegate or independance class
+	public static func updateDownloads() {
+		SwiftyStoreKit.updatedDownloadsHandler = { downloads in
+			// contentURL is not nil if downloadState == .finished
+			let contentURLs = downloads.compactMap { $0.contentURL }
+			print("downloading hosted content \(contentURLs)")
+			if contentURLs.count == downloads.count {
+				// process all downloaded files, then finish the transaction
+				SwiftyStoreKit.finishTransaction(downloads[0].transaction)
+			}
+		}
+	}
+	
+	
 	@objc private func onRestoreClick() {
 		
 	}
@@ -97,7 +142,8 @@ extension PurchasesController2: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)
-		
+		let selectedProductID = purchases[indexPath.row].productIdentifier
+		purchaseProduct(productID: selectedProductID)
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
