@@ -104,10 +104,26 @@ class PurchasesController2: UIViewController {
 		SwiftyStoreKit.updatedDownloadsHandler = { downloads in
 			// contentURL is not nil if downloadState == .finished
 			let contentURLs = downloads.compactMap { $0.contentURL }
-			print("downloading hosted content \(contentURLs)")
+			print("downloading hosted content")
 			if contentURLs.count == downloads.count {
+				print("download completed! \(contentURLs)")
 				// process all downloaded files, then finish the transaction
 				SwiftyStoreKit.finishTransaction(downloads[0].transaction)
+				
+				
+				let fileManager = FileManager.default
+				var destPaths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+				guard let safeURL = contentURLs.first else { return }
+				let fileName = safeURL.lastPathComponent
+				destPaths.appendPathComponent(fileName)
+				if !fileManager.fileExists(atPath: destPaths.absoluteString) {
+					do {
+						try fileManager.moveItem(at: safeURL, to: destPaths)
+						print("Successfully moved file to documentDirectory!")
+					} catch let err {
+						print("Failed to move file", err.localizedDescription)
+					}
+				}
 			}
 		}
 	}
