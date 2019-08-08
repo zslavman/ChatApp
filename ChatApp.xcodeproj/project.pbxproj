@@ -34,8 +34,6 @@
 		563DCA0221BB2720007CD452 /* MySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DCA0121BB2720007CD452 /* MySection.swift */; };
 		563E30D321D3D92F0006899C /* PopOverMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563E30D221D3D92F0006899C /* PopOverMenu.swift */; };
 		563EA6AE22EDAAEA00806311 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 563EA6AD22EDAAEA00806311 /* StoreKit.framework */; };
-		563EA6B922EDAE7000806311 /* t02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 563EA6B722EDAE7000806311 /* t02.jpg */; };
-		563EA6BA22EDAE7000806311 /* t03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 563EA6B822EDAE7000806311 /* t03.jpg */; };
 		563EFAE02189D04900F16BF8 /* FindUserForChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */; };
 		5640ABBD21DCAC8000F016FE /* ImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640ABBC21DCAC8000F016FE /* ImageLoader.swift */; };
 		5649D9F621D832BB00AA3BD8 /* JSONTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5649D9F521D832BB00AA3BD8 /* JSONTableController.swift */; };
@@ -62,14 +60,6 @@
 		56852E5721C0962F00E7A62F /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56852E5621C0962F00E7A62F /* SettingsController.swift */; };
 		5689AE27223ECE2C0088BABA /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5689AE26223ECE2C0088BABA /* NotificationService.swift */; };
 		568AC1FF22FA136600AA546F /* PurchasesController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 568AC1FE22FA136600AA546F /* PurchasesController2.swift */; };
-		568B3A8122FB873C000F43A3 /* DSC_8982.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A7922FB873A000F43A3 /* DSC_8982.JPG */; };
-		568B3A8222FB873C000F43A3 /* DSC_8989.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A7A22FB873A000F43A3 /* DSC_8989.JPG */; };
-		568B3A8322FB873C000F43A3 /* DSC_8987.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A7B22FB873B000F43A3 /* DSC_8987.JPG */; };
-		568B3A8422FB873C000F43A3 /* DSC_8869.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A7C22FB873B000F43A3 /* DSC_8869.JPG */; };
-		568B3A8522FB873C000F43A3 /* DSC_8682.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A7D22FB873B000F43A3 /* DSC_8682.JPG */; };
-		568B3A8622FB873C000F43A3 /* DSC_9165.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A7E22FB873C000F43A3 /* DSC_9165.JPG */; };
-		568B3A8722FB873C000F43A3 /* DSC_8932.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A7F22FB873C000F43A3 /* DSC_8932.JPG */; };
-		568B3A8822FB873C000F43A3 /* DSC_8988.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 568B3A8022FB873C000F43A3 /* DSC_8988.JPG */; };
 		568D68BE2242DDEC006084A6 /* PushMutater2.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5689AE24223ECE2C0088BABA /* PushMutater2.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5693C8B222F23A3600B06910 /* ReceiptValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5693C8AE22F23A3500B06910 /* ReceiptValidator.swift */; };
 		5693C8B322F23A3600B06910 /* pkcs7_union_accessors.c in Sources */ = {isa = PBXBuildFile; fileRef = 5693C8AF22F23A3500B06910 /* pkcs7_union_accessors.c */; };
@@ -78,6 +68,14 @@
 		56B9072D21CB9DA1007B858C /* HeaderViewStretch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */; };
 		56BEAB132191BD960008AF6B /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BEAB122191BD960008AF6B /* ChatController.swift */; };
 		56D03BEB21B2250600E1688F /* Image_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56D03BEA21B2250600E1688F /* Image_Cell.swift */; };
+		56D9340422FCBE670017ADEB /* DSC_05.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D933FC22FCBE650017ADEB /* DSC_05.JPG */; };
+		56D9340522FCBE670017ADEB /* DSC_03.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D933FD22FCBE660017ADEB /* DSC_03.JPG */; };
+		56D9340622FCBE670017ADEB /* DSC_02.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D933FE22FCBE660017ADEB /* DSC_02.JPG */; };
+		56D9340722FCBE670017ADEB /* DSC_04.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D933FF22FCBE660017ADEB /* DSC_04.JPG */; };
+		56D9340822FCBE670017ADEB /* DSC_01.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D9340022FCBE660017ADEB /* DSC_01.JPG */; };
+		56D9340922FCBE670017ADEB /* DSC_06.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D9340122FCBE670017ADEB /* DSC_06.JPG */; };
+		56D9340A22FCBE670017ADEB /* DSC_08.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D9340222FCBE670017ADEB /* DSC_08.JPG */; };
+		56D9340B22FCBE670017ADEB /* DSC_07.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56D9340322FCBE670017ADEB /* DSC_07.JPG */; };
 		56E5A50A21B2019C0076EB67 /* Map_Cell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E5A50921B2019C0076EB67 /* Map_Cell.swift */; };
 		56FEF3C921A1FD1E00717A48 /* InputAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */; };
 /* End PBXBuildFile section */
@@ -142,10 +140,6 @@
 		563DCA0121BB2720007CD452 /* MySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySection.swift; sourceTree = "<group>"; };
 		563E30D221D3D92F0006899C /* PopOverMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopOverMenu.swift; sourceTree = "<group>"; };
 		563EA6AD22EDAAEA00806311 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		563EA6B122EDAB5C00806311 /* FirstTestPurchase */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = FirstTestPurchase; sourceTree = BUILT_PRODUCTS_DIR; };
-		563EA6B322EDAB5C00806311 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
-		563EA6B722EDAE7000806311 /* t02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t02.jpg; sourceTree = "<group>"; };
-		563EA6B822EDAE7000806311 /* t03.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t03.jpg; sourceTree = "<group>"; };
 		563EFADF2189D04900F16BF8 /* FindUserForChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserForChatController.swift; sourceTree = "<group>"; };
 		5640ABBC21DCAC8000F016FE /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
 		5649D9F521D832BB00AA3BD8 /* JSONTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONTableController.swift; sourceTree = "<group>"; };
@@ -178,16 +172,6 @@
 		5689AE28223ECE2C0088BABA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5689AE2F223ECEA30088BABA /* PushMutater2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushMutater2.entitlements; sourceTree = "<group>"; };
 		568AC1FE22FA136600AA546F /* PurchasesController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesController2.swift; sourceTree = "<group>"; };
-		568B3A7322FB8725000F43A3 /* SecondTestPurchase */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = SecondTestPurchase; sourceTree = BUILT_PRODUCTS_DIR; };
-		568B3A7522FB8725000F43A3 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
-		568B3A7922FB873A000F43A3 /* DSC_8982.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_8982.JPG; sourceTree = "<group>"; };
-		568B3A7A22FB873A000F43A3 /* DSC_8989.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_8989.JPG; sourceTree = "<group>"; };
-		568B3A7B22FB873B000F43A3 /* DSC_8987.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_8987.JPG; sourceTree = "<group>"; };
-		568B3A7C22FB873B000F43A3 /* DSC_8869.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_8869.JPG; sourceTree = "<group>"; };
-		568B3A7D22FB873B000F43A3 /* DSC_8682.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_8682.JPG; sourceTree = "<group>"; };
-		568B3A7E22FB873C000F43A3 /* DSC_9165.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_9165.JPG; sourceTree = "<group>"; };
-		568B3A7F22FB873C000F43A3 /* DSC_8932.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_8932.JPG; sourceTree = "<group>"; };
-		568B3A8022FB873C000F43A3 /* DSC_8988.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_8988.JPG; sourceTree = "<group>"; };
 		5693C8AB22F2388300B06910 /* ChatApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ChatApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		5693C8AE22F23A3500B06910 /* ReceiptValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptValidator.swift; sourceTree = "<group>"; };
 		5693C8AF22F23A3500B06910 /* pkcs7_union_accessors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pkcs7_union_accessors.c; sourceTree = "<group>"; };
@@ -198,6 +182,16 @@
 		56B9072C21CB9DA1007B858C /* HeaderViewStretch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewStretch.swift; sourceTree = "<group>"; };
 		56BEAB122191BD960008AF6B /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		56D03BEA21B2250600E1688F /* Image_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_Cell.swift; sourceTree = "<group>"; };
+		56D933F622FCBE2E0017ADEB /* Laja */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = Laja; sourceTree = BUILT_PRODUCTS_DIR; };
+		56D933F822FCBE2E0017ADEB /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
+		56D933FC22FCBE650017ADEB /* DSC_05.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_05.JPG; sourceTree = "<group>"; };
+		56D933FD22FCBE660017ADEB /* DSC_03.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_03.JPG; sourceTree = "<group>"; };
+		56D933FE22FCBE660017ADEB /* DSC_02.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_02.JPG; sourceTree = "<group>"; };
+		56D933FF22FCBE660017ADEB /* DSC_04.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_04.JPG; sourceTree = "<group>"; };
+		56D9340022FCBE660017ADEB /* DSC_01.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_01.JPG; sourceTree = "<group>"; };
+		56D9340122FCBE670017ADEB /* DSC_06.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_06.JPG; sourceTree = "<group>"; };
+		56D9340222FCBE670017ADEB /* DSC_08.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_08.JPG; sourceTree = "<group>"; };
+		56D9340322FCBE670017ADEB /* DSC_07.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC_07.JPG; sourceTree = "<group>"; };
 		56E5A50921B2019C0076EB67 /* Map_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Map_Cell.swift; sourceTree = "<group>"; };
 		56FEF3C821A1FD1E00717A48 /* InputAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccessory.swift; sourceTree = "<group>"; };
 		776543024D5A33498B3E998D /* Pods-ChatApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChatApp/Pods-ChatApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -222,13 +216,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		5689AE21223ECE2C0088BABA /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A779EF3E1F2B196821E4D409 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -269,16 +256,6 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
-		563EA6B222EDAB5C00806311 /* FirstTestPurchase */ = {
-			isa = PBXGroup;
-			children = (
-				563EA6B322EDAB5C00806311 /* ContentInfo.plist */,
-				563EA6B722EDAE7000806311 /* t02.jpg */,
-				563EA6B822EDAE7000806311 /* t03.jpg */,
-			);
-			path = FirstTestPurchase;
-			sourceTree = "<group>";
-		};
 		5649D9F421D8322300AA3BD8 /* Hidden */ = {
 			isa = PBXGroup;
 			children = (
@@ -300,6 +277,7 @@
 				5689AE25223ECE2C0088BABA /* PushMutater2 */,
 				568AC1FD22FA0F2B00AA546F /* Purchases */,
 				566F468E21E2480400993A92 /* ChatAppTests */,
+				56D933F722FCBE2E0017ADEB /* Laja */,
 				566BEDA62186F8D50053F4A0 /* Products */,
 				70DFE94CC7D7CBF2A1E2709F /* Frameworks */,
 				89D8B935E5404CC8E72D6CCD /* Pods */,
@@ -312,8 +290,7 @@
 				566BEDA52186F8D50053F4A0 /* ChatApp.app */,
 				566F468D21E2480400993A92 /* ChatAppTests.xctest */,
 				5689AE24223ECE2C0088BABA /* PushMutater2.appex */,
-				563EA6B122EDAB5C00806311 /* FirstTestPurchase */,
-				568B3A7322FB8725000F43A3 /* SecondTestPurchase */,
+				56D933F622FCBE2E0017ADEB /* Laja */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -433,26 +410,24 @@
 		568AC1FD22FA0F2B00AA546F /* Purchases */ = {
 			isa = PBXGroup;
 			children = (
-				568B3A7422FB8725000F43A3 /* SecondTestPurchase */,
-				563EA6B222EDAB5C00806311 /* FirstTestPurchase */,
 			);
 			path = Purchases;
 			sourceTree = "<group>";
 		};
-		568B3A7422FB8725000F43A3 /* SecondTestPurchase */ = {
+		56D933F722FCBE2E0017ADEB /* Laja */ = {
 			isa = PBXGroup;
 			children = (
-				568B3A7D22FB873B000F43A3 /* DSC_8682.JPG */,
-				568B3A7C22FB873B000F43A3 /* DSC_8869.JPG */,
-				568B3A7F22FB873C000F43A3 /* DSC_8932.JPG */,
-				568B3A7922FB873A000F43A3 /* DSC_8982.JPG */,
-				568B3A7B22FB873B000F43A3 /* DSC_8987.JPG */,
-				568B3A8022FB873C000F43A3 /* DSC_8988.JPG */,
-				568B3A7A22FB873A000F43A3 /* DSC_8989.JPG */,
-				568B3A7E22FB873C000F43A3 /* DSC_9165.JPG */,
-				568B3A7522FB8725000F43A3 /* ContentInfo.plist */,
+				56D933F822FCBE2E0017ADEB /* ContentInfo.plist */,
+				56D9340022FCBE660017ADEB /* DSC_01.JPG */,
+				56D933FE22FCBE660017ADEB /* DSC_02.JPG */,
+				56D933FD22FCBE660017ADEB /* DSC_03.JPG */,
+				56D933FF22FCBE660017ADEB /* DSC_04.JPG */,
+				56D933FC22FCBE650017ADEB /* DSC_05.JPG */,
+				56D9340122FCBE670017ADEB /* DSC_06.JPG */,
+				56D9340322FCBE670017ADEB /* DSC_07.JPG */,
+				56D9340222FCBE670017ADEB /* DSC_08.JPG */,
 			);
-			path = SecondTestPurchase;
+			path = Laja;
 			sourceTree = "<group>";
 		};
 		56E5A50B21B202190076EB67 /* ChatCells */ = {
@@ -487,22 +462,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		563EA6B022EDAB5C00806311 /* FirstTestPurchase */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 563EA6B422EDAB5C00806311 /* Build configuration list for PBXNativeTarget "FirstTestPurchase" */;
-			buildPhases = (
-				563EA6AF22EDAB5C00806311 /* Resources */,
-				A779EF3E1F2B196821E4D409 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = FirstTestPurchase;
-			productName = FirstTestPurchase;
-			productReference = 563EA6B122EDAB5C00806311 /* FirstTestPurchase */;
-			productType = "com.apple.product-type.in-app-purchase-content";
-		};
 		566BEDA42186F8D50053F4A0 /* ChatApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 566BEDB72186F8D70053F4A0 /* Build configuration list for PBXNativeTarget "ChatApp" */;
@@ -560,19 +519,19 @@
 			productReference = 5689AE24223ECE2C0088BABA /* PushMutater2.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		568B3A7222FB8725000F43A3 /* SecondTestPurchase */ = {
+		56D933F522FCBE2E0017ADEB /* Laja */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 568B3A7622FB8725000F43A3 /* Build configuration list for PBXNativeTarget "SecondTestPurchase" */;
+			buildConfigurationList = 56D933F922FCBE2E0017ADEB /* Build configuration list for PBXNativeTarget "Laja" */;
 			buildPhases = (
-				568B3A7122FB8725000F43A3 /* Resources */,
+				56D933F422FCBE2E0017ADEB /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = SecondTestPurchase;
-			productName = SecondTestPurchase;
-			productReference = 568B3A7322FB8725000F43A3 /* SecondTestPurchase */;
+			name = Laja;
+			productName = Laja;
+			productReference = 56D933F622FCBE2E0017ADEB /* Laja */;
 			productType = "com.apple.product-type.in-app-purchase-content";
 		};
 /* End PBXNativeTarget section */
@@ -585,9 +544,6 @@
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Zinko Viacheslav";
 				TargetAttributes = {
-					563EA6B022EDAB5C00806311 = {
-						CreatedOnToolsVersion = 10.1;
-					};
 					566BEDA42186F8D50053F4A0 = {
 						CreatedOnToolsVersion = 9.4.1;
 						LastSwiftMigration = 1010;
@@ -628,7 +584,7 @@
 							};
 						};
 					};
-					568B3A7222FB8725000F43A3 = {
+					56D933F522FCBE2E0017ADEB = {
 						CreatedOnToolsVersion = 10.1;
 					};
 				};
@@ -649,22 +605,12 @@
 				566BEDA42186F8D50053F4A0 /* ChatApp */,
 				566F468C21E2480400993A92 /* ChatAppTests */,
 				5689AE23223ECE2C0088BABA /* PushMutater2 */,
-				563EA6B022EDAB5C00806311 /* FirstTestPurchase */,
-				568B3A7222FB8725000F43A3 /* SecondTestPurchase */,
+				56D933F522FCBE2E0017ADEB /* Laja */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		563EA6AF22EDAB5C00806311 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				563EA6B922EDAE7000806311 /* t02.jpg in Resources */,
-				563EA6BA22EDAE7000806311 /* t03.jpg in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		566BEDA32186F8D50053F4A0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -695,18 +641,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		568B3A7122FB8725000F43A3 /* Resources */ = {
+		56D933F422FCBE2E0017ADEB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				568B3A8322FB873C000F43A3 /* DSC_8987.JPG in Resources */,
-				568B3A8522FB873C000F43A3 /* DSC_8682.JPG in Resources */,
-				568B3A8222FB873C000F43A3 /* DSC_8989.JPG in Resources */,
-				568B3A8622FB873C000F43A3 /* DSC_9165.JPG in Resources */,
-				568B3A8122FB873C000F43A3 /* DSC_8982.JPG in Resources */,
-				568B3A8822FB873C000F43A3 /* DSC_8988.JPG in Resources */,
-				568B3A8722FB873C000F43A3 /* DSC_8932.JPG in Resources */,
-				568B3A8422FB873C000F43A3 /* DSC_8869.JPG in Resources */,
+				56D9340622FCBE670017ADEB /* DSC_02.JPG in Resources */,
+				56D9340822FCBE670017ADEB /* DSC_01.JPG in Resources */,
+				56D9340A22FCBE670017ADEB /* DSC_08.JPG in Resources */,
+				56D9340522FCBE670017ADEB /* DSC_03.JPG in Resources */,
+				56D9340922FCBE670017ADEB /* DSC_06.JPG in Resources */,
+				56D9340422FCBE670017ADEB /* DSC_05.JPG in Resources */,
+				56D9340B22FCBE670017ADEB /* DSC_07.JPG in Resources */,
+				56D9340722FCBE670017ADEB /* DSC_04.JPG in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -913,33 +859,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		563EA6B522EDAB5C00806311 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = Purchases/FirstTestPurchase/ContentInfo.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = "";
-			};
-			name = Debug;
-		};
-		563EA6B622EDAB5C00806311 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = Purchases/FirstTestPurchase/ContentInfo.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = "";
-			};
-			name = Release;
-		};
 		566BEDB52186F8D70053F4A0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1219,12 +1138,12 @@
 			};
 			name = Release;
 		};
-		568B3A7722FB8725000F43A3 /* Debug */ = {
+		56D933FA22FCBE2E0017ADEB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = Purchases/SecondTestPurchase/ContentInfo.plist;
+				INFOPLIST_FILE = Laja/ContentInfo.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -1233,12 +1152,12 @@
 			};
 			name = Debug;
 		};
-		568B3A7822FB8725000F43A3 /* Release */ = {
+		56D933FB22FCBE2E0017ADEB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = Purchases/SecondTestPurchase/ContentInfo.plist;
+				INFOPLIST_FILE = Laja/ContentInfo.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1249,15 +1168,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		563EA6B422EDAB5C00806311 /* Build configuration list for PBXNativeTarget "FirstTestPurchase" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				563EA6B522EDAB5C00806311 /* Debug */,
-				563EA6B622EDAB5C00806311 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		566BEDA02186F8D50053F4A0 /* Build configuration list for PBXProject "ChatApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1294,11 +1204,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		568B3A7622FB8725000F43A3 /* Build configuration list for PBXNativeTarget "SecondTestPurchase" */ = {
+		56D933F922FCBE2E0017ADEB /* Build configuration list for PBXNativeTarget "Laja" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				568B3A7722FB8725000F43A3 /* Debug */,
-				568B3A7822FB8725000F43A3 /* Release */,
+				56D933FA22FCBE2E0017ADEB /* Debug */,
+				56D933FB22FCBE2E0017ADEB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

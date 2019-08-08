@@ -15,6 +15,7 @@ enum IAPProducts: String, CaseIterable {
 	case nonConsumable1 = "organic.ChatApp.FirstTestPurchase"
 	case nonConsumable2 = "organic.ChatApp.SecondTestPurchase"
 	case autoRenewable = "organic.ChatApp.Renewable"
+	case laja = "organic.ChatApp.Laja"
 	
 	// call "IAPProducts.allCases" to get an array of all cases
 }
