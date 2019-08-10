@@ -14,6 +14,10 @@ import StoreKit
 enum IAPProducts: String, CaseIterable {
 	case nonConsumable1 = "organic.ChatApp.FirstTestPurchase"
 	case nonConsumable2 = "organic.ChatApp.SecondTestPurchase"
+	case nonConsumable3 = "organic.ChatApp.Regular"
+	case nonConsumable4 = "organic.ChatApp.Regular2"
+	case nonConsumable5 = "organic.ChatApp.Regular3"
+	case nonConsumable6 = "organic.ChatApp.Regular4"
 	case autoRenewable = "organic.ChatApp.Renewable"
 	case laja = "organic.ChatApp.Laja"
 	
