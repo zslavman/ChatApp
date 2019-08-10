@@ -3,6 +3,12 @@
 
 default_platform(:ios)
 
+# create new certificates & profiles (don't forget to nuke old before)
+lane :GenerateCerts do
+    match(app_identifier: ["organic.ChatApp", "organic.ChatApp.PushMutater2"], type: "development")
+    match(app_identifier: ["organic.ChatApp", "organic.ChatApp.PushMutater2"], type: "appstore")
+end
+
 platform :ios do
 
 	before_all do
