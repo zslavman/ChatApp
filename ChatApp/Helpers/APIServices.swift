@@ -9,30 +9,51 @@
 import UIKit
 import Firebase
 import FirebaseMessaging
-//import FBSDKLoginKit
 import FBSDKCoreKit
 import FacebookLogin
 
 
-struct APIServices {
+class APIServices {
 	
-	/// устанавливаем новый токен
+	private static var timer: Timer?
+	
+	/// setting new fcmToken
 	static func setNewToken(callback: @escaping () -> Void) {
 		guard let uid = Auth.auth().currentUser?.uid else { return }
-		guard let newToken = Messaging.messaging().fcmToken else { return }
 		let tokenRef = Database.database().reference().child("users").child(uid).child("fcmToken")
+
+		timer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true, block: {
+			(_) in
+			sendRequestToGetToken()
+			print("Retry to get token")
+		})
 		
-		tokenRef.setValue(newToken) {
-			(error: Error?, ref: DatabaseReference) in
-			
-			if let error = error {
-				assertionFailure(error.localizedDescription)
-			}
-			else {
+		func sendRequestToGetToken() {
+			InstanceID.instanceID().instanceID {
+				(result, error) in
+				
+				timer?.invalidate()
+				
+				if let error = error {
+					print(error.localizedDescription)
+					return
+				}
+				guard let result = result else { return }
+				let newToken = result.token
 				print("fcmToken = \(newToken)")
-				callback()
+				tokenRef.setValue(newToken) {
+					(error: Error?, ref: DatabaseReference) in
+					
+					if let error = error {
+						assertionFailure(error.localizedDescription)
+					}
+					else {
+						callback()
+					}
+				}
 			}
 		}
+		sendRequestToGetToken()
 	}
 	
 	
@@ -60,20 +81,38 @@ struct APIServices {
 		var request = URLRequest(url:url)
 		request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"\(serverKey)"]
 		request.httpMethod = "POST"
-		
 		request.httpBody = try? JSONSerialization.data(withJSONObject: bodyToSend, options: [])
 		
 		URLSession.shared.dataTask(with: request, completionHandler: {
 			(data, urlresponse, error) in
-			if error != nil{
+			if error != nil {
 				print(error!)
 			}
 		}).resume()
 	}
 	
 	
-	// при логауте удаляем на сервере свой токен, чтоб не шли нотификейшны
-	public static func removeToken(){
+	// при логауте удаляем на сервере свой токен
+	public static func removeToken() {
+		timer?.invalidate()
+		
+//		guard let uid = Auth.auth().currentUser?.uid else { return }
+//		Messaging.messaging().deleteFCMToken(forSenderID: uid) {
+//			(error) in
+//			if let er = error {
+//				print(er.localizedDescription)
+//			}
+//			else {
+//				print("FCMtoken deleted")
+//				do {
+//					try Auth.auth().signOut()
+//				}
+//				catch let logoutError {
+//					print(logoutError.localizedDescription)
+//					return
+//				}
+//			}
+//		}
 		InstanceID.instanceID().deleteID {
 			(error) in
 			if let er = error {
@@ -81,6 +120,13 @@ struct APIServices {
 			}
 			else {
 				print("FCMtoken deleted")
+				do {
+					try Auth.auth().signOut()
+				}
+				catch let logoutError {
+					print(logoutError.localizedDescription)
+					return
+				}
 			}
 		}
 	}

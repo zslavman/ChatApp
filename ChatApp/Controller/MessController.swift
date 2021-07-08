@@ -27,7 +27,7 @@ class MessagesController: UITableViewController {
 	
 	
 	internal let refUserMessages_original = Database.database().reference().child("user-messages")// начало ссылки для refUserMessages
-	private var labelNoMessages:UILabel?
+	internal var labelNoMessages: UILabel? // placeholder for emty table
 	
 	private var hendlers = [UInt: DatabaseReference]() 	// для правильного диспоза слушателей базы
 	internal var profileImageView: UIImageView!
@@ -66,10 +66,6 @@ class MessagesController: UITableViewController {
 	}
 	
 	
-//	override var preferredStatusBarStyle: UIStatusBarStyle {
-//		return .lightContent
-//	}
-
 	
 	/// убираем собеседника и само сообщение отовсюду
 	internal func removeDialog(collocutorID: String, indexPath:IndexPath){
@@ -80,7 +76,7 @@ class MessagesController: UITableViewController {
 		let onlineListener = refUsers.child(collocutorID)
 		let removeMessListener = refUserMessages_original.child(uid).child(collocutorID)
 		
-		for (element) in hendlers{
+		for (element) in hendlers {
 			if element.value.description() == onlineListener.description() || element.value.description() == removeMessListener.description(){
 				element.value.removeObserver(withHandle: element.key)
 				hendlers.removeValue(forKey: element.key)
@@ -89,9 +85,8 @@ class MessagesController: UITableViewController {
 		// удаляем из источника таблицы и самой таблицы
 		// один из методов обновления таблицы, но он не безопасный
 		messages.remove(at: indexPath.row)
-		
 		if messages.isEmpty {
-			drawLoading(text: dict[32]![LANG])
+			labelNoMessages?.text = dict[32]![LANG]
 		}
 		//tableView.deleteRows(at: [indexPath], with: .right)
 		reloadTable()
@@ -115,7 +110,7 @@ class MessagesController: UITableViewController {
 			(snapshot) in
 			// если вообще нет сообщений
 			if !snapshot.hasChildren() {
-				self.labelNoMessages?.text = dict[32]![LANG]
+				self.labelNoMessages?.text = dict[32]![LANG] // нет сообощений
 				self.allowIncomingSound = true
 			}
 			dialogsStartCount = snapshot.childrenCount
@@ -138,7 +133,6 @@ class MessagesController: UITableViewController {
 					maxCount = min(1, snapshot.childrenCount)
 				}
 				//***********
-
 
 				// получаем ID сообщения внутри диалога (цикл из сообщений)
 				let listener1 = ref_DialogforEachOtherUser.queryLimited(toLast: 1).observe(.childAdded, with: {
@@ -237,7 +231,7 @@ class MessagesController: UITableViewController {
 	
 	
 	// проверка кол-ва непрочтенных сообщений (вызывается при каждом приходе нового сообщ.)
-	private func checkUnread(msg:Message){
+	private func checkUnread(msg:Message) {
 		if msg.fromID == uid {
 			moveDialogs(newMessage: msg)
 			return
@@ -287,7 +281,7 @@ class MessagesController: UITableViewController {
 	
 	
 	/// калькуляция непрочитанных сообщений каждого диалогера (запускается 1 раз при загрузке, когда получили все диалоги)
-	private func countUnreadMessages(){
+	private func countUnreadMessages() {
 		// получаем весь словарь непрочтенных
 		let unreadRef = Database.database().reference().child("unread-messages-foreach").child(uid)
 		var count:Int = 0
@@ -319,15 +313,11 @@ class MessagesController: UITableViewController {
 	
 	
 	// плюсуем счетчик ярлыка текущей вкладки
-	internal func addBageValue(val:Int){
+	internal func addBageValue(val: Int){
 		guard val != 0 else { return }
 		let thisTabItem = tabBarController?.tabBar.items!.first
 		var currentCount:Int = 0
-//
-//		if thisTabItem?.badgeValue != nil{
-//			currentCount = Int(thisTabItem!.badgeValue!)!
-//		}
-//		currentCount += val
+		
 		for mes in messages {
 			if mes.unreadCount != nil && mes.unreadCount! > 0 {
 				currentCount += 1
@@ -388,14 +378,10 @@ class MessagesController: UITableViewController {
 	
 
 	/// первая перезагрузка таблицы и данных
-	private func firstReloadTable(){
+	private func firstReloadTable() {
 		allowIncomingSound = true
-		if messages.isEmpty{
-			labelNoMessages?.text = dict[32]![LANG]
-		}
-		else {
-			labelNoMessages?.removeFromSuperview()
-			labelNoMessages = nil
+		if messages.isEmpty {
+			labelNoMessages?.text = dict[32]![LANG] // Нет сообщений
 		}
 		currentList[0].cells.sort(by: {
 			(message1, message2) -> Bool in
@@ -436,34 +422,7 @@ class MessagesController: UITableViewController {
 		print("перезагружаем таблицу")
 	}
 	
-	
 
-	/// рисует лейблу с надписью Загрузка/Нет сообщений
-	private func drawLoading(text: String){
-		if !messages.isEmpty {
-			return
-		}
-		labelNoMessages?.removeFromSuperview()
-		labelNoMessages = nil
-		
-		labelNoMessages = {
-			let label = UILabel()
-			label.text = text
-			label.backgroundColor = .clear
-			label.textColor = .lightGray
-			label.font = UIFont.boldSystemFont(ofSize: 25)
-			label.textAlignment = .center
-			label.translatesAutoresizingMaskIntoConstraints = false
-			return label
-		}()
-		guard let labelNoMessages = labelNoMessages else { return }
-		view.addSubview(labelNoMessages)
-		labelNoMessages.topAnchor.constraint(equalTo: tableView.topAnchor, constant: -64).isActive = true
-		labelNoMessages.widthAnchor.constraint(equalTo: tableView.widthAnchor).isActive = true
-		labelNoMessages.heightAnchor.constraint(equalTo: tableView.heightAnchor).isActive = true
-	}
-	
-	
 	private func chekIfUserLoggedIn(){
 		// выходим, если не залогинены
 		if Auth.auth().currentUser?.uid == nil{
@@ -503,7 +462,6 @@ class MessagesController: UITableViewController {
 		}
 		// устанавливаем индикацию онлайн
 		APIServices.setUserStatus(true)
-		drawLoading(text: dict[31]![LANG])
 		fetchDialogs()
 		drawAvaAndName()
 	}
@@ -536,7 +494,6 @@ class MessagesController: UITableViewController {
 		nameLabel.minimumScaleFactor = 0.9
 		nameLabel.frame.size = CGSize(width: 500, height: 50) // for iOS 10
 		nameLabel.sizeToFit()
-		// nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		
 		let stackView = UIStackView(arrangedSubviews: [profileImageView, nameLabel])
 		stackView.axis = .horizontal
@@ -551,7 +508,7 @@ class MessagesController: UITableViewController {
 
 	public func dispose() {
 		// записуем на сервер состояние "offline"
-		if (uid != nil){
+		if (uid != nil) {
 			APIServices.setUserStatus(false)
 		}
 		// удаляем слушателя собственных сообщений
@@ -570,6 +527,8 @@ class MessagesController: UITableViewController {
 		allowIncomingSound = false
 		
 		senders.removeAll()
+		
+		navigationItem.rightBarButtonItem = nil
 		
 		owner = nil
 		labelNoMessages?.removeFromSuperview()

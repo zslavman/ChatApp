@@ -18,7 +18,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 		delegate = self
 		let tab1 = createTab(vc: MessagesController(), buttonImage_unselected: "bttn_menu")
 		let tab2 = createTab(vc: FindUserForChatController(), buttonImage_unselected: "bttn_find_user")
-//		let tab3 = createTab(vc: SettingsController(), buttonImage_unselected: "bttn_settings")
 		let tableViewStoryboard = UIStoryboard(name: "tBoard", bundle: nil)
 		let customViewController = tableViewStoryboard.instantiateViewController(withIdentifier: "myTable")
 		let tab3 = createTab(vc: customViewController, buttonImage_unselected: "bttn_settings")
@@ -33,7 +32,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
 	
 	
 	func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-		
 		guard let fromView = selectedViewController?.view, let toView = viewController.view else {
 			return false
 		}

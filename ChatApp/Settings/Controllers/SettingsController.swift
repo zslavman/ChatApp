@@ -8,23 +8,23 @@
 
 import UIKit
 import Firebase
-
+import GoogleSignIn
 
 class SettingsController: UITableViewController {
 	
-	
 	@IBOutlet weak var sw_sound: UISwitch!
 	@IBOutlet weak var sw_vibro: UISwitch!
-	
 	@IBOutlet weak var stepper: UIStepper!
 	@IBOutlet weak var mess_limit_label: UILabel!
-	
 	private var localRows:[Int:[String]] = [:]
 	private var localSection:[Int:[String]] = [:]
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		if traitCollection.forceTouchCapability == .available {
+			registerForPreviewing(with: self, sourceView: tableView)
+		}
 		configureLocales()
 		configureUI()
 	}
@@ -98,7 +98,6 @@ class SettingsController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = super.tableView(tableView, cellForRowAt: indexPath)
-		
 		if indexPath.section == 2 || indexPath.section == 3 {
 			// цвет выделения при клике на ячейку
 			let selectionColor = UIView()
@@ -119,7 +118,6 @@ class SettingsController: UITableViewController {
 	
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		
 		if indexPath.section == 2 {
 			// Edit profile
 			if indexPath.row == 0 {
@@ -150,31 +148,46 @@ class SettingsController: UITableViewController {
 	
 	
 	private func logout() {
-		
 		APIServices.facebookLogout()
-		
+		GIDSignIn.sharedInstance()?.signOut()
+		GIDSignIn.sharedInstance()?.disconnect()
 		let messagesController = tabBarController?.viewControllers![0].children.first as! MessagesController
 		messagesController.dispose()
 		
 		let findUsersController = tabBarController?.viewControllers![1].children.first as! FindUserForChatController
 		findUsersController.dispose()
 		
-		do {
-			try Auth.auth().signOut()
-		}
-		catch let logoutError{
-			print(logoutError)
-			return
-		}
 		let loginController = LoginController(collectionViewLayout: UICollectionViewFlowLayout())
 		// фикс бага когда выходишь и регишся а тайтл не меняется
 		loginController.messagesController = messagesController
-		
 		present(loginController, animated: true, completion: nil)
 	}
 	
+}
+
+
+
+// 3d touch
+extension SettingsController: UIViewControllerPreviewingDelegate {
+
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		// 1 stage of force touch - highlight&zoom touched cell
+		guard let indexPath = tableView.indexPathForRow(at: location) else { return nil }
+		previewingContext.sourceRect = tableView.rectForRow(at: indexPath)
+
+		// 2 stage - show pop-up VC
+		let detailVC = UIViewController()
+		//let detailVC = PopOverMenu()
+		detailVC.view.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+		detailVC.preferredContentSize = CGSize(width: 0, height: 100)
+		return detailVC
+	}
 	
-	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+		//navigationController?.pushViewController(viewControllerToCommit, animated: true)
+		show(viewControllerToCommit, sender: self)
+	}
+
 }
 
 

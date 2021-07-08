@@ -12,8 +12,6 @@ protocol PopoverMunuClickedDelegate:class { // class позволяет испо
 	func cellClicked(numberOfMenu: Int)
 }
 
-
-
 class PopOverMenu: UITableViewController {
 	
 	private var menuChapterNames = [String]()
@@ -39,9 +37,8 @@ class PopOverMenu: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
 		let str = MessagesController.shared.isOnline ? "Set offline" : "Set online"
-		menuChapterNames = ["Reload table", str, "JSONTable", timeCellDefText]
+		menuChapterNames = ["Reload table", str, "JSONTable", timeCellDefText, "Purchases"]
 		
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cell_ID)
 		tableView.isScrollEnabled = false
@@ -52,8 +49,7 @@ class PopOverMenu: UITableViewController {
 	}
 	
 	
-	
-	@objc private func timerTick(){
+	@objc private func timerTick() {
 		sec -= 1
 		if (sec <= 10){
 			timeTF?.textColor = .red
@@ -69,8 +65,7 @@ class PopOverMenu: UITableViewController {
 	}
 	
 	
-	
-	
+
 	override func viewWillLayoutSubviews() {
 		preferredContentSize = CGSize(width: 150, height: tableView.contentSize.height)
 	}
@@ -90,15 +85,12 @@ class PopOverMenu: UITableViewController {
 	
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		
 		let cell = tableView.dequeueReusableCell(withIdentifier: cell_ID, for: indexPath)
 		cell.textLabel?.text = menuChapterNames[indexPath.row]
 		cell.textLabel?.textAlignment = .right
-		
 		if indexPath.row == 3 {
 			timeTF = cell.textLabel
 		}
-		
 		return cell
 	}
 	
@@ -115,10 +107,6 @@ class PopOverMenu: UITableViewController {
 		
 		countDownTimer?.invalidate()
 	}
-	
-	
-
-	
 	
 }
 

@@ -190,7 +190,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 		if (startingFrame != nil) {
 			growingInputView.isHidden = true
 		}
-		else{
+		else {
 			collectionView?.reloadData()
 		}
 	}
@@ -242,7 +242,7 @@ class ChatController: UICollectionViewController, UICollectionViewDelegateFlowLa
 				self.scrollingDownBttn.alpha = 1
 			}
 		}
-		else{
+		else {
 			UIView.animate(withDuration: 0.3) {
 				self.scrollingDownBttn.alpha = 0
 			}

@@ -1,0 +1,73 @@
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## Build generated
+build/
+DerivedData/
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+
+## Other
+*.moved-aside
+*.xcuserstate
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# AppCode
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/*.iml
+.idea/inspectionProfiles/*.xml
+.idea/misc.xml
+.idea/usage.statistics.xml
+
+Pods/Cuckoo/Generator/.build
+
+# fastlane
+fastlane/README.md
+fastlane/report.xml
+fastlane/test_output
+fastlane/swiftlint.html
+fastlane/tests/
+
+# fastlane on Jenkins
+output/
+
+default.profraw
+Purchases/SecondTestPurchase/DSC_8682.JPG
+Purchases/SecondTestPurchase/DSC_8869.JPG
+Purchases/SecondTestPurchase/DSC_8932.JPG
+Purchases/SecondTestPurchase/DSC_8982.JPG
+Purchases/SecondTestPurchase/DSC_8987.JPG
+Purchases/SecondTestPurchase/DSC_8988.JPG
+Purchases/SecondTestPurchase/DSC_8989.JPG
+Purchases/SecondTestPurchase/DSC_9165.JPG
+Laja/DSC_01.JPG
+Laja/DSC_02.JPG
+Laja/DSC_03.JPG
+Laja/DSC_04.JPG
+Laja/DSC_05.JPG
+Laja/DSC_06.JPG
+Laja/DSC_07.JPG
+Laja/DSC_08.JPG

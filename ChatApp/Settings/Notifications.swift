@@ -14,13 +14,15 @@ import FirebaseMessaging
 class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelegate {
 	
 	public static let shared = Notifications()
-	public let notif_ID:String = "notif_ID"
+	public let notif_ID: String = "notif_ID"
 	private let NotifCenter = UNUserNotificationCenter.current()
 	
 	// запрос на нотификейшны
-	public func requestAuthorisation(){
+	public func requestAuthorisation() {
 		UNUserNotificationCenter.current().delegate = self
 		Messaging.messaging().delegate = self
+		
+//		NotificationCenter.default.addObserver(self, selector: #selector(tokenRefreshNotification), name: NSNotification.Name.InstanceIDTokenRefresh, object: nil)
 		
 		let options: UNAuthorizationOptions = [.alert, .badge, .sound]
 		NotifCenter.requestAuthorization(options: options, completionHandler: {
@@ -32,12 +34,17 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 				DispatchQueue.main.async {
 					//application.registerForRemoteNotifications()
 					UIApplication.shared.registerForRemoteNotifications()
+					print("Registered for Notifications!!!")
 				}
 			}
 			#endif
 		})
 	}
 	
+	
+	@objc private func tokenRefreshNotification(not: Notification) {
+		print("!!!!!!!")
+	}
 	
 	// создаем алертконтроллер для запуска уведомления
 	public func createNotif() -> UIAlertController {
@@ -154,14 +161,14 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	}
 	
 	
-	private func removeNotifications(identifiers:[String]){
+	private func removeNotifications(identifiers:[String]) {
 		getLastNotifData(callback: nil)
 		NotifCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
 	}
 	
 
 	public func ConnectToFCM() {
-		Messaging.messaging().shouldEstablishDirectChannel = true
+		//Messaging.messaging().shouldEstablishDirectChannel = true
 	}
 	
 	
@@ -223,17 +230,13 @@ class Notifications: NSObject, UNUserNotificationCenterDelegate, MessagingDelega
 	// MessagingDelegate *
 	//********************
 	
-	// внутренние сообщения FCM
-	func messaging(_ messaging: Messaging, didReceive remoteMessage: MessagingRemoteMessage) {
-		print("didReceive remoteMessage:")
-	}
 	// doesn't work
 	func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
 		print("Refreshed Token: \(fcmToken)")
 	}
-	// doesn't work
+	// will fire when rewok fcmToken (after call InstanceID.instanceID().deleteID)
 	func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-		print("fcmToken = \(fcmToken)")
+		print("new fcmToken = \(fcmToken)")
 		ConnectToFCM()
 	}
 	
@@ -259,24 +262,6 @@ extension AppDelegate {
 		completionHandler(UIBackgroundFetchResult.newData)
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

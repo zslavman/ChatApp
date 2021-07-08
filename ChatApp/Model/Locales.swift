@@ -28,7 +28,7 @@ let dict:[Int:[String]] = [
 	   "Max messages préchargés à l'ouverture de la boîte de dialogue"],
 	9:["Разное", "Miscellaneous", "Divers"],
 	10:["Русский", "English", "Française"], // тут не должно быть пустых ячеек
-	11:["Войти", "Login", "S'identifier"],
+	11:["Войти", "Login", "Connexion"],
 	12:["Выйти", "Logout", "Connectez - Out"],
 	13:["Выйти из аккаунта", "Account logout", "Déconnexion du compte"],
 	14:["Язык приложения", "Application language", "Langue d'application"],
@@ -45,7 +45,7 @@ let dict:[Int:[String]] = [
 	25:["Регистр.", "Register", "Enregistrement"],
 	26:["Пароль", "Password", "Mot de passe"],
 	27:["Имя", "Name", "Prénom"],
-	28:["Обнаружены незаполненные поля, все поля обязательные для регистрации!",
+	28:["Обнаружены незаполненные поля, все поля обязательные!",
 		"Empty field(s) detected. All fields are required!",
 		"Champs vides détectés. Tous les champs sont requis!"],
 	29:["[видео]", "[video]", "[vidéo]"],
@@ -86,8 +86,12 @@ let dict:[Int:[String]] = [
 	56:["назад", "ago", "Il y a"],
 	57:["Неверный адрес электронной почты", "Not valid email", "Email non valide"],
 	58:["Вход", "Sign In", "Se connecter"],
-	59:["", "", ""],
-	60:["", "", ""],
+	59:["только что", "just a moment ago", "il y a juste un instant"],
+	60:["Войти с Facebook", "Sign in with Facebook", "Connectez avec Facebook"],
+	61:["Войти с Google", "Sign in with Google", "Connectez avec Google"],
+	62:["Войти через email", "Login via email", "Connexion par email"],
+	63:["", "", ""],
+	64:["", "", ""],
 
 ]
 

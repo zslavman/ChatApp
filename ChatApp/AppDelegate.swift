@@ -12,38 +12,84 @@ import UserNotifications
 import FirebaseMessaging
 import FirebaseInstanceID
 import FacebookCore
+import GoogleSignIn
+import SwiftyStoreKit
 
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+	
+	enum ShortcutIdentifier: String {
+		case OpenSecret
+		case OpenUsers
+		
+		init?(fullIdentifier: String) {
+			guard let shortIdentifier = fullIdentifier.components(separatedBy: ".").last else {
+				return nil
+			}
+			self.init(rawValue: shortIdentifier)
+		}
+	}
 
 	public static var waitScreen: WaitScreen!
 	public var window: UIWindow?
 	public var orientationLock = UIInterfaceOrientationMask.all
+	var reachabilityService: ReachabilityService! // this instance must exist with application (not in closure)
 	
 	
-	
-	func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+	func application(_ application: UIApplication, supportedInterfaceOrientationsFor
+								window: UIWindow?) -> UIInterfaceOrientationMask {
 		return self.orientationLock
 	}
 
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		//Notifications.shared.requestAuthorisation()
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions
+						launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+		// in-app purchase
+//		IAPManager.shared.initPurchases {
+//			(success) in
+//			if success {
+//				print("Can make payments!")
+//				IAPManager.shared.getProductsByIDs()
+//			}
+//		}
+		PurchasesController2.updateDownloads()
+		SwiftyStoreKit.completeTransactions(atomically: false) {
+			purchases in
+			for purchase in purchases {
+				switch purchase.transaction.transactionState {
+				case .purchased, .restored:
+					if purchase.needsFinishTransaction {
+						// Deliver content from server, then:
+						SwiftyStoreKit.finishTransaction(purchase.transaction)
+					}
+				// Unlock content
+				case .failed, .purchasing, .deferred:
+					break // do nothing
+				}
+			}
+		}
+		// Google sign-in
+		GIDSignIn.sharedInstance().clientID = "586274645458-5uli8n92a2lck0bo4hlknv5hiq2l85p6.apps.googleusercontent.com"
+		GIDSignIn.sharedInstance().delegate = self
+		
+		// Facebook sign-in
 		SDKApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+		
 		FirebaseApp.configure()
 		Database.database().isPersistenceEnabled = false
 		
 		_ = UserDefFlags()
+		reachabilityService = ReachabilityService()
 		UIConfig.configureUI()
 		
-		// не будем использовать сторибоард
+		// don't want to use storyboard
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
 		window?.rootViewController = UINavigationController(rootViewController: TabBarController())
+		//window?.rootViewController = UINavigationController(rootViewController: PurchasesController())
 		
 		AppDelegate.waitScreen = WaitScreen()
-		
 		return true
 	}
 
@@ -55,7 +101,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// вошло в бэкграунд
 	func applicationDidEnterBackground(_ application: UIApplication) {
-		Messaging.messaging().shouldEstablishDirectChannel = false
+		//Messaging.messaging().shouldEstablishDirectChannel = false
 	}
 
 	// сейчас вернется в активный режим
@@ -71,6 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			MessagesController.shared.messages_copy.removeAll()
 		}
 		AppEventsLogger.activate(application)
+		SettingsBundleHelper.setVersionAndBuildNumber()
 	}
 
 	
@@ -116,15 +163,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	// URL-shems handler
 	func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-		print("url = \(url)")
-		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-		let host = urlComponents?.host ?? ""
-		print(host)
-		if host == "secretPage" { }
+//		print("url = \(url)")
+//		let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+//		let host = urlComponents?.host ?? ""
+//		print(host)
+//		if host == "secretPage" { }
+		let canOpenFacebookUrl = SDKApplicationDelegate.shared.application(app, open: url, options: options)
+		let canOpenGoogleUrl = GIDSignIn.sharedInstance().handle(
+			url,
+			sourceApplication: options[UIApplication.OpenURLOptionsKey.sourceApplication] as? String,
+			annotation: options[UIApplication.OpenURLOptionsKey.annotation]
+		)
+		let totalCan = canOpenFacebookUrl ? canOpenFacebookUrl : canOpenGoogleUrl
 		
-		let facebook = SDKApplicationDelegate.shared.application(app, open: url, options: options)
-		
-		return facebook
+		return totalCan
 	}
 	
 	
@@ -136,6 +188,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return true
 	}
 	
+	
+	/// 3d touch on icon -> menu
+	func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+		// open VC from menu
+		completionHandler(handleShortcut(shortcutItem))
+	}
+	@discardableResult fileprivate func handleShortcut(_ shortcutItem: UIApplicationShortcutItem) -> Bool {
+		if Auth.auth().currentUser?.uid == nil { return false }
+		let shortcutType = shortcutItem.type
+		guard let shortcutIdentifier = ShortcutIdentifier(fullIdentifier: shortcutType) else { return false	}
+		guard let window = UIApplication.shared.keyWindow else { return false }
+		guard let tabBarController = window.rootViewController?.children.first as? TabBarController else { return false	}
+		switch shortcutIdentifier {
+		case .OpenSecret:
+			guard let messagesControllerShared = MessagesController.shared else { return false }
+			if messagesControllerShared.goToChatWithID != nil {
+				MessagesController.shared.navigationController?.popViewController(animated: false)
+			}
+			else {
+				tabBarController.selectedIndex = 0
+			}
+			messagesControllerShared.createBarItem(skipChecking: true)
+			messagesControllerShared.onMenuClick()
+			return true
+		case .OpenUsers:
+			tabBarController.selectedIndex = 1
+			return true
+		}
+	}
+	
+}
+
+
+extension AppDelegate: GIDSignInDelegate {
+	
+	func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+		if let error = error {
+			print("\(error.localizedDescription)")
+		}
+		else {
+			guard let loginVC = GIDSignIn.sharedInstance()?.uiDelegate as? LoginController else { return }
+			loginVC.onLoginViaGoogleResponce(user: user)
+		}
+	}
+
 }
 
 

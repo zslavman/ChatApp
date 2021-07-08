@@ -158,6 +158,9 @@ struct SUtils {
 		else {
 			return convertTimeStamp(seconds: timeinterval, lessText: false, shouldReturn: false)
 		}
+		if quotient < 10 && unit == dict[53]![LANG] {
+			return dict[59]![LANG] // только что
+		}
 		return "\(quotient) \(unit) \(dict[56]![LANG])" // назад
 	}
 	
@@ -343,6 +346,13 @@ struct SUtils {
 		let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
 		let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
 		return emailTest.evaluate(with: maybeEmail)
+	}
+	
+	/// play taptic feedback
+	public static func tapticFeedback() {
+		let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .heavy)
+		impactFeedbackgenerator.prepare()
+		impactFeedbackgenerator.impactOccurred()
 	}
 	
 }

@@ -3,6 +3,12 @@
 
 default_platform(:ios)
 
+# create new certificates & profiles (don't forget to nuke old before)
+lane :GenerateCerts do
+    match(app_identifier: ["organic.ChatApp", "organic.ChatApp.PushMutater2"], type: "development")
+    match(app_identifier: ["organic.ChatApp", "organic.ChatApp.PushMutater2"], type: "appstore")
+end
+
 platform :ios do
 
 	before_all do
@@ -28,12 +34,12 @@ platform :ios do
 
     	ensure_git_branch(branch: branch)
 
-    	increment_build_number
-
     	match(
     		type: "appstore", 
     		app_identifier: ["organic.ChatApp"]
     	)
+
+        increment_build_number
 
 		gym(
     		scheme: scheme,

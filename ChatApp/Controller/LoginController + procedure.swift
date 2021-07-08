@@ -52,14 +52,13 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 	/// сюда зайдет после выбора картинки
 	public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-		// Local variable inserted by Swift 4.2 migrator.
-		let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 		var selectedImage:UIImage?
-		
-		if let editedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.editedImage)] as? UIImage{
+
+		if let editedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+			print(editedImage)
 			selectedImage = editedImage
 		}
-		else if let originalImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage{
+		else if let originalImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
 			selectedImage = originalImage
 		}
 		if selectedImage != nil {
@@ -85,11 +84,11 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			APIServices.setNewToken(callback: {
 				Notifications.shared.requestAuthorisation()
 			})
-			
 			// если всё ок - заходим в учётку
 			AppDelegate.waitScreen.hideNow()
 			self.messagesController?.fetchUserAndSetupNavbarTitle() // фикс бага когда выходишь и заходишь а тайтл не меняется
 			self.dismiss(animated: true, completion: nil)
+			
 		}
 	}
 	
@@ -174,12 +173,14 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 			user.setValuesForKeys(values)
 			self.messagesController?.setupNavbarWithUser(user: user)
 			
-			APIServices.setNewToken(callback: {
-				Notifications.shared.requestAuthorisation()
-			})
+			DispatchQueue.main.async {
+				APIServices.setNewToken(callback: {
+					Notifications.shared.requestAuthorisation()
+				})
+			}
 			AppDelegate.waitScreen.hideNow()
 			self.dismiss(animated: true, completion: nil)
-			print("Удачно сохранили юзера")
+			print("Succesfully saved user!")
 		})
 	}
 	
@@ -191,15 +192,3 @@ extension LoginController: UIImagePickerControllerDelegate, UINavigationControll
 	
 }
 
-
-
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
-	return input.rawValue
-}
